@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Pretendard 폰트 */
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
+
+@layer base {
+  html {
+    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+}
+
+@layer components {
+  /* 버튼 기본 스타일 */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn bg-primary-500 text-white hover:bg-primary-600;
+    @apply focus:ring-primary-500 active:bg-primary-700;
+    @apply shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40;
+  }
+
+  .btn-secondary {
+    @apply btn bg-secondary-500 text-white hover:bg-secondary-600;
+    @apply focus:ring-secondary-500 active:bg-secondary-700;
+  }
+
+  .btn-outline {
+    @apply btn border-2 border-primary-500 text-primary-500 bg-transparent;
+    @apply hover:bg-primary-50 focus:ring-primary-500;
+  }
+
+  /* 카드 스타일 */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100;
+    @apply transition-all duration-200 hover:shadow-md;
+  }
+
+  /* 입력 필드 */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply transition-all duration-200;
+  }
+
+  /* 게이미피케이션 배지 */
+  .badge-combo {
+    @apply inline-flex items-center px-3 py-1 rounded-full;
+    @apply bg-amber-100 text-amber-700 font-semibold text-sm;
+  }
+
+  .badge-streak {
+    @apply inline-flex items-center px-3 py-1 rounded-full;
+    @apply bg-red-100 text-red-700 font-semibold text-sm;
+  }
+
+  .badge-level {
+    @apply inline-flex items-center px-3 py-1 rounded-full;
+    @apply bg-purple-100 text-purple-700 font-semibold text-sm;
+  }
+}

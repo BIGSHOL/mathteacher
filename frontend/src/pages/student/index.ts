@@ -1,0 +1,5 @@
+export { TestListPage } from './TestListPage'
+export { TestStartPage } from './TestStartPage'
+export { TestPlayPage } from './TestPlayPage'
+export { TestResultPage } from './TestResultPage'
+export { MyStatsPage } from './MyStatsPage'

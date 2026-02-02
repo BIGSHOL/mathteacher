@@ -1,0 +1,97 @@
+// 헤더 컴포넌트
+
+import { Link, useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { useAuthStore } from '../../store/authStore'
+import { XpBadge } from '../gamification/XpBar'
+import { StreakBadge } from '../gamification/StreakDisplay'
+
+export function Header() {
+  const navigate = useNavigate()
+  const { user, logout } = useAuthStore()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login')
+  }
+
+  const isTeacher = user?.role === 'teacher' || user?.role === 'admin'
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
+      <div className="container mx-auto px-4">
+        <div className="flex h-16 items-center justify-between">
+          {/* 로고 */}
+          <Link to="/" className="flex items-center gap-2">
+            <span className="text-2xl">📐</span>
+            <span className="text-xl font-bold text-primary-600">MathTest</span>
+          </Link>
+
+          {/* 네비게이션 */}
+          {user && (
+            <nav className="hidden items-center gap-6 md:flex">
+              {isTeacher ? (
+                <>
+                  <NavLink to="/teacher/dashboard">대시보드</NavLink>
+                  <NavLink to="/teacher/students">학생 관리</NavLink>
+                </>
+              ) : (
+                <>
+                  <NavLink to="/tests">테스트</NavLink>
+                  <NavLink to="/my-stats">내 통계</NavLink>
+                </>
+              )}
+            </nav>
+          )}
+
+          {/* 사용자 정보 */}
+          <div className="flex items-center gap-4">
+            {user && !isTeacher && (
+              <div className="hidden items-center gap-2 md:flex">
+                <XpBadge level={user.level} totalXp={user.total_xp} />
+                <StreakBadge streak={user.current_streak} />
+              </div>
+            )}
+
+            {user ? (
+              <div className="flex items-center gap-3">
+                <div className="hidden text-right md:block">
+                  <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                  <p className="text-xs text-gray-500">
+                    {user.role === 'teacher' ? '강사' : user.role === 'admin' ? '관리자' : '학생'}
+                  </p>
+                </div>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleLogout}
+                  className="rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-200"
+                >
+                  로그아웃
+                </motion.button>
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600"
+              >
+                로그인
+              </Link>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
+  )
+}
+
+function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
+  return (
+    <Link
+      to={to}
+      className="text-sm font-medium text-gray-600 transition-colors hover:text-primary-600"
+    >
+      {children}
+    </Link>
+  )
+}

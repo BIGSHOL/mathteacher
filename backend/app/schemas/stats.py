@@ -1,0 +1,183 @@
+"""통계 스키마 정의."""
+
+from datetime import datetime
+
+from pydantic import BaseModel
+
+from .common import Grade
+
+
+# ===========================
+# 개념 통계 스키마
+# ===========================
+
+
+class ConceptStat(BaseModel):
+    """개념별 통계."""
+
+    concept_id: str
+    concept_name: str
+    total_questions: int
+    correct_count: int
+    accuracy_rate: float
+
+
+class ConceptDetailStat(ConceptStat):
+    """개념 상세 통계."""
+
+    grade: Grade
+    student_count: int
+    average_time_seconds: float
+    difficulty_distribution: dict[str, int]
+
+
+# ===========================
+# 학생 통계 스키마
+# ===========================
+
+
+class StudentStats(BaseModel):
+    """학생 통계."""
+
+    user_id: str
+    total_tests: int
+    total_questions: int
+    correct_answers: int
+    accuracy_rate: float
+    average_time_per_question: float
+    current_streak: int
+    max_streak: int
+    level: int
+    total_xp: int
+    weak_concepts: list[ConceptStat]
+    strong_concepts: list[ConceptStat]
+
+
+class StudentStatsSummary(BaseModel):
+    """학생 통계 요약 (목록용)."""
+
+    user_id: str
+    name: str
+    grade: Grade
+    class_name: str
+    level: int
+    total_xp: int
+    accuracy_rate: float
+    tests_completed: int
+    current_streak: int
+    last_activity_at: datetime | None
+
+
+class RecentTest(BaseModel):
+    """최근 테스트."""
+
+    test_id: str
+    test_title: str
+    score: int
+    max_score: int
+    accuracy_rate: float
+    completed_at: datetime
+
+
+class DailyActivity(BaseModel):
+    """일별 활동."""
+
+    date: str
+    tests_completed: int
+    questions_answered: int
+    accuracy_rate: float
+
+
+class StudentDetailStats(StudentStats):
+    """학생 상세 통계."""
+
+    name: str
+    email: str
+    grade: Grade
+    class_name: str
+    recent_tests: list[RecentTest]
+    daily_activity: list[DailyActivity]
+
+
+# ===========================
+# 반 통계 스키마
+# ===========================
+
+
+class ClassStats(BaseModel):
+    """반 통계."""
+
+    class_id: str
+    student_count: int
+    average_accuracy: float
+    average_level: float
+    tests_completed_today: int
+    weak_concepts: list[ConceptStat]
+
+
+class TopStudent(BaseModel):
+    """상위 학생."""
+
+    user_id: str
+    name: str
+    level: int
+    accuracy_rate: float
+
+
+class DailyClassStat(BaseModel):
+    """일별 반 통계."""
+
+    date: str
+    active_students: int
+    tests_completed: int
+    average_accuracy: float
+
+
+class ClassDetailStats(ClassStats):
+    """반 상세 통계."""
+
+    class_name: str
+    teacher_name: str
+    grade: Grade
+    top_students: list[TopStudent]
+    concept_stats: list[ConceptStat]
+    daily_stats: list[DailyClassStat]
+
+
+# ===========================
+# 대시보드 스키마
+# ===========================
+
+
+class TodayStats(BaseModel):
+    """오늘 통계."""
+
+    active_students: int
+    tests_completed: int
+    questions_answered: int
+    average_accuracy: float
+
+
+class WeekStats(BaseModel):
+    """이번주 통계."""
+
+    active_students: int
+    tests_completed: int
+    accuracy_trend: list[float]  # 7일간 정답률
+
+
+class DashboardAlert(BaseModel):
+    """대시보드 알림."""
+
+    type: str  # low_accuracy, inactive, struggling
+    student_id: str
+    student_name: str
+    message: str
+
+
+class DashboardStats(BaseModel):
+    """대시보드 통계."""
+
+    today: TodayStats
+    this_week: WeekStats
+    alerts: list[DashboardAlert]
