@@ -181,3 +181,19 @@ HAVING attempts >= 30  -- 최소 30회 이상 풀이
 ### 권장 조치
 1. [조치 내용]
 ```
+
+## 핵심 참조 파일
+
+### 난이도 기준 참조
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `data/교재.txt` | 하위권/중위권/상위권 문제집 분류 | 난이도 수준 참고 |
+| `data/배분전략.txt` | 유형별 권장 시간/난이도 가이드 | 문제 유형별 난이도 매핑 |
+
+### 분석 서비스
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/services/analysis.py` | 시험 분석 서비스 | 정답률/오답률 분석 |
+| `backend/app/models/pattern.py` | DifficultyLevel Enum | 난이도 체계 정의 |
+| `backend/app/services/agents/prediction_agent.py` | 점수 예측 에이전트 | 난이도-점수 상관관계 |
+| `backend/app/services/agents/weakness_agent.py` | 약점 분석 에이전트 | 난이도별 취약점 파악 |

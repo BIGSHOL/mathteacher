@@ -300,3 +300,28 @@ metrics = {
 | 1 | Q001 | L2 | 복습 |
 | 2 | Q015 | L3 | 취약 보강 |
 ```
+
+## 핵심 참조 파일
+
+### 학습 전략 참조
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `data/교재.txt` | 수준별 추천 문제집 | 수준별 학습 자료 추천 |
+| `data/배분전략.txt` | 학습 시간 배분 전략 | 개인화 학습 시간 설계 |
+| `backend/app/data/school_regions.py` | 학교별 정보 | 학교별 맞춤 추천 |
+
+### AI 에이전트 (핵심)
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/services/agents/learning_agent.py` | 학습 패턴 분석 | 학생별 패턴 파악 |
+| `backend/app/services/agents/prediction_agent.py` | 점수 예측 | 성취도 예측 |
+| `backend/app/services/agents/weakness_agent.py` | 약점 분석 | 취약 개념 파악 |
+| `backend/app/services/agents/score_level_plan_agent.py` | 목표 점수 계획 | 학습 경로 설계 |
+| `backend/app/services/agents/exam_prep_strategy_agent.py` | 시험 준비 전략 | 시험 대비 추천 |
+
+### 분석 서비스
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/services/analysis.py` | 분석 서비스 | 학습 데이터 분석 |
+| `backend/app/services/analysis_cache.py` | 분석 캐시 | 성능 최적화 |
+| `backend/app/models/pattern.py` | 패턴 모델 | 학습 패턴 저장 |

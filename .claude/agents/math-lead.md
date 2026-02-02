@@ -130,6 +130,41 @@ class Question:
 6. adaptive-learning-specialist: 추천 로직 반영
 ```
 
+## 핵심 참조 파일
+
+### 데이터 자료
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `data/교재.txt` | 고등학교 수준별 추천 문제집 60종 | 교재 추천, 난이도 참조 |
+| `data/배분전략.txt` | 중1~고3 시험 시간 배분 전략 | 문제 출제 시간 가이드 |
+
+### 백엔드 서비스
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/data/school_regions.py` | 대구/경북 390+ 학교 매핑 | 학교별 데이터 연동 |
+| `backend/app/services/subject_config.py` | 수학/영어 과목별 설정 | 문제 유형, 오류 유형, 학년별 가이드 |
+| `backend/app/services/prompt_builder.py` | 동적 프롬프트 생성 | AI 분석 프롬프트 |
+| `backend/app/services/ai_engine.py` | Gemini AI 엔진 | 문제 분석/생성 |
+
+### 모델
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/models/pattern.py` | 문제 유형/오류 패턴 모델 | 패턴 기반 분석 |
+| `backend/app/models/analysis.py` | 분석 결과 모델 | 시험 분석 저장 |
+| `backend/app/models/school_trends.py` | 학교별 출제 트렌드 | 트렌드 분석 |
+
+### AI 에이전트 (services/agents/)
+| 에이전트 | 기능 |
+|----------|------|
+| `learning_agent.py` | 학습 패턴 분석 |
+| `prediction_agent.py` | 점수 예측 |
+| `weakness_agent.py` | 약점 분석 |
+| `exam_prep_strategy_agent.py` | 시험 준비 전략 |
+| `topic_strategy_agent.py` | 주제별 전략 |
+| `score_level_plan_agent.py` | 목표 점수 계획 |
+| `trends_insights_agent.py` | 출제 경향 분석 |
+| `commentary_agent.py` | 해설 생성 |
+
 ## 보고 형식
 
 ```markdown

@@ -221,3 +221,19 @@ async def validate_all_questions():
         'issues': issues
     }
 ```
+
+## 핵심 참조 파일
+
+### 검증 기준 참조
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `data/배분전략.txt` | 유형별 풀이 가이드 | 정답/풀이 검증 기준 |
+| `backend/app/services/subject_config.py` | 오류 유형 정의 | error_types 참조 |
+
+### 패턴 및 분석
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/models/pattern.py` | ErrorPattern 모델 | 오류 패턴 검증 |
+| `backend/app/services/ai_engine.py` | AI 엔진 | 자동 검증 로직 |
+| `backend/app/services/agents/commentary_agent.py` | 해설 생성 | 풀이 논리성 검증 |
+| `backend/app/services/analysis.py` | 분석 서비스 | 오답 패턴 분석 |

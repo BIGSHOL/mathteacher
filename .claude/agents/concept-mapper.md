@@ -233,3 +233,19 @@ graph TD
 ### 권장 조치
 - [조치 내용]
 ```
+
+## 핵심 참조 파일
+
+### 개념 체계 참조
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `data/배분전략.txt` | 중1~고3 전 과정 중단원 목록 | 개념별 학년 매핑 |
+| `backend/app/services/subject_config.py` | 학년별 가이드라인 | grade_guidelines 참조 |
+
+### 모델 및 분석
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/models/pattern.py` | ProblemCategory, ProblemType | 개념 분류 체계 |
+| `backend/app/models/concept.py` | Concept 모델 | 개념 DB 구조 |
+| `backend/app/services/agents/learning_agent.py` | 학습 패턴 분석 | 선수학습 관계 분석 |
+| `backend/app/services/agents/topic_strategy_agent.py` | 주제별 전략 | 개념별 학습 전략 |

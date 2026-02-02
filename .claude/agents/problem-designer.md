@@ -162,3 +162,19 @@ model: sonnet
 - 2번 선택 시: [오개념]
 ...
 ```
+
+## 핵심 참조 파일
+
+### 문제 설계 참조
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `data/교재.txt` | 고등학교 수준별 추천 문제집 60종 | 난이도별 문제 유형 참고 |
+| `data/배분전략.txt` | 중1~고3 시험 시간 배분 전략 | 문제별 소요시간 기준 |
+| `backend/app/services/subject_config.py` | 과목별 문제 유형/오류 유형 | question_types, error_types |
+
+### 패턴 및 분석
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `backend/app/models/pattern.py` | 문제 유형/오류 패턴 모델 | 오답 보기 설계 참조 |
+| `backend/app/services/prompt_builder.py` | 동적 프롬프트 템플릿 | 문제 생성 프롬프트 |
+| `backend/app/services/agents/commentary_agent.py` | 해설 생성 에이전트 | 해설 작성 가이드 |
