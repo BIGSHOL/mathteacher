@@ -36,6 +36,14 @@ class ConceptDetailStat(ConceptStat):
 # ===========================
 
 
+class TrackStats(BaseModel):
+    """트랙별 통계 (연산/개념)."""
+
+    total_questions: int
+    correct_answers: int
+    accuracy_rate: float
+
+
 class StudentStats(BaseModel):
     """학생 통계."""
 
@@ -49,8 +57,11 @@ class StudentStats(BaseModel):
     max_streak: int
     level: int
     total_xp: int
+    today_solved: int
     weak_concepts: list[ConceptStat]
     strong_concepts: list[ConceptStat]
+    computation_stats: TrackStats | None = None
+    concept_stats: TrackStats | None = None
 
 
 class StudentStatsSummary(BaseModel):

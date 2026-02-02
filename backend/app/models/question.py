@@ -4,11 +4,11 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Integer, String, Text, func
+from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Integer, String, Text, func, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.schemas.common import Difficulty, QuestionType
+from app.schemas.common import ProblemPart, QuestionCategory, QuestionType
 
 if TYPE_CHECKING:
     from app.models.concept import Concept
@@ -18,6 +18,9 @@ class Question(Base):
     """문제 모델."""
 
     __tablename__ = "questions"
+    __table_args__ = (
+        CheckConstraint("difficulty >= 1 AND difficulty <= 10", name="ck_question_difficulty_range"),
+    )
 
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid4())
@@ -25,13 +28,25 @@ class Question(Base):
     concept_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("concepts.id"), index=True
     )
+    category: Mapped[QuestionCategory] = mapped_column(
+        Enum(QuestionCategory), index=True, comment="트랙: 연산(computation) / 개념(concept)"
+    )
+    part: Mapped[ProblemPart] = mapped_column(
+        Enum(ProblemPart), index=True, comment="파트: calc/algebra/func/geo/data/word"
+    )
     question_type: Mapped[QuestionType] = mapped_column(Enum(QuestionType))
-    difficulty: Mapped[Difficulty] = mapped_column(Enum(Difficulty), index=True)
+    difficulty: Mapped[int] = mapped_column(Integer, index=True, comment="학년 내 상대 난이도 1-10")
     content: Mapped[str] = mapped_column(Text)
     options: Mapped[list[dict] | None] = mapped_column(JSON, nullable=True)
     correct_answer: Mapped[str] = mapped_column(String(500))
     explanation: Mapped[str] = mapped_column(Text, default="")
     points: Mapped[int] = mapped_column(Integer, default=10)
+
+    # 계통수학: 선수 개념 연결
+    prerequisite_concept_ids: Mapped[list[str] | None] = mapped_column(
+        JSON, nullable=True, default=list,
+        comment="선수 개념 ID 목록 (계통수학 체인)"
+    )
 
     # 상태
     is_active: Mapped[bool] = mapped_column(default=True)

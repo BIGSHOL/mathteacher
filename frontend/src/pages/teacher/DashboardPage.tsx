@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import api from '../../lib/api'
-import type { DashboardStats, StudentStatsSummary, PaginatedResponse } from '../../types'
+import type { DashboardStats, DashboardAlert, StudentStatsSummary, PaginatedResponse } from '../../types'
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -158,7 +158,19 @@ export function DashboardPage() {
             <h2 className="mb-4 text-lg font-semibold text-gray-900">관심 필요 학생</h2>
             <div className="space-y-2">
               {dashboardStats.alerts.map((alert, index) => (
-                <AlertCard key={index} alert={alert} />
+                <AlertCard
+                  key={index}
+                  alert={alert}
+                  onPromote={alert.type === 'mastery' ? async () => {
+                    try {
+                      await api.put(`/api/v1/students/${alert.student_id}/grade`)
+                      // 성공 시 데이터 새로고침
+                      fetchData()
+                    } catch {
+                      // 에러 무시
+                    }
+                  } : undefined}
+                />
               ))}
             </div>
           </motion.div>
@@ -245,17 +257,21 @@ function AccuracyTrendChart({ trend }: { trend: number[] }) {
   const maxValue = Math.max(...trend, 100)
 
   return (
-    <div className="flex h-32 items-end justify-between gap-2">
+    <div className="flex h-36 gap-2">
       {trend.map((value, index) => (
         <div key={index} className="flex flex-1 flex-col items-center">
-          <motion.div
-            initial={{ height: 0 }}
-            animate={{ height: `${(value / maxValue) * 100}%` }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            className="w-full min-h-[4px] rounded-t bg-primary-500"
-            title={`${value}%`}
-          />
-          <span className="mt-2 text-xs text-gray-500">{orderedDays[index]}</span>
+          <div className="relative w-full flex-1 flex items-end">
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: `${(value / maxValue) * 100}%` }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+              className="w-full min-h-[4px] rounded-t bg-primary-500 hover:bg-primary-600 transition-colors"
+            />
+            <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-xs font-medium text-gray-600">
+              {value}%
+            </span>
+          </div>
+          <span className="mt-2 shrink-0 text-xs text-gray-500">{orderedDays[index]}</span>
         </div>
       ))}
     </div>
@@ -264,14 +280,13 @@ function AccuracyTrendChart({ trend }: { trend: number[] }) {
 
 // 알림 카드 컴포넌트
 interface AlertCardProps {
-  alert: {
-    type: string
-    student_name: string
-    message: string
-  }
+  alert: DashboardAlert
+  onPromote?: () => void
 }
 
-function AlertCard({ alert }: AlertCardProps) {
+function AlertCard({ alert, onPromote }: AlertCardProps) {
+  const [isPromoting, setIsPromoting] = useState(false)
+
   const getAlertIcon = () => {
     switch (alert.type) {
       case 'inactive':
@@ -280,18 +295,43 @@ function AlertCard({ alert }: AlertCardProps) {
         return '📉'
       case 'struggling':
         return '😓'
+      case 'mastery':
+        return '🏆'
       default:
         return '⚠️'
     }
   }
 
+  const bgColor = alert.type === 'mastery' ? 'bg-purple-50' : 'bg-yellow-50'
+
+  const handlePromote = async () => {
+    if (!onPromote) return
+    setIsPromoting(true)
+    await onPromote()
+    setIsPromoting(false)
+  }
+
   return (
-    <div className="flex items-center gap-4 rounded-xl bg-yellow-50 p-4">
+    <div className={`flex items-center gap-4 rounded-xl ${bgColor} p-4`}>
       <span className="text-2xl">{getAlertIcon()}</span>
-      <div>
+      <div className="flex-1">
         <p className="font-medium text-gray-900">{alert.student_name}</p>
         <p className="text-sm text-gray-600">{alert.message}</p>
+        {alert.type === 'mastery' && alert.recommended_grade && (
+          <p className="text-xs text-purple-600 mt-1">
+            {alert.current_grade} → {alert.recommended_grade} 승급 추천
+          </p>
+        )}
       </div>
+      {alert.type === 'mastery' && onPromote && (
+        <button
+          onClick={handlePromote}
+          disabled={isPromoting}
+          className="shrink-0 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white hover:bg-purple-700 disabled:opacity-50"
+        >
+          {isPromoting ? '처리 중...' : '학년 승급'}
+        </button>
+      )}
     </div>
   )
 }
@@ -312,7 +352,7 @@ function StudentRow({ student }: { student: StudentStatsSummary }) {
     <tr className="hover:bg-gray-50">
       <td className="px-4 py-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-medium text-primary-700">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-600 text-sm font-medium text-white">
             {student.name.charAt(0)}
           </div>
           <span className="font-medium text-gray-900">{student.name}</span>

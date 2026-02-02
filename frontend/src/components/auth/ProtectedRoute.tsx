@@ -31,8 +31,9 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 // 역할별 기본 경로
 function getDefaultPath(role: UserRole): string {
   switch (role) {
-    case 'teacher':
+    case 'master':
     case 'admin':
+    case 'teacher':
       return '/teacher/dashboard'
     case 'student':
     default:

@@ -142,24 +142,11 @@ async def get_student_detail(
 
     return ApiResponse(
         data=StudentDetailStats(
-            user_id=stats["user_id"],
-            total_tests=stats["total_tests"],
-            total_questions=stats["total_questions"],
-            correct_answers=stats["correct_answers"],
-            accuracy_rate=stats["accuracy_rate"],
-            average_time_per_question=stats["average_time_per_question"],
-            current_streak=stats["current_streak"],
-            max_streak=stats["max_streak"],
-            level=stats["level"],
-            total_xp=stats["total_xp"],
-            weak_concepts=stats["weak_concepts"],
-            strong_concepts=stats["strong_concepts"],
-            name=stats["name"],
-            email=stats["email"],
-            grade=stats["grade"],
-            class_name=stats["class_name"],
-            recent_tests=[RecentTest(**t) for t in stats["recent_tests"]],
-            daily_activity=[DailyActivity(**d) for d in stats["daily_activity"]],
+            **{
+                **stats,
+                "recent_tests": [RecentTest(**t) for t in stats["recent_tests"]],
+                "daily_activity": [DailyActivity(**d) for d in stats["daily_activity"]],
+            }
         )
     )
 

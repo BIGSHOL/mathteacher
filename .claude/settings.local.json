@@ -53,14 +53,18 @@
       "Bash(pip install:*)",
       "Bash(curl:*)",
       "Bash(netstat:*)",
-      "Bash(git remote add:*)"
+      "Bash(git remote add:*)",
+      "Bash(py:*)",
+      "Bash(docker compose:*)"
     ],
     "additionalDirectories": [
       "d:\\ijw-calander\\components\\Timetable\\English",
       "f:\\ijw-calander\\.claude",
       "f:\\ijw-calander\\.claude\\agents",
       "d:\\math_test",
-      "d:\\math_test\\.claude\\agents"
+      "d:\\math_test\\.claude\\agents",
+      "f:\\math_test\\frontend\\src",
+      "f:\\math_test"
     ]
   },
   "enableAllProjectMcpServers": true,

@@ -4,7 +4,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field
 
-from .common import Difficulty, Grade, QuestionType
+from .common import Difficulty, Grade, ProblemPart, QuestionCategory, QuestionType
 
 
 # ===========================
@@ -17,6 +17,8 @@ class ConceptBase(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=200)
     grade: Grade
+    category: QuestionCategory = QuestionCategory.CONCEPT
+    part: ProblemPart = ProblemPart.CALC
     description: str = ""
 
 
@@ -31,6 +33,7 @@ class ConceptResponse(ConceptBase):
 
     id: str
     parent_id: str | None = None
+    prerequisite_ids: list[str] = []
 
     model_config = {"from_attributes": True}
 
@@ -51,6 +54,8 @@ class QuestionOption(BaseModel):
 class QuestionBase(BaseModel):
     """문제 기본 스키마."""
 
+    category: QuestionCategory
+    part: ProblemPart
     question_type: QuestionType
     difficulty: Difficulty
     content: str = Field(..., min_length=1)
@@ -64,6 +69,7 @@ class QuestionCreate(QuestionBase):
     concept_id: str
     options: list[QuestionOption] | None = None
     correct_answer: str
+    prerequisite_concept_ids: list[str] | None = None
 
 
 class QuestionResponse(QuestionBase):
@@ -72,6 +78,7 @@ class QuestionResponse(QuestionBase):
     id: str
     concept_id: str
     options: list[QuestionOption] | None = None
+    prerequisite_concept_ids: list[str] | None = None
 
     model_config = {"from_attributes": True}
 
@@ -93,6 +100,7 @@ class TestBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     description: str = ""
     grade: Grade
+    category: QuestionCategory | None = None  # None이면 혼합 테스트
     time_limit_minutes: int | None = None
 
 
@@ -119,6 +127,7 @@ class TestResponse(TestBase):
     concept_ids: list[str]
     question_count: int
     is_active: bool = True
+    is_adaptive: bool = False
     created_at: datetime
 
     model_config = {"from_attributes": True}
@@ -162,6 +171,8 @@ class TestAttemptResponse(TestAttemptBase):
     total_count: int = 0
     xp_earned: int = 0
     combo_max: int = 0
+    is_adaptive: bool = False
+    current_difficulty: int | None = None
 
     model_config = {"from_attributes": True}
 
@@ -172,6 +183,8 @@ class StartTestResponse(BaseModel):
     attempt_id: str
     test: TestWithQuestionsResponse
     started_at: datetime
+    is_adaptive: bool = False
+    current_difficulty: int | None = None
 
 
 # ===========================
@@ -198,6 +211,7 @@ class SubmitAnswerResponse(BaseModel):
     xp_earned: int
     current_score: int
     questions_remaining: int
+    next_difficulty: int | None = None
 
 
 class AnswerLogResponse(BaseModel):
@@ -226,9 +240,15 @@ class CompleteTestResponse(BaseModel):
     attempt: TestAttemptResponse
     answers: list[AnswerLogResponse]
     level_up: bool = False
+    level_down: bool = False
     new_level: int | None = None
     xp_earned: int
+    total_xp: int | None = None
+    current_streak: int | None = None
     achievements_earned: list[str] = []
+    # 레벨다운 방어 시스템
+    level_down_defense: int | None = None
+    level_down_action: str | None = None  # none / defense_consumed / defense_restored / level_down
 
 
 class GetAttemptResponse(BaseModel):
@@ -236,4 +256,35 @@ class GetAttemptResponse(BaseModel):
 
     attempt: TestAttemptResponse
     answers: list[AnswerLogResponse]
-    test: TestResponse
+    test: TestWithQuestionsResponse
+
+
+class WrongQuestionItem(BaseModel):
+    """오답 문제 항목."""
+
+    question: QuestionWithAnswer
+    wrong_count: int
+    last_selected_answer: str
+    last_attempted_at: datetime
+
+
+class ReviewResponse(BaseModel):
+    """복습 오답 목록 응답."""
+
+    items: list[WrongQuestionItem]
+    total: int
+
+
+# ===========================
+# 적응형 테스트 스키마
+# ===========================
+
+
+class NextQuestionResponse(BaseModel):
+    """적응형 다음 문제 응답."""
+
+    question: QuestionResponse | None = None
+    current_difficulty: int
+    questions_answered: int
+    questions_remaining: int
+    is_complete: bool = False

@@ -84,11 +84,13 @@ class GradingService:
             time_spent_seconds=time_spent_seconds,
             combo_count=new_combo,
             points_earned=points_with_bonus,
+            question_difficulty=question.difficulty,
+            question_category=question.category.value if question.category else None,
         )
         self.db.add(answer_log)
 
-        # 시도 업데이트
-        attempt.score += points_with_bonus
+        # 시도 업데이트 (max_score 초과 방지)
+        attempt.score = min(attempt.score + points_with_bonus, attempt.max_score)
         attempt.xp_earned += xp_earned
         if is_correct:
             attempt.correct_count += 1

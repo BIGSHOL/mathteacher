@@ -86,7 +86,19 @@ export function TestStartPage() {
         <div className="card overflow-hidden">
           {/* 헤더 */}
           <div className="bg-primary-500 p-6 text-white">
-            <h1 className="text-2xl font-bold">{test.title}</h1>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h1 className="text-2xl font-bold">{test.title}</h1>
+              {test.category && (
+                <span className="rounded-full bg-white/20 px-2 py-1 text-xs font-medium text-white">
+                  {test.category === 'computation' ? '연산' : '개념'}
+                </span>
+              )}
+              {test.is_adaptive && (
+                <span className="rounded-full bg-white/20 px-2 py-1 text-xs font-medium text-white">
+                  적응형
+                </span>
+              )}
+            </div>
             <p className="mt-2 text-primary-100">{test.description}</p>
           </div>
 
@@ -110,6 +122,18 @@ export function TestStartPage() {
                 <li>• 중간에 나가면 진행 상황이 저장되지 않아요</li>
               </ul>
             </div>
+
+            {/* 적응형 안내 */}
+            {test.is_adaptive && (
+              <div className="mb-6 rounded-xl bg-indigo-50 p-4">
+                <h3 className="mb-2 font-semibold text-indigo-900">적응형 테스트</h3>
+                <ul className="space-y-1 text-sm text-indigo-700">
+                  <li>• 내 실력에 맞게 난이도가 자동 조절돼요</li>
+                  <li>• 정답을 맞추면 더 어려운 문제가 나와요</li>
+                  <li>• 틀리면 조금 쉬운 문제로 넘어가요</li>
+                </ul>
+              </div>
+            )}
 
             {/* 시작 버튼 */}
             <motion.button

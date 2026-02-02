@@ -38,6 +38,7 @@ class User(Base):
     total_xp: Mapped[int] = mapped_column(Integer, default=0)
     current_streak: Mapped[int] = mapped_column(Integer, default=0)
     max_streak: Mapped[int] = mapped_column(Integer, default=0)
+    level_down_defense: Mapped[int] = mapped_column(Integer, default=3)
     last_activity_date: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )

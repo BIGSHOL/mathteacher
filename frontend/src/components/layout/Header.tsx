@@ -15,7 +15,17 @@ export function Header() {
     navigate('/login')
   }
 
-  const isTeacher = user?.role === 'teacher' || user?.role === 'admin'
+  const isStaff = user?.role === 'teacher' || user?.role === 'admin' || user?.role === 'master'
+  const isAdmin = user?.role === 'admin' || user?.role === 'master'
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'master': return '마스터'
+      case 'admin': return '관리자'
+      case 'teacher': return '강사'
+      default: return '학생'
+    }
+  }
 
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur">
@@ -24,16 +34,17 @@ export function Header() {
           {/* 로고 */}
           <Link to="/" className="flex items-center gap-2">
             <span className="text-2xl">📐</span>
-            <span className="text-xl font-bold text-primary-600">MathTest</span>
+            <span className="text-xl font-bold text-primary-600">개념 연산 수학</span>
           </Link>
 
           {/* 네비게이션 */}
           {user && (
             <nav className="hidden items-center gap-6 md:flex">
-              {isTeacher ? (
+              {isStaff ? (
                 <>
                   <NavLink to="/teacher/dashboard">대시보드</NavLink>
                   <NavLink to="/teacher/students">학생 관리</NavLink>
+                  {isAdmin && <NavLink to="/admin/users">계정 관리</NavLink>}
                 </>
               ) : (
                 <>
@@ -46,7 +57,7 @@ export function Header() {
 
           {/* 사용자 정보 */}
           <div className="flex items-center gap-4">
-            {user && !isTeacher && (
+            {user && !isStaff && (
               <div className="hidden items-center gap-2 md:flex">
                 <XpBadge level={user.level} totalXp={user.total_xp} />
                 <StreakBadge streak={user.current_streak} />
@@ -58,7 +69,7 @@ export function Header() {
                 <div className="hidden text-right md:block">
                   <p className="text-sm font-medium text-gray-900">{user.name}</p>
                   <p className="text-xs text-gray-500">
-                    {user.role === 'teacher' ? '강사' : user.role === 'admin' ? '관리자' : '학생'}
+                    {getRoleLabel(user.role)}
                   </p>
                 </div>
                 <motion.button

@@ -1,11 +1,13 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import type { Grade, UserRole } from '../types'
 
 interface User {
   id: string
   email: string
   name: string
-  role: 'student' | 'teacher' | 'admin'
+  role: UserRole
+  grade?: Grade
   level: number
   total_xp: number
   current_streak: number
@@ -37,7 +39,7 @@ export const useAuthStore = create<AuthState>()(
 
         if (!response.ok) {
           const error = await response.json()
-          throw new Error(error.detail?.message || 'Login failed')
+          throw new Error(error.error?.message || error.detail?.message || '로그인에 실패했습니다.')
         }
 
         const result = await response.json()
@@ -49,6 +51,7 @@ export const useAuthStore = create<AuthState>()(
             email: data.user.email,
             name: data.user.name,
             role: data.user.role,
+            grade: data.user.grade,
             level: data.user.level || 1,
             total_xp: data.user.total_xp || 0,
             current_streak: data.user.current_streak || 0,

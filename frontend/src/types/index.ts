@@ -1,6 +1,6 @@
 // 타입 정의
 
-export type UserRole = 'student' | 'teacher' | 'admin'
+export type UserRole = 'student' | 'teacher' | 'admin' | 'master'
 
 export type Grade =
   | 'elementary_1'
@@ -16,7 +16,14 @@ export type Grade =
 
 export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer'
 
-export type Difficulty = 'easy' | 'medium' | 'hard'
+/** 문제 카테고리 (트랙): 연산(computation) / 개념(concept) */
+export type QuestionCategory = 'computation' | 'concept'
+
+/** 문제 파트 (6개 영역) */
+export type ProblemPart = 'calc' | 'algebra' | 'func' | 'geo' | 'data' | 'word'
+
+/** 난이도 1~10 (1: 가장 쉬움, 10: 가장 어려움). 학년별 × 트랙별 독립 운영 */
+export type Difficulty = number
 
 // API 응답 타입
 export interface ApiResponse<T> {
@@ -62,7 +69,10 @@ export interface Concept {
   id: string
   name: string
   grade: Grade
+  category: QuestionCategory
+  part: ProblemPart
   parent_id?: string
+  prerequisite_ids?: string[]
   description: string
 }
 
@@ -76,6 +86,8 @@ export interface QuestionOption {
 export interface Question {
   id: string
   concept_id: string
+  category: QuestionCategory
+  part: ProblemPart
   question_type: QuestionType
   difficulty: Difficulty
   content: string
@@ -83,6 +95,7 @@ export interface Question {
   correct_answer: string
   explanation: string
   points: number
+  prerequisite_concept_ids?: string[]
 }
 
 // 테스트 타입
@@ -91,10 +104,12 @@ export interface Test {
   title: string
   description: string
   grade: Grade
+  category?: QuestionCategory
   concept_ids: string[]
   question_count: number
   time_limit_minutes?: number
   is_active: boolean
+  is_adaptive: boolean
   created_at: string
 }
 
@@ -121,6 +136,8 @@ export interface TestAttempt {
   total_count: number
   xp_earned: number
   combo_max: number
+  is_adaptive: boolean
+  current_difficulty?: number
 }
 
 export interface AnswerLog {
@@ -140,10 +157,36 @@ export interface SubmitAnswerResponse {
   correct_answer: string
   explanation: string
   points_earned: number
+  time_bonus: number
   combo_count: number
   xp_earned: number
   current_score: number
   questions_remaining: number
+  next_difficulty?: number
+}
+
+// 적응형 다음 문제 응답
+export interface NextQuestionResponse {
+  question: Omit<Question, 'correct_answer'> | null
+  current_difficulty: number
+  questions_answered: number
+  questions_remaining: number
+  is_complete: boolean
+}
+
+// 테스트 완료 응답
+export type LevelDownAction = 'none' | 'defense_consumed' | 'defense_restored' | 'level_down'
+
+export interface CompleteTestResult {
+  level_up: boolean
+  level_down: boolean
+  new_level: number | null
+  xp_earned: number
+  total_xp: number | null
+  current_streak: number | null
+  level_down_defense: number | null
+  level_down_action: LevelDownAction | null
+  mastery_achieved?: boolean
 }
 
 // 통계 타입
@@ -152,6 +195,12 @@ export interface ConceptStat {
   concept_name: string
   total_questions: number
   correct_count: number
+  accuracy_rate: number
+}
+
+export interface TrackStats {
+  total_questions: number
+  correct_answers: number
   accuracy_rate: number
 }
 
@@ -166,8 +215,11 @@ export interface StudentStats {
   max_streak: number
   level: number
   total_xp: number
+  today_solved: number
   weak_concepts: ConceptStat[]
   strong_concepts: ConceptStat[]
+  computation_stats?: TrackStats
+  concept_stats?: TrackStats
 }
 
 // 학생 통계 요약 (강사용)
@@ -201,8 +253,10 @@ export interface DashboardStats {
 }
 
 export interface DashboardAlert {
-  type: 'low_accuracy' | 'inactive' | 'struggling'
+  type: 'low_accuracy' | 'inactive' | 'struggling' | 'mastery'
   student_id: string
   student_name: string
   message: string
+  current_grade?: Grade
+  recommended_grade?: Grade
 }

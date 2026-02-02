@@ -39,6 +39,7 @@ def init_db():
                 is_active=True,
             )
             db.add(teacher)
+            db.flush()
 
             # Create class
             test_class = Class(
@@ -48,6 +49,7 @@ def init_db():
                 grade="middle_1",
             )
             db.add(test_class)
+            db.flush()
 
             # Create student
             student = User(
@@ -71,65 +73,285 @@ def init_db():
                 id="concept-001",
                 name="일차방정식",
                 grade="middle_1",
+                category="concept",
+                part="algebra",
                 description="일차방정식의 풀이",
             )
             db.add(concept)
 
-            # Create questions
+            # Create questions (개념 이해도 테스트 - 정의/성질/과정 이해)
             questions = [
                 Question(
                     id="question-001",
                     concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
                     question_type="multiple_choice",
-                    difficulty="medium",
-                    content="x + 3 = 7 일 때 x의 값은?",
+                    difficulty=6,
+                    content="다음 중 일차방정식인 것은?",
                     options=[
-                        {"id": "1", "label": "A", "text": "2"},
-                        {"id": "2", "label": "B", "text": "3"},
-                        {"id": "3", "label": "C", "text": "4"},
-                        {"id": "4", "label": "D", "text": "5"},
+                        {"id": "1", "label": "A", "text": "x² + 2 = 6"},
+                        {"id": "2", "label": "B", "text": "3x - 5 = 7"},
+                        {"id": "3", "label": "C", "text": "2x + y = 10"},
+                        {"id": "4", "label": "D", "text": "x > 3"},
                     ],
-                    correct_answer="C",
-                    explanation="x = 7 - 3 = 4",
+                    correct_answer="B",
+                    explanation="일차방정식은 미지수가 1개이고 차수가 1인 등식입니다. A는 이차, C는 미지수 2개, D는 부등식입니다.",
                     points=10,
                 ),
                 Question(
                     id="question-002",
                     concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
                     question_type="multiple_choice",
-                    difficulty="medium",
-                    content="2x = 10 일 때 x의 값은?",
+                    difficulty=6,
+                    content="등식 x + 5 = 12에서 x를 구하기 위해 양변에 해야 할 연산은?",
                     options=[
-                        {"id": "1", "label": "A", "text": "3"},
-                        {"id": "2", "label": "B", "text": "4"},
-                        {"id": "3", "label": "C", "text": "5"},
-                        {"id": "4", "label": "D", "text": "6"},
+                        {"id": "1", "label": "A", "text": "양변에 5를 더한다"},
+                        {"id": "2", "label": "B", "text": "양변에서 5를 뺀다"},
+                        {"id": "3", "label": "C", "text": "양변에 12를 곱한다"},
+                        {"id": "4", "label": "D", "text": "양변을 5로 나눈다"},
                     ],
-                    correct_answer="C",
-                    explanation="x = 10 / 2 = 5",
+                    correct_answer="B",
+                    explanation="등식의 성질: 양변에서 같은 수를 빼도 등식이 성립합니다. x + 5 - 5 = 12 - 5 → x = 7",
                     points=10,
                 ),
                 Question(
                     id="question-003",
                     concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
                     question_type="multiple_choice",
-                    difficulty="easy",
-                    content="x - 2 = 3 일 때 x의 값은?",
+                    difficulty=6,
+                    content="일차방정식의 풀이에서 '이항'이란?",
                     options=[
-                        {"id": "1", "label": "A", "text": "4"},
-                        {"id": "2", "label": "B", "text": "5"},
-                        {"id": "3", "label": "C", "text": "6"},
-                        {"id": "4", "label": "D", "text": "7"},
+                        {"id": "1", "label": "A", "text": "항을 없애는 것"},
+                        {"id": "2", "label": "B", "text": "항의 부호를 바꾸어 등호 반대편으로 옮기는 것"},
+                        {"id": "3", "label": "C", "text": "양변에 같은 수를 곱하는 것"},
+                        {"id": "4", "label": "D", "text": "미지수끼리 더하는 것"},
                     ],
                     correct_answer="B",
-                    explanation="x = 3 + 2 = 5",
+                    explanation="이항이란 등식의 한 변의 항을 부호를 바꾸어 다른 변으로 옮기는 것입니다.",
                     points=10,
                 ),
             ]
             for q in questions:
                 db.add(q)
 
-            # Create test
+            # 적응형 풀을 위한 추가 일차방정식 문제 (개념 이해도, 다양한 난이도)
+            adaptive_questions = [
+                # 난이도 2 (기초 정의)
+                Question(
+                    id="question-a-001",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=2,
+                    content="등호(=)가 포함된 식을 무엇이라 하는가?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "부등식"},
+                        {"id": "2", "label": "B", "text": "등식"},
+                        {"id": "3", "label": "C", "text": "다항식"},
+                        {"id": "4", "label": "D", "text": "단항식"},
+                    ],
+                    correct_answer="B",
+                    explanation="등호(=)를 사용하여 두 식이 같음을 나타낸 식을 등식이라 합니다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-a-002",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=2,
+                    content="다음 중 등식인 것은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "3 + 5"},
+                        {"id": "2", "label": "B", "text": "x > 2"},
+                        {"id": "3", "label": "C", "text": "x + 1 = 4"},
+                        {"id": "4", "label": "D", "text": "2x + 3"},
+                    ],
+                    correct_answer="C",
+                    explanation="등식은 등호(=)가 있는 식입니다. x + 1 = 4만 등호가 있습니다.",
+                    points=10,
+                ),
+                # 난이도 3
+                Question(
+                    id="question-a-003",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=3,
+                    content="방정식에서 값을 모르는 문자를 무엇이라 하는가?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "상수"},
+                        {"id": "2", "label": "B", "text": "계수"},
+                        {"id": "3", "label": "C", "text": "미지수"},
+                        {"id": "4", "label": "D", "text": "차수"},
+                    ],
+                    correct_answer="C",
+                    explanation="방정식에서 값을 모르는 문자를 미지수라 하고, 미지수의 값을 구하는 것을 '방정식을 푼다'고 합니다.",
+                    points=10,
+                ),
+                # 난이도 4
+                Question(
+                    id="question-a-004",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=4,
+                    content="x + 5 = 8에서 x를 구하기 위해 양변에서 빼야 하는 수는?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "3"},
+                        {"id": "2", "label": "B", "text": "5"},
+                        {"id": "3", "label": "C", "text": "8"},
+                        {"id": "4", "label": "D", "text": "13"},
+                    ],
+                    correct_answer="B",
+                    explanation="등식의 성질: 양변에서 같은 수 5를 빼면 x + 5 - 5 = 8 - 5, 즉 x = 3이 됩니다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-a-005",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=4,
+                    content="'a = b이면 a + c = b + c이다'는 등식의 어떤 성질인가?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "양변에 같은 수를 더해도 등식은 성립한다"},
+                        {"id": "2", "label": "B", "text": "양변에 같은 수를 곱해도 등식은 성립한다"},
+                        {"id": "3", "label": "C", "text": "양변을 같은 수로 나누어도 등식은 성립한다"},
+                        {"id": "4", "label": "D", "text": "양변의 부호를 바꾸어도 등식은 성립한다"},
+                    ],
+                    correct_answer="A",
+                    explanation="a = b이면 a + c = b + c는 '양변에 같은 수를 더해도 등식이 성립한다'는 성질입니다.",
+                    points=10,
+                ),
+                # 난이도 5
+                Question(
+                    id="question-a-006",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=5,
+                    content="3x = 12를 풀 때 양변을 나누어야 하는 수는?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "2"},
+                        {"id": "2", "label": "B", "text": "3"},
+                        {"id": "3", "label": "C", "text": "4"},
+                        {"id": "4", "label": "D", "text": "12"},
+                    ],
+                    correct_answer="B",
+                    explanation="x의 계수인 3으로 양변을 나누면: 3x ÷ 3 = 12 ÷ 3, 즉 x = 4가 됩니다.",
+                    points=10,
+                ),
+                # 난이도 7
+                Question(
+                    id="question-a-007",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=7,
+                    content="2x - 3 = 7의 풀이 과정입니다. 잘못된 단계는?\n① 2x - 3 + 3 = 7 + 3\n② 2x = 10\n③ 2x × 2 = 10 × 2\n④ x = 5",
+                    options=[
+                        {"id": "1", "label": "A", "text": "① 단계"},
+                        {"id": "2", "label": "B", "text": "② 단계"},
+                        {"id": "3", "label": "C", "text": "③ 단계"},
+                        {"id": "4", "label": "D", "text": "④ 단계"},
+                    ],
+                    correct_answer="C",
+                    explanation="③에서 양변에 2를 곱하면 4x = 20이 됩니다. 올바른 방법은 양변을 2로 '나누는' 것입니다.",
+                    points=15,
+                ),
+                Question(
+                    id="question-a-008",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=7,
+                    content="다음 중 해가 x = -2인 일차방정식은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "x + 5 = 3"},
+                        {"id": "2", "label": "B", "text": "2x + 1 = 5"},
+                        {"id": "3", "label": "C", "text": "x - 2 = 0"},
+                        {"id": "4", "label": "D", "text": "3x = 6"},
+                    ],
+                    correct_answer="A",
+                    explanation="x = -2를 대입하면: A) -2 + 5 = 3 ✓, B) -4 + 1 = -3 ✗, C) -4 ✗, D) -6 ✗",
+                    points=15,
+                ),
+                # 난이도 8
+                Question(
+                    id="question-a-009",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=8,
+                    content="일차방정식 ax + b = 0 (a ≠ 0)의 해를 a, b로 나타내면?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "x = b/a"},
+                        {"id": "2", "label": "B", "text": "x = -b/a"},
+                        {"id": "3", "label": "C", "text": "x = a/b"},
+                        {"id": "4", "label": "D", "text": "x = -a/b"},
+                    ],
+                    correct_answer="B",
+                    explanation="ax + b = 0 → ax = -b → x = -b/a (a ≠ 0)",
+                    points=15,
+                ),
+                # 난이도 9
+                Question(
+                    id="question-a-010",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=9,
+                    content="분수 방정식 (x+1)/3 = (x-1)/2를 풀 때 가장 먼저 해야 할 것은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "양변에 3을 곱한다"},
+                        {"id": "2", "label": "B", "text": "양변에 6을 곱한다 (분모의 최소공배수)"},
+                        {"id": "3", "label": "C", "text": "분자끼리 등식을 세운다"},
+                        {"id": "4", "label": "D", "text": "양변에서 1을 뺀다"},
+                    ],
+                    correct_answer="B",
+                    explanation="분모 3과 2의 최소공배수 6을 양변에 곱하면 분모를 없앨 수 있습니다: 2(x+1) = 3(x-1)",
+                    points=20,
+                ),
+                # 난이도 10 (문장제 개념)
+                Question(
+                    id="question-a-011",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="word",
+                    question_type="multiple_choice",
+                    difficulty=10,
+                    content="'어떤 수의 3배에서 5를 빼면 그 수에 7을 더한 것과 같다'를 방정식으로 바르게 세운 것은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "3x - 5 = x + 7"},
+                        {"id": "2", "label": "B", "text": "3(x - 5) = x + 7"},
+                        {"id": "3", "label": "C", "text": "3x + 5 = x - 7"},
+                        {"id": "4", "label": "D", "text": "3x - 5 = 7x"},
+                    ],
+                    correct_answer="A",
+                    explanation="'어떤 수의 3배' → 3x, '에서 5를 빼면' → 3x - 5, '그 수에 7을 더한 것' → x + 7. 따라서 3x - 5 = x + 7",
+                    points=20,
+                ),
+            ]
+            for q in adaptive_questions:
+                db.add(q)
+
+            # Create test (고정형)
             test = Test(
                 id="test-001",
                 title="일차방정식 테스트",
@@ -142,6 +364,445 @@ def init_db():
                 is_active=True,
             )
             db.add(test)
+
+            # Create adaptive test (적응형)
+            adaptive_test = Test(
+                id="test-adaptive-001",
+                title="적응형 일차방정식",
+                description="실력에 맞게 난이도가 자동 조절됩니다",
+                grade="middle_1",
+                concept_ids=["concept-001"],
+                question_ids=[],  # 적응형은 비워둠
+                question_count=8,
+                time_limit_minutes=15,
+                is_active=True,
+                is_adaptive=True,
+            )
+            db.add(adaptive_test)
+
+            # Create operation practice concept
+            op_concept = Concept(
+                id="concept-002",
+                name="사칙연산",
+                grade="middle_1",
+                category="computation",
+                part="calc",
+                description="덧셈, 뺄셈, 곱셈, 나눗셈 연산 연습",
+            )
+            db.add(op_concept)
+
+            # Create operation practice questions
+            op_questions = [
+                Question(
+                    id="question-op-001",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=2,
+                    content="25 + 37 = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "52"},
+                        {"id": "2", "label": "B", "text": "62"},
+                        {"id": "3", "label": "C", "text": "72"},
+                        {"id": "4", "label": "D", "text": "63"},
+                    ],
+                    correct_answer="B",
+                    explanation="25 + 37 = 62",
+                    points=10,
+                ),
+                Question(
+                    id="question-op-002",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=2,
+                    content="84 - 29 = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "45"},
+                        {"id": "2", "label": "B", "text": "65"},
+                        {"id": "3", "label": "C", "text": "55"},
+                        {"id": "4", "label": "D", "text": "53"},
+                    ],
+                    correct_answer="C",
+                    explanation="84 - 29 = 55",
+                    points=10,
+                ),
+                Question(
+                    id="question-op-003",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=3,
+                    content="12 × 7 = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "74"},
+                        {"id": "2", "label": "B", "text": "84"},
+                        {"id": "3", "label": "C", "text": "94"},
+                        {"id": "4", "label": "D", "text": "72"},
+                    ],
+                    correct_answer="B",
+                    explanation="12 × 7 = 84",
+                    points=10,
+                ),
+                Question(
+                    id="question-op-004",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=3,
+                    content="96 ÷ 8 = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "11"},
+                        {"id": "2", "label": "B", "text": "12"},
+                        {"id": "3", "label": "C", "text": "13"},
+                        {"id": "4", "label": "D", "text": "14"},
+                    ],
+                    correct_answer="B",
+                    explanation="96 ÷ 8 = 12",
+                    points=10,
+                ),
+                Question(
+                    id="question-op-005",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=5,
+                    content="(-3) × (-8) + 5 = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "19"},
+                        {"id": "2", "label": "B", "text": "29"},
+                        {"id": "3", "label": "C", "text": "-19"},
+                        {"id": "4", "label": "D", "text": "-29"},
+                    ],
+                    correct_answer="B",
+                    explanation="(-3) × (-8) = 24, 24 + 5 = 29",
+                    points=15,
+                ),
+            ]
+            for q in op_questions:
+                db.add(q)
+
+            # Create operation practice test
+            op_test = Test(
+                id="test-002",
+                title="연산 연습",
+                description="반복 연습으로 연산 속도를 높여보세요",
+                grade="middle_1",
+                concept_ids=["concept-002"],
+                question_ids=[
+                    "question-op-001",
+                    "question-op-002",
+                    "question-op-003",
+                    "question-op-004",
+                    "question-op-005",
+                ],
+                question_count=5,
+                time_limit_minutes=5,
+                is_active=True,
+            )
+            db.add(op_test)
+
+            # Create inequalities concept
+            ineq_concept = Concept(
+                id="concept-003",
+                name="일차부등식",
+                grade="middle_1",
+                category="concept",
+                part="algebra",
+                description="일차부등식의 풀이와 수직선 표현",
+            )
+            db.add(ineq_concept)
+
+            ineq_questions = [
+                Question(
+                    id="question-ineq-001",
+                    concept_id="concept-003",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=6,
+                    content="부등식의 양변에 같은 음수를 곱하면 부등호의 방향은 어떻게 되는가?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "그대로 유지된다"},
+                        {"id": "2", "label": "B", "text": "반대로 바뀐다"},
+                        {"id": "3", "label": "C", "text": "등호로 바뀐다"},
+                        {"id": "4", "label": "D", "text": "부등식이 성립하지 않는다"},
+                    ],
+                    correct_answer="B",
+                    explanation="부등식의 양변에 음수를 곱하거나 나누면 부등호의 방향이 반대로 바뀐다. 예: 3 > 2에서 양변에 -1을 곱하면 -3 < -2",
+                    points=10,
+                ),
+                Question(
+                    id="question-ineq-002",
+                    concept_id="concept-003",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=7,
+                    content="다음 중 부등식의 성질로 옳은 것은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "양변에 같은 수를 더하면 부등호 방향이 바뀐다"},
+                        {"id": "2", "label": "B", "text": "양변에 양수를 곱하면 부등호 방향이 바뀐다"},
+                        {"id": "3", "label": "C", "text": "양변에 음수를 곱하면 부등호 방향이 바뀐다"},
+                        {"id": "4", "label": "D", "text": "양변에 0을 곱해도 부등호가 유지된다"},
+                    ],
+                    correct_answer="C",
+                    explanation="부등식의 양변에 음수를 곱하면 부등호의 방향이 바뀐다. 양변에 같은 수를 더하거나 양수를 곱할 때는 부등호 방향이 유지된다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-ineq-003",
+                    concept_id="concept-003",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=7,
+                    content="일차부등식의 해를 수직선에 나타낼 때, x < 3의 표현으로 옳은 것은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "3에 속이 빈 원(○)을 찍고 왼쪽으로 화살표"},
+                        {"id": "2", "label": "B", "text": "3에 속이 찬 원(●)을 찍고 왼쪽으로 화살표"},
+                        {"id": "3", "label": "C", "text": "3에 속이 빈 원(○)을 찍고 오른쪽으로 화살표"},
+                        {"id": "4", "label": "D", "text": "3에 속이 찬 원(●)을 찍고 오른쪽으로 화살표"},
+                    ],
+                    correct_answer="A",
+                    explanation="x < 3은 3을 포함하지 않으므로 속이 빈 원(○)을 사용하고, 3보다 작은 수는 왼쪽이므로 왼쪽 화살표로 나타낸다. x ≤ 3이면 속이 찬 원(●)을 사용한다.",
+                    points=15,
+                ),
+                Question(
+                    id="question-ineq-004",
+                    concept_id="concept-003",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=9,
+                    content="일차부등식 -3x + 6 > 0의 풀이 과정이다. 잘못된 단계는?\n① -3x + 6 > 0\n② -3x > -6 (양변에서 6을 뺌)\n③ x > 2 (양변을 -3으로 나눔)",
+                    options=[
+                        {"id": "1", "label": "A", "text": "①에서 ②로 가는 과정"},
+                        {"id": "2", "label": "B", "text": "②에서 ③으로 가는 과정"},
+                        {"id": "3", "label": "C", "text": "①과 ② 모두 잘못됨"},
+                        {"id": "4", "label": "D", "text": "잘못된 단계가 없다"},
+                    ],
+                    correct_answer="B",
+                    explanation="②에서 ③으로 갈 때 양변을 음수(-3)로 나누었으므로 부등호 방향이 바뀌어야 한다. 올바른 결과는 x < 2이다.",
+                    points=15,
+                ),
+            ]
+            for q in ineq_questions:
+                db.add(q)
+
+            ineq_test = Test(
+                id="test-003",
+                title="일차부등식 테스트",
+                description="부등식의 성질을 이용한 문제 풀이",
+                grade="middle_1",
+                concept_ids=["concept-003"],
+                question_ids=["question-ineq-001", "question-ineq-002", "question-ineq-003", "question-ineq-004"],
+                question_count=4,
+                time_limit_minutes=8,
+                is_active=True,
+            )
+            db.add(ineq_test)
+
+            # Create coordinate & graph concept
+            coord_concept = Concept(
+                id="concept-004",
+                name="좌표와 그래프",
+                grade="middle_1",
+                category="concept",
+                part="func",
+                description="좌표평면과 정비례·반비례 그래프",
+            )
+            db.add(coord_concept)
+
+            coord_questions = [
+                Question(
+                    id="question-coord-001",
+                    concept_id="concept-004",
+                    category="concept",
+                    part="func",
+                    question_type="multiple_choice",
+                    difficulty=6,
+                    content="좌표평면에서 x좌표가 양수이고 y좌표가 음수인 점은 어느 사분면에 위치하는가?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "제1사분면"},
+                        {"id": "2", "label": "B", "text": "제2사분면"},
+                        {"id": "3", "label": "C", "text": "제3사분면"},
+                        {"id": "4", "label": "D", "text": "제4사분면"},
+                    ],
+                    correct_answer="D",
+                    explanation="제4사분면은 x > 0, y < 0인 영역이다. 제1사분면(+,+), 제2사분면(-,+), 제3사분면(-,-), 제4사분면(+,-)로 구분한다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-coord-002",
+                    concept_id="concept-004",
+                    category="concept",
+                    part="func",
+                    question_type="multiple_choice",
+                    difficulty=7,
+                    content="정비례 관계 y = ax (a > 0)의 그래프에 대한 설명으로 옳은 것은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "원점을 지나는 직선이다"},
+                        {"id": "2", "label": "B", "text": "y축과 평행한 직선이다"},
+                        {"id": "3", "label": "C", "text": "x축과 한 점에서 만난다"},
+                        {"id": "4", "label": "D", "text": "곡선 형태이다"},
+                    ],
+                    correct_answer="A",
+                    explanation="정비례 y = ax의 그래프는 항상 원점(0,0)을 지나는 직선이다. a > 0이면 오른쪽 위로 향하고, a < 0이면 오른쪽 아래로 향한다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-coord-003",
+                    concept_id="concept-004",
+                    category="concept",
+                    part="func",
+                    question_type="multiple_choice",
+                    difficulty=6,
+                    content="반비례 관계 y = a/x의 그래프가 절대 지나지 않는 곳은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "제1사분면"},
+                        {"id": "2", "label": "B", "text": "제3사분면"},
+                        {"id": "3", "label": "C", "text": "원점과 좌표축"},
+                        {"id": "4", "label": "D", "text": "제4사분면"},
+                    ],
+                    correct_answer="C",
+                    explanation="반비례 y = a/x에서 x = 0이면 y가 정의되지 않고, y = 0이 되는 x값도 없다. 따라서 그래프는 원점과 x축, y축을 절대 지나지 않는다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-coord-004",
+                    concept_id="concept-004",
+                    category="concept",
+                    part="func",
+                    question_type="multiple_choice",
+                    difficulty=9,
+                    content="좌표평면에서 x축 위에 있는 모든 점의 공통된 특징은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "x좌표가 0이다"},
+                        {"id": "2", "label": "B", "text": "y좌표가 0이다"},
+                        {"id": "3", "label": "C", "text": "x좌표와 y좌표가 같다"},
+                        {"id": "4", "label": "D", "text": "원점으로부터 거리가 같다"},
+                    ],
+                    correct_answer="B",
+                    explanation="x축 위의 점은 모두 y좌표가 0이다. 예: (1,0), (-3,0), (0,0) 등. 반대로, y축 위의 점은 모두 x좌표가 0이다.",
+                    points=15,
+                ),
+            ]
+            for q in coord_questions:
+                db.add(q)
+
+            coord_test = Test(
+                id="test-004",
+                title="좌표와 그래프",
+                description="좌표평면 위의 점과 그래프 읽기",
+                grade="middle_1",
+                concept_ids=["concept-004"],
+                question_ids=["question-coord-001", "question-coord-002", "question-coord-003", "question-coord-004"],
+                question_count=4,
+                time_limit_minutes=10,
+                is_active=True,
+            )
+            db.add(coord_test)
+
+            # Create statistics concept
+            stat_concept = Concept(
+                id="concept-005",
+                name="통계",
+                grade="middle_1",
+                category="concept",
+                part="data",
+                description="도수분포와 평균, 중앙값",
+            )
+            db.add(stat_concept)
+
+            stat_questions = [
+                Question(
+                    id="question-stat-001",
+                    concept_id="concept-005",
+                    category="concept",
+                    part="data",
+                    question_type="multiple_choice",
+                    difficulty=4,
+                    content="평균, 중앙값, 최빈값 중에서 극단적으로 크거나 작은 값(이상값)에 가장 큰 영향을 받는 대표값은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "평균"},
+                        {"id": "2", "label": "B", "text": "중앙값"},
+                        {"id": "3", "label": "C", "text": "최빈값"},
+                        {"id": "4", "label": "D", "text": "세 대표값 모두 같은 영향을 받는다"},
+                    ],
+                    correct_answer="A",
+                    explanation="평균은 모든 자료값의 합을 개수로 나눈 것이므로 극단값에 크게 영향을 받는다. 중앙값은 가운데 위치의 값이고 최빈값은 가장 많이 나타나는 값이므로 극단값에 상대적으로 덜 영향을 받는다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-stat-002",
+                    concept_id="concept-005",
+                    category="concept",
+                    part="data",
+                    question_type="multiple_choice",
+                    difficulty=6,
+                    content="자료를 크기순으로 나열했을 때 한가운데에 위치하는 값을 무엇이라 하는가?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "평균"},
+                        {"id": "2", "label": "B", "text": "중앙값"},
+                        {"id": "3", "label": "C", "text": "최빈값"},
+                        {"id": "4", "label": "D", "text": "분산"},
+                    ],
+                    correct_answer="B",
+                    explanation="중앙값(median)은 자료를 크기순으로 나열했을 때 정가운데에 위치하는 값이다. 자료의 개수가 짝수이면 가운데 두 값의 평균을 중앙값으로 한다.",
+                    points=10,
+                ),
+                Question(
+                    id="question-stat-003",
+                    concept_id="concept-005",
+                    category="concept",
+                    part="data",
+                    question_type="multiple_choice",
+                    difficulty=6,
+                    content="도수분포표에서 '도수'가 의미하는 것은?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "각 계급에 속하는 자료의 개수"},
+                        {"id": "2", "label": "B", "text": "자료의 전체 개수"},
+                        {"id": "3", "label": "C", "text": "계급의 크기"},
+                        {"id": "4", "label": "D", "text": "자료의 평균값"},
+                    ],
+                    correct_answer="A",
+                    explanation="도수(frequency)란 각 계급(구간)에 속하는 자료의 개수를 말한다. 모든 계급의 도수를 합하면 전체 자료의 개수가 된다.",
+                    points=10,
+                ),
+            ]
+            for q in stat_questions:
+                db.add(q)
+
+            stat_test = Test(
+                id="test-005",
+                title="통계 기초",
+                description="평균, 중앙값, 최빈값 구하기",
+                grade="middle_1",
+                concept_ids=["concept-005"],
+                question_ids=["question-stat-001", "question-stat-002", "question-stat-003"],
+                question_count=3,
+                time_limit_minutes=7,
+                is_active=True,
+            )
+            db.add(stat_test)
+
+            db.flush()
+
+            # 계통수학: 개념 선수관계 설정
+            # 일차방정식(concept-001) ← 사칙연산(concept-002) 필요
+            concept.prerequisites.append(op_concept)
+            # 일차부등식(concept-003) ← 일차방정식(concept-001) 필요
+            ineq_concept.prerequisites.append(concept)
+            # 좌표와 그래프(concept-004) ← 일차방정식(concept-001) 필요
+            coord_concept.prerequisites.append(concept)
+            # 통계(concept-005) ← 사칙연산(concept-002) 필요
+            stat_concept.prerequisites.append(op_concept)
 
             db.commit()
             print("Database seeded with initial data")

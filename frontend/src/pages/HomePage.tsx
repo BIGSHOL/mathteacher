@@ -12,10 +12,10 @@ export function HomePage() {
           className="text-center"
         >
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            수학 테스트
+            개념 연산 수학
           </h1>
           <p className="text-xl text-gray-600 mb-8">
-            재미있게 배우고, 빠르게 성장하세요!
+            개념부터 연산까지, 체계적인 수학 학습을 시작하세요!
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

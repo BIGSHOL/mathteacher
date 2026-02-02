@@ -40,12 +40,36 @@ export const mockUsers: User[] = [
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-15T00:00:00Z',
   },
+  {
+    id: 'admin-1',
+    email: 'admin@test.com',
+    name: '최관리',
+    role: 'admin',
+    level: 1,
+    total_xp: 0,
+    current_streak: 0,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-15T00:00:00Z',
+  },
+  {
+    id: 'master-1',
+    email: 'master@test.com',
+    name: '정마스터',
+    role: 'master',
+    level: 1,
+    total_xp: 0,
+    current_streak: 0,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-15T00:00:00Z',
+  },
 ]
 
 export const mockPasswords: Record<string, string> = {
   'student@test.com': 'password123',
   'student2@test.com': 'password123',
   'teacher@test.com': 'password123',
+  'admin@test.com': 'password123',
+  'master@test.com': 'password123',
 }
 
 export function findUserByEmail(email: string): User | undefined {

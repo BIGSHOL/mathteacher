@@ -37,12 +37,46 @@ class QuestionType(str, Enum):
     SHORT_ANSWER = "short_answer"
 
 
-class Difficulty(str, Enum):
-    """난이도."""
+class QuestionCategory(str, Enum):
+    """문제 카테고리 (트랙)."""
 
-    EASY = "easy"
-    MEDIUM = "medium"
-    HARD = "hard"
+    COMPUTATION = "computation"  # 연산
+    CONCEPT = "concept"  # 개념
+
+
+class ProblemPart(str, Enum):
+    """문제 파트 (6개 영역).
+
+    문제의 내용 영역을 분류합니다.
+    각 문제는 하나의 파트에 속하며,
+    파트별로 문제 출제/보충/분석이 가능합니다.
+    """
+
+    CALC = "calc"          # 계산 (순수 연산)
+    ALGEBRA = "algebra"    # 대수 (방정식, 부등식, 문자식)
+    FUNC = "func"          # 함수 (함수, 그래프, 좌표)
+    GEO = "geo"            # 도형 (기하, 측정, 공간)
+    DATA = "data"          # 자료 (통계, 확률, 표/그래프 해석)
+    WORD = "word"          # 문장제 (실생활 응용, 서술형)
+
+
+class Difficulty(int, Enum):
+    """난이도 (10단계, 학년 내 상대 난이도).
+
+    각 학년(초1~공통수학1) × 각 트랙(연산/개념) 내에서
+    Lv.1(가장 쉬움) ~ Lv.10(가장 어려움)으로 운영.
+    """
+
+    LV1 = 1
+    LV2 = 2
+    LV3 = 3
+    LV4 = 4
+    LV5 = 5
+    LV6 = 6
+    LV7 = 7
+    LV8 = 8
+    LV9 = 9
+    LV10 = 10
 
 
 T = TypeVar("T")

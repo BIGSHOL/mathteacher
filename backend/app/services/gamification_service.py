@@ -22,6 +22,7 @@ LEVEL_XP_REQUIREMENTS = {
 }
 
 MAX_LEVEL = 10
+MAX_DEFENSE = 3  # 레벨다운 방어 실드 최대 개수
 
 
 class GamificationService:
@@ -117,17 +118,123 @@ class GamificationService:
             # 끊김 - 스트릭 리셋
             return {"new_streak": 1, "streak_broken": True}
 
+    def calculate_adaptive_level(
+        self,
+        current_level: int,
+        final_difficulty: int,
+        correct_count: int,
+        total_count: int,
+    ) -> int | None:
+        """적응형 테스트 결과로 학생 레벨 산출.
+
+        계획서 섹션 7.3:
+          10문제 후 최종 레벨 산출 → 학생의 level 업데이트
+
+        규칙:
+          - 정답률 50% 이상이면 final_difficulty를 demonstrated_level로 간주
+          - demonstrated_level이 현재 레벨보다 높으면 레벨업
+          - 정답률 70% 이상이면 demonstrated_level 그대로
+          - 정답률 50~70%이면 demonstrated_level - 1 (약간 보수적)
+          - 레벨 하락은 없음 (non-punitive)
+        """
+        if total_count == 0:
+            return None
+
+        accuracy = correct_count / total_count
+
+        if accuracy < 0.5:
+            return None  # 정답률 낮으면 레벨 변경 안 함
+
+        if accuracy >= 0.7:
+            demonstrated = final_difficulty
+        else:
+            demonstrated = max(final_difficulty - 1, 1)
+
+        if demonstrated > current_level:
+            return min(demonstrated, MAX_LEVEL)
+
+        return None  # 현재 레벨 이하이면 변경 안 함
+
+    def check_level_down(
+        self,
+        user: User,
+        final_difficulty: int,
+        correct_count: int,
+        total_count: int,
+    ) -> dict:
+        """레벨다운 체크 (방어 시스템 포함).
+
+        발동 조건 (매우 엄격):
+          - 정답률 < 30%
+          - 최종 난이도가 현재 레벨보다 2 이상 낮음
+          - 현재 레벨이 2 이상 (레벨 1은 다운 불가)
+
+        방어 시스템:
+          - 방어 실드 3개 (level_down_defense)
+          - 심각한 실패 시 실드 1개 소모
+          - 실드 0에서 다시 심각한 실패 → 레벨 1 하락 + 실드 리셋
+          - 정답률 >= 60% → 실드 1개 회복 (최대 3)
+
+        Returns:
+            {"action": "none"}
+            {"action": "defense_restored", "defense_remaining": int}
+            {"action": "defense_consumed", "defense_remaining": int}
+            {"action": "level_down", "new_level": int, "defense_remaining": int}
+        """
+        if total_count == 0:
+            return {"action": "none"}
+
+        accuracy = correct_count / total_count
+
+        # 실드 회복: 적응형에서 정답률 60% 이상이면 실드 1개 회복
+        if accuracy >= 0.6:
+            if user.level_down_defense < MAX_DEFENSE:
+                user.level_down_defense = min(user.level_down_defense + 1, MAX_DEFENSE)
+                return {
+                    "action": "defense_restored",
+                    "defense_remaining": user.level_down_defense,
+                }
+            return {"action": "none"}
+
+        # 레벨다운 발동 조건: 정답률 30% 미만 AND 갭 2 이상 AND 레벨 2 이상
+        gap = user.level - final_difficulty
+        if accuracy >= 0.3 or gap < 2 or user.level <= 1:
+            return {"action": "none"}
+
+        # 심각한 실패 감지 → 방어 실드 처리
+        if user.level_down_defense > 0:
+            user.level_down_defense -= 1
+            return {
+                "action": "defense_consumed",
+                "defense_remaining": user.level_down_defense,
+            }
+        else:
+            # 실드 모두 소진 → 레벨 다운
+            new_level = max(user.level - 1, 1)
+            user.level_down_defense = MAX_DEFENSE  # 실드 리셋
+            return {
+                "action": "level_down",
+                "new_level": new_level,
+                "defense_remaining": MAX_DEFENSE,
+            }
+
     def update_user_gamification(
         self,
         user: User,
         xp_earned: int,
         today: str,
+        adaptive_result: dict | None = None,
     ) -> dict:
-        """사용자 게이미피케이션 정보 업데이트."""
+        """사용자 게이미피케이션 정보 업데이트.
+
+        Args:
+            adaptive_result: 적응형 테스트 결과
+                {"final_difficulty": int, "correct_count": int, "total_count": int}
+        """
         if not self.db:
             raise ValueError("Database session required")
 
-        # 레벨업 체크
+        # 레벨업 체크 (XP 기반)
         level_result = self.check_level_up(
             current_level=user.level,
             current_xp=user.total_xp,
@@ -148,8 +255,44 @@ class GamificationService:
 
         # 사용자 업데이트
         user.total_xp = level_result["total_xp"]
-        if level_result["level_up"]:
-            user.level = level_result["new_level"]
+        xp_level = level_result["new_level"] if level_result["level_up"] else user.level
+
+        # 적응형 테스트 결과 반영
+        adaptive_level = None
+        level_down_result = None
+        if adaptive_result:
+            # 레벨업 체크 (계획서 7.3)
+            adaptive_level = self.calculate_adaptive_level(
+                current_level=user.level,
+                final_difficulty=adaptive_result["final_difficulty"],
+                correct_count=adaptive_result["correct_count"],
+                total_count=adaptive_result["total_count"],
+            )
+            # 레벨다운 체크 (방어 시스템)
+            level_down_result = self.check_level_down(
+                user=user,
+                final_difficulty=adaptive_result["final_difficulty"],
+                correct_count=adaptive_result["correct_count"],
+                total_count=adaptive_result["total_count"],
+            )
+
+        # 최종 레벨 결정
+        final_level = xp_level
+        level_up = False
+        level_down = False
+
+        if adaptive_level and adaptive_level > final_level:
+            # 레벨업 우선
+            final_level = adaptive_level
+        elif level_down_result and level_down_result["action"] == "level_down":
+            # 레벨다운 (실드 모두 소진)
+            final_level = level_down_result["new_level"]
+            level_down = True
+
+        level_up = final_level > user.level
+        if level_down:
+            level_up = False  # 레벨다운 시 레벨업 플래그 무시
+        user.level = final_level
 
         user.current_streak = streak_result["new_streak"]
         user.max_streak = max(user.max_streak, streak_result["new_streak"])
@@ -158,9 +301,12 @@ class GamificationService:
         self.db.commit()
 
         return {
-            "level_up": level_result["level_up"],
-            "new_level": level_result["new_level"],
+            "level_up": level_up,
+            "level_down": level_down,
+            "new_level": final_level if (level_up or level_down) else None,
             "total_xp": level_result["total_xp"],
             "current_streak": streak_result["new_streak"],
             "streak_broken": streak_result["streak_broken"],
+            "level_down_defense": user.level_down_defense,
+            "level_down_action": level_down_result["action"] if level_down_result else "none",
         }

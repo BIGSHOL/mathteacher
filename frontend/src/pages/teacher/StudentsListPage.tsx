@@ -1,12 +1,14 @@
 // 강사용 학생 목록 페이지
 
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import api from '../../lib/api'
 import type { StudentStatsSummary, PaginatedResponse, Grade } from '../../types'
 import { StreakBadge } from '../../components/gamification/StreakDisplay'
 
 export function StudentsListPage() {
+  const navigate = useNavigate()
   const [students, setStudents] = useState<StudentStatsSummary[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -166,7 +168,10 @@ export function StudentsListPage() {
         >
           {filteredStudents.length === 0 ? (
             <div className="p-8 text-center">
-              <div className="mb-4 text-4xl">👥</div>
+              <div className="mb-4 text-5xl">👥</div>
+              <h2 className="mb-2 text-xl font-semibold text-gray-900">
+                {searchQuery ? '검색 결과 없음' : '학생 없음'}
+              </h2>
               <p className="text-gray-600">
                 {searchQuery ? '검색 결과가 없습니다.' : '담당 학생이 없습니다.'}
               </p>
@@ -194,6 +199,7 @@ export function StudentsListPage() {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
                       className="cursor-pointer hover:bg-gray-50"
+                      onClick={() => navigate(`/teacher/students/${student.user_id}`)}
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">

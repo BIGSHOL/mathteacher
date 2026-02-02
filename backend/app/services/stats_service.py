@@ -14,6 +14,32 @@ from app.models.answer_log import AnswerLog
 from app.models.concept import Concept
 from app.schemas.common import Grade, UserRole
 
+# KST (한국 표준시, UTC+9)
+KST = timezone(timedelta(hours=9))
+
+
+def _kst_today():
+    """오늘 날짜 (KST 기준)."""
+    return datetime.now(KST).date()
+
+
+def _kst_day_utc_range(day):
+    """KST 날짜의 UTC 범위 반환 (start <= ts < end).
+
+    DB에 UTC로 저장된 타임스탬프를 KST 날짜 기준으로 필터링할 때 사용.
+    예: KST 2024-01-15 → UTC 2024-01-14 15:00 ~ 2024-01-15 15:00
+    """
+    start_utc = datetime(day.year, day.month, day.day) - timedelta(hours=9)
+    end_utc = start_utc + timedelta(days=1)
+    return start_utc, end_utc
+
+
+def _to_kst_date(dt):
+    """UTC datetime을 KST 날짜로 변환."""
+    if dt is None:
+        return None
+    return (dt + timedelta(hours=9)).date()
+
 
 class StatsService:
     """통계 서비스."""
@@ -91,6 +117,97 @@ class StatsService:
 
         avg_time = total_time / answer_count if answer_count > 0 else 0
 
+        # 오늘 푼 문제 수 (KST 기준)
+        today = _kst_today()
+        today_start, today_end = _kst_day_utc_range(today)
+        today_solved_stmt = select(func.count()).select_from(AnswerLog).join(
+            TestAttempt, AnswerLog.attempt_id == TestAttempt.id
+        ).where(
+            TestAttempt.student_id == student_id,
+            AnswerLog.created_at >= today_start,
+            AnswerLog.created_at < today_end,
+        )
+        today_solved = self.db.scalar(today_solved_stmt) or 0
+
+        # 개념별/트랙별 통계 계산
+        from app.models.question import Question
+
+        all_logs_stmt = (
+            select(AnswerLog, Question.concept_id, Question.category)
+            .join(Question, AnswerLog.question_id == Question.id)
+            .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
+            .where(TestAttempt.student_id == student_id)
+        )
+        all_logs = list(self.db.execute(all_logs_stmt).all())
+
+        # 개념별 집계
+        concept_agg: dict[str, dict] = defaultdict(
+            lambda: {"correct": 0, "total": 0}
+        )
+        # 트랙별 집계
+        track_agg: dict[str, dict] = defaultdict(
+            lambda: {"correct": 0, "total": 0}
+        )
+
+        for log, concept_id, category in all_logs:
+            concept_agg[concept_id]["total"] += 1
+            if log.is_correct:
+                concept_agg[concept_id]["correct"] += 1
+            cat_key = category.value if hasattr(category, "value") else category
+            track_agg[cat_key]["total"] += 1
+            if log.is_correct:
+                track_agg[cat_key]["correct"] += 1
+
+        # 개념 이름 매핑
+        concept_ids = list(concept_agg.keys())
+        concept_names: dict[str, str] = {}
+        if concept_ids:
+            concepts_stmt = select(Concept.id, Concept.name).where(
+                Concept.id.in_(concept_ids)
+            )
+            for cid, cname in self.db.execute(concepts_stmt).all():
+                concept_names[cid] = cname
+
+        # 취약 개념 (정답률 < 60%) / 강점 개념 (정답률 >= 80%)
+        weak_concepts = []
+        strong_concepts = []
+        for cid, cstats in concept_agg.items():
+            if cstats["total"] < 1:
+                continue
+            acc = self.calculate_accuracy_rate(cstats["correct"], cstats["total"])
+            entry = {
+                "concept_id": cid,
+                "concept_name": concept_names.get(cid, ""),
+                "total_questions": cstats["total"],
+                "correct_count": cstats["correct"],
+                "accuracy_rate": acc,
+            }
+            if acc < 60.0:
+                weak_concepts.append(entry)
+            elif acc >= 80.0:
+                strong_concepts.append(entry)
+
+        weak_concepts.sort(key=lambda x: x["accuracy_rate"])
+        strong_concepts.sort(key=lambda x: x["accuracy_rate"], reverse=True)
+
+        # 트랙별 통계
+        computation_stats = None
+        concept_stats = None
+        if "computation" in track_agg:
+            t = track_agg["computation"]
+            computation_stats = {
+                "total_questions": t["total"],
+                "correct_answers": t["correct"],
+                "accuracy_rate": self.calculate_accuracy_rate(t["correct"], t["total"]),
+            }
+        if "concept" in track_agg:
+            t = track_agg["concept"]
+            concept_stats = {
+                "total_questions": t["total"],
+                "correct_answers": t["correct"],
+                "accuracy_rate": self.calculate_accuracy_rate(t["correct"], t["total"]),
+            }
+
         return {
             "user_id": student_id,
             "total_tests": total_tests,
@@ -102,8 +219,11 @@ class StatsService:
             "max_streak": student.max_streak,
             "level": student.level,
             "total_xp": student.total_xp,
-            "weak_concepts": [],
-            "strong_concepts": [],
+            "today_solved": today_solved,
+            "weak_concepts": weak_concepts,
+            "strong_concepts": strong_concepts,
+            "computation_stats": computation_stats,
+            "concept_stats": concept_stats,
         }
 
     def get_dashboard_stats(self, teacher_id: str) -> dict:
@@ -111,7 +231,7 @@ class StatsService:
         if not self.db:
             raise ValueError("Database session required")
 
-        today = datetime.now(timezone.utc).date()
+        today = _kst_today()
         week_ago = today - timedelta(days=7)
 
         # 담당 반 조회
@@ -128,10 +248,12 @@ class StatsService:
         students = list(self.db.scalars(students_stmt).all())
         student_ids = [s.id for s in students]
 
-        # 오늘 통계
+        # 오늘 통계 (KST 기준)
+        today_start, today_end = _kst_day_utc_range(today)
         today_attempts_stmt = select(TestAttempt).where(
             TestAttempt.student_id.in_(student_ids),
-            func.date(TestAttempt.started_at) == today,
+            TestAttempt.started_at >= today_start,
+            TestAttempt.started_at < today_end,
         )
         today_attempts = list(self.db.scalars(today_attempts_stmt).all())
 
@@ -141,10 +263,11 @@ class StatsService:
         today_correct = sum(a.correct_count for a in today_attempts if a.completed_at)
         today_accuracy = self.calculate_accuracy_rate(today_correct, today_questions)
 
-        # 이번 주 통계
+        # 이번 주 통계 (KST 기준)
+        week_start, _ = _kst_day_utc_range(week_ago)
         week_attempts_stmt = select(TestAttempt).where(
             TestAttempt.student_id.in_(student_ids),
-            func.date(TestAttempt.started_at) >= week_ago,
+            TestAttempt.started_at >= week_start,
         )
         week_attempts = list(self.db.scalars(week_attempts_stmt).all())
 
@@ -157,7 +280,7 @@ class StatsService:
             day = today - timedelta(days=6 - i)
             day_attempts = [
                 a for a in week_attempts
-                if a.completed_at and a.started_at.date() == day
+                if a.completed_at and _to_kst_date(a.started_at) == day
             ]
             day_questions = sum(a.total_count for a in day_attempts)
             day_correct = sum(a.correct_count for a in day_attempts)
@@ -168,7 +291,7 @@ class StatsService:
         for student in students:
             # 비활동 학생
             if student.last_activity_date:
-                days_inactive = (today - student.last_activity_date.date()).days
+                days_inactive = (today - _to_kst_date(student.last_activity_date)).days
                 if days_inactive >= 3:
                     alerts.append({
                         "type": "inactive",
@@ -325,15 +448,17 @@ class StatsService:
                     "completed_at": attempt.completed_at,
                 })
 
-        # 일별 활동 (최근 7일)
-        today = datetime.now(timezone.utc).date()
+        # 일별 활동 (최근 7일, KST 기준)
+        today = _kst_today()
         daily_activity = []
         for i in range(7):
             day = today - timedelta(days=6 - i)
+            day_start, day_end = _kst_day_utc_range(day)
             day_attempts_stmt = select(TestAttempt).where(
                 TestAttempt.student_id == student_id,
                 TestAttempt.completed_at.isnot(None),
-                func.date(TestAttempt.started_at) == day,
+                TestAttempt.started_at >= day_start,
+                TestAttempt.started_at < day_end,
             )
             day_attempts = list(self.db.scalars(day_attempts_stmt).all())
 
@@ -424,12 +549,14 @@ class StatsService:
         average_accuracy = self.calculate_accuracy_rate(total_correct, total_questions)
         average_level = round(total_level / student_count, 1) if student_count > 0 else 0
 
-        # 오늘 완료된 테스트
-        today = datetime.now(timezone.utc).date()
+        # 오늘 완료된 테스트 (KST 기준)
+        today = _kst_today()
+        today_start, today_end = _kst_day_utc_range(today)
         today_tests_stmt = select(func.count()).where(
             TestAttempt.student_id.in_(student_ids),
             TestAttempt.completed_at.isnot(None),
-            func.date(TestAttempt.started_at) == today,
+            TestAttempt.started_at >= today_start,
+            TestAttempt.started_at < today_end,
         )
         tests_completed_today = self.db.scalar(today_tests_stmt) or 0
 
@@ -465,14 +592,16 @@ class StatsService:
         teacher = self.db.get(User, class_.teacher_id)
         teacher_name = teacher.name if teacher else ""
 
-        # 일별 통계 (최근 7일)
+        # 일별 통계 (최근 7일, KST 기준)
         daily_stats = []
         for i in range(7):
             day = today - timedelta(days=6 - i)
+            day_start, day_end = _kst_day_utc_range(day)
             day_attempts_stmt = select(TestAttempt).where(
                 TestAttempt.student_id.in_(student_ids),
                 TestAttempt.completed_at.isnot(None),
-                func.date(TestAttempt.started_at) == day,
+                TestAttempt.started_at >= day_start,
+                TestAttempt.started_at < day_end,
             )
             day_attempts = list(self.db.scalars(day_attempts_stmt).all())
 

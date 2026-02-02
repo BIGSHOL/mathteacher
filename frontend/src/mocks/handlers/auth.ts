@@ -1,7 +1,8 @@
 // 인증 API Mock 핸들러
 
 import { http, HttpResponse } from 'msw'
-import { findUserByEmail, verifyPassword, findUserById } from '../data/users'
+import { mockUsers, mockPasswords, findUserByEmail, verifyPassword, findUserById } from '../data/users'
+import type { UserRole } from '../../types'
 
 // 간단한 토큰 생성 (실제로는 JWT 사용)
 function generateToken(userId: string, type: 'access' | 'refresh'): string {
@@ -214,7 +215,7 @@ export const authHandlers = [
     }
 
     const currentUser = findUserById(parsed.userId)
-    if (!currentUser || currentUser.role === 'student') {
+    if (!currentUser || currentUser.role === 'student' || currentUser.role === 'teacher') {
       return HttpResponse.json(
         {
           success: false,
@@ -236,6 +237,36 @@ export const authHandlers = [
       class_id?: string
     }
 
+    const requestedRole = body.role as UserRole
+
+    // admin은 강사/학생만 생성 가능
+    if (currentUser.role === 'admin' && !['teacher', 'student'].includes(requestedRole)) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'FORBIDDEN',
+            message: '관리자는 강사 및 학생 계정만 생성할 수 있습니다.',
+          },
+        },
+        { status: 403 }
+      )
+    }
+
+    // master는 관리자/강사/학생 생성 가능 (다른 master는 불가)
+    if (currentUser.role === 'master' && !['admin', 'teacher', 'student'].includes(requestedRole)) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: {
+            code: 'FORBIDDEN',
+            message: '마스터는 관리자, 강사, 학생 계정만 생성할 수 있습니다.',
+          },
+        },
+        { status: 403 }
+      )
+    }
+
     // 이메일 중복 체크
     if (findUserByEmail(body.email)) {
       return HttpResponse.json(
@@ -254,7 +285,7 @@ export const authHandlers = [
       id: `user-${Date.now()}`,
       email: body.email,
       name: body.name,
-      role: body.role as 'student' | 'teacher' | 'admin',
+      role: requestedRole,
       grade: body.grade,
       class_id: body.class_id,
       level: 1,
@@ -263,6 +294,10 @@ export const authHandlers = [
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     }
+
+    // mock 데이터에 추가 (세션 내 로그인 가능하도록)
+    mockUsers.push(newUser as typeof mockUsers[number])
+    mockPasswords[body.email] = body.password
 
     return HttpResponse.json(
       {
@@ -274,5 +309,62 @@ export const authHandlers = [
       },
       { status: 201 }
     )
+  }),
+
+  // GET /api/v1/admin/users (관리자/마스터 전용)
+  http.get('/api/v1/admin/users', ({ request }) => {
+    const authHeader = request.headers.get('Authorization')
+    if (!authHeader?.startsWith('Bearer ')) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: { code: 'UNAUTHORIZED', message: '인증이 필요합니다.' },
+        },
+        { status: 401 }
+      )
+    }
+
+    const token = authHeader.replace('Bearer ', '')
+    const parsed = parseToken(token)
+    if (!parsed) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: { code: 'INVALID_TOKEN', message: '유효하지 않은 토큰입니다.' },
+        },
+        { status: 401 }
+      )
+    }
+
+    const currentUser = findUserById(parsed.userId)
+    if (!currentUser || !['admin', 'master'].includes(currentUser.role)) {
+      return HttpResponse.json(
+        {
+          success: false,
+          error: { code: 'FORBIDDEN', message: '권한이 없습니다.' },
+        },
+        { status: 403 }
+      )
+    }
+
+    const url = new URL(request.url)
+    const roleFilter = url.searchParams.get('role')
+    let filteredUsers = mockUsers
+    if (roleFilter) {
+      filteredUsers = filteredUsers.filter((u) => u.role === roleFilter)
+    }
+
+    return HttpResponse.json({
+      success: true,
+      data: {
+        items: filteredUsers.map(({ id, email, name, role, grade, class_id, created_at }) => ({
+          id, email, name, role, grade, class_id, created_at,
+        })),
+        total: filteredUsers.length,
+        page: 1,
+        page_size: 50,
+        total_pages: 1,
+      },
+    })
   }),
 ]

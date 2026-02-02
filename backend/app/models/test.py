@@ -30,6 +30,10 @@ class Test(Base):
     question_count: Mapped[int] = mapped_column(Integer)
     time_limit_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
+    # 적응형
+    is_adaptive: Mapped[bool] = mapped_column(Boolean, default=False)
+    adaptive_pool_config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+
     # 상태
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 

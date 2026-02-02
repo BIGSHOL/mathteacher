@@ -1,11 +1,21 @@
 // 테스트 결과 페이지
 
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import api from '../../lib/api'
-import type { TestAttempt, Test, AnswerLog } from '../../types'
+import type { TestAttempt, Test, AnswerLog, LevelDownAction } from '../../types'
+
+interface CompleteState {
+  level_up?: boolean
+  level_down?: boolean
+  new_level?: number | null
+  xp_earned?: number
+  level_down_defense?: number | null
+  level_down_action?: LevelDownAction | null
+  mastery_achieved?: boolean
+}
 
 interface AttemptResult {
   attempt: TestAttempt
@@ -16,6 +26,8 @@ interface AttemptResult {
 export function TestResultPage() {
   const { attemptId } = useParams<{ attemptId: string }>()
   const navigate = useNavigate()
+  const location = useLocation()
+  const completeState = (location.state as CompleteState) || {}
   const [result, setResult] = useState<AttemptResult | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -27,13 +39,44 @@ export function TestResultPage() {
   }, [attemptId])
 
   useEffect(() => {
+    if (!result) return
+    const accuracy = getAccuracyRate()
+
+    // 전문 정답 → perfect 효과음
+    if (accuracy === 100) {
+      const perfectSound = new Audio('/sounds/perfect.mp3')
+      perfectSound.play().catch(() => {})
+    }
+
+    // 레벨업 효과음
+    if (completeState.level_up) {
+      const lvlupSound = new Audio('/sounds/lvlup.mp3')
+      lvlupSound.play().catch(() => {})
+    }
+
+    // 레벨다운 효과음
+    if (completeState.level_down) {
+      const lvldownSound = new Audio('/sounds/lvldown.mp3')
+      lvldownSound.play().catch(() => {})
+    }
+
     // 좋은 성적일 때 폭죽 효과
-    if (result && getAccuracyRate() >= 80) {
+    if (accuracy >= 80) {
       confetti({
         particleCount: 100,
         spread: 70,
         origin: { y: 0.6 },
       })
+    }
+    // 마스터 달성 시 추가 폭죽
+    if (completeState.mastery_achieved) {
+      setTimeout(() => {
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.4 } })
+      }, 500)
+      setTimeout(() => {
+        confetti({ particleCount: 150, angle: 60, spread: 55, origin: { x: 0 } })
+        confetti({ particleCount: 150, angle: 120, spread: 55, origin: { x: 1 } })
+      }, 1000)
     }
   }, [result])
 
@@ -162,6 +205,91 @@ export function TestResultPage() {
                 <div className="text-sm text-gray-600">획득한 경험치</div>
                 <div className="text-2xl font-bold text-levelup">+{result.attempt.xp_earned} XP</div>
               </motion.div>
+
+              {/* 레벨업 */}
+              {completeState.level_up && completeState.new_level && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.7, type: 'spring' }}
+                  className="mb-6 rounded-xl bg-yellow-50 border border-yellow-200 p-4 text-center"
+                >
+                  <div className="text-2xl mb-1">🎉</div>
+                  <div className="text-sm font-medium text-yellow-800">레벨 업!</div>
+                  <div className="text-xl font-bold text-yellow-600">Lv.{completeState.new_level}</div>
+                </motion.div>
+              )}
+
+              {/* 레벨다운 방어 소모 */}
+              {completeState.level_down_action === 'defense_consumed' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="mb-6 rounded-xl bg-orange-50 border border-orange-200 p-4 text-center"
+                >
+                  <div className="text-2xl mb-1">🛡️</div>
+                  <div className="text-sm font-medium text-orange-800">레벨다운 방어 발동!</div>
+                  <div className="text-xs text-orange-600 mt-1">
+                    남은 방어 횟수: {completeState.level_down_defense ?? 0}/3
+                  </div>
+                  <div className="text-xs text-orange-500 mt-1">
+                    방어가 모두 소진되면 레벨이 하락할 수 있어요
+                  </div>
+                </motion.div>
+              )}
+
+              {/* 레벨다운 실행 */}
+              {completeState.level_down && completeState.new_level && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.7, type: 'spring' }}
+                  className="mb-6 rounded-xl bg-red-50 border border-red-200 p-4 text-center"
+                >
+                  <div className="text-2xl mb-1">📉</div>
+                  <div className="text-sm font-medium text-red-800">레벨이 하락했어요</div>
+                  <div className="text-xl font-bold text-red-600">Lv.{completeState.new_level}</div>
+                  <div className="text-xs text-red-500 mt-1">
+                    방어 실드가 복구되었어요 (3/3)
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    다시 열심히 풀면 레벨을 올릴 수 있어요!
+                  </div>
+                </motion.div>
+              )}
+
+              {/* 방어 실드 회복 */}
+              {completeState.level_down_action === 'defense_restored' && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="mb-6 rounded-xl bg-green-50 border border-green-200 p-4 text-center"
+                >
+                  <div className="text-2xl mb-1">🛡️✨</div>
+                  <div className="text-sm font-medium text-green-800">방어 실드 회복!</div>
+                  <div className="text-xs text-green-600 mt-1">
+                    실드: {completeState.level_down_defense ?? 0}/3
+                  </div>
+                </motion.div>
+              )}
+
+              {/* 마스터 달성 */}
+              {completeState.mastery_achieved && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.8, type: 'spring' }}
+                  className="mb-6 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 p-5 text-center text-white shadow-lg"
+                >
+                  <div className="text-4xl mb-2">🏆</div>
+                  <div className="text-lg font-bold">Lv.10 마스터!</div>
+                  <div className="text-sm text-purple-100 mt-1">
+                    선생님에게 승급 추천이 전달되었습니다
+                  </div>
+                </motion.div>
+              )}
 
               {/* 점수 */}
               <div className="mb-6 rounded-xl bg-gray-50 p-4 text-center">

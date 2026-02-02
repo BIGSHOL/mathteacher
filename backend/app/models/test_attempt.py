@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, func
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, JSON, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -47,6 +47,12 @@ class TestAttempt(Base):
     # 게이미피케이션
     xp_earned: Mapped[int] = mapped_column(Integer, default=0)
     combo_max: Mapped[int] = mapped_column(Integer, default=0)
+
+    # 적응형
+    is_adaptive: Mapped[bool] = mapped_column(Boolean, default=False)
+    current_difficulty: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    adaptive_question_ids: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
+    initial_difficulty: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     # 관계
     test: Mapped["Test"] = relationship("Test", back_populates="attempts")

@@ -111,25 +111,29 @@ def _create_test_data(db):
         id="concept-001",
         name="일차방정식",
         grade="middle_1",
+        category="concept",
+        part="algebra",
         description="일차방정식의 풀이",
     )
     db.add(concept)
 
-    # 문제 생성 (여러 문제)
+    # 문제 생성 (개념 이해 문제)
     question1 = Question(
         id="question-001",
         concept_id="concept-001",
+        category="concept",
+        part="algebra",
         question_type="multiple_choice",
-        difficulty="medium",
-        content="x + 3 = 7 일 때 x의 값은?",
+        difficulty=6,
+        content="다음 중 일차방정식인 것은?",
         options=[
-            {"id": "1", "label": "A", "text": "2"},
-            {"id": "2", "label": "B", "text": "3"},
-            {"id": "3", "label": "C", "text": "4"},
-            {"id": "4", "label": "D", "text": "5"},
+            {"id": "1", "label": "A", "text": "x + 3"},
+            {"id": "2", "label": "B", "text": "2x - 1 = 5"},
+            {"id": "3", "label": "C", "text": "x² = 4"},
+            {"id": "4", "label": "D", "text": "x + y = 3"},
         ],
-        correct_answer="C",
-        explanation="x = 7 - 3 = 4",
+        correct_answer="B",
+        explanation="일차방정식은 미지수가 1개이고 차수가 1인 등식이다. 2x - 1 = 5만 이 조건을 만족한다.",
         points=10,
     )
     db.add(question1)
@@ -137,17 +141,19 @@ def _create_test_data(db):
     question2 = Question(
         id="question-002",
         concept_id="concept-001",
+        category="concept",
+        part="algebra",
         question_type="multiple_choice",
-        difficulty="medium",
-        content="2x = 10 일 때 x의 값은?",
+        difficulty=6,
+        content="등식 x + 5 = 12에서 x를 구하기 위해 양변에 해야 할 연산은?",
         options=[
-            {"id": "1", "label": "A", "text": "3"},
-            {"id": "2", "label": "B", "text": "4"},
-            {"id": "3", "label": "C", "text": "5"},
-            {"id": "4", "label": "D", "text": "6"},
+            {"id": "1", "label": "A", "text": "양변에 5를 더한다"},
+            {"id": "2", "label": "B", "text": "양변에서 5를 뺀다"},
+            {"id": "3", "label": "C", "text": "양변에 12를 더한다"},
+            {"id": "4", "label": "D", "text": "양변을 5로 나눈다"},
         ],
-        correct_answer="C",
-        explanation="x = 10 / 2 = 5",
+        correct_answer="B",
+        explanation="좌변의 +5를 없애려면 양변에서 5를 빼야 한다. 이것이 등식의 성질이다.",
         points=10,
     )
     db.add(question2)
@@ -155,17 +161,19 @@ def _create_test_data(db):
     question3 = Question(
         id="question-003",
         concept_id="concept-001",
+        category="concept",
+        part="algebra",
         question_type="multiple_choice",
-        difficulty="easy",
-        content="x - 2 = 3 일 때 x의 값은?",
+        difficulty=6,
+        content="일차방정식의 풀이에서 '이항'이란?",
         options=[
-            {"id": "1", "label": "A", "text": "4"},
-            {"id": "2", "label": "B", "text": "5"},
-            {"id": "3", "label": "C", "text": "6"},
-            {"id": "4", "label": "D", "text": "7"},
+            {"id": "1", "label": "A", "text": "등호 양변에 같은 수를 더하는 것"},
+            {"id": "2", "label": "B", "text": "항을 등호의 반대편으로 부호를 바꿔 옮기는 것"},
+            {"id": "3", "label": "C", "text": "미지수끼리 모으는 것"},
+            {"id": "4", "label": "D", "text": "양변을 같은 수로 나누는 것"},
         ],
         correct_answer="B",
-        explanation="x = 3 + 2 = 5",
+        explanation="이항이란 등식에서 한 항을 부호를 바꾸어 반대편으로 옮기는 것이다.",
         points=10,
     )
     db.add(question3)

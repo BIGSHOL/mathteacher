@@ -17,8 +17,9 @@ export function LoginPage() {
 
   const getDefaultPath = (role: string): string => {
     switch (role) {
-      case 'teacher':
+      case 'master':
       case 'admin':
+      case 'teacher':
         return '/teacher/dashboard'
       case 'student':
       default:
@@ -38,7 +39,7 @@ export function LoginPage() {
       const redirectPath = from || (currentUser ? getDefaultPath(currentUser.role) : '/tests')
       navigate(redirectPath, { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : '로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.')
+      setError(err instanceof Error ? err.message : '로그인에 실패했습니다.')
     } finally {
       setIsLoading(false)
     }
@@ -53,9 +54,9 @@ export function LoginPage() {
       >
         <div className="text-center mb-8">
           <Link to="/" className="text-3xl font-bold text-primary-500">
-            수학 테스트
+            개념 연산 수학
           </Link>
-          <p className="text-gray-600 mt-2">로그인하고 학습을 시작하세요</p>
+          <p className="text-gray-600 mt-2">개념부터 연산까지, 로그인하고 수학 테스트를 시작하세요</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

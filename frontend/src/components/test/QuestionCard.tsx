@@ -2,7 +2,8 @@
 
 import { motion } from 'framer-motion'
 import { clsx } from 'clsx'
-import type { Question, QuestionOption } from '../../types'
+import type { Question, QuestionCategory, QuestionOption } from '../../types'
+import { MathText } from '../common/MathText'
 
 interface QuestionCardProps {
   question: Question
@@ -21,17 +22,24 @@ export function QuestionCard({
 }: QuestionCardProps) {
   return (
     <div className="card p-6">
-      {/* 문제 번호 & 난이도 */}
+      {/* 문제 번호 & 카테고리 & 난이도 */}
       <div className="mb-4 flex items-center justify-between">
-        <span className="rounded-full bg-primary-100 px-3 py-1 text-sm font-medium text-primary-700">
-          {questionNumber}번 문제
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="rounded-full bg-primary-100 px-3 py-1 text-sm font-medium text-primary-700">
+            {questionNumber}번 문제
+          </span>
+          {question.category && (
+            <CategoryBadge category={question.category} />
+          )}
+        </div>
         <DifficultyBadge difficulty={question.difficulty} />
       </div>
 
       {/* 문제 내용 */}
       <div className="mb-6">
-        <p className="text-lg font-medium text-gray-900">{question.content}</p>
+        <p className="text-lg font-medium text-gray-900">
+          <MathText text={question.content} />
+        </p>
       </div>
 
       {/* 선택지 */}
@@ -93,27 +101,51 @@ function AnswerOption({ option, isSelected, onSelect, disabled }: AnswerOptionPr
       >
         {option.label}
       </span>
-      <span className="flex-1 text-gray-800">{option.text}</span>
+      <span className="flex-1 text-gray-800">
+        <MathText text={option.text} />
+      </span>
     </motion.button>
   )
 }
 
+interface CategoryBadgeProps {
+  category: QuestionCategory
+}
+
+function CategoryBadge({ category }: CategoryBadgeProps) {
+  const isComputation = category === 'computation'
+  return (
+    <span
+      className={clsx(
+        'rounded-full px-2.5 py-0.5 text-xs font-medium',
+        isComputation ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
+      )}
+    >
+      {isComputation ? '연산' : '개념'}
+    </span>
+  )
+}
+
 interface DifficultyBadgeProps {
-  difficulty: string
+  difficulty: number | string
 }
 
 function DifficultyBadge({ difficulty }: DifficultyBadgeProps) {
-  const config = {
-    easy: { label: '쉬움', color: 'bg-green-100 text-green-700' },
-    medium: { label: '보통', color: 'bg-yellow-100 text-yellow-700' },
-    hard: { label: '어려움', color: 'bg-red-100 text-red-700' },
+  const lv = typeof difficulty === 'number' ? difficulty : parseInt(difficulty, 10) || 5
+
+  const getConfig = (level: number) => {
+    if (level <= 2) return { color: 'bg-green-100 text-green-700' }
+    if (level <= 4) return { color: 'bg-emerald-100 text-emerald-700' }
+    if (level <= 6) return { color: 'bg-yellow-100 text-yellow-700' }
+    if (level <= 8) return { color: 'bg-orange-100 text-orange-700' }
+    return { color: 'bg-red-100 text-red-700' }
   }
 
-  const { label, color } = config[difficulty as keyof typeof config] || config.medium
+  const { color } = getConfig(lv)
 
   return (
     <span className={clsx('rounded-full px-3 py-1 text-sm font-medium', color)}>
-      {label}
+      Lv.{lv}
     </span>
   )
 }

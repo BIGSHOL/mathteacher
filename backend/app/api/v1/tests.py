@@ -1,6 +1,6 @@
 """테스트 API 엔드포인트."""
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
@@ -13,8 +13,11 @@ from app.schemas import (
     CompleteTestResponse,
     GetAttemptResponse,
     Grade,
+    NextQuestionResponse,
     PaginatedResponse,
     QuestionResponse,
+    QuestionWithAnswer,
+    ReviewResponse,
     StartTestResponse,
     SubmitAnswerRequest,
     SubmitAnswerResponse,
@@ -23,11 +26,13 @@ from app.schemas import (
     TestWithQuestionsResponse,
     UserResponse,
     AnswerLogResponse,
+    WrongQuestionItem,
 )
 from app.schemas.common import UserRole
 from app.services.test_service import TestService
 from app.services.grading_service import GradingService
 from app.services.gamification_service import GamificationService
+from app.services.adaptive_service import AdaptiveService
 from app.api.v1.auth import get_current_user, require_role
 
 router = APIRouter(prefix="/tests", tags=["tests"])
@@ -46,6 +51,11 @@ def get_grading_service(db: Session = Depends(get_db)) -> GradingService:
 def get_gamification_service(db: Session = Depends(get_db)) -> GamificationService:
     """게이미피케이션 서비스 의존성."""
     return GamificationService(db)
+
+
+def get_adaptive_service(db: Session = Depends(get_db)) -> AdaptiveService:
+    """적응형 서비스 의존성."""
+    return AdaptiveService(db)
 
 
 @router.get("/available", response_model=ApiResponse[PaginatedResponse[AvailableTestResponse]])
@@ -79,6 +89,7 @@ async def get_available_tests(
                 question_count=test.question_count,
                 time_limit_minutes=test.time_limit_minutes,
                 is_active=test.is_active,
+                is_adaptive=test.is_adaptive,
                 created_at=test.created_at,
                 is_completed=r["is_completed"],
                 best_score=r["best_score"],
@@ -94,6 +105,95 @@ async def get_available_tests(
             page_size=page_size,
             total_pages=total_pages,
         )
+    )
+
+
+@router.get("/review/wrong-questions", response_model=ApiResponse[ReviewResponse])
+async def get_wrong_questions(
+    current_user: UserResponse = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """틀렸던 문제 목록 조회 (복습용)."""
+    from app.models.answer_log import AnswerLog
+    from app.models.test_attempt import TestAttempt
+    from sqlalchemy import select, func, desc
+
+    # 학생의 오답 중 가장 최근 기록을 question_id별로 조회
+    # 서브쿼리: 각 문제별 오답 횟수와 최근 기록
+    wrong_subq = (
+        select(
+            AnswerLog.question_id,
+            func.count(AnswerLog.id).label("wrong_count"),
+            func.max(AnswerLog.created_at).label("last_attempted_at"),
+        )
+        .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
+        .where(
+            TestAttempt.student_id == current_user.id,
+            AnswerLog.is_correct == False,  # noqa: E712
+        )
+        .group_by(AnswerLog.question_id)
+        .subquery()
+    )
+
+    # 이미 정답을 맞힌 문제는 제외 (최근 시도에서 맞힌 것)
+    correct_subq = (
+        select(AnswerLog.question_id)
+        .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
+        .where(
+            TestAttempt.student_id == current_user.id,
+            AnswerLog.is_correct == True,  # noqa: E712
+        )
+        .distinct()
+        .subquery()
+    )
+
+    # 오답 문제 조회 (정답 맞힌 적 없는 것만)
+    stmt = (
+        select(Question, wrong_subq.c.wrong_count, wrong_subq.c.last_attempted_at)
+        .join(wrong_subq, Question.id == wrong_subq.c.question_id)
+        .where(Question.id.notin_(select(correct_subq.c.question_id)))
+        .order_by(desc(wrong_subq.c.wrong_count))
+    )
+
+    results = db.execute(stmt).all()
+
+    items = []
+    for question, wrong_count, last_attempted_at in results:
+        # 해당 문제의 가장 최근 오답 선택지 조회
+        last_answer_stmt = (
+            select(AnswerLog.selected_answer)
+            .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
+            .where(
+                TestAttempt.student_id == current_user.id,
+                AnswerLog.question_id == question.id,
+                AnswerLog.is_correct == False,  # noqa: E712
+            )
+            .order_by(desc(AnswerLog.created_at))
+            .limit(1)
+        )
+        last_selected = db.scalar(last_answer_stmt) or ""
+
+        items.append(
+            WrongQuestionItem(
+                question=QuestionWithAnswer(
+                    id=question.id,
+                    concept_id=question.concept_id,
+                    question_type=question.question_type,
+                    difficulty=question.difficulty,
+                    content=question.content,
+                    options=question.options,
+                    explanation=question.explanation,
+                    points=question.points,
+                    correct_answer=question.correct_answer,
+                ),
+                wrong_count=wrong_count,
+                last_selected_answer=last_selected,
+                last_attempted_at=last_attempted_at,
+            )
+        )
+
+    return ApiResponse(
+        data=ReviewResponse(items=items, total=len(items))
     )
 
 
@@ -160,9 +260,100 @@ async def start_test(
     test_id: str,
     current_user: UserResponse = Depends(get_current_user),
     test_service: TestService = Depends(get_test_service),
+    adaptive_service: AdaptiveService = Depends(get_adaptive_service),
+    db: Session = Depends(get_db),
 ):
     """테스트 시작."""
-    # 테스트 존재 확인
+    from app.models.test import Test as TestModel
+
+    test = db.get(TestModel, test_id)
+    if not test or not test.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "테스트를 찾을 수 없습니다.",
+                },
+            },
+        )
+
+    if test.is_adaptive:
+        # 적응형 테스트: 첫 문제만 선택
+        first_question = adaptive_service.select_first_question(test, current_user.id)
+        if not first_question:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail={
+                    "success": False,
+                    "error": {
+                        "code": "NO_QUESTIONS",
+                        "message": "출제할 문제가 없습니다.",
+                    },
+                },
+            )
+
+        initial_diff = adaptive_service.get_initial_difficulty_for(test, current_user.id)
+
+        # 시도 생성
+        attempt = test_service.start_test(test_id, current_user.id)
+        if not attempt:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail={
+                    "success": False,
+                    "error": {
+                        "code": "INTERNAL_ERROR",
+                        "message": "테스트 시작에 실패했습니다.",
+                    },
+                },
+            )
+
+        # 적응형 필드 설정
+        attempt.is_adaptive = True
+        attempt.initial_difficulty = initial_diff
+        attempt.current_difficulty = initial_diff
+        attempt.adaptive_question_ids = [first_question.id]
+        attempt.max_score = first_question.points  # 첫 문제 점수로 시작
+        db.commit()
+
+        question_responses = [
+            QuestionResponse(
+                id=first_question.id,
+                concept_id=first_question.concept_id,
+                question_type=first_question.question_type,
+                difficulty=first_question.difficulty,
+                content=first_question.content,
+                options=first_question.options,
+                explanation="",
+                points=first_question.points,
+            )
+        ]
+
+        return ApiResponse(
+            data=StartTestResponse(
+                attempt_id=attempt.id,
+                test=TestWithQuestionsResponse(
+                    id=test.id,
+                    title=test.title,
+                    description=test.description,
+                    grade=test.grade,
+                    concept_ids=test.concept_ids,
+                    question_count=test.question_count,
+                    time_limit_minutes=test.time_limit_minutes,
+                    is_active=test.is_active,
+                    is_adaptive=True,
+                    created_at=test.created_at,
+                    questions=question_responses,
+                ),
+                started_at=attempt.started_at,
+                is_adaptive=True,
+                current_difficulty=initial_diff,
+            )
+        )
+
+    # 고정형 테스트 (기존 로직)
     result = test_service.get_test_with_questions(test_id)
     if not result:
         raise HTTPException(
@@ -176,7 +367,6 @@ async def start_test(
             },
         )
 
-    # 시도 생성
     attempt = test_service.start_test(test_id, current_user.id)
     if not attempt:
         raise HTTPException(
@@ -190,10 +380,9 @@ async def start_test(
             },
         )
 
-    test = result["test"]
+    test_data = result["test"]
     questions = result["questions"]
 
-    # 정답 제외한 문제 목록
     question_responses = [
         QuestionResponse(
             id=q.id,
@@ -212,15 +401,16 @@ async def start_test(
         data=StartTestResponse(
             attempt_id=attempt.id,
             test=TestWithQuestionsResponse(
-                id=test.id,
-                title=test.title,
-                description=test.description,
-                grade=test.grade,
-                concept_ids=test.concept_ids,
-                question_count=test.question_count,
-                time_limit_minutes=test.time_limit_minutes,
-                is_active=test.is_active,
-                created_at=test.created_at,
+                id=test_data.id,
+                title=test_data.title,
+                description=test_data.description,
+                grade=test_data.grade,
+                concept_ids=test_data.concept_ids,
+                question_count=test_data.question_count,
+                time_limit_minutes=test_data.time_limit_minutes,
+                is_active=test_data.is_active,
+                is_adaptive=False,
+                created_at=test_data.created_at,
                 questions=question_responses,
             ),
             started_at=attempt.started_at,
@@ -320,7 +510,123 @@ async def submit_answer(
         current_combo=current_combo,
     )
 
+    # 적응형이면 다음 난이도 힌트 추가
+    if attempt.is_adaptive:
+        adaptive_svc = AdaptiveService(db)
+        result["next_difficulty"] = adaptive_svc.peek_next_difficulty(attempt)
+
     return ApiResponse(data=SubmitAnswerResponse(**result))
+
+
+@router.post(
+    "/attempts/{attempt_id}/next",
+    response_model=ApiResponse[NextQuestionResponse],
+)
+async def get_next_question(
+    attempt_id: str,
+    current_user: UserResponse = Depends(get_current_user),
+    test_service: TestService = Depends(get_test_service),
+    adaptive_service: AdaptiveService = Depends(get_adaptive_service),
+):
+    """적응형 테스트 다음 문제 조회."""
+    attempt = test_service.get_attempt_by_id(attempt_id)
+    if not attempt:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "시도를 찾을 수 없습니다.",
+                },
+            },
+        )
+
+    if attempt.student_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "FORBIDDEN",
+                    "message": "접근 권한이 없습니다.",
+                },
+            },
+        )
+
+    if not attempt.is_adaptive:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NOT_ADAPTIVE",
+                    "message": "적응형 테스트가 아닙니다.",
+                },
+            },
+        )
+
+    if attempt.completed_at:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "ALREADY_COMPLETED",
+                    "message": "이미 완료된 테스트입니다.",
+                },
+            },
+        )
+
+    answered_count = len(attempt.adaptive_question_ids or [])
+    questions_remaining = attempt.total_count - answered_count
+
+    # 이미 모든 문제 출제됨
+    if questions_remaining <= 0:
+        return ApiResponse(
+            data=NextQuestionResponse(
+                question=None,
+                current_difficulty=attempt.current_difficulty or 6,
+                questions_answered=answered_count,
+                questions_remaining=0,
+                is_complete=True,
+            )
+        )
+
+    question, target_difficulty = adaptive_service.select_next_question(attempt)
+
+    if not question:
+        return ApiResponse(
+            data=NextQuestionResponse(
+                question=None,
+                current_difficulty=target_difficulty,
+                questions_answered=answered_count,
+                questions_remaining=0,
+                is_complete=True,
+            )
+        )
+
+    new_answered = len(attempt.adaptive_question_ids or [])
+    new_remaining = attempt.total_count - new_answered
+
+    return ApiResponse(
+        data=NextQuestionResponse(
+            question=QuestionResponse(
+                id=question.id,
+                concept_id=question.concept_id,
+                question_type=question.question_type,
+                difficulty=question.difficulty,
+                content=question.content,
+                options=question.options,
+                explanation="",
+                points=question.points,
+            ),
+            current_difficulty=target_difficulty,
+            questions_answered=new_answered,
+            questions_remaining=new_remaining,
+            is_complete=False,
+        )
+    )
 
 
 @router.post(
@@ -381,11 +687,23 @@ async def complete_test(
     # 사용자 게이미피케이션 업데이트
     from app.models.user import User
     user = db.get(User, current_user.id)
-    today = datetime.now(timezone.utc).date().isoformat()
+    KST = timezone(timedelta(hours=9))
+    today = datetime.now(KST).date().isoformat()
+
+    # 적응형 테스트이면 최종 난이도 기반 레벨 반영
+    adaptive_result = None
+    if completed_attempt.is_adaptive and completed_attempt.current_difficulty:
+        adaptive_result = {
+            "final_difficulty": completed_attempt.current_difficulty,
+            "correct_count": completed_attempt.correct_count,
+            "total_count": completed_attempt.total_count,
+        }
+
     gamification_result = gamification_service.update_user_gamification(
         user=user,
         xp_earned=completed_attempt.xp_earned,
         today=today,
+        adaptive_result=adaptive_result,
     )
 
     # 답안 기록 조회
@@ -397,9 +715,14 @@ async def complete_test(
             attempt=TestAttemptResponse.model_validate(completed_attempt),
             answers=[AnswerLogResponse.model_validate(log) for log in answer_logs],
             level_up=gamification_result["level_up"],
+            level_down=gamification_result.get("level_down", False),
             new_level=gamification_result["new_level"],
             xp_earned=completed_attempt.xp_earned,
+            total_xp=gamification_result.get("total_xp"),
+            current_streak=gamification_result.get("current_streak"),
             achievements_earned=[],  # TODO: 업적 시스템 구현
+            level_down_defense=gamification_result.get("level_down_defense"),
+            level_down_action=gamification_result.get("level_down_action", "none"),
         )
     )
 
@@ -409,6 +732,7 @@ async def get_attempt(
     attempt_id: str,
     current_user: UserResponse = Depends(get_current_user),
     test_service: TestService = Depends(get_test_service),
+    db: Session = Depends(get_db),
 ):
     """시도 결과 조회."""
     details = test_service.get_attempt_with_details(attempt_id)
@@ -439,10 +763,52 @@ async def get_attempt(
             },
         )
 
+    # 문제 포함 테스트 정보 조회
+    test = details["test"]
+
+    if attempt.is_adaptive and attempt.adaptive_question_ids:
+        # 적응형: adaptive_question_ids 순서대로 문제 복원
+        q_ids = attempt.adaptive_question_ids
+        q_map = {}
+        for qid in q_ids:
+            q = db.get(Question, qid)
+            if q:
+                q_map[qid] = q
+        questions = [q_map[qid] for qid in q_ids if qid in q_map]
+    else:
+        test_with_questions = test_service.get_test_with_questions(test.id)
+        questions = test_with_questions["questions"] if test_with_questions else []
+
+    question_responses = [
+        QuestionResponse(
+            id=q.id,
+            concept_id=q.concept_id,
+            question_type=q.question_type,
+            difficulty=q.difficulty,
+            content=q.content,
+            options=q.options,
+            explanation="" if not attempt.completed_at else q.explanation,
+            points=q.points,
+        )
+        for q in questions
+    ]
+
     return ApiResponse(
         data=GetAttemptResponse(
             attempt=TestAttemptResponse.model_validate(attempt),
             answers=[AnswerLogResponse.model_validate(log) for log in details["answer_logs"]],
-            test=TestResponse.model_validate(details["test"]),
+            test=TestWithQuestionsResponse(
+                id=test.id,
+                title=test.title,
+                description=test.description,
+                grade=test.grade,
+                concept_ids=test.concept_ids,
+                question_count=test.question_count,
+                time_limit_minutes=test.time_limit_minutes,
+                is_active=test.is_active,
+                is_adaptive=test.is_adaptive,
+                created_at=test.created_at,
+                questions=question_responses,
+            ),
         )
     )

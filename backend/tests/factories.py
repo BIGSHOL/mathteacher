@@ -66,7 +66,7 @@ class QuestionFactory(factory.Factory):
     id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
     concept_id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
     question_type = QuestionType.MULTIPLE_CHOICE
-    difficulty = Difficulty.MEDIUM
+    difficulty = 5
     content = Faker("paragraph")
     options = factory.LazyFunction(
         lambda: [

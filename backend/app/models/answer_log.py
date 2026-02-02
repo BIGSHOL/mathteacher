@@ -38,6 +38,12 @@ class AnswerLog(Base):
     combo_count: Mapped[int] = mapped_column(Integer, default=0)
     points_earned: Mapped[int] = mapped_column(Integer, default=0)
 
+    # 적응형 난이도 스냅샷
+    question_difficulty: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    question_category: Mapped[str | None] = mapped_column(
+        String(20), nullable=True, comment="문제 카테고리 스냅샷: computation | concept"
+    )
+
     # 타임스탬프
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()

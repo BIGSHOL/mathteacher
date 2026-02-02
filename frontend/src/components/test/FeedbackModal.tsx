@@ -1,6 +1,10 @@
 // 피드백 모달 컴포넌트
 
+import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+const correctSound = new Audio('/sounds/correct.mp3')
+const wrongSound = new Audio('/sounds/wrong.mp3')
 
 interface FeedbackModalProps {
   isOpen: boolean
@@ -8,8 +12,14 @@ interface FeedbackModalProps {
   correctAnswer: string
   explanation: string
   pointsEarned: number
+  timeBonus?: number
   comboCount: number
   isLastQuestion: boolean
+  isTimeUp?: boolean
+  /** 시간초과/오답 시 다음 난이도 (하락 경고 표시용) */
+  nextDifficulty?: number
+  /** 현재 난이도 (하락 경고 비교용) */
+  currentDifficulty?: number
   onNext: () => void
 }
 
@@ -19,10 +29,25 @@ export function FeedbackModal({
   correctAnswer,
   explanation,
   pointsEarned,
+  timeBonus = 0,
   comboCount,
   isLastQuestion,
+  isTimeUp = false,
+  nextDifficulty,
+  currentDifficulty,
   onNext,
 }: FeedbackModalProps) {
+  const prevOpen = useRef(false)
+
+  useEffect(() => {
+    if (isOpen && !prevOpen.current) {
+      const sound = isCorrect ? correctSound : wrongSound
+      sound.currentTime = 0
+      sound.play().catch(() => {})
+    }
+    prevOpen.current = isOpen
+  }, [isOpen, isCorrect])
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -56,7 +81,7 @@ export function FeedbackModal({
             {/* 헤더 */}
             <div
               className={`p-6 text-center ${
-                isCorrect ? 'bg-correct text-white' : 'bg-incorrect text-white'
+                isTimeUp ? 'bg-gray-700 text-white' : isCorrect ? 'bg-correct text-white' : 'bg-incorrect text-white'
               }`}
             >
               <motion.div
@@ -68,13 +93,15 @@ export function FeedbackModal({
                 transition={{ type: 'spring', duration: 0.5 }}
                 className="mb-2 text-6xl"
               >
-                {isCorrect ? '🎉' : '😢'}
+                {isTimeUp ? '⏰' : isCorrect ? '🎉' : '😢'}
               </motion.div>
-              <h2 className="text-2xl font-bold">{isCorrect ? '정답!' : '아쉬워요'}</h2>
+              <h2 className="text-2xl font-bold">
+                {isTimeUp ? '시간 초과!' : isCorrect ? '정답!' : '아쉬워요'}
+              </h2>
 
-              {/* 콤보 & 점수 */}
+              {/* 콤보 & 점수 & 시간보너스 */}
               {isCorrect && (
-                <div className="mt-4 flex justify-center gap-4">
+                <div className="mt-4 flex flex-wrap justify-center gap-3">
                   {comboCount > 1 && (
                     <motion.div
                       initial={{ scale: 0 }}
@@ -92,12 +119,38 @@ export function FeedbackModal({
                   >
                     +<span className="font-bold">{pointsEarned}</span>점
                   </motion.div>
+                  {timeBonus > 0 && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="rounded-full bg-yellow-400/30 px-4 py-1"
+                    >
+                      +<span className="font-bold">{timeBonus}</span> 시간 보너스
+                    </motion.div>
+                  )}
                 </div>
               )}
             </div>
 
             {/* 내용 */}
             <div className="p-6">
+              {/* 시간초과/오답 시 난이도 하락 경고 */}
+              {!isCorrect && nextDifficulty !== undefined && currentDifficulty !== undefined && nextDifficulty < currentDifficulty && (
+                <motion.div
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-4 rounded-xl bg-red-50 border border-red-200 p-3 text-center"
+                >
+                  <span className="text-red-600 font-semibold text-sm">
+                    📉 난이도 하락: Lv.{currentDifficulty} → Lv.{nextDifficulty}
+                  </span>
+                  {isTimeUp && (
+                    <p className="text-xs text-red-500 mt-1">시간 안에 풀지 못하면 난이도가 내려갑니다!</p>
+                  )}
+                </motion.div>
+              )}
+
               {/* 정답 표시 (오답일 때) */}
               {!isCorrect && (
                 <div className="mb-4 rounded-xl bg-gray-100 p-4">

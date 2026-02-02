@@ -1,16 +1,29 @@
 // 테스트 목록 페이지
 
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { clsx } from 'clsx'
 import api from '../../lib/api'
-import type { AvailableTest, PaginatedResponse } from '../../types'
+import type { AvailableTest, PaginatedResponse, QuestionCategory } from '../../types'
+
+type CategoryFilter = 'all' | QuestionCategory
+
+const CATEGORY_TABS: { key: CategoryFilter; label: string; icon: string }[] = [
+  { key: 'all', label: '전체', icon: '📋' },
+  { key: 'computation', label: '연산', icon: '🧮' },
+  { key: 'concept', label: '개념', icon: '📚' },
+]
 
 export function TestListPage() {
   const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
   const [tests, setTests] = useState<AvailableTest[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const initialCategory = (searchParams.get('category') as CategoryFilter) || 'all'
+  const [activeCategory, setActiveCategory] = useState<CategoryFilter>(initialCategory)
 
   useEffect(() => {
     fetchTests()
@@ -29,6 +42,19 @@ export function TestListPage() {
       setIsLoading(false)
     }
   }
+
+  const handleCategoryChange = (category: CategoryFilter) => {
+    setActiveCategory(category)
+    if (category === 'all') {
+      setSearchParams({})
+    } else {
+      setSearchParams({ category })
+    }
+  }
+
+  const filteredTests = activeCategory === 'all'
+    ? tests
+    : tests.filter((t) => t.category === activeCategory)
 
   const handleStartTest = (testId: string) => {
     navigate(`/test/${testId}`)
@@ -64,20 +90,40 @@ export function TestListPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6"
         >
           <h1 className="text-2xl font-bold text-gray-900">오늘의 테스트</h1>
           <p className="text-gray-600">풀 수 있는 테스트를 선택하세요</p>
         </motion.div>
 
-        {tests.length === 0 ? (
+        {/* 카테고리 필터 탭 */}
+        <div className="mb-6 flex gap-2">
+          {CATEGORY_TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => handleCategoryChange(tab.key)}
+              className={clsx(
+                'flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all',
+                activeCategory === tab.key
+                  ? 'bg-primary-500 text-white shadow-sm'
+                  : 'bg-white text-gray-600 hover:bg-gray-100'
+              )}
+            >
+              <span>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {filteredTests.length === 0 ? (
           <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
-            <div className="mb-4 text-4xl">📚</div>
+            <div className="mb-4 text-5xl">📚</div>
+            <h2 className="mb-2 text-xl font-semibold text-gray-900">테스트가 없습니다</h2>
             <p className="text-gray-600">현재 풀 수 있는 테스트가 없습니다.</p>
           </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {tests.map((test, index) => (
+            {filteredTests.map((test, index) => (
               <TestCard
                 key={test.id}
                 test={test}
@@ -115,7 +161,24 @@ function TestCard({ test, index, onStart }: TestCardProps) {
       <div className="p-6">
         <div className="mb-4 flex items-start justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{test.title}</h3>
+            <div className="flex items-center gap-2 flex-wrap">
+              <h3 className="text-lg font-semibold text-gray-900">{test.title}</h3>
+              {test.category && (
+                <span className={clsx(
+                  'rounded-full px-2 py-0.5 text-xs font-medium',
+                  test.category === 'computation'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'bg-emerald-100 text-emerald-700'
+                )}>
+                  {test.category === 'computation' ? '연산' : '개념'}
+                </span>
+              )}
+              {test.is_adaptive && (
+                <span className="rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">
+                  적응형
+                </span>
+              )}
+            </div>
             <p className="mt-1 text-sm text-gray-600">{test.description}</p>
           </div>
           {test.is_completed && (

@@ -2,14 +2,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
-import { TestListPage, TestStartPage, TestPlayPage, TestResultPage, MyStatsPage } from './pages/student'
-import { TeacherDashboardPage, TeacherStudentsListPage } from './pages/teacher'
+import { TestListPage, TestStartPage, TestPlayPage, TestResultPage, MyStatsPage, ReviewPage, QuickPracticeSetupPage } from './pages/student'
+import { TeacherDashboardPage, TeacherStudentsListPage, TeacherStudentDetailPage } from './pages/teacher'
+import { UserManagementPage } from './pages/admin'
 import { MainLayout } from './components/layout'
 import { ProtectedRoute, PublicRoute } from './components/auth'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         {/* 공개 페이지 */}
         <Route
@@ -69,12 +70,28 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/review"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <ReviewPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/practice"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <QuickPracticeSetupPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* 강사용 라우트 */}
           <Route
             path="/teacher/dashboard"
             element={
-              <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+              <ProtectedRoute allowedRoles={['teacher', 'admin', 'master']}>
                 <TeacherDashboardPage />
               </ProtectedRoute>
             }
@@ -82,8 +99,26 @@ function App() {
           <Route
             path="/teacher/students"
             element={
-              <ProtectedRoute allowedRoles={['teacher', 'admin']}>
+              <ProtectedRoute allowedRoles={['teacher', 'admin', 'master']}>
                 <TeacherStudentsListPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/teacher/students/:studentId"
+            element={
+              <ProtectedRoute allowedRoles={['teacher', 'admin', 'master']}>
+                <TeacherStudentDetailPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* 관리자용 라우트 */}
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'master']}>
+                <UserManagementPage />
               </ProtectedRoute>
             }
           />
