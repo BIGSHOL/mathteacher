@@ -41,6 +41,7 @@ export default {
       },
       fontFamily: {
         sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        math: ['Roboto Mono', 'Consolas', 'Monaco', 'monospace'],
       },
       animation: {
         'bounce-once': 'bounce 0.5s ease-in-out 1',

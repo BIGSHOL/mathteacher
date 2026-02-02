@@ -38,8 +38,19 @@ export function FeedbackModal({
           {/* 모달 */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 50 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              y: 0,
+              // 오답일 때 흔들림 효과
+              x: isCorrect ? 0 : [0, -10, 10, -10, 10, -5, 5, 0]
+            }}
             exit={{ opacity: 0, scale: 0.9, y: 50 }}
+            transition={{
+              type: 'spring',
+              duration: 0.5,
+              x: { duration: 0.5, ease: 'easeInOut' }
+            }}
             className="fixed inset-x-4 bottom-0 z-50 mx-auto max-w-lg overflow-hidden rounded-t-3xl bg-white shadow-2xl md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:rounded-3xl"
           >
             {/* 헤더 */}
@@ -49,8 +60,11 @@ export function FeedbackModal({
               }`}
             >
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                initial={{ scale: 0, rotate: isCorrect ? 0 : -10 }}
+                animate={{
+                  scale: 1,
+                  rotate: isCorrect ? 0 : [0, -5, 5, -5, 5, 0]
+                }}
                 transition={{ type: 'spring', duration: 0.5 }}
                 className="mb-2 text-6xl"
               >
@@ -144,12 +158,27 @@ export function IncorrectFeedback({
   explanation: string
 }) {
   return (
-    <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0, x: 0 }}
+      animate={{
+        scale: 1,
+        opacity: 1,
+        x: [0, -8, 8, -8, 8, -4, 4, 0] // 흔들림 효과
+      }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="mb-4 text-center text-6xl">😢</div>
       <h3 className="mb-4 text-center text-2xl font-bold text-incorrect">아쉬워요</h3>
-      <div className="rounded-xl bg-gray-100 p-4">
-        <div className="mb-2 text-sm text-gray-500">정답: {correctAnswer}</div>
-        {explanation && <p className="text-gray-700">{explanation}</p>}
+      <div className="rounded-xl bg-red-50 border border-red-200 p-4">
+        <div className="mb-2 flex items-center gap-2 text-sm text-gray-500">
+          {/* 에러 아이콘 */}
+          <svg className="h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+          </svg>
+          정답
+        </div>
+        <div className="text-lg font-bold text-gray-900 font-math">{correctAnswer}</div>
+        {explanation && <p className="mt-2 text-gray-700">{explanation}</p>}
       </div>
     </motion.div>
   )

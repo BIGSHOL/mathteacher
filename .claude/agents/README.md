@@ -2,7 +2,8 @@
 
 > **Project**: math-test (수학 테스트 앱)
 > **Updated**: 2026-02-02
-> **Structure**: 11 Teams, 62 Agents + 1 Director Command
+> **Structure**: 12 Teams, 68 Agents + 1 Director Command
+> **Curriculum**: 2022 개정 교육과정 (한국)
 
 ---
 
@@ -11,6 +12,7 @@
 ```
 refactor (Director Command, opus model)
 |
+|-- Math Team (math-lead) .................. 6 agents  ⭐ 핵심팀
 |-- Frontend Team (frontend-lead) .......... 6 agents
 |-- Backend Team (backend-lead) ............ 7 agents
 |-- Database Team (database-lead) .......... 6 agents
@@ -41,6 +43,26 @@ Agents: `.claude/agents/*.md` (sonnet model, subagent_type for Task)
 ---
 
 ## Team Details
+
+### 0. Math Team (math-lead) ⭐
+
+> 2022 개정 교육과정 기반 수학 콘텐츠 전담팀
+
+| Agent | Role |
+|-------|------|
+| math-lead | Team lead. 수학 콘텐츠 총괄 |
+| problem-designer | 문제 설계/출제 |
+| difficulty-calibrator | 난이도 분석/조정 |
+| concept-mapper | 개념 체계/선수학습 매핑 |
+| solution-validator | 정답/풀이 검증 |
+| adaptive-learning-specialist | 적응형 학습 알고리즘 |
+
+Access: `backend/app/models/` (문제, 개념), 문제 데이터
+
+**교육과정 범위:**
+- 초등 (1-6학년): 수와 연산, 도형과 측정, 변화와 관계, 자료와 가능성
+- 중등 (7-9학년): 수와 연산, 문자와 식, 함수, 기하, 확률과 통계
+- 고등 (10-12학년): 공통수학, 대수, 미적분, 기하, 확률과 통계
 
 ### 1. Frontend Team (frontend-lead)
 
@@ -215,10 +237,13 @@ Some agents serve on multiple teams:
 | P1 (high) | New feature | Frontend + Backend + DB |
 | P1 (high) | Performance issue | Cost Optimization + Debug |
 | P1 (high) | Data migration | Migration + DB |
+| **P1 (high)** | **문제 출제/검증** | **Math** |
+| **P1 (high)** | **교육과정 매핑** | **Math + Content** |
 | P2 (medium) | UI/UX improvement | Design + Frontend |
 | P2 (medium) | Refactoring | Review + related teams |
 | P2 (medium) | Content update | Content |
 | P2 (medium) | Test writing | Test |
+| **P2 (medium)** | **난이도 조정** | **Math** |
 | P3 (low) | Documentation | Review (doc-writer) |
 
 ---
@@ -243,6 +268,11 @@ Task(subagent_type="gamification-designer", prompt="Design level-up animation")
 
 | Situation | Agent/Team |
 |-----------|-----------|
+| **수학 문제 출제** | problem-designer / math-lead |
+| **난이도 조정** | difficulty-calibrator |
+| **개념 체계 설계** | concept-mapper |
+| **풀이 검증** | solution-validator |
+| **적응형 학습** | adaptive-learning-specialist |
 | Code review | code-reviewer |
 | Bug fix | bug-hunter / debug-lead |
 | New API endpoint | api-designer / fastapi-architect |
@@ -261,7 +291,18 @@ Task(subagent_type="gamification-designer", prompt="Design level-up animation")
 
 ## Changelog
 
-### v2.1 (2026-02-02) - Current
+### v2.2 (2026-02-02) - Current
+- **Added Math Team (수학팀)** - 2022 개정 교육과정 기반
+- New agents (6):
+  - math-lead (팀장)
+  - problem-designer (문제 설계)
+  - difficulty-calibrator (난이도 조정)
+  - concept-mapper (개념 매핑)
+  - solution-validator (풀이 검증)
+  - adaptive-learning-specialist (적응형 학습)
+- Total: 12 teams, 68 agents
+
+### v2.1 (2026-02-02)
 - **Migrated from Firebase to FastAPI + PostgreSQL**
 - Removed 11 Firebase-specific agents:
   - firebase-cost-optimizer, firebase-debugger, firestore-rules-specialist

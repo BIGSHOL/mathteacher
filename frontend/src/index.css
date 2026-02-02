@@ -2,33 +2,58 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Pretendard 폰트 */
+/* Pretendard 폰트 - woff2 우선, font-display: swap 적용 */
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Medium.woff') format('woff');
   font-weight: 500;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff') format('woff');
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-SemiBold.woff') format('woff');
   font-weight: 600;
   font-style: normal;
+  font-display: swap;
 }
 
 @font-face {
   font-family: 'Pretendard';
-  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
+  src: url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2'),
+       url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Bold.woff') format('woff');
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
+}
+
+/* Roboto Mono - 수학 수식 및 숫자용 */
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_3vq_ROW4.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Roboto Mono';
+  src: url('https://fonts.gstatic.com/s/robotomono/v23/L0xuDF4xlVMF-BfR8bXMIhJHg45mwgGEFl0_gPu_ROW4.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
 @layer base {
@@ -39,30 +64,46 @@
   body {
     @apply bg-gray-50 text-gray-900 antialiased;
   }
+
+  /* 개선된 포커스 스타일 - 3px 링, 고가시성 */
+  *:focus-visible {
+    @apply outline-none ring-[3px] ring-primary-500 ring-offset-2;
+  }
 }
 
 @layer components {
   /* 버튼 기본 스타일 */
   .btn {
     @apply inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200;
-    @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+    @apply focus:outline-none focus-visible:ring-[3px] focus-visible:ring-offset-2;
     @apply disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply min-h-[48px]; /* 접근성: 최소 터치 타겟 */
   }
 
   .btn-primary {
     @apply btn bg-primary-500 text-white hover:bg-primary-600;
-    @apply focus:ring-primary-500 active:bg-primary-700;
+    @apply focus-visible:ring-primary-500 active:bg-primary-700;
     @apply shadow-lg shadow-primary-500/30 hover:shadow-xl hover:shadow-primary-500/40;
   }
 
   .btn-secondary {
     @apply btn bg-secondary-500 text-white hover:bg-secondary-600;
-    @apply focus:ring-secondary-500 active:bg-secondary-700;
+    @apply focus-visible:ring-secondary-500 active:bg-secondary-700;
   }
 
   .btn-outline {
     @apply btn border-2 border-primary-500 text-primary-500 bg-transparent;
-    @apply hover:bg-primary-50 focus:ring-primary-500;
+    @apply hover:bg-primary-50 focus-visible:ring-primary-500;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-gray-600 hover:bg-gray-100;
+    @apply focus-visible:ring-gray-400;
+  }
+
+  /* Large 버튼 - 56px 높이 (디자인 명세) */
+  .btn-lg {
+    @apply min-h-[56px] px-8 py-4 text-lg;
   }
 
   /* 카드 스타일 */
@@ -74,8 +115,15 @@
   /* 입력 필드 */
   .input {
     @apply w-full px-4 py-3 rounded-xl border border-gray-200;
-    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+    @apply focus:outline-none focus-visible:ring-[3px] focus-visible:ring-primary-500 focus:border-transparent;
     @apply transition-all duration-200;
+    @apply min-h-[48px]; /* 접근성: 최소 터치 타겟 */
+  }
+
+  /* 에러 상태 입력 필드 */
+  .input-error {
+    @apply input border-red-500;
+    @apply focus-visible:ring-red-500;
   }
 
   /* 게이미피케이션 배지 */
@@ -92,5 +140,60 @@
   .badge-level {
     @apply inline-flex items-center px-3 py-1 rounded-full;
     @apply bg-purple-100 text-purple-700 font-semibold text-sm;
+  }
+
+  /* 수학 수식/숫자 전용 폰트 */
+  .font-math {
+    font-family: 'Roboto Mono', 'Consolas', monospace;
+  }
+
+  /* 점수/레벨 표시용 대형 숫자 */
+  .score-display {
+    font-family: 'Roboto Mono', monospace;
+    @apply text-4xl font-bold tabular-nums;
+  }
+
+  /* 오답 흔들림 애니메이션 */
+  .animate-shake {
+    animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  }
+
+  /* 콤보 x5 테두리 글로우 효과 */
+  .combo-glow-5 {
+    box-shadow: 0 0 20px rgba(249, 115, 22, 0.5), 0 0 40px rgba(249, 115, 22, 0.3);
+  }
+
+  /* 콤보 x10 무적모드 효과 */
+  .combo-glow-10 {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4);
+    animation: pulse-glow 1s ease-in-out infinite;
+  }
+}
+
+@layer utilities {
+  /* 하단 안전 영역 (노치 대응) */
+  .h-safe-area-inset-bottom {
+    height: env(safe-area-inset-bottom, 0px);
+  }
+
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* 키프레임 애니메이션 */
+@keyframes shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(139, 92, 246, 0.6), 0 0 60px rgba(139, 92, 246, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(139, 92, 246, 0.8), 0 0 80px rgba(139, 92, 246, 0.5);
   }
 }
