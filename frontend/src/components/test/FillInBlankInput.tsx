@@ -25,7 +25,9 @@ export function FillInBlankInput({
     const blankIds = Object.keys(blankAnswers)
     if (blankIds.length > 0 && !disabled) {
       const firstBlankId = blankIds[0]
-      inputRefs.current[firstBlankId]?.focus()
+      if (firstBlankId) {
+        inputRefs.current[firstBlankId]?.focus()
+      }
     }
   }, [blankAnswers, disabled])
 
@@ -45,7 +47,9 @@ export function FillInBlankInput({
 
       if (nextIndex >= 0 && nextIndex < blankIds.length) {
         const nextBlankId = blankIds[nextIndex]
-        inputRefs.current[nextBlankId]?.focus()
+        if (nextBlankId) {
+          inputRefs.current[nextBlankId]?.focus()
+        }
       }
     }
   }
@@ -68,31 +72,34 @@ export function FillInBlankInput({
   return (
     <div className="fill-in-blank-container space-y-4">
       <div className="text-lg leading-relaxed">
-        {parts.map((part, index) => (
-          <span key={index}>
-            <span className="whitespace-pre-wrap">{part}</span>
-            {index < blankIds.length && (
-              <span className="inline-flex items-baseline mx-1">
-                <input
-                  ref={(el) => {
-                    inputRefs.current[blankIds[index]] = el
-                  }}
-                  type="text"
-                  value={values[blankIds[index]] || ''}
-                  onChange={(e) => onChange(blankIds[index], e.target.value)}
-                  onKeyDown={(e) => handleKeyDown(e, blankIds[index])}
-                  disabled={disabled}
-                  className={clsx(
-                    'inline-block w-24 px-2 py-1 text-center border-b-2 bg-transparent transition-colors',
-                    'focus:outline-none',
-                    getInputStyle(blankIds[index])
-                  )}
-                  placeholder="___"
-                />
-              </span>
-            )}
-          </span>
-        ))}
+        {parts.map((part, index) => {
+          const blankId = blankIds[index]
+          return (
+            <span key={index}>
+              <span className="whitespace-pre-wrap">{part}</span>
+              {index < blankIds.length && blankId && (
+                <span className="inline-flex items-baseline mx-1">
+                  <input
+                    ref={(el) => {
+                      inputRefs.current[blankId] = el
+                    }}
+                    type="text"
+                    value={values[blankId] || ''}
+                    onChange={(e) => onChange(blankId, e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(e, blankId)}
+                    disabled={disabled}
+                    className={clsx(
+                      'inline-block w-24 px-2 py-1 text-center border-b-2 bg-transparent transition-colors',
+                      'focus:outline-none',
+                      getInputStyle(blankId)
+                    )}
+                    placeholder="___"
+                  />
+                </span>
+              )}
+            </span>
+          )
+        })}
       </div>
 
       {showCorrectAnswers && (
