@@ -4,12 +4,29 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import api from '../../lib/api'
 import { XpBar } from '../../components/gamification/XpBar'
-import type { StudentStats, TrackStats } from '../../types'
+import { useAuthStore } from '../../store/authStore'
+import type { StudentStats, TrackStats, Grade } from '../../types'
+
+const GRADE_LABELS: Record<Grade, string> = {
+  elementary_1: '초등 1학년',
+  elementary_2: '초등 2학년',
+  elementary_3: '초등 3학년',
+  elementary_4: '초등 4학년',
+  elementary_5: '초등 5학년',
+  elementary_6: '초등 6학년',
+  middle_1: '중등 1학년',
+  middle_2: '중등 2학년',
+  middle_3: '중등 3학년',
+  high_1: '고등 1학년',
+}
 
 export function MyStatsPage() {
+  const { user } = useAuthStore()
   const [stats, setStats] = useState<StudentStats | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const gradeLabel = user?.grade ? GRADE_LABELS[user.grade] : null
 
   useEffect(() => {
     fetchStats()
@@ -85,6 +102,11 @@ export function MyStatsPage() {
           <div className="flex items-center gap-3 mb-1">
             <span className="text-3xl">📊</span>
             <h1 className="text-3xl font-bold text-gray-900">내 학습 통계</h1>
+            {gradeLabel && (
+              <span className="rounded-full bg-primary-100 px-3 py-1 text-sm font-semibold text-primary-700">
+                {gradeLabel}
+              </span>
+            )}
           </div>
           <p className="text-gray-500 ml-12">나의 학습 현황을 확인하고 성장해보세요</p>
         </motion.div>
