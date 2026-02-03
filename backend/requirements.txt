@@ -28,5 +28,8 @@ factory-boy>=3.3.0
 ruff>=0.1.14
 mypy>=1.8.0
 
+# AI
+google-genai>=1.0.0
+
 # Utilities
 python-dotenv>=1.0.0

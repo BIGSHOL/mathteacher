@@ -1,4 +1,5 @@
 """초등 6학년 시드 데이터."""
+
 from .computation import get_concepts as comp_concepts, get_questions as comp_questions
 from .concept_questions import get_concepts as conc_concepts, get_questions as conc_questions
 from .fill_blank import get_questions as fb_questions
@@ -14,63 +15,97 @@ def get_all_data():
 
 def _get_tests():
     """초등 6학년 테스트 목록 반환."""
-    from app.seeds._base import test
+    from .._base import test
 
     return [
+        # 연산평가 (분수/소수 나눗셈, 비와 비율)
         test(
-            id="test-e6-comp",
-            title="초등 6학년 연산 종합평가",
-            description="분수의 나눗셈과 소수의 나눗셈 능력을 평가합니다.",
+            id="test-e6-computation",
+            title="초등 6학년 연산평가",
+            description="분수와 소수의 나눗셈, 비와 비율 능력을 평가합니다.",
             grade="elementary_6",
-            concept_ids=["concept-e6-comp"],
-            question_ids=[
-                "e6-comp-001", "e6-comp-002", "e6-comp-003", "e6-comp-004", "e6-comp-005",
-                "e6-comp-006", "e6-comp-007", "e6-comp-008", "e6-comp-009", "e6-comp-010",
+            concept_ids=[
+                "concept-e6-frac-div1",
+                "concept-e6-dec-div1",
+                "concept-e6-ratio",
+                "concept-e6-frac-div2",
+                "concept-e6-dec-div2",
             ],
-            time_limit_minutes=25,
-            is_adaptive=False,
-        ),
-        test(
-            id="test-e6-conc",
-            title="초등 6학년 개념평가",
-            description="비와 비율, 비례식과 비례배분, 원의 넓이 개념을 평가합니다.",
-            grade="elementary_6",
-            concept_ids=["concept-e6-conc"],
             question_ids=[
-                "e6-conc-001", "e6-conc-002", "e6-conc-003", "e6-conc-004", "e6-conc-005",
-                "e6-conc-006", "e6-conc-007", "e6-conc-008", "e6-conc-009", "e6-conc-010",
+                "e6-comp-001", "e6-comp-002", "e6-comp-003",  # 분수나눗셈1
+                "e6-comp-004", "e6-comp-005", "e6-comp-006",  # 소수나눗셈1
+                "e6-comp-007", "e6-comp-008", "e6-comp-009",  # 비와 비율
+                "e6-comp-010", "e6-comp-011", "e6-comp-012",  # 분수나눗셈2
+                "e6-comp-013", "e6-comp-014", "e6-comp-015",  # 소수나눗셈2
             ],
             time_limit_minutes=30,
             is_adaptive=False,
         ),
+        # 도형/공간평가 (각기둥/각뿔, 부피/겉넓이, 공간/입체, 원의넓이, 원기둥/원뿔/구)
+        test(
+            id="test-e6-geometry",
+            title="초등 6학년 도형·공간평가",
+            description="도형의 구성 요소, 부피와 겉넓이, 공간 감각, 원의 넓이를 평가합니다.",
+            grade="elementary_6",
+            concept_ids=[
+                "concept-e6-prism-pyramid",
+                "concept-e6-volume",
+                "concept-e6-spatial",
+                "concept-e6-circle-area",
+                "concept-e6-solids",
+            ],
+            question_ids=[
+                "e6-conc-001", "e6-conc-002", "e6-conc-003",  # 각기둥/각뿔
+                "e6-conc-007", "e6-conc-008", "e6-conc-009",  # 부피/겉넓이
+                "e6-conc-010", "e6-conc-011", "e6-conc-012",  # 공간/입체
+                "e6-conc-016", "e6-conc-017", "e6-conc-018",  # 원의넓이
+                "e6-conc-019", "e6-conc-020", "e6-conc-021",  # 원기둥/원뿔/구
+            ],
+            time_limit_minutes=30,
+            is_adaptive=False,
+        ),
+        # 비율/그래프평가 (그래프, 비례식/비례배분)
+        test(
+            id="test-e6-ratio-graph",
+            title="초등 6학년 비율·그래프평가",
+            description="그래프 해석, 비례식의 성질과 비례배분을 평가합니다.",
+            grade="elementary_6",
+            concept_ids=[
+                "concept-e6-graphs",
+                "concept-e6-proportion",
+            ],
+            question_ids=[
+                "e6-conc-004", "e6-conc-005", "e6-conc-006",  # 여러 가지 그래프
+                "e6-conc-013", "e6-conc-014", "e6-conc-015",  # 비례식/비례배분
+                "e6-fb-009", "e6-fb-010",  # 그래프 빈칸
+                "e6-fb-019", "e6-fb-020",  # 비례식 빈칸
+            ],
+            time_limit_minutes=20,
+            is_adaptive=False,
+        ),
+        # 종합평가 (전 단원 통합)
         test(
             id="test-e6-comprehensive",
             title="초등 6학년 종합평가",
-            description="연산과 개념을 종합적으로 평가합니다.",
+            description="초등 6학년 전 단원을 종합적으로 평가합니다.",
             grade="elementary_6",
-            concept_ids=["concept-e6-comp", "concept-e6-conc"],
-            question_ids=[
-                "e6-comp-001", "e6-comp-003", "e6-comp-005", "e6-comp-007", "e6-comp-009",
-                "e6-conc-002", "e6-conc-004", "e6-conc-006", "e6-conc-008", "e6-conc-010",
-                "e6-fb-001", "e6-fb-003", "e6-fb-005", "e6-fb-007",
+            concept_ids=[
+                "concept-e6-frac-div1", "concept-e6-dec-div1", "concept-e6-ratio",
+                "concept-e6-frac-div2", "concept-e6-dec-div2",
+                "concept-e6-prism-pyramid", "concept-e6-graphs", "concept-e6-volume",
+                "concept-e6-spatial", "concept-e6-proportion", "concept-e6-circle-area",
+                "concept-e6-solids",
             ],
-            time_limit_minutes=35,
+            question_ids=[
+                # 연산 5문항
+                "e6-comp-001", "e6-comp-004", "e6-comp-007", "e6-comp-010", "e6-comp-013",
+                # 개념 10문항
+                "e6-conc-001", "e6-conc-004", "e6-conc-007", "e6-conc-010", "e6-conc-013",
+                "e6-conc-016", "e6-conc-019", "e6-conc-002", "e6-conc-008", "e6-conc-014",
+                # 빈칸 5문항
+                "e6-fb-001", "e6-fb-007", "e6-fb-011", "e6-fb-017", "e6-fb-021",
+            ],
+            time_limit_minutes=40,
             is_adaptive=False,
-        ),
-        test(
-            id="test-e6-adaptive",
-            title="초등 6학년 적응형 평가",
-            description="학생 수준에 맞춰 난이도가 조절되는 평가입니다.",
-            grade="elementary_6",
-            concept_ids=["concept-e6-comp", "concept-e6-conc"],
-            question_ids=[
-                "e6-comp-001", "e6-comp-002", "e6-comp-003", "e6-comp-004", "e6-comp-005",
-                "e6-comp-006", "e6-comp-007", "e6-comp-008", "e6-comp-009", "e6-comp-010",
-                "e6-conc-001", "e6-conc-002", "e6-conc-003", "e6-conc-004", "e6-conc-005",
-            ],
-            time_limit_minutes=30,
-            is_adaptive=True,
-            use_question_pool=True,
-            questions_per_attempt=10,
         ),
     ]

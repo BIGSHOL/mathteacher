@@ -1,235 +1,208 @@
-"""중2 연산 문제 - 단항식과 다항식의 계산."""
-from app.seeds._base import mc, concept
+"""중2 연산 문제 - 유리수·순환소수, 식의 계산, 부등식 연산."""
+
+from .._base import mc, concept, test
 
 
-def get_concepts():
-    """연산 개념 정의."""
-    return [
+def get_computation_data() -> dict:
+    """연산 카테고리 데이터 반환."""
+    concepts = [
+        # 1단원: 유리수와 순환소수
         concept(
-            id="concept-m2-comp",
+            id="concept-m2-rational",
+            name="유리수와 순환소수",
+            grade="middle_2",
+            category="computation",
+            part="calc",
+            description="유한소수 조건 판별, 순환소수↔분수 변환, 0.999...=1 증명"
+        ),
+        # 2단원: 식의 계산
+        concept(
+            id="concept-m2-expression",
             name="식의 계산",
             grade="middle_2",
             category="computation",
             part="algebra",
-            description="단항식의 곱셈과 나눗셈, 다항식의 덧셈과 뺄셈"
-        )
-    ]
-
-
-def get_questions():
-    """연산 문제 목록."""
-    return [
-        # 단항식의 곱셈 (난이도 1-3)
-        mc(
-            id="m2-comp-001",
-            concept_id="concept-m2-comp",
+            description="지수법칙(a^m×a^n, (a^m)^n), 단항식/다항식 계산, 분배법칙"
+        ),
+        # 3단원: 부등식과 연립방정식 (연산 부분)
+        concept(
+            id="concept-m2-inequality",
+            name="부등식과 연립방정식",
+            grade="middle_2",
             category="computation",
             part="algebra",
-            difficulty=1,
-            content="3a × 2a를 계산하시오.",
-            options=[
-                ("5a", False),
-                ("6a", False),
-                ("6a²", True),
-                ("5a²", False)
-            ],
-            correct="C",
-            explanation="단항식의 곱셈: 계수끼리 곱하고(3×2=6), 문자는 지수법칙으로 a×a=a²",
+            description="일차부등식(음수 곱/나누면 부등호 반전), 연립방정식(가감법/대입법)"
+        ),
+    ]
+
+    questions = [
+        # 유리수와 순환소수 (4문제, 난이도 2~8)
+        mc(
+            id="m2-comp-001",
+            concept_id="concept-m2-rational",
+            category="computation",
+            part="calc",
+            difficulty=2,
+            content="분수 7/20을 소수로 나타낼 때, 유한소수인지 무한소수인지 판별하시오.",
+            options=["유한소수", "순환소수", "무한소수이지만 순환하지 않음", "소수로 나타낼 수 없음"],
+            correct="A",
+            explanation="분모 20=2²×5이므로 소인수가 2와 5뿐이다. 따라서 유한소수(0.35)로 나타낼 수 있다.",
             points=10
         ),
         mc(
             id="m2-comp-002",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-rational",
             category="computation",
-            part="algebra",
-            difficulty=2,
-            content="(-4x²) × 3x를 계산하시오.",
-            options=[
-                ("-12x²", False),
-                ("-12x³", True),
-                ("12x³", False),
-                ("-7x³", False)
-            ],
-            correct="B",
-            explanation="(-4)×3=-12, x²×x=x³이므로 -12x³",
+            part="calc",
+            difficulty=4,
+            content="분수 5/12를 약분한 후 분모의 소인수를 구하면? (작은 수부터)",
+            options=["2, 3", "2, 5", "3, 5", "2만"],
+            correct="A",
+            explanation="5/12는 이미 기약분수이다. 분모 12=2²×3이므로 소인수는 2와 3이다. 2와 5뿐이 아니므로 유한소수로 나타낼 수 없다.",
             points=10
         ),
         mc(
             id="m2-comp-003",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-rational",
             category="computation",
-            part="algebra",
-            difficulty=3,
-            content="2a²b × (-3ab²)를 계산하시오.",
-            options=[
-                ("-6a²b²", False),
-                ("-6a³b³", True),
-                ("6a³b³", False),
-                ("-5a³b³", False)
-            ],
-            correct="B",
-            explanation="2×(-3)=-6, a²×a=a³, b×b²=b³이므로 -6a³b³",
+            part="calc",
+            difficulty=6,
+            content="순환소수 0.333...을 분수로 나타내면? (기약분수)",
+            options=["1/3", "3/10", "33/100", "1/9"],
+            correct="A",
+            explanation="x = 0.333..., 10x = 3.333...이므로 10x - x = 3, 9x = 3, x = 1/3",
+            points=10
+        ),
+        mc(
+            id="m2-comp-004",
+            concept_id="concept-m2-rational",
+            category="computation",
+            part="calc",
+            difficulty=8,
+            content="0.999...는 1과 같다는 것을 증명하는 과정이다. 빈칸에 알맞은 식은?\n\nx = 0.999...\n10x = 9.999...\n10x - x = [?]\n9x = 9\nx = 1",
+            options=["9", "9.999... - 0.999...", "9 + 0.999...", "8.999..."],
+            correct="A",
+            explanation="10x - x = 9.999... - 0.999... = 9 (소수 부분이 상쇄됨). 따라서 9x=9, x=1이 되어 0.999...=1임을 증명한다.",
             points=10
         ),
 
-        # 단항식의 나눗셈 (난이도 4-6)
-        mc(
-            id="m2-comp-004",
-            concept_id="concept-m2-comp",
-            category="computation",
-            part="algebra",
-            difficulty=4,
-            content="6x² ÷ 2x를 계산하시오.",
-            options=[
-                ("3x", True),
-                ("4x", False),
-                ("3x²", False),
-                ("4x²", False)
-            ],
-            correct="A",
-            explanation="6÷2=3, x²÷x=x이므로 3x",
-            points=10
-        ),
+        # 식의 계산 - 지수법칙 (4문제, 난이도 3~9)
         mc(
             id="m2-comp-005",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-expression",
             category="computation",
             part="algebra",
-            difficulty=5,
-            content="12a³b² ÷ 3ab를 계산하시오.",
-            options=[
-                ("4a²b", True),
-                ("4a²b²", False),
-                ("9a²b", False),
-                ("4ab", False)
-            ],
+            difficulty=3,
+            content="a³ × a²를 계산하시오.",
+            options=["a⁵", "a⁶", "a", "2a⁵"],
             correct="A",
-            explanation="12÷3=4, a³÷a=a², b²÷b=b이므로 4a²b",
+            explanation="지수법칙: a^m × a^n = a^(m+n)이므로 a³ × a² = a^(3+2) = a⁵",
             points=10
         ),
         mc(
             id="m2-comp-006",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-expression",
             category="computation",
             part="algebra",
-            difficulty=6,
-            content="(-15x³y²) ÷ 5xy²를 계산하시오.",
-            options=[
-                ("-3x²", True),
-                ("3x²", False),
-                ("-3x²y", False),
-                ("-10x²", False)
-            ],
+            difficulty=5,
+            content="(a³)²를 계산하시오.",
+            options=["a⁶", "a⁵", "a⁹", "2a³"],
             correct="A",
-            explanation="(-15)÷5=-3, x³÷x=x², y²÷y²=1이므로 -3x²",
+            explanation="지수법칙: (a^m)^n = a^(mn)이므로 (a³)² = a^(3×2) = a⁶",
             points=10
         ),
-
-        # 다항식의 덧셈 (난이도 4-6)
         mc(
             id="m2-comp-007",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-expression",
             category="computation",
             part="algebra",
-            difficulty=4,
-            content="(3x + 2) + (x - 5)를 계산하시오.",
-            options=[
-                ("4x - 3", True),
-                ("4x + 7", False),
-                ("2x - 3", False),
-                ("4x - 7", False)
-            ],
+            difficulty=7,
+            content="(2x²y)³을 계산하시오.",
+            options=["8x⁶y³", "2x⁶y³", "6x⁶y³", "8x⁵y³"],
             correct="A",
-            explanation="동류항끼리 모으면: 3x+x=4x, 2+(-5)=-3이므로 4x-3",
+            explanation="분배법칙으로 각 인수에 지수를 적용: 2³ × (x²)³ × y³ = 8 × x⁶ × y³ = 8x⁶y³",
             points=10
         ),
         mc(
             id="m2-comp-008",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-expression",
             category="computation",
             part="algebra",
-            difficulty=5,
-            content="(2x² - 3x + 1) + (x² + 5x - 4)를 계산하시오.",
-            options=[
-                ("3x² + 2x - 3", True),
-                ("3x² - 8x + 5", False),
-                ("3x² + 2x + 5", False),
-                ("x² + 2x - 3", False)
-            ],
+            difficulty=9,
+            content="a² ÷ a⁵를 계산하시오. (단, a≠0)",
+            options=["1/a³", "a³", "1/a⁷", "a⁻³"],
             correct="A",
-            explanation="2x²+x²=3x², -3x+5x=2x, 1+(-4)=-3이므로 3x²+2x-3",
+            explanation="분수로 나타내면 a²/a⁵ = (a×a)/(a×a×a×a×a) = 1/(a×a×a) = 1/a³",
             points=10
         ),
 
-        # 다항식의 뺄셈 (난이도 7-10)
+        # 부등식과 연립방정식 (4문제, 난이도 4~10)
         mc(
             id="m2-comp-009",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-inequality",
             category="computation",
             part="algebra",
-            difficulty=7,
-            content="(5a - 3b) - (2a + 4b)를 계산하시오.",
-            options=[
-                ("3a - 7b", True),
-                ("3a + b", False),
-                ("7a - 7b", False),
-                ("3a - b", False)
-            ],
+            difficulty=4,
+            content="일차부등식 -2x > 4를 풀면?",
+            options=["x < -2", "x > -2", "x < 2", "x > 2"],
             correct="A",
-            explanation="괄호를 풀면: 5a-3b-2a-4b = 3a-7b",
+            explanation="양변을 -2로 나누면 부등호 방향이 바뀐다: x < 4/(-2) = x < -2",
             points=10
         ),
         mc(
             id="m2-comp-010",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-inequality",
+            category="computation",
+            part="algebra",
+            difficulty=6,
+            content="연립방정식 x+y=5, x-y=1을 가감법으로 풀면?",
+            options=["x=3, y=2", "x=2, y=3", "x=4, y=1", "x=1, y=4"],
+            correct="A",
+            explanation="두 식을 더하면 2x=6, x=3. 첫 번째 식에 대입하면 3+y=5, y=2",
+            points=10
+        ),
+        mc(
+            id="m2-comp-011",
+            concept_id="concept-m2-inequality",
             category="computation",
             part="algebra",
             difficulty=8,
-            content="(3x² - 2xy + y²) - (x² + 3xy - 2y²)를 계산하시오.",
-            options=[
-                ("2x² - 5xy + 3y²", True),
-                ("2x² + xy + 3y²", False),
-                ("4x² - 5xy + 3y²", False),
-                ("2x² - 5xy - y²", False)
-            ],
+            content="연립방정식 3x+2y=12, 2x+y=7을 풀면?",
+            options=["x=2, y=3", "x=3, y=2", "x=1, y=5", "x=4, y=0"],
             correct="A",
-            explanation="괄호를 풀면: 3x²-2xy+y²-x²-3xy+2y² = 2x²-5xy+3y²",
-            points=10
-        ),
-
-        # 복합 계산 (난이도 8-10)
-        mc(
-            id="m2-comp-011",
-            concept_id="concept-m2-comp",
-            category="computation",
-            part="algebra",
-            difficulty=9,
-            content="2(x + 3) - 3(x - 1)을 계산하시오.",
-            options=[
-                ("-x + 9", True),
-                ("5x + 9", False),
-                ("-x + 3", False),
-                ("x + 9", False)
-            ],
-            correct="A",
-            explanation="분배법칙: 2x+6-3x+3 = -x+9",
+            explanation="두 번째 식을 2배: 4x+2y=14. 첫 번째 식을 빼면 x=2. 대입하면 2(2)+y=7, y=3",
             points=10
         ),
         mc(
             id="m2-comp-012",
-            concept_id="concept-m2-comp",
+            concept_id="concept-m2-inequality",
             category="computation",
             part="algebra",
             difficulty=10,
-            content="3(2a - b) - 2(a + 2b) + (4a - 3b)를 계산하시오.",
-            options=[
-                ("8a - 10b", True),
-                ("6a - 4b", False),
-                ("8a - 4b", False),
-                ("10a - 10b", False)
-            ],
+            content="연립방정식 2x-3y=1, 4x-6y=2의 해는?",
+            options=["무수히 많다", "x=0, y=0", "x=1, y=1/3", "해가 없다"],
             correct="A",
-            explanation="6a-3b-2a-4b+4a-3b = 8a-10b",
+            explanation="두 번째 식은 첫 번째 식의 2배이므로 두 식이 일치한다. 따라서 해가 무수히 많다(부정).",
             points=10
-        )
+        ),
     ]
+
+    tests = [
+        test(
+            id="test-m2-computation",
+            title="중2 연산 종합 테스트",
+            description="유리수와 순환소수, 식의 계산, 부등식 연산",
+            grade="middle_2",
+            concept_ids=["concept-m2-rational", "concept-m2-expression", "concept-m2-inequality"],
+            question_ids=[f"m2-comp-{i:03d}" for i in range(1, 13)],
+            time_limit_minutes=20,
+            use_question_pool=True,
+            questions_per_attempt=10,
+        ),
+    ]
+
+    return {
+        "concepts": concepts,
+        "questions": questions,
+        "tests": tests,
+    }

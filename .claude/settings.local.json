@@ -58,7 +58,8 @@
       "Bash(docker compose:*)",
       "Bash(docker-compose up:*)",
       "Bash(docker ps:*)",
-      "Read(//f//**)"
+      "Read(//f//**)",
+      "Read(//f/math_test/backend/app/api/**)"
     ],
     "additionalDirectories": [
       "d:\\ijw-calander\\components\\Timetable\\English",
@@ -67,7 +68,8 @@
       "d:\\math_test",
       "d:\\math_test\\.claude\\agents",
       "f:\\math_test\\frontend\\src",
-      "f:\\math_test"
+      "f:\\math_test",
+      "F:\\math_test\\backend\\app\\seeds"
     ]
   },
   "enableAllProjectMcpServers": true,

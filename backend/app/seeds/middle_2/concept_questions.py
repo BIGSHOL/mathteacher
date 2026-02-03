@@ -1,241 +1,284 @@
-"""중2 개념 문제 - 연립방정식과 일차함수."""
-from app.seeds._base import mc, concept
+"""중2 개념 문제 - 일차함수, 도형, 닮음, 피타고라스, 확률."""
+
+from .._base import mc, concept, test
 
 
-def get_concepts():
-    """개념 정의."""
-    return [
-        concept(
-            id="concept-m2-linear-eq",
-            name="연립방정식",
-            grade="middle_2",
-            category="concept",
-            part="algebra",
-            description="가감법과 대입법을 이용한 연립일차방정식의 해 구하기"
-        ),
+def get_concept_data() -> dict:
+    """개념 카테고리 데이터 반환."""
+    concepts = [
+        # 4단원: 일차함수
         concept(
             id="concept-m2-linear-func",
             name="일차함수",
             grade="middle_2",
             category="concept",
-            part="algebra",
-            description="일차함수 y=ax+b의 그래프와 기울기, y절편"
-        )
+            part="func",
+            description="y=ax+b, 기울기/절편, 일차함수↔일차방정식 연결"
+        ),
+        # 5단원: 도형의 성질
+        concept(
+            id="concept-m2-triangle",
+            name="도형의 성질",
+            grade="middle_2",
+            category="concept",
+            part="geo",
+            description="이등변삼각형, 외심/내심, 사각형 계통도, 정의 vs 성질 구분"
+        ),
+        # 6단원: 도형의 닮음
+        concept(
+            id="concept-m2-similarity",
+            name="도형의 닮음",
+            grade="middle_2",
+            category="concept",
+            part="geo",
+            description="SSS/SAS/AA 닮음 조건, 닮음비→넓이비→부피비"
+        ),
+        # 7단원: 피타고라스 정리
+        concept(
+            id="concept-m2-pythagoras",
+            name="피타고라스 정리",
+            grade="middle_2",
+            category="concept",
+            part="geo",
+            description="삼각형 무게중심(2:1), 피타고라스 정리와 피타고라스 수"
+        ),
+        # 8단원: 확률
+        concept(
+            id="concept-m2-probability",
+            name="확률",
+            grade="middle_2",
+            category="concept",
+            part="data",
+            description="합의 법칙/곱의 법칙, 수학적 확률, 근원사건 동등성"
+        ),
     ]
 
-
-def get_questions():
-    """개념 문제 목록."""
-    return [
-        # 연립방정식 - 가감법 (난이도 1-4)
+    questions = [
+        # 일차함수 (3문제, 난이도 2~7)
         mc(
             id="m2-conc-001",
-            concept_id="concept-m2-linear-eq",
+            concept_id="concept-m2-linear-func",
             category="concept",
-            part="algebra",
-            difficulty=1,
-            content="연립방정식 x+y=5, x-y=1의 해를 구하시오.",
-            options=[
-                ("x=3, y=2", True),
-                ("x=2, y=3", False),
-                ("x=4, y=1", False),
-                ("x=1, y=4", False)
-            ],
+            part="func",
+            difficulty=2,
+            content="일차함수 y=2x+3의 기울기는?",
+            options=["2", "3", "-2", "5"],
             correct="A",
-            explanation="두 식을 더하면: 2x=6, x=3. 첫 번째 식에 대입: 3+y=5, y=2",
+            explanation="y=ax+b에서 a가 기울기이므로 2이다.",
             points=10
         ),
         mc(
             id="m2-conc-002",
-            concept_id="concept-m2-linear-eq",
+            concept_id="concept-m2-linear-func",
             category="concept",
-            part="algebra",
-            difficulty=2,
-            content="연립방정식 2x+y=7, x+y=4의 해를 구하시오.",
-            options=[
-                ("x=3, y=1", True),
-                ("x=2, y=2", False),
-                ("x=1, y=3", False),
-                ("x=4, y=0", False)
-            ],
+            part="func",
+            difficulty=5,
+            content="일차함수 y=-3x+5와 y=-5x+7 중 어느 그래프가 더 가파른가?",
+            options=["y=-5x+7", "y=-3x+5", "둘 다 같다", "비교할 수 없다"],
             correct="A",
-            explanation="첫 번째 식에서 두 번째 식을 빼면: x=3. 두 번째 식에 대입: 3+y=4, y=1",
+            explanation="가파른 정도는 기울기의 절댓값으로 결정된다. |-5|=5 > |-3|=3이므로 y=-5x+7이 더 가파르다.",
             points=10
         ),
         mc(
             id="m2-conc-003",
-            concept_id="concept-m2-linear-eq",
+            concept_id="concept-m2-linear-func",
             category="concept",
-            part="algebra",
-            difficulty=3,
-            content="연립방정식 3x+2y=12, 2x+y=7의 해를 구하시오.",
-            options=[
-                ("x=2, y=3", True),
-                ("x=3, y=2", False),
-                ("x=1, y=5", False),
-                ("x=4, y=0", False)
-            ],
+            part="func",
+            difficulty=7,
+            content="두 점 (1, 4)와 (3, 10)을 지나는 직선의 방정식은?",
+            options=["y=3x+1", "y=2x+2", "y=3x-1", "y=2x+3"],
             correct="A",
-            explanation="두 번째 식을 2배: 4x+2y=14. 첫 번째 식을 빼면: x=2. 대입하면 y=3",
-            points=10
-        ),
-        mc(
-            id="m2-conc-004",
-            concept_id="concept-m2-linear-eq",
-            category="concept",
-            part="algebra",
-            difficulty=4,
-            content="연립방정식 5x+3y=19, 2x-y=3의 해를 구하시오.",
-            options=[
-                ("x=2, y=3", False),
-                ("x=4, y=-1", False),
-                ("x=3, y=4", False),
-                ("x=2, y=1", True)
-            ],
-            correct="D",
-            explanation="두 번째 식을 3배: 6x-3y=9. 첫 번째 식과 더하면: 11x=28... 재계산 필요. x=2, y=1",
+            explanation="기울기 = (10-4)/(3-1) = 6/2 = 3. 점 (1,4)를 대입하면 4=3(1)+b, b=1. 따라서 y=3x+1",
             points=10
         ),
 
-        # 일차함수 기울기와 y절편 (난이도 2-5)
+        # 도형의 성질 (3문제, 난이도 3~8)
+        mc(
+            id="m2-conc-004",
+            concept_id="concept-m2-triangle",
+            category="concept",
+            part="geo",
+            difficulty=3,
+            content="직사각형의 정의로 올바른 것은?",
+            options=["네 각이 모두 직각인 사각형", "대각선의 길이가 같은 사각형", "두 쌍의 대변이 평행한 사각형", "네 변의 길이가 같은 사각형"],
+            correct="A",
+            explanation="정의는 증명 없이 사용하는 전제이다. 직사각형의 정의는 '네 각이 모두 직각인 사각형'이고, '대각선의 길이가 같다'는 성질(증명 대상)이다.",
+            points=10
+        ),
         mc(
             id="m2-conc-005",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-triangle",
             category="concept",
-            part="algebra",
-            difficulty=2,
-            content="일차함수 y=2x+3의 기울기는?",
-            options=[
-                ("2", True),
-                ("3", False),
-                ("-2", False),
-                ("5", False)
-            ],
+            part="geo",
+            difficulty=6,
+            content="삼각형의 외심은 무엇의 교점인가?",
+            options=["세 변의 수직이등분선", "세 내각의 이등분선", "세 중선", "세 높이"],
             correct="A",
-            explanation="y=ax+b에서 a가 기울기이므로 2",
+            explanation="外心(바깥 원)은 외접원의 중심이며, 세 변의 수직이등분선이 만나는 점이다. 세 꼭짓점까지의 거리가 같다.",
             points=10
         ),
         mc(
             id="m2-conc-006",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-triangle",
             category="concept",
-            part="algebra",
-            difficulty=3,
-            content="일차함수 y=-3x+5의 y절편은?",
-            options=[
-                ("5", True),
-                ("-3", False),
-                ("3", False),
-                ("-5", False)
-            ],
+            part="geo",
+            difficulty=8,
+            content="평행사변형, 직사각형, 정사각형의 포함 관계로 올바른 것은?",
+            options=["정사각형 ⊂ 직사각형 ⊂ 평행사변형", "직사각형 ⊂ 정사각형 ⊂ 평행사변형", "평행사변형 ⊂ 직사각형 ⊂ 정사각형", "정사각형 ⊂ 평행사변형 ⊂ 직사각형"],
             correct="A",
-            explanation="y=ax+b에서 b가 y절편이므로 5 (점 (0,5)를 지남)",
+            explanation="정사각형은 직사각형이면서 마름모이고, 직사각형은 평행사변형의 특수한 경우이다. 따라서 정사각형 ⊂ 직사각형 ⊂ 평행사변형.",
             points=10
         ),
+
+        # 도형의 닮음 (3문제, 난이도 4~9)
         mc(
             id="m2-conc-007",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-similarity",
             category="concept",
-            part="algebra",
+            part="geo",
             difficulty=4,
-            content="두 점 (0,2)와 (2,6)을 지나는 직선의 기울기는?",
-            options=[
-                ("2", True),
-                ("4", False),
-                ("1/2", False),
-                ("3", False)
-            ],
+            content="두 삼각형이 AA 닮음 조건을 만족하려면?",
+            options=["두 쌍의 대응각이 각각 같다", "세 쌍의 대응각이 모두 같다", "두 쌍의 대응변의 비가 같다", "세 쌍의 대응변의 비가 같다"],
             correct="A",
-            explanation="기울기 = (y변화량)/(x변화량) = (6-2)/(2-0) = 4/2 = 2",
+            explanation="AA 닮음: 두 쌍의 대응각이 같으면 나머지 한 각도 자동으로 같으므로 닮음이다. 가장 많이 활용되는 조건이다.",
             points=10
         ),
         mc(
             id="m2-conc-008",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-similarity",
             category="concept",
-            part="algebra",
-            difficulty=5,
-            content="기울기가 -2이고 점 (1,3)을 지나는 직선의 방정식은?",
-            options=[
-                ("y=-2x+5", True),
-                ("y=-2x+3", False),
-                ("y=-2x+1", False),
-                ("y=2x+1", False)
-            ],
+            part="geo",
+            difficulty=7,
+            content="닮음비가 2:3인 두 삼각형의 넓이의 비는?",
+            options=["4:9", "2:3", "8:27", "4:6"],
             correct="A",
-            explanation="y-3=-2(x-1)을 정리하면 y=-2x+2+3=-2x+5",
+            explanation="닮음비가 m:n이면 넓이비는 m²:n²이다. 따라서 2²:3² = 4:9",
             points=10
         ),
-
-        # 일차함수 활용 (난이도 6-8)
         mc(
             id="m2-conc-009",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-similarity",
             category="concept",
-            part="algebra",
-            difficulty=6,
-            content="일차함수 y=ax+2의 그래프가 점 (2,8)을 지날 때, a의 값은?",
-            options=[
-                ("3", True),
-                ("4", False),
-                ("5", False),
-                ("2", False)
-            ],
+            part="geo",
+            difficulty=9,
+            content="닮음비가 1:2인 두 정육면체의 부피의 비는?",
+            options=["1:8", "1:4", "1:2", "1:6"],
             correct="A",
-            explanation="8=a(2)+2를 풀면 8=2a+2, 2a=6, a=3",
-            points=10
-        ),
-        mc(
-            id="m2-conc-010",
-            concept_id="concept-m2-linear-func",
-            category="concept",
-            part="algebra",
-            difficulty=7,
-            content="일차함수 y=2x+b의 그래프가 점 (3,1)을 지날 때, b의 값은?",
-            options=[
-                ("-5", True),
-                ("5", False),
-                ("-7", False),
-                ("7", False)
-            ],
-            correct="A",
-            explanation="1=2(3)+b를 풀면 1=6+b, b=-5",
+            explanation="닮음비가 m:n이면 부피비는 m³:n³이다. 따라서 1³:2³ = 1:8",
             points=10
         ),
 
-        # 일차함수와 연립방정식 (난이도 8-10)
+        # 피타고라스 정리 (3문제, 난이도 3~8)
+        mc(
+            id="m2-conc-010",
+            concept_id="concept-m2-pythagoras",
+            category="concept",
+            part="geo",
+            difficulty=3,
+            content="직각삼각형에서 빗변의 길이가 5, 한 변의 길이가 3일 때, 나머지 한 변의 길이는?",
+            options=["4", "3", "5", "6"],
+            correct="A",
+            explanation="피타고라스 정리: a²+b²=c²에서 3²+b²=5², 9+b²=25, b²=16, b=4 (피타고라스 수 3-4-5)",
+            points=10
+        ),
         mc(
             id="m2-conc-011",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-pythagoras",
             category="concept",
-            part="algebra",
-            difficulty=8,
-            content="두 직선 y=2x+1과 y=-x+7의 교점의 좌표는?",
-            options=[
-                ("(2, 5)", True),
-                ("(3, 4)", False),
-                ("(1, 6)", False),
-                ("(4, 3)", False)
-            ],
+            part="geo",
+            difficulty=6,
+            content="삼각형의 무게중심은 각 중선을 어떤 비율로 내분하는가?",
+            options=["2:1", "1:1", "3:1", "1:2"],
             correct="A",
-            explanation="2x+1=-x+7을 풀면 3x=6, x=2. y=2(2)+1=5이므로 (2,5)",
+            explanation="삼각형의 무게중심은 세 중선의 교점이며, 각 중선을 꼭짓점으로부터 2:1로 내분한다.",
             points=10
         ),
         mc(
             id="m2-conc-012",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-pythagoras",
             category="concept",
-            part="algebra",
-            difficulty=10,
-            content="일차함수 y=ax+b가 두 점 (1,5), (3,11)을 지날 때, a+b의 값은?",
-            options=[
-                ("5", True),
-                ("8", False),
-                ("3", False),
-                ("6", False)
-            ],
+            part="geo",
+            difficulty=8,
+            content="세 변의 길이가 5, 12, 13인 삼각형은?",
+            options=["직각삼각형", "예각삼각형", "둔각삼각형", "정삼각형"],
             correct="A",
-            explanation="기울기 a=(11-5)/(3-1)=3. 5=3(1)+b에서 b=2. 따라서 a+b=3+2=5",
+            explanation="5²+12²=25+144=169=13²이므로 피타고라스 정리의 역에 의해 직각삼각형이다. (피타고라스 수 5-12-13)",
             points=10
-        )
+        ),
+
+        # 확률 (3문제, 난이도 4~10)
+        mc(
+            id="m2-conc-013",
+            concept_id="concept-m2-probability",
+            category="concept",
+            part="data",
+            difficulty=4,
+            content="주사위 1개를 던질 때 짝수가 나올 확률은?",
+            options=["1/2", "1/3", "2/3", "1/6"],
+            correct="A",
+            explanation="짝수는 2, 4, 6으로 3가지이고, 전체 경우의 수는 6이므로 확률은 3/6 = 1/2",
+            points=10
+        ),
+        mc(
+            id="m2-conc-014",
+            concept_id="concept-m2-probability",
+            category="concept",
+            part="data",
+            difficulty=7,
+            content="흰 공 2개와 검은 공 1개가 들어있는 주머니에서 공 1개를 꺼낼 때, 흰 공이 나올 확률은?",
+            options=["2/3", "1/2", "1/3", "3/4"],
+            correct="A",
+            explanation="흰 공 2개를 흰1, 흰2로 구분해야 근원사건의 동등성이 보장된다. 전체 경우의 수는 3(흰1, 흰2, 검은 공)이고 흰 공은 2가지이므로 2/3",
+            points=10
+        ),
+        mc(
+            id="m2-conc-015",
+            concept_id="concept-m2-probability",
+            category="concept",
+            part="data",
+            difficulty=10,
+            content="주사위 2개를 동시에 던질 때, 두 눈의 수의 합이 7이 될 확률은?",
+            options=["1/6", "1/12", "1/9", "1/7"],
+            correct="A",
+            explanation="전체 경우의 수는 6×6=36. 합이 7인 경우는 (1,6), (2,5), (3,4), (4,3), (5,2), (6,1)로 6가지. 따라서 6/36 = 1/6",
+            points=10
+        ),
     ]
+
+    tests = [
+        test(
+            id="test-m2-function",
+            title="중2 일차함수 테스트",
+            description="기울기, 절편, 일차함수와 일차방정식",
+            grade="middle_2",
+            concept_ids=["concept-m2-linear-func"],
+            question_ids=["m2-conc-001", "m2-conc-002", "m2-conc-003"],
+            time_limit_minutes=10,
+        ),
+        test(
+            id="test-m2-geometry",
+            title="중2 도형 종합 테스트",
+            description="도형의 성질, 닮음, 피타고라스 정리",
+            grade="middle_2",
+            concept_ids=["concept-m2-triangle", "concept-m2-similarity", "concept-m2-pythagoras"],
+            question_ids=[f"m2-conc-{i:03d}" for i in range(4, 13)],
+            time_limit_minutes=20,
+            use_question_pool=True,
+            questions_per_attempt=8,
+        ),
+        test(
+            id="test-m2-probability",
+            title="중2 확률 테스트",
+            description="합의 법칙, 곱의 법칙, 근원사건의 동등성",
+            grade="middle_2",
+            concept_ids=["concept-m2-probability"],
+            question_ids=["m2-conc-013", "m2-conc-014", "m2-conc-015"],
+            time_limit_minutes=10,
+        ),
+    ]
+
+    return {
+        "concepts": concepts,
+        "questions": questions,
+        "tests": tests,
+    }

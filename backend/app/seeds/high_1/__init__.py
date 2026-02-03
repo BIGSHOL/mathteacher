@@ -33,8 +33,6 @@ def _get_tests():
             concept_ids=comp_concept_ids,
             question_ids=comp_question_ids + fb_question_ids[:3],
             time_limit_minutes=40,
-            is_adaptive=False,
-            passing_score=70
         ),
         test(
             id="test-h1-full",
@@ -44,7 +42,5 @@ def _get_tests():
             concept_ids=conc_concept_ids,
             question_ids=conc_question_ids + fb_question_ids[3:],
             time_limit_minutes=50,
-            is_adaptive=False,
-            passing_score=70
         )
     ]

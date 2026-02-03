@@ -19,6 +19,10 @@ class Settings(BaseSettings):
     # Environment
     ENV: str = "development"  # development, staging, production
 
+    # Gemini AI
+    GEMINI_API_KEY: str = ""
+    GEMINI_MODEL_NAME: str = "gemini-2.0-flash"
+
     # CORS - 환경변수에서 JSON 배열 파싱
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]
 
