@@ -34,7 +34,6 @@ def _get_tests():
             question_ids=comp_question_ids + fb_question_ids[:3],
             time_limit_minutes=30,
             is_adaptive=False,
-            passing_score=70
         ),
         test(
             id="test-m3-full",
@@ -45,6 +44,5 @@ def _get_tests():
             question_ids=conc_question_ids + fb_question_ids[3:],
             time_limit_minutes=45,
             is_adaptive=False,
-            passing_score=70
         )
     ]
