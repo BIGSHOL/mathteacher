@@ -1,6 +1,7 @@
 """학생 관리 API 엔드포인트."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
@@ -16,6 +17,11 @@ from app.schemas.common import UserRole
 from app.services.student_service import StudentService
 from app.services.auth_service import AuthService
 from app.api.v1.auth import get_current_user, require_role
+
+
+class ResetPasswordRequest(BaseModel):
+    """비밀번호 초기화 요청."""
+    new_password: str = Field(..., min_length=6, max_length=100)
 
 router = APIRouter(prefix="/students", tags=["students"])
 
@@ -209,3 +215,78 @@ async def delete_student(
                 },
             },
         )
+
+
+@router.post("/{student_id}/reset-password", response_model=ApiResponse[dict])
+async def reset_student_password(
+    student_id: str,
+    request: ResetPasswordRequest,
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    student_service: StudentService = Depends(get_student_service),
+):
+    """학생 비밀번호 초기화 (강사/관리자 전용)."""
+    # 강사는 자신의 반 학생만 수정 가능
+    if current_user.role == UserRole.TEACHER:
+        if not student_service.check_teacher_access(current_user.id, student_id):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "success": False,
+                    "error": {
+                        "code": "FORBIDDEN",
+                        "message": "접근 권한이 없습니다.",
+                    },
+                },
+            )
+
+    student = student_service.reset_password(student_id, request.new_password)
+    if not student:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "학생을 찾을 수 없습니다.",
+                },
+            },
+        )
+
+    return ApiResponse(data={"message": "비밀번호가 초기화되었습니다."})
+
+
+@router.post("/{student_id}/reset-history", response_model=ApiResponse[dict])
+async def reset_student_history(
+    student_id: str,
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    student_service: StudentService = Depends(get_student_service),
+):
+    """학생 테스트 기록 초기화 (강사/관리자 전용)."""
+    # 강사는 자신의 반 학생만 수정 가능
+    if current_user.role == UserRole.TEACHER:
+        if not student_service.check_teacher_access(current_user.id, student_id):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail={
+                    "success": False,
+                    "error": {
+                        "code": "FORBIDDEN",
+                        "message": "접근 권한이 없습니다.",
+                    },
+                },
+            )
+
+    success = student_service.reset_test_history(student_id)
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "학생을 찾을 수 없습니다.",
+                },
+            },
+        )
+
+    return ApiResponse(data={"message": "테스트 기록이 초기화되었습니다."})

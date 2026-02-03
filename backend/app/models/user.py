@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, String, func
+from sqlalchemy import Boolean, DateTime, Enum, ForeignKey, Integer, JSON, String, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -45,6 +45,17 @@ class User(Base):
 
     # 상태
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+
+    # 진단 평가 (Placement Test)
+    has_completed_placement: Mapped[bool] = mapped_column(
+        Boolean, default=False, comment="진단 평가 완료 여부"
+    )
+    placement_test_id: Mapped[str | None] = mapped_column(
+        String(36), nullable=True, comment="완료한 진단 평가 시도 ID"
+    )
+    placement_result: Mapped[dict | None] = mapped_column(
+        JSON, nullable=True, comment="진단 평가 결과 (시작 단원, 레벨 등)"
+    )
 
     # 타임스탬프
     created_at: Mapped[datetime] = mapped_column(

@@ -34,6 +34,7 @@ class UserUpdate(BaseModel):
     name: str | None = Field(None, min_length=1, max_length=100)
     grade: Grade | None = None
     class_id: str | None = None
+    is_active: bool | None = None
 
 
 class UserResponse(UserBase):

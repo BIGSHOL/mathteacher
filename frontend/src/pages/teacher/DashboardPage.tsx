@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import api from '../../lib/api'
 import type { DashboardStats, DashboardAlert, StudentStatsSummary, PaginatedResponse } from '../../types'
+import { LoadingSpinner, ErrorState } from '../../components/common'
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -41,10 +42,7 @@ export function DashboardPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary-500 border-t-transparent"></div>
-          <p className="text-gray-600">대시보드를 불러오는 중...</p>
-        </div>
+        <LoadingSpinner size="lg" text="대시보드를 불러오는 중..." />
       </div>
     )
   }
@@ -52,12 +50,11 @@ export function DashboardPage() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <p className="mb-4 text-red-500">{error}</p>
-          <button onClick={fetchData} className="btn-primary px-4 py-2">
-            다시 시도
-          </button>
-        </div>
+        <ErrorState
+          title="데이터 로드 실패"
+          message={error}
+          onRetry={fetchData}
+        />
       </div>
     )
   }

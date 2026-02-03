@@ -54,6 +54,10 @@ class TestAttempt(Base):
     adaptive_question_ids: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
     initial_difficulty: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
+    # 문제 풀 & 셔플 설정
+    selected_question_ids: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
+    question_shuffle_config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
+
     # 관계
     test: Mapped["Test"] = relationship("Test", back_populates="attempts")
     student: Mapped["User"] = relationship("User")

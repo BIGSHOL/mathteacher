@@ -34,8 +34,16 @@ class Test(Base):
     is_adaptive: Mapped[bool] = mapped_column(Boolean, default=False)
     adaptive_pool_config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
+    # 문제 풀 설정
+    use_question_pool: Mapped[bool] = mapped_column(Boolean, default=False)
+    questions_per_attempt: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    shuffle_options: Mapped[bool] = mapped_column(Boolean, default=True)
+
     # 상태
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_placement: Mapped[bool] = mapped_column(
+        Boolean, default=False, comment="진단 평가 테스트 여부"
+    )
 
     # 타임스탬프
     created_at: Mapped[datetime] = mapped_column(

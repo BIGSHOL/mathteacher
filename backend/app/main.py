@@ -1,5 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,7 +17,10 @@ logger = logging.getLogger(__name__)
 def init_db():
     """Initialize database tables and seed data."""
     # Import all models to register them with Base
-    from app.models import User, Class, Concept, Question, Test, TestAttempt, AnswerLog
+    from app.models import (
+        User, Class, Concept, Question, Test, TestAttempt, AnswerLog,
+        Chapter, ChapterProgress, ConceptMastery
+    )
     from app.models.user import RefreshToken
     from app.services.auth_service import AuthService
 
@@ -375,16 +379,32 @@ def init_db():
             for q in adaptive_questions:
                 db.add(q)
 
-            # Create test (고정형)
+            # Create test (고정형) - 종합 테스트 12문제로 확대
             test = Test(
                 id="test-001",
-                title="일차방정식 테스트",
-                description="일차방정식 풀이 연습",
+                title="일차방정식 종합 테스트",
+                description="일차방정식의 기본부터 응용까지 총 12문제",
                 grade="middle_1",
                 concept_ids=["concept-001"],
-                question_ids=["question-001", "question-002", "question-003"],
-                question_count=3,
-                time_limit_minutes=10,
+                question_ids=[
+                    # 기본 개념 (4문제 - 40점)
+                    "question-a-001",  # 등식 정의
+                    "question-a-002",  # 등식 판별
+                    "question-a-003",  # 미지수 정의
+                    "question-001",    # 일차방정식 판별
+                    # 기본 풀이 (4문제 - 40점)
+                    "question-002",    # 등식 성질
+                    "question-003",    # 이항
+                    "question-a-004",  # x = 7 판별
+                    "question-a-006",  # 3x = 12 풀이
+                    # 응용 (4문제 - 40점)
+                    "question-a-007",  # 2x + 3 = 11 풀이
+                    "question-a-008",  # 복잡한 방정식
+                    "question-a-009",  # 일반형 해
+                    "question-a-005",  # 해 대입 확인
+                ],
+                question_count=12,
+                time_limit_minutes=20,
                 is_active=True,
             )
             db.add(test)
@@ -403,6 +423,76 @@ def init_db():
                 is_adaptive=True,
             )
             db.add(adaptive_test)
+
+            # Create question pool test (문제 풀 테스트)
+            # 11개 문제 중 랜덤으로 5개만 출제, 보기 셔플
+            pool_test = Test(
+                id="test-pool-001",
+                title="일차방정식 연습 (랜덤)",
+                description="11개 문제 중 5개가 랜덤으로 출제되고, 보기 순서도 매번 바뀝니다. 정답 외우기 방지!",
+                grade="middle_1",
+                concept_ids=["concept-001"],
+                question_ids=[
+                    "question-a-001",
+                    "question-a-002",
+                    "question-a-003",
+                    "question-a-004",
+                    "question-a-005",
+                    "question-a-006",
+                    "question-a-007",
+                    "question-a-008",
+                    "question-a-009",
+                    "question-a-010",
+                    "question-a-011",
+                ],
+                question_count=11,  # 전체 풀 크기
+                time_limit_minutes=10,
+                is_active=True,
+                use_question_pool=True,
+                questions_per_attempt=5,  # 한 번 시도에 5문제만
+                shuffle_options=True,  # 보기 셔플
+            )
+            db.add(pool_test)
+
+            # Create placement test (진단 평가)
+            # 다양한 단원의 대표 문제로 구성
+            placement_test = Test(
+                id="test-placement-001",
+                title="실력 진단 평가",
+                description="5-10분 테스트로 당신에게 딱 맞는 학습 경로를 찾아드립니다",
+                grade="middle_1",
+                concept_ids=[
+                    "concept-001",  # 일차방정식
+                    "concept-002",  # 사칙연산
+                    "concept-003",  # 일차부등식
+                    "concept-004",  # 좌표와 그래프
+                    "concept-005",  # 통계
+                ],
+                question_ids=[
+                    # 일차방정식 (기초)
+                    "question-001",
+                    "question-002",
+                    # 적응형 문제 (다양한 난이도)
+                    "question-a-003",  # 난이도 3
+                    "question-a-006",  # 난이도 5
+                    "question-a-009",  # 난이도 8
+                    # 사칙연산
+                    "question-op-003",
+                    "question-op-005",
+                    # 일차부등식
+                    "question-ineq-001",
+                    "question-ineq-003",
+                    # 좌표
+                    "question-coord-001",
+                    # 통계
+                    "question-stat-001",
+                ],
+                question_count=11,
+                time_limit_minutes=10,
+                is_active=True,
+                is_placement=True,  # 진단 평가 플래그
+            )
+            db.add(placement_test)
 
             # Create operation practice concept
             op_concept = Concept(
@@ -827,6 +917,77 @@ def init_db():
             coord_concept.prerequisites.append(concept)
             # 통계(concept-005) ← 사칙연산(concept-002) 필요
             stat_concept.prerequisites.append(op_concept)
+
+            # 2022 개정 교육과정 단원 구조 (예시: 중1 첫 단원)
+            chapter1 = Chapter(
+                id="chapter-m1-01",
+                name="1. 소인수분해",
+                grade="middle_1",
+                chapter_number=1,
+                description="소수, 합성수, 소인수분해, 최대공약수, 최소공배수",
+                concept_ids=[],  # TODO: 소인수분해 관련 개념 추가
+                mastery_threshold=90,
+                final_test_pass_score=90,
+                require_teacher_approval=False,
+                is_active=True,
+            )
+            db.add(chapter1)
+
+            chapter2 = Chapter(
+                id="chapter-m1-02",
+                name="2. 정수와 유리수",
+                grade="middle_1",
+                chapter_number=2,
+                description="부호, 사칙연산, 혼합 계산, 절댓값",
+                concept_ids=[],
+                mastery_threshold=90,
+                final_test_pass_score=90,
+                require_teacher_approval=False,
+                is_active=True,
+            )
+            db.add(chapter2)
+
+            chapter3 = Chapter(
+                id="chapter-m1-03",
+                name="3. 문자와 식 / 일차방정식",
+                grade="middle_1",
+                chapter_number=3,
+                description="식의 값, 일차방정식 풀이, 활용 문제",
+                concept_ids=["concept-001"],  # 일차방정식 개념
+                final_test_id="test-001",  # 일차방정식 테스트를 종합 테스트로
+                mastery_threshold=90,
+                final_test_pass_score=90,
+                require_teacher_approval=False,
+                is_active=True,
+            )
+            db.add(chapter3)
+
+            db.flush()
+
+            # 단원 선수관계 설정
+            chapter2.prerequisites.append(chapter1)  # 2단원은 1단원 선행
+            chapter3.prerequisites.append(chapter2)  # 3단원은 2단원 선행
+
+            # student@test.com에게 1단원 해제 (학습 시작 가능)
+            student_user = db.query(User).filter(User.email == "student@test.com").first()
+            if student_user:
+                # 1단원 해제
+                ch1_progress = ChapterProgress(
+                    student_id=student_user.id,
+                    chapter_id="chapter-m1-01",
+                    is_unlocked=True,
+                    unlocked_at=datetime.now(timezone.utc),
+                )
+                db.add(ch1_progress)
+
+                # 일차방정식 개념 해제 (3단원 학습 위해)
+                concept_mastery = ConceptMastery(
+                    student_id=student_user.id,
+                    concept_id="concept-001",
+                    is_unlocked=True,
+                    unlocked_at=datetime.now(timezone.utc),
+                )
+                db.add(concept_mastery)
 
             db.commit()
             print("Database seeded with initial data")

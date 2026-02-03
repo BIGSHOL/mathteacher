@@ -225,6 +225,8 @@ async def get_test_detail(
         QuestionResponse(
             id=q.id,
             concept_id=q.concept_id,
+            category=q.category,
+            part=q.part,
             question_type=q.question_type,
             difficulty=q.difficulty,
             content=q.content,
@@ -322,6 +324,8 @@ async def start_test(
             QuestionResponse(
                 id=first_question.id,
                 concept_id=first_question.concept_id,
+                category=first_question.category,
+                part=first_question.part,
                 question_type=first_question.question_type,
                 difficulty=first_question.difficulty,
                 content=first_question.content,
@@ -353,20 +357,7 @@ async def start_test(
             )
         )
 
-    # 고정형 테스트 (기존 로직)
-    result = test_service.get_test_with_questions(test_id)
-    if not result:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail={
-                "success": False,
-                "error": {
-                    "code": "NOT_FOUND",
-                    "message": "테스트를 찾을 수 없습니다.",
-                },
-            },
-        )
-
+    # 고정형 테스트 (문제 풀 + 셔플 지원)
     attempt = test_service.start_test(test_id, current_user.id)
     if not attempt:
         raise HTTPException(
@@ -380,37 +371,53 @@ async def start_test(
             },
         )
 
-    test_data = result["test"]
-    questions = result["questions"]
+    # 셔플 적용된 문제 가져오기
+    shuffled_questions = test_service.get_attempt_questions(attempt.id)
+    if not shuffled_questions:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NO_QUESTIONS",
+                    "message": "문제를 불러올 수 없습니다.",
+                },
+            },
+        )
 
     question_responses = [
         QuestionResponse(
-            id=q.id,
-            concept_id=q.concept_id,
-            question_type=q.question_type,
-            difficulty=q.difficulty,
-            content=q.content,
-            options=q.options,
-            explanation="",
-            points=q.points,
+            id=q["id"],
+            concept_id=q.get("concept_id", ""),
+            category=q["category"],
+            part=q["part"],
+            question_type=q["question_type"],
+            difficulty=q["difficulty"],
+            content=q["content"],
+            options=q["options"],
+            explanation=q.get("explanation", ""),
+            points=q["points"],
         )
-        for q in questions
+        for q in shuffled_questions
     ]
+
+    # 실제 출제 문제 수 (문제 풀에서 선택된 경우)
+    actual_question_count = len(shuffled_questions)
 
     return ApiResponse(
         data=StartTestResponse(
             attempt_id=attempt.id,
             test=TestWithQuestionsResponse(
-                id=test_data.id,
-                title=test_data.title,
-                description=test_data.description,
-                grade=test_data.grade,
-                concept_ids=test_data.concept_ids,
-                question_count=test_data.question_count,
-                time_limit_minutes=test_data.time_limit_minutes,
-                is_active=test_data.is_active,
+                id=test.id,
+                title=test.title,
+                description=test.description,
+                grade=test.grade,
+                concept_ids=test.concept_ids,
+                question_count=actual_question_count,
+                time_limit_minutes=test.time_limit_minutes,
+                is_active=test.is_active,
                 is_adaptive=False,
-                created_at=test_data.created_at,
+                created_at=test.created_at,
                 questions=question_responses,
             ),
             started_at=attempt.started_at,
@@ -501,6 +508,11 @@ async def submit_answer(
     # 현재 콤보
     current_combo = test_service.get_current_combo(attempt_id)
 
+    # 셔플된 정답 가져오기 (셔플이 적용된 경우)
+    correct_answer_override = test_service.get_correct_answer_for_attempt(
+        attempt_id, request.question_id
+    )
+
     # 채점
     result = grading_service.submit_answer(
         attempt=attempt,
@@ -508,6 +520,7 @@ async def submit_answer(
         selected_answer=request.selected_answer,
         time_spent_seconds=request.time_spent_seconds,
         current_combo=current_combo,
+        correct_answer_override=correct_answer_override,
     )
 
     # 적응형이면 다음 난이도 힌트 추가
@@ -706,6 +719,19 @@ async def complete_test(
         adaptive_result=adaptive_result,
     )
 
+    # 개념 숙련도 업데이트 및 자동 해제
+    from app.services.mastery_service import MasteryService
+    from app.services.chapter_service import ChapterService
+
+    mastery_service = MasteryService(db)
+    chapter_service = ChapterService(db)
+
+    # 개념별 숙련도 업데이트
+    mastery_service.update_mastery_from_attempt(current_user.id, attempt_id)
+
+    # 관련 단원 진행률 업데이트 (테스트의 개념들이 속한 단원)
+    # TODO: 테스트와 단원 연결 후 구현
+
     # 답안 기록 조회
     details = test_service.get_attempt_with_details(attempt_id)
     answer_logs = details["answer_logs"] if details else []
@@ -783,6 +809,8 @@ async def get_attempt(
         QuestionResponse(
             id=q.id,
             concept_id=q.concept_id,
+            category=q.category,
+            part=q.part,
             question_type=q.question_type,
             difficulty=q.difficulty,
             content=q.content,

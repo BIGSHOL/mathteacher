@@ -2,9 +2,14 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import api from '../../lib/api'
 import type { Grade } from '../../types'
+
+interface ClassInfo {
+  id: string
+  name: string
+}
 
 interface ConceptStat {
   concept_id: string
@@ -61,6 +66,19 @@ const formatGrade = (grade: Grade): string => {
   return gradeMap[grade] || grade
 }
 
+const GRADE_OPTIONS: { value: Grade; label: string }[] = [
+  { value: 'elementary_1', label: '초등 1학년' },
+  { value: 'elementary_2', label: '초등 2학년' },
+  { value: 'elementary_3', label: '초등 3학년' },
+  { value: 'elementary_4', label: '초등 4학년' },
+  { value: 'elementary_5', label: '초등 5학년' },
+  { value: 'elementary_6', label: '초등 6학년' },
+  { value: 'middle_1', label: '중등 1학년' },
+  { value: 'middle_2', label: '중등 2학년' },
+  { value: 'middle_3', label: '중등 3학년' },
+  { value: 'high_1', label: '고등 1학년' },
+]
+
 export function StudentDetailPage() {
   const { studentId } = useParams<{ studentId: string }>()
   const navigate = useNavigate()
@@ -68,9 +86,32 @@ export function StudentDetailPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // 설정 관련 상태
+  const [showSettings, setShowSettings] = useState(false)
+  const [classes, setClasses] = useState<ClassInfo[]>([])
+  const [editGrade, setEditGrade] = useState<Grade | ''>('')
+  const [editClassId, setEditClassId] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
+  const [showResetHistoryModal, setShowResetHistoryModal] = useState(false)
+  const [actionLoading, setActionLoading] = useState(false)
+  const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
   useEffect(() => {
-    if (studentId) fetchDetail()
+    if (studentId) {
+      fetchDetail()
+      fetchClasses()
+    }
   }, [studentId])
+
+  const fetchClasses = async () => {
+    try {
+      const res = await api.get<{ success: boolean; data: { items: ClassInfo[] } }>('/api/v1/classes')
+      setClasses(res.data.data.items || [])
+    } catch {
+      // 반 목록 로드 실패시 무시
+    }
+  }
 
   const fetchDetail = async () => {
     try {
@@ -78,11 +119,82 @@ export function StudentDetailPage() {
       const res = await api.get<{ success: boolean; data: StudentDetail }>(
         `/api/v1/stats/students/${studentId}`
       )
-      setData(res.data.data)
+      const studentData = res.data.data
+      setData(studentData)
+      setEditGrade(studentData.grade)
+      // class_id는 별도로 가져와야 함
     } catch {
       setError('학생 정보를 불러오는데 실패했습니다.')
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handleUpdateStudent = async () => {
+    if (!studentId) return
+    setActionLoading(true)
+    setActionMessage(null)
+    try {
+      const updateData: { grade?: Grade; class_id?: string } = {}
+      if (editGrade) updateData.grade = editGrade
+      if (editClassId) updateData.class_id = editClassId
+
+      await api.patch(`/api/v1/students/${studentId}`, updateData)
+      setActionMessage({ type: 'success', text: '학생 정보가 수정되었습니다.' })
+      fetchDetail()
+    } catch {
+      setActionMessage({ type: 'error', text: '수정에 실패했습니다.' })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleToggleActive = async () => {
+    if (!studentId || !data) return
+    setActionLoading(true)
+    setActionMessage(null)
+    try {
+      // 현재 활성 상태의 반대로 설정 (StudentDetail에 is_active가 없으므로 별도 API 호출)
+      const studentRes = await api.get<{ success: boolean; data: { is_active?: boolean } }>(`/api/v1/students/${studentId}`)
+      const currentActive = studentRes.data.data.is_active !== false
+      await api.patch(`/api/v1/students/${studentId}`, { is_active: !currentActive })
+      setActionMessage({ type: 'success', text: currentActive ? '계정이 비활성화되었습니다.' : '계정이 활성화되었습니다.' })
+    } catch {
+      setActionMessage({ type: 'error', text: '상태 변경에 실패했습니다.' })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleResetPassword = async () => {
+    if (!studentId || !newPassword) return
+    setActionLoading(true)
+    setActionMessage(null)
+    try {
+      await api.post(`/api/v1/students/${studentId}/reset-password`, { new_password: newPassword })
+      setActionMessage({ type: 'success', text: '비밀번호가 초기화되었습니다.' })
+      setNewPassword('')
+      setShowPasswordModal(false)
+    } catch {
+      setActionMessage({ type: 'error', text: '비밀번호 초기화에 실패했습니다.' })
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleResetHistory = async () => {
+    if (!studentId) return
+    setActionLoading(true)
+    setActionMessage(null)
+    try {
+      await api.post(`/api/v1/students/${studentId}/reset-history`)
+      setActionMessage({ type: 'success', text: '테스트 기록이 초기화되었습니다.' })
+      setShowResetHistoryModal(false)
+      fetchDetail()
+    } catch {
+      setActionMessage({ type: 'error', text: '기록 초기화에 실패했습니다.' })
+    } finally {
+      setActionLoading(false)
     }
   }
 
@@ -124,24 +236,202 @@ export function StudentDetailPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6 rounded-2xl bg-white p-6 shadow-sm"
         >
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-600 text-2xl font-bold text-white">
-              {data.name.charAt(0)}
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">{data.name}</h1>
-              <p className="text-gray-500">{data.email}</p>
-              <div className="mt-1 flex items-center gap-3 text-sm text-gray-600">
-                <span>{formatGrade(data.grade)}</span>
-                <span>{data.class_name}</span>
-                <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
-                  Lv.{data.level}
-                </span>
-                <span className="text-xs text-gray-400">{data.total_xp.toLocaleString()} XP</span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-600 text-2xl font-bold text-white">
+                {data.name.charAt(0)}
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">{data.name}</h1>
+                <p className="text-gray-500">{data.email}</p>
+                <div className="mt-1 flex items-center gap-3 text-sm text-gray-600">
+                  <span>{formatGrade(data.grade)}</span>
+                  <span>{data.class_name}</span>
+                  <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+                    Lv.{data.level}
+                  </span>
+                  <span className="text-xs text-gray-400">{data.total_xp.toLocaleString()} XP</span>
+                </div>
               </div>
             </div>
+            <button
+              onClick={() => setShowSettings(!showSettings)}
+              className="rounded-lg bg-gray-100 p-2 text-gray-600 hover:bg-gray-200 transition-colors"
+              title="학생 설정"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+            </button>
           </div>
         </motion.div>
+
+        {/* 설정 패널 */}
+        <AnimatePresence>
+          {showSettings && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-6 overflow-hidden rounded-2xl bg-white shadow-sm"
+            >
+              <div className="border-b border-gray-100 bg-gray-50 px-6 py-4">
+                <h2 className="font-semibold text-gray-900">학생 관리</h2>
+              </div>
+              <div className="p-6">
+                {actionMessage && (
+                  <div className={`mb-4 rounded-lg p-3 text-sm ${actionMessage.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                    {actionMessage.text}
+                  </div>
+                )}
+
+                {/* 학년/반 변경 */}
+                <div className="mb-6">
+                  <h3 className="mb-3 text-sm font-medium text-gray-700">학년/반 변경</h3>
+                  <div className="flex flex-wrap gap-3">
+                    <select
+                      value={editGrade}
+                      onChange={(e) => setEditGrade(e.target.value as Grade)}
+                      className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                    >
+                      <option value="">학년 선택</option>
+                      {GRADE_OPTIONS.map((opt) => (
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={editClassId}
+                      onChange={(e) => setEditClassId(e.target.value)}
+                      className="rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                    >
+                      <option value="">반 선택</option>
+                      {classes.map((c) => (
+                        <option key={c.id} value={c.id}>{c.name}</option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={handleUpdateStudent}
+                      disabled={actionLoading}
+                      className="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50"
+                    >
+                      {actionLoading ? '저장 중...' : '저장'}
+                    </button>
+                  </div>
+                </div>
+
+                {/* 계정 관리 버튼들 */}
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => setShowPasswordModal(true)}
+                    className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                  >
+                    비밀번호 초기화
+                  </button>
+                  <button
+                    onClick={handleToggleActive}
+                    disabled={actionLoading}
+                    className="rounded-lg border border-yellow-300 bg-yellow-50 px-4 py-2 text-sm font-medium text-yellow-700 hover:bg-yellow-100 disabled:opacity-50"
+                  >
+                    계정 활성화/비활성화
+                  </button>
+                  <button
+                    onClick={() => setShowResetHistoryModal(true)}
+                    className="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100"
+                  >
+                    테스트 기록 초기화
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 비밀번호 초기화 모달 */}
+        <AnimatePresence>
+          {showPasswordModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+              onClick={() => setShowPasswordModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.95 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+              >
+                <h3 className="mb-4 text-lg font-semibold text-gray-900">비밀번호 초기화</h3>
+                <input
+                  type="text"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="새 비밀번호 (6자 이상)"
+                  className="mb-4 w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                />
+                <div className="flex justify-end gap-3">
+                  <button
+                    onClick={() => setShowPasswordModal(false)}
+                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={handleResetPassword}
+                    disabled={actionLoading || newPassword.length < 6}
+                    className="rounded-lg bg-primary-500 px-4 py-2 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50"
+                  >
+                    {actionLoading ? '처리 중...' : '초기화'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* 기록 초기화 확인 모달 */}
+        <AnimatePresence>
+          {showResetHistoryModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+              onClick={() => setShowResetHistoryModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.95 }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl"
+              >
+                <h3 className="mb-2 text-lg font-semibold text-gray-900">테스트 기록 초기화</h3>
+                <p className="mb-4 text-sm text-gray-600">
+                  이 작업은 되돌릴 수 없습니다. 학생의 모든 테스트 기록, 레벨, XP가 초기화됩니다.
+                </p>
+                <div className="flex justify-end gap-3">
+                  <button
+                    onClick={() => setShowResetHistoryModal(false)}
+                    className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+                  >
+                    취소
+                  </button>
+                  <button
+                    onClick={handleResetHistory}
+                    disabled={actionLoading}
+                    className="rounded-lg bg-red-500 px-4 py-2 text-sm font-medium text-white hover:bg-red-600 disabled:opacity-50"
+                  >
+                    {actionLoading ? '처리 중...' : '초기화'}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* 핵심 지표 */}
         <motion.div

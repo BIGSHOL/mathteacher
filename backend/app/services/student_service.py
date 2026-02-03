@@ -121,3 +121,47 @@ class StudentService:
             return False
 
         return class_.teacher_id == teacher_id
+
+    def reset_password(self, student_id: str, new_password: str) -> User | None:
+        """학생 비밀번호 초기화."""
+        student = self.get_student_by_id(student_id)
+        if not student:
+            return None
+
+        student.hashed_password = get_password_hash(new_password)
+        self.db.commit()
+        self.db.refresh(student)
+        return student
+
+    def reset_test_history(self, student_id: str) -> bool:
+        """학생 테스트 기록 초기화."""
+        from app.models import TestAttempt, AnswerLog
+
+        student = self.get_student_by_id(student_id)
+        if not student:
+            return False
+
+        # 학생의 모든 테스트 시도 조회
+        attempts = self.db.scalars(
+            select(TestAttempt).where(TestAttempt.user_id == student_id)
+        ).all()
+
+        # 답변 로그 삭제
+        for attempt in attempts:
+            self.db.execute(
+                AnswerLog.__table__.delete().where(AnswerLog.attempt_id == attempt.id)
+            )
+
+        # 테스트 시도 삭제
+        self.db.execute(
+            TestAttempt.__table__.delete().where(TestAttempt.user_id == student_id)
+        )
+
+        # 학생 통계 초기화
+        student.level = 1
+        student.total_xp = 0
+        student.current_streak = 0
+        student.max_streak = 0
+
+        self.db.commit()
+        return True

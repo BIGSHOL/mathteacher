@@ -151,28 +151,39 @@ function TestCard({ test, index, onStart }: TestCardProps) {
     return 'bg-red-100 text-red-700'
   }
 
+  const getCardStyle = () => {
+    if (test.category === 'computation') {
+      return 'bg-gradient-to-br from-rose-50 to-pink-50 border-l-4 border-l-rose-400'
+    }
+    if (test.category === 'concept') {
+      return 'bg-gradient-to-br from-blue-50 to-sky-50 border-l-4 border-l-blue-400'
+    }
+    // 종합 (category 없음)
+    return 'bg-gradient-to-br from-violet-50 to-purple-50 border-l-4 border-l-violet-400'
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.1 }}
-      className="card overflow-hidden"
+      className={clsx('card overflow-hidden', getCardStyle())}
     >
       <div className="p-6">
         <div className="mb-4 flex items-start justify-between">
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-lg font-semibold text-gray-900">{test.title}</h3>
-              {test.category && (
-                <span className={clsx(
-                  'rounded-full px-2 py-0.5 text-xs font-medium',
-                  test.category === 'computation'
+              <span className={clsx(
+                'rounded-full px-2 py-0.5 text-xs font-medium',
+                test.category === 'computation'
+                  ? 'bg-rose-100 text-rose-700'
+                  : test.category === 'concept'
                     ? 'bg-blue-100 text-blue-700'
-                    : 'bg-emerald-100 text-emerald-700'
-                )}>
-                  {test.category === 'computation' ? '연산' : '개념'}
-                </span>
-              )}
+                    : 'bg-violet-100 text-violet-700'
+              )}>
+                {test.category === 'computation' ? '연산' : test.category === 'concept' ? '개념' : '종합'}
+              </span>
               {test.is_adaptive && (
                 <span className="rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">
                   적응형
