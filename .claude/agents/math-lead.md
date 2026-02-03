@@ -132,6 +132,13 @@ class Question:
 
 ## 핵심 참조 파일
 
+### 교육과정 개념 가이드 (팀 전체 기준 문서)
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `docs/work-plans/elementary-math-curriculum-guide.md` | 초등 4~6학년 개념 ID·공식·문제유형·오답유도 | 초등 문제 품질 기준 |
+| `data/middle_school_math_concepts.md` | 중학교 1~3학년 개념·공식·문제유형 | 중등 문제 품질 기준 |
+| `backend/app/data/seed_concepts.py` | DB 시드 데이터 (초등+중등 개념+선수관계) | 개념 커버리지 현황 |
+
 ### 데이터 자료
 | 파일 | 내용 | 용도 |
 |------|------|------|

@@ -175,12 +175,28 @@ model: sonnet
 
 ## 핵심 참조 파일
 
+### 교육과정 개념 가이드 (문제 출제 시 반드시 참조)
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `docs/work-plans/elementary-math-curriculum-guide.md` | 초등 4~6학년 개념·공식·문제유형·오답유도 | 초등 문제 출제 기준 |
+| `data/middle_school_math_concepts.md` | 중학교 1~3학년 개념·공식·문제유형 | 중등 문제 출제 기준 |
+
 ### 문제 설계 참조
 | 파일 | 내용 | 용도 |
 |------|------|------|
 | `data/교재.txt` | 고등학교 수준별 추천 문제집 60종 | 난이도별 문제 유형 참고 |
 | `data/배분전략.txt` | 중1~고3 시험 시간 배분 전략 | 문제별 소요시간 기준 |
 | `backend/app/services/subject_config.py` | 과목별 문제 유형/오류 유형 | question_types, error_types |
+
+### 문제 템플릿 코드 (현재 구현)
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `frontend/src/services/questionGenerator/templates/elementary4.ts` | 초4 연산+개념 템플릿 | 초4 문제 생성 |
+| `frontend/src/services/questionGenerator/templates/elementary5.ts` | 초5 연산+개념 템플릿 | 초5 문제 생성 |
+| `frontend/src/services/questionGenerator/templates/elementary6.ts` | 초6 연산+개념 템플릿 | 초6 문제 생성 |
+| `frontend/src/services/questionGenerator/templates/middle1.ts` | 중1 연산+개념 템플릿 | 중1 문제 생성 |
+| `frontend/src/services/questionGenerator/templates/middle2.ts` | 중2 연산+개념 템플릿 | 중2 문제 생성 |
+| `frontend/src/services/questionGenerator/templates/middle3.ts` | 중3 연산+개념 템플릿 | 중3 문제 생성 |
 
 ### 패턴 및 분석
 | 파일 | 내용 | 용도 |

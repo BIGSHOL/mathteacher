@@ -445,7 +445,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 5,
     part: 'geo',
-    conceptId: 'E6-GEO-01',
+    conceptId: 'E6-GEO-04',
     pattern: '',
     paramRanges: { a: [2, 10] },
     contentFn: ({ a }) => `반지름이 ${a}cm인 원의 넓이는? (π = 3.14)`,
@@ -599,6 +599,138 @@ const conc: QuestionTemplate[] = [
       const larger = Math.max(a, b)
       const portion = (c * larger) / (a + b)
       return `${c}을 ${a} : ${b}로 나누면 큰 쪽 = ${portion}\n${portion}의 ${d}% = ${portion} × ${d}/100 = ${ans}`
+    },
+  },
+  // ── 추가 개념: 각기둥/각뿔 구성 요소 (가이드 E6-GEO-01) ──
+  {
+    id: 'e6-conc-5b',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'geo',
+    conceptId: 'E6-GEO-01',
+    pattern: '',
+    paramRanges: { n: [3, 8] },
+    contentFn: ({ n }) => `${n}각기둥의 면은 모두 몇 개입니까?`,
+    answerFn: ({ n }) => n + 2,
+    distractorFns: [
+      ({ n }) => 2 * n,        // 꼭짓점 공식과 혼동
+      ({ n }) => 3 * n,        // 모서리 공식과 혼동
+      ({ n }) => n + 1,        // 각뿔 공식과 혼동
+    ],
+    explanationFn: ({ n }, ans) =>
+      `n각기둥의 면의 수 = n + 2\n${n}각기둥: ${n} + 2 = ${ans}개 (밑면 2개 + 옆면 ${n}개)`,
+  },
+  {
+    id: 'e6-conc-5c',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'geo',
+    conceptId: 'E6-GEO-01',
+    pattern: '',
+    paramRanges: { n: [3, 7] },
+    contentFn: ({ n }) => `${n}각뿔의 모서리는 모두 몇 개입니까?`,
+    answerFn: ({ n }) => 2 * n,
+    distractorFns: [
+      ({ n }) => 3 * n,        // 각기둥 모서리 공식과 혼동
+      ({ n }) => n + 1,        // 면/꼭짓점 공식과 혼동
+      ({ n }) => 2 * n + 1,
+    ],
+    explanationFn: ({ n }, ans) =>
+      `n각뿔의 모서리 수 = 2n\n${n}각뿔: 2 × ${n} = ${ans}개 (밑면 모서리 ${n}개 + 옆면 모서리 ${n}개)`,
+  },
+
+  // ── 추가 개념: 직육면체 부피와 겉넓이 (가이드 E6-GEO-02) ──
+  {
+    id: 'e6-conc-6b',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'geo',
+    conceptId: 'E6-GEO-02',
+    pattern: '',
+    paramRanges: { a: [2, 6], b: [3, 7], c: [2, 5] },
+    contentFn: ({ a, b, c }) =>
+      `가로 ${a}cm, 세로 ${b}cm, 높이 ${c}cm인 직육면체의 부피는?`,
+    answerFn: ({ a, b, c }) => a * b * c,
+    distractorFns: [
+      ({ a, b, c }) => 2 * (a * b + b * c + c * a),  // 겉넓이와 혼동
+      ({ a, b, c }) => a + b + c,
+      ({ a, b, c }) => a * b * c + 1,
+    ],
+    explanationFn: ({ a, b, c }, ans) =>
+      `직육면체 부피 = 가로 × 세로 × 높이\n= ${a} × ${b} × ${c} = ${ans}cm³`,
+  },
+  {
+    id: 'e6-conc-6c',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'geo',
+    conceptId: 'E6-GEO-02',
+    pattern: '',
+    paramRanges: { a: [2, 5], b: [3, 6], c: [2, 4] },
+    contentFn: ({ a, b, c }) =>
+      `가로 ${a}cm, 세로 ${b}cm, 높이 ${c}cm인 직육면체의 겉넓이는?`,
+    answerFn: ({ a, b, c }) => 2 * (a * b + b * c + c * a),
+    distractorFns: [
+      ({ a, b, c }) => a * b * c,                      // 부피와 혼동
+      ({ a, b, c }) => a * b + b * c + c * a,           // 2 곱하기 누락
+      ({ a, b, c }) => 2 * (a * b + b * c + c * a) + 2,
+    ],
+    explanationFn: ({ a, b, c }, ans) =>
+      `직육면체 겉넓이 = 2(ab + bc + ca)\n= 2(${a}×${b} + ${b}×${c} + ${c}×${a})\n= 2(${a * b} + ${b * c} + ${c * a})\n= 2 × ${a * b + b * c + c * a} = ${ans}cm²`,
+  },
+
+  // ── 추가 개념: 원주 (가이드 E6-GEO-03) ──
+  {
+    id: 'e6-conc-5d',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'geo',
+    conceptId: 'E6-GEO-03',
+    pattern: '',
+    paramRanges: { a: [2, 10] },
+    contentFn: ({ a }) => `반지름이 ${a}cm인 원의 둘레(원주)는? (π = 3.14)`,
+    answerFn: ({ a }) => Math.round(2 * 3.14 * a * 100) / 100,
+    distractorFns: [
+      ({ a }) => Math.round(3.14 * a * a * 100) / 100,  // 원의 넓이와 혼동
+      ({ a }) => Math.round(3.14 * a * 100) / 100,       // 2를 곱하지 않음
+      ({ a }) => Math.round(2 * 3.14 * a * 100) / 100 + 1,
+    ],
+    explanationFn: ({ a }, ans) =>
+      `원주 = 2 × π × r = 2 × 3.14 × ${a} = ${ans}cm`,
+  },
+
+  // ── 추가 연산: 자연수÷자연수→분수 (가이드 E6-NUM-01) ──
+  {
+    id: 'e6-conc-1b',
+    grade: G,
+    category: 'concept',
+    level: 1,
+    part: 'calc',
+    conceptId: 'E6-NUM-01',
+    pattern: '',
+    paramRanges: { a: [2, 9], b: [2, 12] },
+    constraints: ({ a, b }) => a < b && a % b !== 0,
+    contentFn: ({ a, b }) => `${a} ÷ ${b}를 분수로 나타내면?`,
+    answerFn: ({ a, b }) => {
+      const g = gcdHelper(a, b)
+      return `${a / g}/${b / g}`
+    },
+    distractorFns: [
+      ({ a, b }) => `${b}/${a}`,          // 분자/분모 뒤바뀜
+      ({ a, b }) => `${a}/${b}`,          // 약분 안 함 (약분 필요 시)
+      ({ a, b }) => `${a + b}/${b}`,
+    ],
+    explanationFn: ({ a, b }, ans) => {
+      const g = gcdHelper(a, b)
+      if (g > 1) {
+        return `${a} ÷ ${b} = ${a}/${b} = ${ans} (약분)`
+      }
+      return `${a} ÷ ${b} = ${ans}`
     },
   },
 ]

@@ -236,6 +236,13 @@ graph TD
 
 ## 핵심 참조 파일
 
+### 교육과정 개념 가이드 (개념 매핑 시 반드시 참조)
+| 파일 | 내용 | 용도 |
+|------|------|------|
+| `docs/work-plans/elementary-math-curriculum-guide.md` | 초등 4~6학년 개념 ID·선수관계·영역별 체계 | 초등 개념 매핑 기준 |
+| `data/middle_school_math_concepts.md` | 중학교 1~3학년 개념·공식·선수관계 | 중등 개념 매핑 기준 |
+| `backend/app/data/seed_concepts.py` | DB 시드 데이터 (초등+중등 개념) | 현재 등록된 개념 목록 |
+
 ### 개념 체계 참조
 | 파일 | 내용 | 용도 |
 |------|------|------|

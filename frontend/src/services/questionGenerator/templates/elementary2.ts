@@ -16,11 +16,10 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 1,
     part: 'calc',
-    conceptId: 'E2-NUM-02',
+    conceptId: 'E2-NUM-06',
     pattern: '{a} + {b}',
     paramRanges: { a: [10, 99], b: [10, 99] },
     constraints: ({ a, b }) => {
-      // 받아올림 없음: 일의 자리 합 < 10, 십의 자리 합 < 10
       const a1 = a % 10
       const a10 = Math.floor(a / 10)
       const b1 = b % 10
@@ -33,7 +32,11 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => a + b - 1,
       ({ a, b }) => a + b + 10,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} + ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) => {
+      const a1 = a % 10; const a10 = Math.floor(a / 10)
+      const b1 = b % 10; const b10 = Math.floor(b / 10)
+      return `① 일의 자리: ${a1} + ${b1} = ${a1 + b1}\n② 십의 자리: ${a10} + ${b10} = ${a10 + b10}\n③ ${a} + ${b} = ${ans}`
+    },
   },
 
   // Lv.2: 두 자리 + 두 자리 (받아올림 있음)
@@ -43,11 +46,10 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 2,
     part: 'calc',
-    conceptId: 'E2-NUM-02',
+    conceptId: 'E2-NUM-06',
     pattern: '{a} + {b}',
     paramRanges: { a: [10, 99], b: [10, 99] },
     constraints: ({ a, b }) => {
-      // 받아올림 있음: 일의 자리 합 >= 10
       const a1 = a % 10
       const b1 = b % 10
       return a1 + b1 >= 10
@@ -56,12 +58,12 @@ const comp: QuestionTemplate[] = [
     distractorFns: [
       ({ a, b }) => a + b - 10,
       ({ a, b }) => a + b + 1,
-      ({ a, b }) => a + b - 1,
+      ({ a }) => a,
     ],
     explanationFn: ({ a, b }, ans) => {
-      const a1 = a % 10
-      const b1 = b % 10
-      return `${a} + ${b} = ${ans} (일의 자리 ${a1} + ${b1} = ${a1 + b1}이므로 받아올림)`
+      const a1 = a % 10; const a10 = Math.floor(a / 10)
+      const b1 = b % 10; const b10 = Math.floor(b / 10)
+      return `① 일의 자리: ${a1} + ${b1} = ${a1 + b1} (10이 넘으므로 받아올림)\n② 십의 자리: ${a10} + ${b10} + 1 = ${a10 + b10 + 1}\n③ ${a} + ${b} = ${ans}\n\n💡 흔한 실수: 받아올림을 빠뜨려 ${a + b - 10}(으)로 답하는 경우가 있습니다.`
     },
   },
 
@@ -72,11 +74,10 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 3,
     part: 'calc',
-    conceptId: 'E2-NUM-03',
+    conceptId: 'E2-NUM-07',
     pattern: '{a} - {b}',
     paramRanges: { a: [20, 99], b: [10, 98] },
     constraints: ({ a, b }) => {
-      // a > b이고 받아내림 없음: 일의 자리 a >= b의 일의 자리
       if (a <= b) return false
       const a1 = a % 10
       const a10 = Math.floor(a / 10)
@@ -90,7 +91,11 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => a - b - 1,
       ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} - ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) => {
+      const a1 = a % 10; const a10 = Math.floor(a / 10)
+      const b1 = b % 10; const b10 = Math.floor(b / 10)
+      return `① 일의 자리: ${a1} - ${b1} = ${a1 - b1}\n② 십의 자리: ${a10} - ${b10} = ${a10 - b10}\n③ ${a} - ${b} = ${ans}`
+    },
   },
 
   // Lv.4: 두 자리 - 두 자리 (받아내림 있음)
@@ -100,11 +105,108 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 4,
     part: 'calc',
-    conceptId: 'E2-NUM-03',
+    conceptId: 'E2-NUM-07',
     pattern: '{a} - {b}',
     paramRanges: { a: [20, 99], b: [10, 98] },
     constraints: ({ a, b }) => {
-      // a > b이고 받아내림 있음: 일의 자리 a < b의 일의 자리
+      if (a <= b) return false
+      const a1 = a % 10
+      const b1 = b % 10
+      return a1 < b1
+    },
+    answerFn: ({ a, b }) => a - b,
+    distractorFns: [
+      ({ a, b }) => a - b + 10,
+      ({ a, b }) => {
+        // 감산 방향 오류: 큰수에서 작은수 빼기
+        const a1 = a % 10; const b1 = b % 10
+        const a10 = Math.floor(a / 10); const b10 = Math.floor(b / 10)
+        return (a10 - b10) * 10 + (b1 - a1)
+      },
+      ({ a, b }) => a - b + 1,
+    ],
+    explanationFn: ({ a, b }, ans) => {
+      const a1 = a % 10; const a10 = Math.floor(a / 10)
+      const b1 = b % 10; const b10 = Math.floor(b / 10)
+      return `① 일의 자리: ${a1} < ${b1}이므로 십의 자리에서 10을 빌려옵니다.\n② 일의 자리: ${a1 + 10} - ${b1} = ${a1 + 10 - b1}\n③ 십의 자리: ${a10} - 1 - ${b10} = ${a10 - 1 - b10}\n④ ${a} - ${b} = ${ans}\n\n💡 흔한 실수: ${b1} - ${a1} = ${b1 - a1}로 뒤집어 빼거나, 받아내림 후 십의 자리 감소를 잊는 경우가 있습니다.`
+    },
+  },
+
+  // Lv.5: 세 자리 + 두 자리
+  {
+    id: 'e2-comp-5a',
+    grade: G,
+    category: 'computation',
+    level: 5,
+    part: 'calc',
+    conceptId: 'E2-NUM-06',
+    pattern: '{a} + {b}',
+    paramRanges: { a: [100, 999], b: [10, 99] },
+    answerFn: ({ a, b }) => a + b,
+    distractorFns: [
+      ({ a, b }) => a + b + 1,
+      ({ a, b }) => a + b - 1,
+      ({ a, b }) => a + b + 10,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① 자릿값을 맞추어 세로로 더합니다.\n② ${a} + ${b} = ${ans}`,
+  },
+  {
+    id: 'e2-comp-5b',
+    grade: G,
+    category: 'computation',
+    level: 5,
+    part: 'calc',
+    conceptId: 'E2-NUM-06',
+    pattern: '{a} + {b}',
+    paramRanges: { a: [100, 999], b: [10, 99] },
+    constraints: ({ a, b }) => {
+      const a1 = a % 10
+      const b1 = b % 10
+      return a1 + b1 >= 10
+    },
+    answerFn: ({ a, b }) => a + b,
+    distractorFns: [
+      ({ a, b }) => a + b - 10,
+      ({ a, b }) => a + b + 10,
+      ({ a, b }) => a + b - 1,
+    ],
+    explanationFn: ({ a, b }, ans) => {
+      const a1 = a % 10; const b1 = b % 10
+      return `① 일의 자리: ${a1} + ${b1} = ${a1 + b1} (받아올림)\n② ${a} + ${b} = ${ans}`
+    },
+  },
+
+  // Lv.6: 세 자리 - 두 자리
+  {
+    id: 'e2-comp-6a',
+    grade: G,
+    category: 'computation',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E2-NUM-07',
+    pattern: '{a} - {b}',
+    paramRanges: { a: [100, 999], b: [10, 99] },
+    constraints: ({ a, b }) => a > b,
+    answerFn: ({ a, b }) => a - b,
+    distractorFns: [
+      ({ a, b }) => a - b + 1,
+      ({ a, b }) => a - b - 1,
+      ({ a, b }) => a - b + 10,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① 자릿값을 맞추어 세로로 뺍니다.\n② ${a} - ${b} = ${ans}`,
+  },
+  {
+    id: 'e2-comp-6b',
+    grade: G,
+    category: 'computation',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E2-NUM-07',
+    pattern: '{a} - {b}',
+    paramRanges: { a: [100, 999], b: [10, 99] },
+    constraints: ({ a, b }) => {
       if (a <= b) return false
       const a1 = a % 10
       const b1 = b % 10
@@ -117,96 +219,9 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => a - b + 1,
     ],
     explanationFn: ({ a, b }, ans) => {
-      const a1 = a % 10
-      const b1 = b % 10
-      return `${a} - ${b} = ${ans} (일의 자리 ${a1} < ${b1}이므로 받아내림)`
+      const a1 = a % 10; const b1 = b % 10
+      return `① 일의 자리: ${a1} < ${b1}이므로 받아내림합니다.\n② ${a} - ${b} = ${ans}\n\n💡 흔한 실수: 받아내림을 잊어 ${a - b + 10}(으)로 답하는 경우가 있습니다.`
     },
-  },
-
-  // Lv.5: 세 자리 + 두 자리
-  {
-    id: 'e2-comp-5a',
-    grade: G,
-    category: 'computation',
-    level: 5,
-    part: 'calc',
-    conceptId: 'E2-NUM-04',
-    pattern: '{a} + {b}',
-    paramRanges: { a: [100, 999], b: [10, 99] },
-    answerFn: ({ a, b }) => a + b,
-    distractorFns: [
-      ({ a, b }) => a + b + 1,
-      ({ a, b }) => a + b - 1,
-      ({ a, b }) => a + b + 10,
-    ],
-    explanationFn: ({ a, b }, ans) => `${a} + ${b} = ${ans}`,
-  },
-  {
-    id: 'e2-comp-5b',
-    grade: G,
-    category: 'computation',
-    level: 5,
-    part: 'calc',
-    conceptId: 'E2-NUM-04',
-    pattern: '{a} + {b}',
-    paramRanges: { a: [100, 999], b: [10, 99] },
-    constraints: ({ a, b }) => {
-      // 받아올림 있음
-      const a1 = a % 10
-      const b1 = b % 10
-      return a1 + b1 >= 10
-    },
-    answerFn: ({ a, b }) => a + b,
-    distractorFns: [
-      ({ a, b }) => a + b - 10,
-      ({ a, b }) => a + b + 10,
-      ({ a, b }) => a + b - 1,
-    ],
-    explanationFn: ({ a, b }, ans) => `${a} + ${b} = ${ans}`,
-  },
-
-  // Lv.6: 세 자리 - 두 자리
-  {
-    id: 'e2-comp-6a',
-    grade: G,
-    category: 'computation',
-    level: 6,
-    part: 'calc',
-    conceptId: 'E2-NUM-05',
-    pattern: '{a} - {b}',
-    paramRanges: { a: [100, 999], b: [10, 99] },
-    constraints: ({ a, b }) => a > b,
-    answerFn: ({ a, b }) => a - b,
-    distractorFns: [
-      ({ a, b }) => a - b + 1,
-      ({ a, b }) => a - b - 1,
-      ({ a, b }) => a - b + 10,
-    ],
-    explanationFn: ({ a, b }, ans) => `${a} - ${b} = ${ans}`,
-  },
-  {
-    id: 'e2-comp-6b',
-    grade: G,
-    category: 'computation',
-    level: 6,
-    part: 'calc',
-    conceptId: 'E2-NUM-05',
-    pattern: '{a} - {b}',
-    paramRanges: { a: [100, 999], b: [10, 99] },
-    constraints: ({ a, b }) => {
-      // 받아내림 있음
-      if (a <= b) return false
-      const a1 = a % 10
-      const b1 = b % 10
-      return a1 < b1
-    },
-    answerFn: ({ a, b }) => a - b,
-    distractorFns: [
-      ({ a, b }) => a - b + 10,
-      ({ a, b }) => a - b - 10,
-      ({ a, b }) => a - b + 1,
-    ],
-    explanationFn: ({ a, b }, ans) => `${a} - ${b} = ${ans}`,
   },
 
   // Lv.7: 곱셈 구구단 (2,5단)
@@ -216,16 +231,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 7,
     part: 'calc',
-    conceptId: 'E2-NUM-07',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [2, 2], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
-      ({ a, b }) => a * b + 1,
-      ({ a, b }) => a * b - 1,
       ({ a, b }) => a * b + 2,
+      ({ a, b }) => a * b - 2,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}단: ${a}씩 ${b}번 뛰어 세기입니다.\n② ${a} × ${b} = ${ans}\n\n💡 ${a} × ${b} = ${a}를 ${b}번 더한 것과 같습니다.`,
   },
   {
     id: 'e2-comp-7b',
@@ -233,16 +249,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 7,
     part: 'calc',
-    conceptId: 'E2-NUM-07',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [5, 5], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
       ({ a, b }) => a * b + 5,
       ({ a, b }) => a * b - 5,
-      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}단: ${a}씩 ${b}번 뛰어 세기입니다.\n② ${a} × ${b} = ${ans}\n\n💡 5단은 5, 10, 15, 20... 규칙적으로 늘어납니다.`,
   },
 
   // Lv.8: 곱셈 구구단 (3,4,6단)
@@ -252,16 +269,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 8,
     part: 'calc',
-    conceptId: 'E2-NUM-08',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [3, 3], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
       ({ a, b }) => a * b + 3,
       ({ a, b }) => a * b - 3,
-      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}단: ${a}씩 ${b}번 뛰어 세기입니다.\n② ${a} × ${b} = ${ans}`,
   },
   {
     id: 'e2-comp-8b',
@@ -269,16 +287,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 8,
     part: 'calc',
-    conceptId: 'E2-NUM-08',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [4, 4], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
       ({ a, b }) => a * b + 4,
       ({ a, b }) => a * b - 4,
-      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}단: ${a}씩 ${b}번 뛰어 세기입니다.\n② ${a} × ${b} = ${ans}`,
   },
   {
     id: 'e2-comp-8c',
@@ -286,16 +305,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 8,
     part: 'calc',
-    conceptId: 'E2-NUM-08',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [6, 6], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
       ({ a, b }) => a * b + 6,
       ({ a, b }) => a * b - 6,
-      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}단: ${a}씩 ${b}번 뛰어 세기입니다.\n② ${a} × ${b} = ${ans}\n\n💡 6단 = 3단의 2배입니다. (${a} × ${b} = 3 × ${b} × 2 = ${3 * b} × 2 = ${ans})`,
   },
 
   // Lv.9: 곱셈 구구단 (7,8,9단)
@@ -305,16 +325,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 9,
     part: 'calc',
-    conceptId: 'E2-NUM-09',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [7, 7], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
       ({ a, b }) => a * b + 7,
       ({ a, b }) => a * b - 7,
-      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a} × ${b} = ${ans}\n\n💡 흔한 실수: 곱셈과 덧셈을 혼동하여 ${a} + ${b} = ${a + b}(으)로 답하는 경우가 있습니다.`,
   },
   {
     id: 'e2-comp-9b',
@@ -322,16 +343,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 9,
     part: 'calc',
-    conceptId: 'E2-NUM-09',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [8, 8], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
       ({ a, b }) => a * b + 8,
       ({ a, b }) => a * b - 8,
-      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a} × ${b} = ${ans}\n\n💡 8단 = 4단의 2배입니다. (4 × ${b} = ${4 * b}, ${4 * b} × 2 = ${ans})`,
   },
   {
     id: 'e2-comp-9c',
@@ -339,16 +361,17 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 9,
     part: 'calc',
-    conceptId: 'E2-NUM-09',
+    conceptId: 'E2-NUM-12',
     pattern: '{a} × {b}',
     paramRanges: { a: [9, 9], b: [1, 9] },
     answerFn: ({ a, b }) => a * b,
     distractorFns: [
       ({ a, b }) => a * b + 9,
       ({ a, b }) => a * b - 9,
-      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a + b,
     ],
-    explanationFn: ({ a, b }, ans) => `${a} × ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a} × ${b} = ${ans}\n\n💡 9단 규칙: 십의 자리가 1씩 커지고, 일의 자리가 1씩 작아집니다.`,
   },
 
   // Lv.10: 혼합 (덧뺄셈 + 곱셈 기초)
@@ -368,7 +391,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b, c }) => a + b + c,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `${a} × ${b} + ${c} = ${a * b} + ${c} = ${ans} (곱셈을 먼저 계산)`,
+      `① 곱셈을 먼저 계산합니다: ${a} × ${b} = ${a * b}\n② 그 다음 더합니다: ${a * b} + ${c} = ${ans}\n\n💡 흔한 실수: 곱셈과 덧셈을 혼동하여 ${a} + ${b} + ${c} = ${a + b + c}(으)로 답하는 경우가 있습니다.`,
   },
   {
     id: 'e2-comp-10b',
@@ -387,7 +410,47 @@ const comp: QuestionTemplate[] = [
       ({ a, b, c }) => a + b - c,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `${a} × ${b} - ${c} = ${a * b} - ${c} = ${ans} (곱셈을 먼저 계산)`,
+      `① 곱셈을 먼저 계산합니다: ${a} × ${b} = ${a * b}\n② 그 다음 뺍니다: ${a * b} - ${c} = ${ans}`,
+  },
+
+  // --- B. 새 템플릿 추가 ---
+
+  // 0과 1의 곱 (E2-NUM-12)
+  {
+    id: 'e2-comp-11a',
+    grade: G,
+    category: 'computation',
+    level: 7,
+    part: 'calc',
+    conceptId: 'E2-NUM-12',
+    pattern: '{a} × 0',
+    paramRanges: { a: [2, 9] },
+    answerFn: () => 0,
+    distractorFns: [
+      ({ a }) => a,
+      () => 1,
+      ({ a }) => a + 0,
+    ],
+    explanationFn: ({ a }) =>
+      `① 어떤 수든 0을 곱하면 0입니다.\n② ${a} × 0 = 0`,
+  },
+  {
+    id: 'e2-comp-11b',
+    grade: G,
+    category: 'computation',
+    level: 7,
+    part: 'calc',
+    conceptId: 'E2-NUM-12',
+    pattern: '{a} × 1',
+    paramRanges: { a: [2, 9] },
+    answerFn: ({ a }) => a,
+    distractorFns: [
+      () => 1,
+      () => 0,
+      ({ a }) => a + 1,
+    ],
+    explanationFn: ({ a }) =>
+      `① 어떤 수든 1을 곱하면 자기 자신입니다.\n② ${a} × 1 = ${a}`,
   },
 ]
 
@@ -415,7 +478,7 @@ const conc: QuestionTemplate[] = [
       ({ a, b, c }) => a * 100 + b + c * 10,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `백의 자리 ${a}, 십의 자리 ${b}, 일의 자리 ${c} → ${ans}`,
+      `① 백의 자리: ${a} × 100 = ${a * 100}\n② 십의 자리: ${b} × 10 = ${b * 10}\n③ 일의 자리: ${c}\n④ ${a * 100} + ${b * 10} + ${c} = ${ans}`,
   },
   {
     id: 'e2-conc-1b',
@@ -652,7 +715,7 @@ const conc: QuestionTemplate[] = [
       const explanations = [
         '표에서 학생 수가 가장 많은 것은 포도(18명)입니다.',
         '표에서 방문자가 가장 적은 요일은 수요일(18명)입니다.',
-        '동물은 8 + 12 + 10 = 30마리입니다.',
+        '① 8 + 12 + 10 = 30\n② 동물은 모두 30마리입니다.',
       ]
       return explanations[variant]!
     },
@@ -689,7 +752,7 @@ const conc: QuestionTemplate[] = [
       const explanations = [
         '그래프에서 가장 높은 막대는 B반(15명)입니다.',
         '그래프에서 가장 낮은 막대는 월요일(8권)입니다.',
-        '사과 10개 + 배 8개 + 귤 12개 = 30개입니다.',
+        '① 10 + 8 + 12 = 30\n② 모두 30개입니다.',
       ]
       return explanations[variant]!
     },
@@ -831,7 +894,7 @@ const conc: QuestionTemplate[] = [
       ({ a, b }) => a - b - 1,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `처음 ${a}개에서 ${b}개를 먹었으므로 ${a} - ${b} = ${ans}개`,
+      `① "먹었습니다" → 빼기입니다.\n② ${a} - ${b} = ${ans}개`,
   },
   {
     id: 'e2-conc-9b',
@@ -851,7 +914,7 @@ const conc: QuestionTemplate[] = [
       ({ a, b }) => a + b - 1,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `철수 ${a}권 + 영희 ${b}권 = ${ans}권`,
+      `① "모두 몇 권" → 더하기입니다.\n② ${a} + ${b} = ${ans}권`,
   },
   {
     id: 'e2-conc-9c',
@@ -871,7 +934,7 @@ const conc: QuestionTemplate[] = [
       ({ a, b }) => a * b - 1,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${b}자루 × ${a}묶음 = ${ans}자루`,
+      `① "몇 자루씩 × 몇 묶음" → 곱하기입니다.\n② ${b} × ${a} = ${ans}자루\n\n💡 흔한 실수: 곱셈 대신 덧셈을 하여 ${a} + ${b} = ${a + b}(으)로 답하는 경우가 있습니다.`,
   },
 
   // Lv.10: 복합 문장제
@@ -894,7 +957,7 @@ const conc: QuestionTemplate[] = [
       ({ a, b, c }) => a - b - c,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `처음 ${a}개 + 받은 ${b}개 - 준 ${c}개 = ${a} + ${b} - ${c} = ${ans}개`,
+      `① ${a} + ${b} = ${a + b}개 (더 받은 후)\n② ${a + b} - ${c} = ${ans}개 (준 후)\n③ 남은 구슬은 ${ans}개입니다.`,
   },
   {
     id: 'e2-conc-10b',
@@ -914,7 +977,7 @@ const conc: QuestionTemplate[] = [
       ({ a, b }) => a + b,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a}개를 ${b}개씩 나누면 ${Math.floor(a / b)}상자입니다. ${a} ÷ ${b} = ${ans}`,
+      `① ${a}개를 ${b}개씩 나누면: ${a} ÷ ${b} = ${ans}\n② ${ans}상자가 필요합니다.`,
   },
   {
     id: 'e2-conc-10c',
@@ -934,7 +997,228 @@ const conc: QuestionTemplate[] = [
       ({ a, c }) => a * c,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `만든 빵: ${b}개 × ${a}일 = ${a * b}개\n판 빵: ${c * a}개\n남은 빵: ${a * b} - ${c * a} = ${ans}개`,
+      `① 만든 빵: ${b} × ${a} = ${a * b}개\n② 판 빵: ${c * a}개\n③ 남은 빵: ${a * b} - ${c * a} = ${ans}개`,
+  },
+
+  // --- B. 새 템플릿 추가 ---
+
+  // 네 자리 수 (E2-NUM-04)
+  {
+    id: 'e2-conc-11a',
+    grade: G,
+    category: 'concept',
+    level: 2,
+    part: 'calc',
+    conceptId: 'E2-NUM-04',
+    pattern: '',
+    paramRanges: { a: [1, 9], b: [0, 9], c: [0, 9], d: [0, 9] },
+    contentFn: ({ a, b, c, d }) =>
+      `천의 자리가 ${a}, 백의 자리가 ${b}, 십의 자리가 ${c}, 일의 자리가 ${d}인 수는?`,
+    answerFn: ({ a, b, c, d }) => a * 1000 + b * 100 + c * 10 + d,
+    distractorFns: [
+      ({ a, b, c, d }) => a * 100 + b * 10 + c + d * 1000,
+      ({ a, b, c, d }) => a * 1000 + b * 100 + c + d * 10,
+      ({ a, b, c, d }) => a * 1000 + b * 10 + c * 100 + d,
+    ],
+    explanationFn: ({ a, b, c, d }, ans) =>
+      `① 천의 자리: ${a} × 1000 = ${a * 1000}\n② 백의 자리: ${b} × 100 = ${b * 100}\n③ 십의 자리: ${c} × 10 = ${c * 10}\n④ 일의 자리: ${d}\n⑤ ${a * 1000} + ${b * 100} + ${c * 10} + ${d} = ${ans}`,
+  },
+
+  // 뛰어 세기 (E2-NUM-05)
+  {
+    id: 'e2-conc-12a',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'calc',
+    conceptId: 'E2-NUM-05',
+    pattern: '',
+    paramRanges: { a: [100, 400], n: [2, 4] },
+    constraints: ({ a }) => a % 10 === 0,
+    contentFn: ({ a, n }) =>
+      `${a}에서 10씩 ${n}번 뛰어 세면 얼마인가요?`,
+    answerFn: ({ a, n }) => a + 10 * n,
+    distractorFns: [
+      ({ a, n }) => a + n,
+      ({ a, n }) => a + 100 * n,
+      ({ a, n }) => a + 10 * n + 10,
+    ],
+    explanationFn: ({ a, n }, ans) =>
+      `① ${a}에서 10씩 ${n}번 뛰어 셉니다.\n② ${a} + ${10 * n} = ${ans}`,
+  },
+
+  // 역연산 관계 (E2-NUM-08)
+  {
+    id: 'e2-conc-13a',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'calc',
+    conceptId: 'E2-NUM-08',
+    pattern: '',
+    paramRanges: { a: [3, 12], b: [3, 12] },
+    contentFn: ({ a, b }) => `□ + ${b} = ${a + b}일 때, □는 얼마인가요?`,
+    answerFn: ({ a }) => a,
+    distractorFns: [
+      ({ a, b }) => a + b,
+      ({ b }) => b,
+      ({ a }) => a + 1,
+    ],
+    explanationFn: ({ a, b }) =>
+      `① □ + ${b} = ${a + b}\n② □ = ${a + b} - ${b} = ${a}\n\n💡 덧셈과 뺄셈은 역연산 관계입니다.`,
+  },
+  {
+    id: 'e2-conc-13b',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'calc',
+    conceptId: 'E2-NUM-08',
+    pattern: '',
+    paramRanges: { a: [10, 20], b: [3, 9] },
+    constraints: ({ a, b }) => a > b,
+    contentFn: ({ a, b }) => `${a} - □ = ${a - b}일 때, □는 얼마인가요?`,
+    answerFn: ({ b }) => b,
+    distractorFns: [
+      ({ a, b }) => a - b,
+      ({ a }) => a,
+      ({ b }) => b + 1,
+    ],
+    explanationFn: ({ a, b }) =>
+      `① ${a} - □ = ${a - b}\n② □ = ${a} - ${a - b} = ${b}\n\n💡 뺄셈의 빈칸은 덧셈으로 구할 수 있습니다.`,
+  },
+
+  // 동수누가 (E2-NUM-09)
+  {
+    id: 'e2-conc-14a',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E2-NUM-09',
+    pattern: '',
+    paramRanges: { a: [2, 5], b: [3, 5] },
+    contentFn: ({ a, b }) => {
+      const terms = Array(b).fill(a).join(' + ')
+      return `${terms} = ${a} × ?\n□에 알맞은 수는?`
+    },
+    answerFn: ({ b }) => b,
+    distractorFns: [
+      ({ a }) => a,
+      ({ a, b }) => a * b,
+      ({ b }) => b + 1,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}을(를) ${b}번 더하면 ${a} × ${b}입니다.\n② □ = ${ans}\n\n💡 같은 수를 여러 번 더하는 것이 곱셈입니다.`,
+  },
+  {
+    id: 'e2-conc-14b',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E2-NUM-09',
+    pattern: '',
+    paramRanges: { a: [3, 6], b: [3, 5] },
+    contentFn: ({ a, b }) =>
+      `${a}를 ${b}번 더하면 얼마인가요?`,
+    answerFn: ({ a, b }) => a * b,
+    distractorFns: [
+      ({ a, b }) => a + b,
+      ({ a, b }) => a * b + a,
+      ({ a, b }) => a * b - a,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}를 ${b}번 더하면 ${a} × ${b}입니다.\n② ${a} × ${b} = ${ans}`,
+  },
+
+  // 배(倍) (E2-NUM-10)
+  {
+    id: 'e2-conc-15a',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E2-NUM-10',
+    pattern: '',
+    paramRanges: { a: [2, 5], b: [2, 5] },
+    contentFn: ({ a, b }) => `${a}의 ${b}배는 얼마인가요?`,
+    answerFn: ({ a, b }) => a * b,
+    distractorFns: [
+      ({ a, b }) => a + b,
+      ({ a, b }) => a * b + 1,
+      ({ a }) => a,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}의 ${b}배 = ${a} × ${b}\n② ${a} × ${b} = ${ans}`,
+  },
+
+  // 배열 모델 (E2-NUM-11)
+  {
+    id: 'e2-conc-16a',
+    grade: G,
+    category: 'concept',
+    level: 7,
+    part: 'calc',
+    conceptId: 'E2-NUM-11',
+    pattern: '',
+    paramRanges: { a: [2, 5], b: [3, 6] },
+    contentFn: ({ a, b }) =>
+      `사과가 ${a}줄에 ${b}개씩 놓여 있습니다. 사과는 모두 몇 개인가요?`,
+    answerFn: ({ a, b }) => a * b,
+    distractorFns: [
+      ({ a, b }) => a + b,
+      ({ a, b }) => a * b + 1,
+      ({ a, b }) => a * b - 1,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a}줄 × ${b}개씩 = ${a} × ${b}\n② ${a} × ${b} = ${ans}개`,
+  },
+
+  // 몇 분 전 (E2-GEO-03)
+  {
+    id: 'e2-conc-17a',
+    grade: G,
+    category: 'concept',
+    level: 4,
+    part: 'geo',
+    conceptId: 'E2-GEO-03',
+    pattern: '',
+    paramRanges: { a: [2, 11], b: [1, 3] },
+    constraints: ({ b }) => b * 10 <= 30,
+    contentFn: ({ a, b }) =>
+      `${a + 1}시 ${b * 10}분 전은 몇 시 몇 분인가요?`,
+    answerFn: ({ a, b }) => `${a}시 ${60 - b * 10}분`,
+    distractorFns: [
+      ({ a, b }) => `${a + 1}시 ${b * 10}분`,
+      ({ a, b }) => `${a}시 ${b * 10}분`,
+      ({ a, b }) => `${a + 1}시 ${60 - b * 10}분`,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① "${a + 1}시 ${b * 10}분 전"은 ${a + 1}시에서 ${b * 10}분을 빼는 것입니다.\n② ${a + 1}시 - ${b * 10}분 = ${a}시 ${60 - b * 10}분\n③ 답: ${ans}`,
+    questionType: 'multiple_choice',
+  },
+  {
+    id: 'e2-conc-17b',
+    grade: G,
+    category: 'concept',
+    level: 4,
+    part: 'geo',
+    conceptId: 'E2-GEO-03',
+    pattern: '',
+    paramRanges: { a: [1, 11], b: [40, 55] },
+    constraints: ({ b }) => b % 5 === 0,
+    contentFn: ({ a, b }) =>
+      `${a}시 ${b}분은 ${a + 1}시 몇 분 전인가요?`,
+    answerFn: ({ b }) => `${60 - b}분 전`,
+    distractorFns: [
+      ({ b }) => `${b}분 전`,
+      ({ b }) => `${60 - b + 10}분 전`,
+      ({ b }) => `${60 - b - 5}분 전`,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① ${a + 1}시가 되려면 ${60 - b}분이 더 필요합니다.\n② ${a}시 ${b}분 = ${a + 1}시 ${60 - b}분 전\n③ 답: ${ans}`,
+    questionType: 'multiple_choice',
   },
 ]
 

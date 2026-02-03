@@ -16,7 +16,7 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 1,
     part: 'calc',
-    conceptId: 'E1-NUM-04',
+    conceptId: 'E1-NUM-07',
     pattern: '{a} + {b}',
     paramRanges: { a: [1, 4], b: [1, 5] },
     constraints: ({ a, b }) => a + b <= 9,
@@ -27,7 +27,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => Math.abs(a - b),
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a} + ${b} = ${ans}입니다.`,
+      `① ${a}와 ${b}를 더합니다.\n② ${a} + ${b} = ${ans}\n\n💡 합이 9 이하인 덧셈입니다.`,
   },
   {
     id: 'e1-comp-1b',
@@ -35,7 +35,7 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 1,
     part: 'calc',
-    conceptId: 'E1-NUM-04',
+    conceptId: 'E1-NUM-07',
     pattern: '{a} + {b}',
     paramRanges: { a: [2, 5], b: [1, 4] },
     constraints: ({ a, b }) => a + b <= 9 && a >= b,
@@ -46,17 +46,17 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => a + b + 2,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a}와 ${b}를 더하면 ${ans}입니다.`,
+      `① ${a}와 ${b}를 더합니다.\n② ${a} + ${b} = ${ans}`,
   },
 
-  // Lv.2: 한 자리 + 한 자리 (합 ≤ 18)
+  // Lv.2: 한 자리 + 한 자리 (합 ≤ 18, 받아올림)
   {
     id: 'e1-comp-2a',
     grade: G,
     category: 'computation',
     level: 2,
     part: 'calc',
-    conceptId: 'E1-NUM-05',
+    conceptId: 'E1-NUM-11',
     pattern: '{a} + {b}',
     paramRanges: { a: [5, 9], b: [6, 9] },
     constraints: ({ a, b }) => a + b >= 10 && a + b <= 18,
@@ -64,10 +64,13 @@ const comp: QuestionTemplate[] = [
     distractorFns: [
       ({ a, b }) => a + b - 10,
       ({ a, b }) => a + b + 1,
-      ({ a, b }) => a + b - 1,
+      ({ a }) => a,
     ],
-    explanationFn: ({ a, b }, ans) =>
-      `${a} + ${b} = ${ans}입니다. 10이 넘으므로 받아올림이 있습니다.`,
+    explanationFn: ({ a, b }, ans) => {
+      const comp10 = 10 - a
+      const rest = b - comp10
+      return `① 10 만들어 더하기 전략을 씁니다.\n② ${b}를 ${comp10}와 ${rest}(으)로 가르기합니다.\n③ ${a} + ${comp10} = 10\n④ 10 + ${rest} = ${ans}\n\n💡 흔한 실수: 받아올림을 빠뜨려 ${a + b - 10}(으)로 답하는 경우가 있습니다.`
+    },
   },
   {
     id: 'e1-comp-2b',
@@ -75,18 +78,21 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 2,
     part: 'calc',
-    conceptId: 'E1-NUM-05',
+    conceptId: 'E1-NUM-11',
     pattern: '{a} + {b}',
     paramRanges: { a: [6, 9], b: [5, 9] },
     constraints: ({ a, b }) => a + b >= 11 && a >= b,
     answerFn: ({ a, b }) => a + b,
     distractorFns: [
-      ({ a, b }) => 10 + (a - 5) + (b - 5),
+      ({ a, b }) => a + b - 10,
       ({ a, b }) => a + b - 2,
-      ({ a, b }) => a + b + 2,
+      ({ a }) => a,
     ],
-    explanationFn: ({ a, b }, ans) =>
-      `${a} + ${b}는 10을 넘어서 ${ans}이 됩니다.`,
+    explanationFn: ({ a, b }, ans) => {
+      const comp10 = 10 - a
+      const rest = b - comp10
+      return `① ${b}를 ${comp10}와 ${rest}(으)로 가르기합니다.\n② ${a} + ${comp10} = 10\n③ 10 + ${rest} = ${ans}\n\n💡 10 만들어 더하기 전략을 사용하면 쉽습니다.`
+    },
   },
 
   // Lv.3: 한 자리 - 한 자리
@@ -96,7 +102,7 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 3,
     part: 'calc',
-    conceptId: 'E1-NUM-06',
+    conceptId: 'E1-NUM-08',
     pattern: '{a} - {b}',
     paramRanges: { a: [5, 9], b: [1, 8] },
     constraints: ({ a, b }) => a > b && a - b >= 1,
@@ -107,7 +113,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => a - b - 1,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a} - ${b} = ${ans}입니다.`,
+      `① ${a}에서 ${b}를 뺍니다.\n② ${a} - ${b} = ${ans}`,
   },
   {
     id: 'e1-comp-3b',
@@ -115,18 +121,18 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 3,
     part: 'calc',
-    conceptId: 'E1-NUM-06',
+    conceptId: 'E1-NUM-08',
     pattern: '{a} - {b}',
     paramRanges: { a: [6, 9], b: [2, 7] },
     constraints: ({ a, b }) => a > b + 1,
     answerFn: ({ a, b }) => a - b,
     distractorFns: [
       ({ b }) => b,
-      ({ a, b }) => b - a,
+      ({ a, b }) => a + b,
       (_, ans) => (ans as number) + 1,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a}에서 ${b}를 빼면 ${ans}입니다.`,
+      `① ${a}에서 ${b}를 뺍니다.\n② ${a} - ${b} = ${ans}`,
   },
 
   // Lv.4: 10 만들기
@@ -136,18 +142,18 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 4,
     part: 'calc',
-    conceptId: 'E1-NUM-07',
+    conceptId: 'E1-NUM-09',
     pattern: '',
     paramRanges: { a: [1, 9] },
     contentFn: ({ a }) => `${a} + ? = 10`,
     answerFn: ({ a }) => 10 - a,
     distractorFns: [
       ({ a }) => a,
+      () => 10,
       ({ a }) => 10 - a + 1,
-      ({ a }) => 10 - a - 1,
     ],
     explanationFn: ({ a }, ans) =>
-      `${a} + ${ans} = 10이 됩니다. 10에서 ${a}를 빼면 ${ans}입니다.`,
+      `① 10에서 ${a}를 빼면 됩니다.\n② 10 - ${a} = ${ans}\n③ 확인: ${a} + ${ans} = 10 ✓\n\n💡 흔한 실수: 10 자체를 답으로 쓰는 경우가 있습니다.`,
   },
   {
     id: 'e1-comp-4b',
@@ -155,18 +161,18 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 4,
     part: 'calc',
-    conceptId: 'E1-NUM-07',
+    conceptId: 'E1-NUM-09',
     pattern: '',
     paramRanges: { a: [2, 8] },
     contentFn: ({ a }) => `? + ${a} = 10`,
     answerFn: ({ a }) => 10 - a,
     distractorFns: [
       ({ a }) => 10 + a,
+      () => 10,
       ({ a }) => a,
-      ({ a }) => 10 - a + 2,
     ],
     explanationFn: ({ a }, ans) =>
-      `${ans} + ${a} = 10입니다. 10을 만들려면 ${ans}가 필요합니다.`,
+      `① 10에서 ${a}를 빼면 됩니다.\n② 10 - ${a} = ${ans}\n③ 확인: ${ans} + ${a} = 10 ✓\n\n💡 흔한 실수: 10 자체를 답으로 쓰는 경우가 있습니다.`,
   },
 
   // Lv.5: 두 자리 + 한 자리 (받아올림 없음)
@@ -176,7 +182,7 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 5,
     part: 'calc',
-    conceptId: 'E1-NUM-09',
+    conceptId: 'E1-NUM-11',
     pattern: '{a} + {b}',
     paramRanges: { a: [11, 18], b: [1, 5] },
     constraints: ({ a, b }) => (a % 10) + b < 10,
@@ -187,7 +193,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => a - b,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a} + ${b} = ${ans}입니다. 일의 자리끼리 더하면 ${(a % 10) + b}이고, 십의 자리는 ${Math.floor(a / 10)}이므로 답은 ${ans}입니다.`,
+      `① 일의 자리끼리 더합니다: ${a % 10} + ${b} = ${(a % 10) + b}\n② 십의 자리는 그대로: ${Math.floor(a / 10)}\n③ 답: ${ans}`,
   },
   {
     id: 'e1-comp-5b',
@@ -195,7 +201,7 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 5,
     part: 'calc',
-    conceptId: 'E1-NUM-09',
+    conceptId: 'E1-NUM-11',
     pattern: '{a} + {b}',
     paramRanges: { a: [12, 17], b: [2, 6] },
     constraints: ({ a, b }) => (a % 10) + b <= 9,
@@ -206,7 +212,7 @@ const comp: QuestionTemplate[] = [
       ({ b }) => b,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a}의 일의 자리 ${a % 10}와 ${b}를 더하면 ${(a % 10) + b}입니다. 답은 ${ans}입니다.`,
+      `① 일의 자리끼리 더합니다: ${a % 10} + ${b} = ${(a % 10) + b}\n② 십의 자리는 그대로: ${Math.floor(a / 10)}\n③ 답: ${ans}`,
   },
 
   // Lv.6: 두 자리 - 한 자리 (받아내림 없음)
@@ -216,7 +222,7 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 6,
     part: 'calc',
-    conceptId: 'E1-NUM-10',
+    conceptId: 'E1-NUM-12',
     pattern: '{a} - {b}',
     paramRanges: { a: [15, 19], b: [1, 8] },
     constraints: ({ a, b }) => (a % 10) >= b,
@@ -227,7 +233,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => a - b + 1,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a} - ${b} = ${ans}입니다. 일의 자리에서 빼면 ${(a % 10) - b}이므로 답은 ${ans}입니다.`,
+      `① 일의 자리에서 뺍니다: ${a % 10} - ${b} = ${(a % 10) - b}\n② 십의 자리는 그대로: ${Math.floor(a / 10)}\n③ 답: ${ans}`,
   },
   {
     id: 'e1-comp-6b',
@@ -235,7 +241,7 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 6,
     part: 'calc',
-    conceptId: 'E1-NUM-10',
+    conceptId: 'E1-NUM-12',
     pattern: '{a} - {b}',
     paramRanges: { a: [16, 19], b: [2, 7] },
     constraints: ({ a, b }) => (a % 10) >= b && a - b >= 10,
@@ -246,7 +252,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b }) => 20 - a + b,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a}의 일의 자리 ${a % 10}에서 ${b}를 빼면 ${(a % 10) - b}입니다. 답은 ${ans}입니다.`,
+      `① 일의 자리에서 뺍니다: ${a % 10} - ${b} = ${(a % 10) - b}\n② 십의 자리는 그대로: ${Math.floor(a / 10)}\n③ 답: ${ans}`,
   },
 
   // Lv.7: 두 자리 + 한 자리 (받아올림)
@@ -256,18 +262,24 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 7,
     part: 'calc',
-    conceptId: 'E1-NUM-09',
+    conceptId: 'E1-NUM-11',
     pattern: '{a} + {b}',
     paramRanges: { a: [15, 19], b: [3, 8] },
     constraints: ({ a, b }) => (a % 10) + b >= 10,
     answerFn: ({ a, b }) => a + b,
     distractorFns: [
       ({ a, b }) => a + b - 10,
-      ({ a, b }) => 10 + ((a % 10) + b - 10),
+      ({ a, b }) => Math.floor(a / 10) * 10 + ((a % 10) + b - 10),
       ({ a, b }) => a + b + 1,
     ],
-    explanationFn: ({ a, b }, ans) =>
-      `${a} + ${b} = ${ans}입니다. 일의 자리 ${a % 10} + ${b} = ${(a % 10) + b}이므로 받아올림이 있어 답은 ${ans}입니다.`,
+    explanationFn: ({ a, b }, ans) => {
+      const ones = a % 10
+      const tens = Math.floor(a / 10)
+      const onesSum = ones + b
+      const comp10 = 10 - ones
+      const rest = b - comp10
+      return `① 10 만들어 더하기 전략을 씁니다.\n② ${b}를 ${comp10}와 ${rest}(으)로 가르기합니다.\n③ ${a} + ${comp10} = ${tens + 1}0\n④ ${(tens + 1) * 10} + ${rest} = ${ans}\n\n💡 흔한 실수: 받아올림을 빠뜨려 ${Math.floor(a / 10) * 10 + (onesSum - 10)}(으)로 답하는 경우가 있습니다.`
+    },
   },
   {
     id: 'e1-comp-7b',
@@ -275,18 +287,22 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 7,
     part: 'calc',
-    conceptId: 'E1-NUM-09',
+    conceptId: 'E1-NUM-11',
     pattern: '{a} + {b}',
     paramRanges: { a: [16, 18], b: [4, 7] },
     constraints: ({ a, b }) => (a % 10) + b > 10,
     answerFn: ({ a, b }) => a + b,
     distractorFns: [
+      ({ a, b }) => a + b - 10,
       ({ a, b }) => a + (b % 10),
-      ({ a, b }) => 20 + ((a % 10) + b - 10),
       ({ a, b }) => a + b - 1,
     ],
-    explanationFn: ({ a, b }, ans) =>
-      `일의 자리끼리 더하면 ${(a % 10) + b}이므로 십의 자리로 받아올림합니다. ${a} + ${b} = ${ans}`,
+    explanationFn: ({ a, b }, ans) => {
+      const ones = a % 10
+      const comp10 = 10 - ones
+      const rest = b - comp10
+      return `① ${b}를 ${comp10}와 ${rest}(으)로 가르기합니다.\n② ${a} + ${comp10} = ${a + comp10}\n③ ${a + comp10} + ${rest} = ${ans}\n\n💡 10 만들어 더하기 전략을 사용하세요.`
+    },
   },
 
   // Lv.8: 두 자리 - 한 자리 (받아내림)
@@ -296,18 +312,18 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 8,
     part: 'calc',
-    conceptId: 'E1-NUM-10',
+    conceptId: 'E1-NUM-12',
     pattern: '{a} - {b}',
     paramRanges: { a: [21, 29], b: [3, 9] },
     constraints: ({ a, b }) => (a % 10) < b,
     answerFn: ({ a, b }) => a - b,
     distractorFns: [
       ({ a, b }) => a + b,
-      ({ b }) => 20 - b,
       ({ a, b }) => a - b + 10,
+      ({ b }) => 20 - b,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a} - ${b} = ${ans}입니다. 일의 자리 ${a % 10}이 ${b}보다 작으므로 십의 자리에서 받아내립니다.`,
+      `① 일의 자리 ${a % 10}이 ${b}보다 작으므로 십의 자리에서 10을 빌려옵니다.\n② ${a % 10} + 10 = ${(a % 10) + 10}, ${(a % 10) + 10} - ${b} = ${(a % 10) + 10 - b}\n③ 십의 자리: ${Math.floor(a / 10)} - 1 = ${Math.floor(a / 10) - 1}\n④ 답: ${ans}\n\n💡 흔한 실수: 받아내림을 안 해서 ${a - b + 10}(으)로 답하는 경우가 있습니다.`,
   },
   {
     id: 'e1-comp-8b',
@@ -315,18 +331,18 @@ const comp: QuestionTemplate[] = [
     category: 'computation',
     level: 8,
     part: 'calc',
-    conceptId: 'E1-NUM-10',
+    conceptId: 'E1-NUM-12',
     pattern: '{a} - {b}',
     paramRanges: { a: [22, 28], b: [4, 8] },
     constraints: ({ a, b }) => (a % 10) < b && a - b >= 10,
     answerFn: ({ a, b }) => a - b,
     distractorFns: [
-      ({ a, b }) => (a % 10) + 10 - b,
+      ({ a, b }) => a - b + 10,
       ({ a, b }) => a - b - 1,
       ({ a, b }) => b - (a % 10),
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a}에서 ${b}를 빼려면 받아내림을 합니다. ${a} - ${b} = ${ans}`,
+      `① 일의 자리 ${a % 10}이 ${b}보다 작으므로 받아내림합니다.\n② ${(a % 10) + 10} - ${b} = ${(a % 10) + 10 - b}\n③ 십의 자리: ${Math.floor(a / 10)} - 1 = ${Math.floor(a / 10) - 1}\n④ 답: ${ans}`,
   },
 
   // Lv.9: 세 수의 덧셈
@@ -347,7 +363,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b, c }) => a + b + c - 1,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `${a} + ${b} + ${c} = ${a + b} + ${c} = ${ans}입니다.`,
+      `① 앞에서부터 차례로 더합니다.\n② ${a} + ${b} = ${a + b}\n③ ${a + b} + ${c} = ${ans}`,
   },
   {
     id: 'e1-comp-9b',
@@ -366,7 +382,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b, c }) => a + b + c - 2,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `세 수를 차례로 더합니다. ${a} + ${b} = ${a + b}, ${a + b} + ${c} = ${ans}`,
+      `① 앞에서부터 차례로 더합니다.\n② ${a} + ${b} = ${a + b}\n③ ${a + b} + ${c} = ${ans}`,
   },
 
   // Lv.10: 세 수의 혼합 (덧셈과 뺄셈)
@@ -387,7 +403,7 @@ const comp: QuestionTemplate[] = [
       ({ a, b, c }) => a + b - c + 1,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `${a} + ${b} - ${c} = ${a + b} - ${c} = ${ans}입니다. 먼저 더하고 나중에 뺍니다.`,
+      `① 왼쪽부터 차례로 계산합니다.\n② ${a} + ${b} = ${a + b}\n③ ${a + b} - ${c} = ${ans}`,
   },
   {
     id: 'e1-comp-10b',
@@ -406,7 +422,48 @@ const comp: QuestionTemplate[] = [
       ({ a, b, c }) => a - b + c - 1,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `${a} - ${b} + ${c} = ${a - b} + ${c} = ${ans}입니다. 왼쪽부터 차례로 계산합니다.`,
+      `① 왼쪽부터 차례로 계산합니다.\n② ${a} - ${b} = ${a - b}\n③ ${a - b} + ${c} = ${ans}`,
+  },
+
+  // --- B. 새 템플릿 추가 ---
+
+  // 10에서 빼기 (E1-NUM-10)
+  {
+    id: 'e1-comp-11a',
+    grade: G,
+    category: 'computation',
+    level: 4,
+    part: 'calc',
+    conceptId: 'E1-NUM-10',
+    pattern: '10 - {a}',
+    paramRanges: { a: [1, 9] },
+    answerFn: ({ a }) => 10 - a,
+    distractorFns: [
+      ({ a }) => a,
+      () => 10,
+      ({ a }) => 10 - a + 1,
+    ],
+    explanationFn: ({ a }, ans) =>
+      `① 10에서 ${a}를 뺍니다.\n② 10 - ${a} = ${ans}\n\n💡 10의 보수: ${a}와 ${ans}를 합하면 10입니다.`,
+  },
+  {
+    id: 'e1-comp-11b',
+    grade: G,
+    category: 'computation',
+    level: 4,
+    part: 'calc',
+    conceptId: 'E1-NUM-10',
+    pattern: '',
+    paramRanges: { a: [1, 9] },
+    contentFn: ({ a }) => `10 - ? = ${a}`,
+    answerFn: ({ a }) => 10 - a,
+    distractorFns: [
+      ({ a }) => a,
+      () => 10,
+      ({ a }) => 10 - a - 1,
+    ],
+    explanationFn: ({ a }, ans) =>
+      `① 10에서 빼서 ${a}가 되는 수를 구합니다.\n② 10 - ${ans} = ${a}\n③ 확인: 10 - ${ans} = ${a} ✓`,
   },
 ]
 
@@ -436,7 +493,7 @@ const conc: QuestionTemplate[] = [
       ({ n }) => n + 2,
     ],
     explanationFn: ({}, ans) =>
-      `개수를 세어 보면 ${ans}개입니다.`,
+      `하나씩 세어 보면 ${ans}개입니다.`,
   },
   {
     id: 'e1-conc-1b',
@@ -468,7 +525,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 2,
     part: 'calc',
-    conceptId: 'E1-NUM-02',
+    conceptId: 'E1-NUM-04',
     pattern: '',
     paramRanges: { a: [1, 9], b: [1, 9] },
     constraints: ({ a, b }) => a !== b,
@@ -488,7 +545,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 2,
     part: 'calc',
-    conceptId: 'E1-NUM-02',
+    conceptId: 'E1-NUM-04',
     pattern: '',
     paramRanges: { a: [2, 9], b: [1, 8] },
     constraints: ({ a, b }) => a > b + 1,
@@ -503,14 +560,14 @@ const conc: QuestionTemplate[] = [
       `${a}와 ${b} 중에서 ${ans}이(가) 더 작습니다.`,
   },
 
-  // Lv.3: 순서
+  // Lv.3: 순서/차이
   {
     id: 'e1-conc-3a',
     grade: G,
     category: 'concept',
     level: 3,
     part: 'calc',
-    conceptId: 'E1-NUM-03',
+    conceptId: 'E1-NUM-04',
     pattern: '',
     paramRanges: { a: [3, 5], b: [6, 8], c: [1, 2] },
     constraints: ({ a, b, c }) => a > c && b > a,
@@ -530,7 +587,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 3,
     part: 'calc',
-    conceptId: 'E1-NUM-03',
+    conceptId: 'E1-NUM-04',
     pattern: '',
     paramRanges: { a: [5, 9], b: [1, 4] },
     constraints: ({ a, b }) => a > b + 2,
@@ -800,7 +857,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 9,
     part: 'word',
-    conceptId: 'E1-NUM-04',
+    conceptId: 'E1-NUM-08',
     pattern: '',
     paramRanges: { a: [5, 9], b: [1, 4] },
     constraints: ({ a, b }) => a > b,
@@ -812,7 +869,7 @@ const conc: QuestionTemplate[] = [
       ({ b }) => b,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a} - ${b} = ${ans}이므로 남은 사탕은 ${ans}개입니다.`,
+      `① "먹었습니다" → 빼기입니다.\n② ${a} - ${b} = ${ans}\n③ 남은 사탕은 ${ans}개입니다.`,
   },
   {
     id: 'e1-conc-9b',
@@ -820,7 +877,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 9,
     part: 'word',
-    conceptId: 'E1-NUM-04',
+    conceptId: 'E1-NUM-07',
     pattern: '',
     paramRanges: { a: [3, 7], b: [2, 6] },
     contentFn: ({ a, b }) => `공책이 ${a}권 있습니다. ${b}권을 더 샀습니다. 모두 몇 권인가요?`,
@@ -831,7 +888,7 @@ const conc: QuestionTemplate[] = [
       ({ a }) => a,
     ],
     explanationFn: ({ a, b }, ans) =>
-      `${a} + ${b} = ${ans}이므로 모두 ${ans}권입니다.`,
+      `① "더 샀습니다" → 더하기입니다.\n② ${a} + ${b} = ${ans}\n③ 모두 ${ans}권입니다.`,
   },
 
   // Lv.10: 복합 문장제
@@ -854,7 +911,7 @@ const conc: QuestionTemplate[] = [
       ({ a, b, c }) => a + b + c,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `처음 ${a}개, ${b}개 받아서 ${a + b}개, ${c}개 주어서 ${a + b} - ${c} = ${ans}개 남았습니다.`,
+      `① 처음 ${a}개에서 ${b}개를 받았으므로: ${a} + ${b} = ${a + b}\n② ${c}개를 주었으므로: ${a + b} - ${c} = ${ans}\n③ 남은 구슬은 ${ans}개입니다.`,
   },
   {
     id: 'e1-conc-10b',
@@ -875,7 +932,328 @@ const conc: QuestionTemplate[] = [
       ({ a, b, c }) => a + b + c,
     ],
     explanationFn: ({ a, b, c }, ans) =>
-      `${a} - ${b} + ${c} = ${a - b} + ${c} = ${ans}장입니다.`,
+      `① ${a}장에서 ${b}장을 사용: ${a} - ${b} = ${a - b}\n② ${c}장을 더 받음: ${a - b} + ${c} = ${ans}\n③ 지금 색종이는 ${ans}장입니다.`,
+  },
+
+  // --- B. 새 템플릿 추가 ---
+
+  // 모으기/가르기 (E1-NUM-05, E1-NUM-06)
+  {
+    id: 'e1-conc-11a',
+    grade: G,
+    category: 'concept',
+    level: 1,
+    part: 'calc',
+    conceptId: 'E1-NUM-05',
+    pattern: '',
+    paramRanges: { a: [1, 5], b: [1, 5] },
+    constraints: ({ a, b }) => a + b <= 9,
+    contentFn: ({ a, b }) => `${a}와 ${b}를 모으면 얼마인가요?`,
+    answerFn: ({ a, b }) => a + b,
+    distractorFns: [
+      ({ a, b }) => a + b + 1,
+      ({ a }) => a,
+      ({ a, b }) => Math.abs(a - b),
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `① 모으기는 두 묶음을 합치는 것입니다.\n② ${a}와 ${b}를 모으면 ${ans}입니다.`,
+  },
+  {
+    id: 'e1-conc-11b',
+    grade: G,
+    category: 'concept',
+    level: 1,
+    part: 'calc',
+    conceptId: 'E1-NUM-06',
+    pattern: '',
+    paramRanges: { n: [5, 9], a: [1, 4] },
+    constraints: ({ n, a }) => a < n,
+    contentFn: ({ n, a }) => `${n}을 ${a}와 얼마로 가를 수 있나요?`,
+    answerFn: ({ n, a }) => n - a,
+    distractorFns: [
+      ({ n, a }) => n + a,
+      ({ a }) => a,
+      ({ n, a }) => n - a + 1,
+    ],
+    explanationFn: ({ n, a }, ans) =>
+      `① 가르기는 한 묶음을 두 부분으로 나누는 것입니다.\n② ${n} = ${a} + ${ans}\n③ ${n}을 ${a}와 ${ans}(으)로 가를 수 있습니다.`,
+  },
+
+  // 뛰어 세기 (E1-NUM-03)
+  {
+    id: 'e1-conc-12a',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'calc',
+    conceptId: 'E1-NUM-03',
+    pattern: '',
+    paramRanges: { a: [2, 10], variant: [0, 2] },
+    constraints: ({ a, variant }) => {
+      const step = [2, 5, 10][variant]!
+      return a + step * 4 <= 50
+    },
+    contentFn: ({ a, variant }) => {
+      const step = [2, 5, 10][variant]!
+      const seq = [a, a + step, a + step * 2, a + step * 3]
+      return `${step}씩 뛰어 세기: ${seq[0]}, ${seq[1]}, ${seq[2]}, ${seq[3]}, ?\n빈칸에 알맞은 수는?`
+    },
+    answerFn: ({ a, variant }) => {
+      const step = [2, 5, 10][variant]!
+      return a + step * 4
+    },
+    distractorFns: [
+      ({ a, variant }) => {
+        const step = [2, 5, 10][variant]!
+        return a + step * 3 + 1
+      },
+      ({ a, variant }) => {
+        const step = [2, 5, 10][variant]!
+        return a + step * 5
+      },
+      ({ a, variant }) => {
+        const step = [2, 5, 10][variant]!
+        return a + step * 3
+      },
+    ],
+    explanationFn: ({ a, variant }, ans) => {
+      const step = [2, 5, 10][variant]!
+      return `${step}씩 뛰어 세는 규칙입니다. ${a + step * 3} 다음은 ${a + step * 3} + ${step} = ${ans}입니다.`
+    },
+  },
+  {
+    id: 'e1-conc-12b',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'calc',
+    conceptId: 'E1-NUM-03',
+    pattern: '',
+    paramRanges: { a: [20, 50], variant: [0, 2] },
+    constraints: ({ a, variant }) => {
+      const step = [2, 5, 10][variant]!
+      return a - step * 4 >= 0
+    },
+    contentFn: ({ a, variant }) => {
+      const step = [2, 5, 10][variant]!
+      const seq = [a, a - step, a - step * 2, a - step * 3]
+      return `${step}씩 거꾸로 뛰어 세기: ${seq[0]}, ${seq[1]}, ${seq[2]}, ${seq[3]}, ?\n빈칸에 알맞은 수는?`
+    },
+    answerFn: ({ a, variant }) => {
+      const step = [2, 5, 10][variant]!
+      return a - step * 4
+    },
+    distractorFns: [
+      ({ a, variant }) => {
+        const step = [2, 5, 10][variant]!
+        return a - step * 3
+      },
+      ({ a, variant }) => {
+        const step = [2, 5, 10][variant]!
+        return a - step * 4 - 1
+      },
+      ({ a, variant }) => {
+        const step = [2, 5, 10][variant]!
+        return a - step * 5
+      },
+    ],
+    explanationFn: ({ a, variant }, ans) => {
+      const step = [2, 5, 10][variant]!
+      return `${step}씩 거꾸로 뛰어 세는 규칙입니다. ${a - step * 3} 다음은 ${a - step * 3} - ${step} = ${ans}입니다.`
+    },
+  },
+
+  // 분류하기 (E1-STA-01)
+  {
+    id: 'e1-conc-13a',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'data',
+    conceptId: 'E1-STA-01',
+    pattern: '',
+    paramRanges: { a: [3, 7], b: [2, 6], c: [4, 8] },
+    constraints: ({ a, b, c }) => a !== b && b !== c && a !== c,
+    contentFn: ({ a, b, c }) =>
+      `빨간색 구슬 ${a}개, 파란색 구슬 ${b}개, 노란색 구슬 ${c}개가 있습니다. 구슬은 모두 몇 개인가요?`,
+    answerFn: ({ a, b, c }) => a + b + c,
+    distractorFns: [
+      ({ a, b, c }) => a + b + c + 1,
+      ({ a, c }) => a + c,
+      ({ a, b, c }) => Math.max(a, b, c),
+    ],
+    explanationFn: ({ a, b, c }, ans) =>
+      `① 색깔별로 세어 봅니다: 빨강 ${a}개, 파랑 ${b}개, 노랑 ${c}개\n② 전부 더합니다: ${a} + ${b} + ${c} = ${ans}개`,
+  },
+  {
+    id: 'e1-conc-13b',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'data',
+    conceptId: 'E1-STA-01',
+    pattern: '',
+    paramRanges: { a: [3, 8], b: [2, 7], c: [4, 9] },
+    constraints: ({ a, b, c }) => a !== b && b !== c && a !== c && (a > b && a > c || b > a && b > c || c > a && c > b),
+    contentFn: ({ a, b, c }) => {
+      const items = ['사과', '배', '귤']
+      return `${items[0]} ${a}개, ${items[1]} ${b}개, ${items[2]} ${c}개가 있습니다. 가장 많은 과일은 무엇인가요?`
+    },
+    answerFn: ({ a, b, c }) => {
+      const items = ['사과', '배', '귤']
+      const max = Math.max(a, b, c)
+      if (a === max) return items[0]!
+      if (b === max) return items[1]!
+      return items[2]!
+    },
+    distractorFns: [
+      ({ a, b, c }) => {
+        const items = ['사과', '배', '귤']
+        const min = Math.min(a, b, c)
+        if (a === min) return items[0]!
+        if (b === min) return items[1]!
+        return items[2]!
+      },
+      ({ a, b, c }) => `${a + b + c}개`,
+      ({ a, b, c }) => {
+        const items = ['사과', '배', '귤']
+        const vals = [a, b, c]
+        const sorted = [...vals].sort((x, y) => x - y)
+        const midIdx = vals.indexOf(sorted[1]!)
+        return items[midIdx]!
+      },
+    ],
+    explanationFn: ({ a, b, c }, ans) =>
+      `사과 ${a}개, 배 ${b}개, 귤 ${c}개를 비교하면 ${ans}이(가) 가장 많습니다.`,
+    questionType: 'multiple_choice',
+  },
+
+  // 양의 비교 확장 (E1-GEO-03)
+  {
+    id: 'e1-conc-14a',
+    grade: G,
+    category: 'concept',
+    level: 7,
+    part: 'geo',
+    conceptId: 'E1-GEO-03',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '수박과 사과 중 더 무거운 것은?',
+        '교실과 책상 중 더 넓은 것은?',
+        '양동이와 컵 중 물을 더 많이 담을 수 있는 것은?',
+        '코끼리와 강아지 중 더 무거운 것은?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => {
+      const answers = ['수박', '교실', '양동이', '코끼리']
+      return answers[variant]!
+    },
+    distractorFns: [
+      ({ variant }) => ['사과', '책상', '컵', '강아지'][variant]!,
+      ({ variant }) => ['같다', '같다', '같다', '같다'][variant]!,
+      ({ variant }) => ['모른다', '모른다', '모른다', '모른다'][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '수박이 사과보다 더 무겁습니다. (무겁다/가볍다로 비교)',
+        '교실이 책상보다 더 넓습니다. (넓다/좁다로 비교)',
+        '양동이가 컵보다 물을 더 많이 담을 수 있습니다. (많다/적다로 비교)',
+        '코끼리가 강아지보다 더 무겁습니다. (무겁다/가볍다로 비교)',
+      ]
+      return explanations[variant]!
+    },
+    questionType: 'multiple_choice',
+  },
+  {
+    id: 'e1-conc-14b',
+    grade: G,
+    category: 'concept',
+    level: 7,
+    part: 'geo',
+    conceptId: 'E1-GEO-03',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '무게를 비교할 때 쓰는 말로 알맞은 것은?',
+        '넓이를 비교할 때 쓰는 말로 알맞은 것은?',
+        '들이를 비교할 때 쓰는 말로 알맞은 것은?',
+        '길이를 비교할 때 쓰는 말로 알맞은 것은?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => {
+      const answers = ['무겁다/가볍다', '넓다/좁다', '많다/적다', '길다/짧다']
+      return answers[variant]!
+    },
+    distractorFns: [
+      ({ variant }) => ['길다/짧다', '무겁다/가볍다', '넓다/좁다', '많다/적다'][variant]!,
+      ({ variant }) => ['넓다/좁다', '길다/짧다', '길다/짧다', '넓다/좁다'][variant]!,
+      ({ variant }) => ['많다/적다', '많다/적다', '무겁다/가볍다', '무겁다/가볍다'][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '무게를 비교할 때는 "무겁다/가볍다"를 씁니다.',
+        '넓이를 비교할 때는 "넓다/좁다"를 씁니다.',
+        '들이를 비교할 때는 "많다/적다"를 씁니다.',
+        '길이를 비교할 때는 "길다/짧다"를 씁니다.',
+      ]
+      return explanations[variant]!
+    },
+    questionType: 'multiple_choice',
+  },
+
+  // 0의 의미 (E1-NUM-02)
+  {
+    id: 'e1-conc-15a',
+    grade: G,
+    category: 'concept',
+    level: 2,
+    part: 'calc',
+    conceptId: 'E1-NUM-02',
+    pattern: '',
+    paramRanges: { variant: [0, 2] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '바구니에 사과가 하나도 없습니다. 사과는 몇 개인가요?',
+        '접시에 과자가 하나도 없습니다. 과자는 몇 개인가요?',
+        '상자에 공이 하나도 없습니다. 공은 몇 개인가요?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: () => 0,
+    distractorFns: [
+      () => 1,
+      () => 10,
+      () => -1,
+    ],
+    explanationFn: ({ variant }) => {
+      const items = ['사과', '과자', '공']
+      return `아무것도 없을 때 0이라고 합니다. ${items[variant]}이(가) 하나도 없으므로 0개입니다.`
+    },
+  },
+  {
+    id: 'e1-conc-15b',
+    grade: G,
+    category: 'concept',
+    level: 2,
+    part: 'calc',
+    conceptId: 'E1-NUM-02',
+    pattern: '',
+    paramRanges: { a: [1, 4] },
+    contentFn: ({ a }) => `${a}0에서 0은 어떤 역할을 하나요?`,
+    answerFn: () => '일의 자리가 비어있음을 나타냄',
+    distractorFns: [
+      () => '아무 뜻도 없다',
+      () => '10을 나타낸다',
+      () => '0개를 나타낸다',
+    ],
+    explanationFn: ({ a }) =>
+      `${a}0에서 0은 일의 자리에 아무것도 없음을 나타냅니다. 0이 없으면 ${a}0이 ${a}로 바뀌어 버립니다.`,
+    questionType: 'multiple_choice',
   },
 ]
 

@@ -549,6 +549,92 @@ const comp: QuestionTemplate[] = [
       return explanations[variant]!
     },
   },
+
+  // ── Lv.6: 분수의 곱셈 (E5-NUM-13) ──
+  {
+    id: 'e5-comp-11a',
+    grade: G,
+    category: 'computation',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E5-NUM-13',
+    pattern: '(a/b) × c',
+    paramRanges: { a: [1, 5], b: [2, 7], c: [2, 9] },
+    constraints: ({ a, b }) => a < b && gcdHelper(a, b) === 1,
+    contentFn: ({ a, b, c }) => `${a}/${b} × ${c} = ?`,
+    answerFn: ({ a, b, c }) => simplifyFraction(a * c, b),
+    distractorFns: [
+      ({ a, b, c }) => `${a * c}/${b * c}`,
+      ({ a, b, c }) => simplifyFraction(a + c, b),
+      ({ a, b, c }) => `${a}/${b * c}`,
+    ],
+    explanationFn: ({ a, b, c }, ans) =>
+      `(분수) × (자연수): 분자에 자연수를 곱합니다.\n${a}/${b} × ${c} = ${a * c}/${b} = ${ans}`,
+  },
+  {
+    id: 'e5-comp-11b',
+    grade: G,
+    category: 'computation',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E5-NUM-13',
+    pattern: '(a/b) × (c/d)',
+    paramRanges: { a: [1, 5], b: [2, 7], c: [1, 5], d: [2, 7] },
+    constraints: ({ a, b, c, d }) => a < b && c < d && gcdHelper(a, b) === 1 && gcdHelper(c, d) === 1,
+    contentFn: ({ a, b, c, d }) => `${a}/${b} × ${c}/${d} = ?`,
+    answerFn: ({ a, b, c, d }) => simplifyFraction(a * c, b * d),
+    distractorFns: [
+      ({ a, b, c, d }) => `${a * c}/${b * d}`,
+      ({ a, b, c, d }) => `${a + c}/${b + d}`,
+      ({ a, b, c, d }) => simplifyFraction(a * d + b * c, b * d),
+    ],
+    explanationFn: ({ a, b, c, d }, ans) =>
+      `(분수) × (분수): 분자끼리, 분모끼리 곱합니다.\n${a}/${b} × ${c}/${d} = (${a}×${c})/(${b}×${d}) = ${a * c}/${b * d} = ${ans}`,
+  },
+
+  // ── Lv.6: 소수의 곱셈 (E5-NUM-14) ──
+  {
+    id: 'e5-comp-12a',
+    grade: G,
+    category: 'computation',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E5-NUM-14',
+    pattern: '소수 × 자연수',
+    paramRanges: { a: [1, 9], b: [1, 9], c: [2, 9] },
+    contentFn: ({ a, b, c }) => `${a}.${b} × ${c} = ?`,
+    answerFn: ({ a, b, c }) => (a * 10 + b) * c / 10,
+    distractorFns: [
+      ({ a, b, c }) => (a * 10 + b) * c,
+      ({ a, b, c }) => ((a * 10 + b) * c + 10) / 10,
+      ({ a, b, c }) => ((a * 10 + b) * c - 10) / 10,
+    ],
+    explanationFn: ({ a, b, c }, ans) => {
+      const whole = (a * 10 + b) * c
+      return `소수 × 자연수: 소수를 자연수처럼 곱한 뒤 소수점을 찍습니다.\n${a}${b} × ${c} = ${whole}\n소수점 아래 1자리이므로 → ${ans}`
+    },
+  },
+  {
+    id: 'e5-comp-12b',
+    grade: G,
+    category: 'computation',
+    level: 6,
+    part: 'calc',
+    conceptId: 'E5-NUM-14',
+    pattern: '소수 × 소수',
+    paramRanges: { a: [1, 9], b: [1, 9], c: [1, 9], d: [1, 9] },
+    contentFn: ({ a, b, c, d }) => `${a}.${b} × ${c}.${d} = ?`,
+    answerFn: ({ a, b, c, d }) => (a * 10 + b) * (c * 10 + d) / 100,
+    distractorFns: [
+      ({ a, b, c, d }) => (a * 10 + b) * (c * 10 + d) / 10,
+      ({ a, b, c, d }) => ((a * 10 + b) * (c * 10 + d) + 100) / 100,
+      ({ a, b, c, d }) => ((a * 10 + b) * (c * 10 + d) - 100) / 100,
+    ],
+    explanationFn: ({ a, b, c, d }, ans) => {
+      const whole = (a * 10 + b) * (c * 10 + d)
+      return `소수 × 소수: 자연수처럼 곱한 뒤 소수점 아래 자릿수의 합만큼 소수점을 찍습니다.\n${a}${b} × ${c}${d} = ${whole}\n소수점 아래 1+1=2자리 → ${ans}`
+    },
+  },
 ]
 
 // ============================
@@ -717,7 +803,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 4,
     part: 'geo',
-    conceptId: 'E5-GEO-01',
+    conceptId: 'E5-GEO-07',
     pattern: '',
     paramRanges: { variant: [0, 3] },
     contentFn: ({ variant }) => {
@@ -754,7 +840,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 4,
     part: 'geo',
-    conceptId: 'E5-GEO-01',
+    conceptId: 'E5-GEO-07',
     pattern: '',
     paramRanges: { a: [2, 8] },
     contentFn: ({ a }) => `한 모서리가 ${a}cm인 정육면체의 모든 모서리의 길이의 합은?`,
@@ -857,7 +943,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 7,
     part: 'data',
-    conceptId: 'E5-STA-01',
+    conceptId: 'E5-NUM-15',
     pattern: '',
     paramRanges: { a: [60, 90], b: [65, 95], c: [70, 100] },
     constraints: ({ a, b, c }) => (a + b + c) % 3 === 0,
@@ -877,7 +963,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 7,
     part: 'data',
-    conceptId: 'E5-STA-01',
+    conceptId: 'E5-NUM-15',
     pattern: '',
     paramRanges: { a: [10, 25], b: [15, 30], c: [20, 35], d: [12, 28] },
     constraints: ({ a, b, c, d }) => (a + b + c + d) % 4 === 0,
@@ -899,7 +985,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 8,
     part: 'data',
-    conceptId: 'E5-STA-02',
+    conceptId: 'E5-NUM-16',
     pattern: '',
     paramRanges: { variant: [0, 3] },
     contentFn: ({ variant }) => {
@@ -936,7 +1022,7 @@ const conc: QuestionTemplate[] = [
     category: 'concept',
     level: 8,
     part: 'data',
-    conceptId: 'E5-STA-02',
+    conceptId: 'E5-NUM-16',
     pattern: '',
     paramRanges: { a: [2, 4], b: [2, 5] },
     contentFn: ({ a, b }) => `모자 ${a}개와 신발 ${b}켤레가 있습니다. 한 개씩 골라 입을 수 있는 경우의 수는?`,
@@ -1037,6 +1123,209 @@ const conc: QuestionTemplate[] = [
     ],
     explanationFn: ({ a, b, c }, ans) =>
       `첫 번째 삼각형: ${(a * b) / 2}cm² + 두 번째 삼각형: ${(c * b) / 2}cm² = ${ans}cm²`,
+  },
+
+  // ── 추가 개념: 마름모/사다리꼴 넓이 (가이드 E5-GEO-04) ──
+  {
+    id: 'e5-conc-6c',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'geo',
+    conceptId: 'E5-GEO-04',
+    pattern: '',
+    paramRanges: { a: [4, 10], b: [3, 8] },
+    constraints: ({ a, b }) => (a * b) % 2 === 0,
+    contentFn: ({ a, b }) => `두 대각선의 길이가 ${a}cm, ${b}cm인 마름모의 넓이는?`,
+    answerFn: ({ a, b }) => (a * b) / 2,
+    distractorFns: [
+      ({ a, b }) => a * b,               // ÷2 누락
+      ({ a, b }) => (a + b) * 2,         // 둘레로 혼동
+      ({ a, b }) => (a * b) / 2 + 1,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `마름모의 넓이 = (대각선 × 대각선) ÷ 2 = (${a} × ${b}) ÷ 2 = ${ans}cm²`,
+  },
+  {
+    id: 'e5-conc-6d',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'geo',
+    conceptId: 'E5-GEO-04',
+    pattern: '',
+    paramRanges: { a: [3, 8], b: [5, 12], c: [3, 10] },
+    constraints: ({ a, b, c }) => a < b && ((a + b) * c) % 2 === 0,
+    contentFn: ({ a, b, c }) => `윗변 ${a}cm, 아랫변 ${b}cm, 높이 ${c}cm인 사다리꼴의 넓이는?`,
+    answerFn: ({ a, b, c }) => ((a + b) * c) / 2,
+    distractorFns: [
+      ({ a, b, c }) => (a + b) * c,       // ÷2 누락
+      ({ a, b, c }) => a * b * c,          // 전부 곱함
+      ({ a, b, c }) => ((a + b) * c) / 2 + 1,
+    ],
+    explanationFn: ({ a, b, c }, ans) =>
+      `사다리꼴의 넓이 = (윗변 + 아랫변) × 높이 ÷ 2\n= (${a} + ${b}) × ${c} ÷ 2 = ${(a + b) * c} ÷ 2 = ${ans}cm²`,
+  },
+
+  // ── 추가 개념: 수의 범위 (가이드 E5-NUM-11) ──
+  {
+    id: 'e5-conc-5c',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'calc',
+    conceptId: 'E5-NUM-11',
+    pattern: '',
+    paramRanges: { a: [3, 8], b: [7, 15] },
+    constraints: ({ a, b }) => b - a >= 3,
+    contentFn: ({ a, b }) => `${a} 이상 ${b} 미만인 자연수는 모두 몇 개입니까?`,
+    answerFn: ({ a, b }) => b - a,
+    distractorFns: [
+      ({ a, b }) => b - a + 1,   // '이상'을 '초과'로, '미만'을 '이하'로 혼동
+      ({ a, b }) => b - a - 1,   // 반대 혼동
+      ({ a, b }) => b - a + 2,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `${a} 이상: ${a} 포함 (●)\n${b} 미만: ${b} 불포함 (○)\n${a}, ${a + 1}, ..., ${b - 1} → ${ans}개`,
+  },
+
+  // ── 추가 개념: 어림하기 (가이드 E5-NUM-12) ──
+  {
+    id: 'e5-conc-5d',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'calc',
+    conceptId: 'E5-NUM-12',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '456을 십의 자리에서 반올림하면?',
+        '1,234를 백의 자리에서 반올림하면?',
+        '78을 십의 자리에서 올림하면?',
+        '345를 십의 자리에서 버림하면?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => {
+      const answers = [460, 1000, 80, 340]
+      return answers[variant]!
+    },
+    distractorFns: [
+      ({ variant }) => [450, 1200, 70, 350][variant]!,
+      ({ variant }) => [500, 1100, 100, 300][variant]!,
+      ({ variant }) => [470, 1300, 90, 345][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '456의 십의 자리 5는 5 이상이므로 올림 → 460',
+        '1,234의 백의 자리 2는 5 미만이므로 버림 → 1,000',
+        '올림: 78의 일의 자리 8이 0이 아니므로 윗자리+1 → 80',
+        '버림: 345의 일의 자리를 0으로 → 340',
+      ]
+      return explanations[variant]!
+    },
+  },
+
+  // ── 추가 개념: 합동과 대칭 (가이드 E5-GEO-05, 06) ──
+  {
+    id: 'e5-conc-8c',
+    grade: G,
+    category: 'concept',
+    level: 8,
+    part: 'geo',
+    conceptId: 'E5-GEO-06',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '선대칭도형에서 대칭축은 대응점을 이은 선분을 어떻게 만드는가?',
+        '점대칭도형에서 대칭의 중심은 대응점을 이은 선분의 무엇인가?',
+        '다음 중 선대칭도형인 것은? (정삼각형, 평행사변형, 일반 사다리꼴, 일반 삼각형)',
+        '다음 중 점대칭도형인 것은? (정삼각형, 평행사변형, 이등변삼각형, 일반 삼각형)',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => {
+      const answers = [
+        '수직이등분',
+        '중점',
+        '정삼각형',
+        '평행사변형',
+      ]
+      return answers[variant]!
+    },
+    distractorFns: [
+      ({ variant }) => ['평행', '꼭짓점', '평행사변형', '정삼각형'][variant]!,
+      ({ variant }) => ['이등분', '대칭축', '일반 사다리꼴', '이등변삼각형'][variant]!,
+      ({ variant }) => ['수직', '교점', '일반 삼각형', '일반 삼각형'][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '선대칭도형에서 대칭축은 대응점을 이은 선분을 수직이등분합니다.',
+        '점대칭도형에서 대칭의 중심은 대응점을 이은 선분의 중점입니다.',
+        '정삼각형은 3개의 대칭축을 가진 선대칭도형입니다.',
+        '평행사변형은 대각선의 교점을 중심으로 180° 돌리면 겹치는 점대칭도형입니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
+
+  // ── Lv.5: 규칙과 대응 (E5-ALG-01) ──
+  {
+    id: 'e5-conc-11a',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'algebra',
+    conceptId: 'E5-ALG-01',
+    pattern: '',
+    paramRanges: { a: [2, 5], b: [1, 4], n: [3, 8] },
+    contentFn: ({ a, b, n }) =>
+      `○와 △ 사이에 △ = ○ × ${a} + ${b}의 관계가 있습니다. ○ = ${n}일 때 △의 값은?`,
+    answerFn: ({ a, b, n }) => n * a + b,
+    distractorFns: [
+      ({ a, b, n }) => n + a + b,
+      ({ a, b, n }) => n * a - b,
+      ({ a, b, n }) => n * (a + b),
+    ],
+    explanationFn: ({ a, b, n }, ans) =>
+      `대응 관계: △ = ○ × ${a} + ${b}\n○ = ${n}을 대입하면\n△ = ${n} × ${a} + ${b} = ${n * a} + ${b} = ${ans}`,
+  },
+  {
+    id: 'e5-conc-11b',
+    grade: G,
+    category: 'concept',
+    level: 5,
+    part: 'algebra',
+    conceptId: 'E5-ALG-01',
+    pattern: '',
+    paramRanges: { a: [2, 5], variant: [0, 3] },
+    contentFn: ({ a, variant }) => {
+      const tables = [
+        `○: 1, 2, 3, 4 → △: ${a}, ${a * 2}, ${a * 3}, ?`,
+        `○: 2, 4, 6, 8 → △: ${2 + a}, ${4 + a}, ${6 + a}, ?`,
+        `○: 1, 2, 3, 4 → △: ${a + 1}, ${a * 2 + 1}, ${a * 3 + 1}, ?`,
+        `○: 5, 10, 15, 20 → △: ${5 - a}, ${10 - a}, ${15 - a}, ?`,
+      ]
+      return `다음 대응표의 규칙을 찾아 ?에 알맞은 수를 구하세요.\n${tables[variant]!}`
+    },
+    answerFn: ({ a, variant }) => [a * 4, 8 + a, a * 4 + 1, 20 - a][variant]!,
+    distractorFns: [
+      ({ a, variant }) => [a * 4 + 1, 8 + a + 1, a * 4, 20 - a + 1][variant]!,
+      ({ a, variant }) => [a * 3, 8 + a - 2, a * 4 + 2, 20 - a - 1][variant]!,
+      ({ a, variant }) => [a * 5, 10 + a, a * 3 + 1, 20 + a][variant]!,
+    ],
+    explanationFn: ({ a, variant }) => {
+      const rules = [
+        `규칙: △ = ○ × ${a}\n○ = 4일 때 △ = 4 × ${a} = ${a * 4}`,
+        `규칙: △ = ○ + ${a}\n○ = 8일 때 △ = 8 + ${a} = ${8 + a}`,
+        `규칙: △ = ○ × ${a} + 1\n○ = 4일 때 △ = 4 × ${a} + 1 = ${a * 4 + 1}`,
+        `규칙: △ = ○ - ${a}\n○ = 20일 때 △ = 20 - ${a} = ${20 - a}`,
+      ]
+      return rules[variant]!
+    },
   },
 ]
 
