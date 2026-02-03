@@ -1,5 +1,6 @@
 """테스트 서비스."""
 
+import random
 from datetime import datetime, timezone
 
 from sqlalchemy import select, func
@@ -9,7 +10,55 @@ from app.models.test import Test
 from app.models.test_attempt import TestAttempt
 from app.models.answer_log import AnswerLog
 from app.models.question import Question
-from app.schemas.common import Grade
+from app.schemas.common import Grade, QuestionType
+from app.services.blank_service import BlankService
+
+
+def shuffle_question_options(options: list[dict], correct_answer: str) -> tuple[list[dict], str]:
+    """문제 보기를 셔플하고 새 정답 라벨을 반환.
+
+    Args:
+        options: 원본 보기 리스트
+        correct_answer: 원본 정답 라벨 (A, B, C, D 등)
+
+    Returns:
+        tuple: (셔플된 options 리스트, 새 정답 라벨)
+    """
+    if not options:
+        return [], correct_answer
+
+    # 정답 option의 id 찾기
+    correct_option_id = None
+    for opt in options:
+        if opt.get("label") == correct_answer:
+            correct_option_id = opt.get("id")
+            break
+
+    # 옵션 복사 후 셔플
+    shuffled = [opt.copy() for opt in options]
+    random.shuffle(shuffled)
+
+    # 새 라벨 부여 (A, B, C, D, ...)
+    labels = ["A", "B", "C", "D", "E", "F", "G", "H"]
+    new_correct = correct_answer
+
+    for i, opt in enumerate(shuffled):
+        new_label = labels[i] if i < len(labels) else str(i + 1)
+        if opt.get("id") == correct_option_id:
+            new_correct = new_label
+        opt["label"] = new_label
+
+    return shuffled, new_correct
+
+
+def get_student_attempt_count(db: Session, student_id: str, test_id: str) -> int:
+    """완료된 시도 횟수 계산."""
+    stmt = select(func.count()).where(
+        TestAttempt.test_id == test_id,
+        TestAttempt.student_id == student_id,
+        TestAttempt.completed_at.isnot(None),
+    )
+    return db.scalar(stmt) or 0
 
 
 class TestService:
@@ -93,22 +142,70 @@ class TestService:
 
     def start_test(self, test_id: str, student_id: str) -> TestAttempt | None:
         """테스트 시작."""
-        test_data = self.get_test_with_questions(test_id)
-        if not test_data:
+        test = self.get_test_by_id(test_id)
+        if not test:
             return None
 
-        test = test_data["test"]
-        questions = test_data["questions"]
+        # 문제 선택
+        all_question_ids = test.question_ids or []
+        selected_question_ids = all_question_ids
+
+        # 문제 풀 방식: 랜덤하게 N개 선택
+        if test.use_question_pool and test.questions_per_attempt:
+            pool_size = len(all_question_ids)
+            select_count = min(test.questions_per_attempt, pool_size)
+            selected_question_ids = random.sample(all_question_ids, select_count)
+
+        # 선택된 문제 조회
+        stmt = select(Question).where(Question.id.in_(selected_question_ids))
+        questions = list(self.db.scalars(stmt).all())
+        question_map = {q.id: q for q in questions}
+        ordered_questions = [question_map[qid] for qid in selected_question_ids if qid in question_map]
+
+        # 보기 셔플 설정 생성
+        question_shuffle_config = {}
+        if test.shuffle_options:
+            for q in ordered_questions:
+                if q.options:
+                    shuffled_options, new_correct = shuffle_question_options(
+                        q.options, q.correct_answer
+                    )
+                    question_shuffle_config[q.id] = {
+                        "shuffled_options": shuffled_options,
+                        "correct_answer": new_correct,
+                    }
+
+        # 빈칸 생성 (빈칸 채우기 문제용)
+        attempt_count = get_student_attempt_count(self.db, student_id, test_id) + 1
+        blank_service = BlankService(self.db)
+
+        for q in ordered_questions:
+            if q.question_type == QuestionType.FILL_IN_BLANK and q.blank_config:
+                # 임시 attempt_id 생성 (실제 attempt는 아직 생성 전)
+                temp_attempt_id = f"temp_{test_id}_{student_id}_{attempt_count}"
+                blank_data = blank_service.generate_blanks_for_attempt(
+                    question=q,
+                    attempt_count=attempt_count,
+                    student_id=student_id,
+                    attempt_id=temp_attempt_id
+                )
+
+                if blank_data:
+                    if q.id not in question_shuffle_config:
+                        question_shuffle_config[q.id] = {}
+                    question_shuffle_config[q.id]["blank_config"] = blank_data
 
         # 최대 점수 계산
-        max_score = sum(q.points for q in questions)
+        max_score = sum(q.points for q in ordered_questions)
 
         # 시도 생성
         attempt = TestAttempt(
             test_id=test_id,
             student_id=student_id,
             max_score=max_score,
-            total_count=len(questions),
+            total_count=len(ordered_questions),
+            selected_question_ids=selected_question_ids if test.use_question_pool else None,
+            question_shuffle_config=question_shuffle_config if question_shuffle_config else None,
         )
         self.db.add(attempt)
         self.db.commit()
@@ -119,6 +216,72 @@ class TestService:
     def get_attempt_by_id(self, attempt_id: str) -> TestAttempt | None:
         """시도 조회."""
         return self.db.get(TestAttempt, attempt_id)
+
+    def get_attempt_questions(self, attempt_id: str) -> list[dict] | None:
+        """시도의 문제 목록 조회 (셔플 적용)."""
+        attempt = self.get_attempt_by_id(attempt_id)
+        if not attempt:
+            return None
+
+        test = self.get_test_by_id(attempt.test_id)
+        if not test:
+            return None
+
+        # 문제 ID 결정 (문제 풀 방식이면 선택된 문제, 아니면 전체)
+        question_ids = attempt.selected_question_ids or test.question_ids or []
+
+        # 문제 조회
+        stmt = select(Question).where(Question.id.in_(question_ids))
+        questions = list(self.db.scalars(stmt).all())
+        question_map = {q.id: q for q in questions}
+        ordered_questions = [question_map[qid] for qid in question_ids if qid in question_map]
+
+        # 셔플 설정 적용
+        shuffle_config = attempt.question_shuffle_config or {}
+        result = []
+
+        for q in ordered_questions:
+            q_data = {
+                "id": q.id,
+                "concept_id": q.concept_id,
+                "category": q.category,
+                "part": q.part,
+                "content": q.content,
+                "question_type": q.question_type,
+                "difficulty": q.difficulty,
+                "points": q.points,
+                "explanation": q.explanation,
+            }
+
+            # 셔플된 보기와 정답 사용
+            if q.id in shuffle_config:
+                config = shuffle_config[q.id]
+                if "shuffled_options" in config:
+                    q_data["options"] = config["shuffled_options"]
+                    # 정답은 응답에 포함하지 않음 (채점 시에만 사용)
+                if "blank_config" in config:
+                    q_data["blank_config"] = config["blank_config"]
+            else:
+                q_data["options"] = q.options
+
+            result.append(q_data)
+
+        return result
+
+    def get_correct_answer_for_attempt(self, attempt_id: str, question_id: str) -> str | None:
+        """특정 시도에서 문제의 정답 조회 (셔플 적용)."""
+        attempt = self.get_attempt_by_id(attempt_id)
+        if not attempt:
+            return None
+
+        # 셔플 설정에서 정답 확인
+        shuffle_config = attempt.question_shuffle_config or {}
+        if question_id in shuffle_config:
+            return shuffle_config[question_id]["correct_answer"]
+
+        # 셔플이 없으면 원본 정답
+        question = self.db.get(Question, question_id)
+        return question.correct_answer if question else None
 
     def get_attempt_with_details(self, attempt_id: str) -> dict | None:
         """시도와 상세 정보 조회."""

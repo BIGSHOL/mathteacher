@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import { clsx } from 'clsx'
 import type { Question, QuestionCategory, QuestionOption } from '../../types'
 import { MathText } from '../common/MathText'
+import { FillInBlankInput } from './FillInBlankInput'
 
 interface QuestionCardProps {
   question: Question
@@ -11,6 +12,8 @@ interface QuestionCardProps {
   selectedAnswer: string | null
   onSelectAnswer: (answer: string) => void
   disabled?: boolean
+  blankValues?: Record<string, string>
+  onBlankChange?: (blankId: string, value: string) => void
 }
 
 export function QuestionCard({
@@ -19,6 +22,8 @@ export function QuestionCard({
   selectedAnswer,
   onSelectAnswer,
   disabled = false,
+  blankValues = {},
+  onBlankChange = () => {},
 }: QuestionCardProps) {
   return (
     <div className="card p-6">
@@ -36,11 +41,26 @@ export function QuestionCard({
       </div>
 
       {/* 문제 내용 */}
-      <div className="mb-6">
-        <p className="text-lg font-medium text-gray-900">
-          <MathText text={question.content} />
-        </p>
-      </div>
+      {question.question_type !== 'fill_in_blank' && (
+        <div className="mb-6">
+          <p className="text-lg font-medium text-gray-900">
+            <MathText text={question.content} />
+          </p>
+        </div>
+      )}
+
+      {/* 빈칸 채우기 */}
+      {question.question_type === 'fill_in_blank' && question.blank_config && (
+        <div className="mb-6">
+          <FillInBlankInput
+            displayContent={question.blank_config.display_content}
+            blankAnswers={question.blank_config.blank_answers}
+            values={blankValues}
+            onChange={onBlankChange}
+            disabled={disabled}
+          />
+        </div>
+      )}
 
       {/* 선택지 */}
       {question.options && (
@@ -57,7 +77,7 @@ export function QuestionCard({
         </div>
       )}
 
-      {/* 단답형 (추후 구현) */}
+      {/* 단답형 */}
       {question.question_type === 'short_answer' && (
         <input
           type="text"

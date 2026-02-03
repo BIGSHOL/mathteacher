@@ -36,6 +36,7 @@ class QuestionType(str, Enum):
     MULTIPLE_CHOICE = "multiple_choice"
     TRUE_FALSE = "true_false"
     SHORT_ANSWER = "short_answer"
+    FILL_IN_BLANK = "fill_in_blank"  # 빈칸 채우기
 
 
 class QuestionCategory(str, Enum):

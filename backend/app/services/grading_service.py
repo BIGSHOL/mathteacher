@@ -16,17 +16,57 @@ class GradingService:
     def grade_answer(
         self,
         question_id: str,
-        selected_answer: str,
-        correct_answer: str,
+        selected_answer: str | dict,
+        correct_answer: str | dict,
         points: int,
     ) -> dict:
-        """답안 채점."""
+        """답안 채점 (빈칸 채우기 지원)."""
+        # 빈칸 채우기 타입 (dict)
+        if isinstance(correct_answer, dict):
+            return self._grade_fill_in_blank(selected_answer, correct_answer, points)
+
+        # 일반 문제 (string)
         is_correct = selected_answer.strip().upper() == correct_answer.strip().upper()
         points_earned = points if is_correct else 0
 
         return {
             "is_correct": is_correct,
             "points_earned": points_earned,
+        }
+
+    def _grade_fill_in_blank(
+        self,
+        student_answers: dict,
+        correct_answers: dict,
+        points: int
+    ) -> dict:
+        """빈칸 채우기 채점 (부분 점수 지원)."""
+        if not isinstance(student_answers, dict):
+            student_answers = {}
+
+        total_blanks = len(correct_answers)
+        if total_blanks == 0:
+            return {
+                "is_correct": True,
+                "points_earned": points,
+                "correct_count": 0,
+                "total_blanks": 0
+            }
+
+        correct_count = sum(
+            1 for blank_id, correct_data in correct_answers.items()
+            if student_answers.get(blank_id, "").strip().upper()
+               == correct_data.get("answer", "").strip().upper()
+        )
+
+        is_correct = correct_count == total_blanks
+        points_earned = int((correct_count / total_blanks) * points)
+
+        return {
+            "is_correct": is_correct,
+            "points_earned": points_earned,
+            "correct_count": correct_count,
+            "total_blanks": total_blanks
         }
 
     def calculate_combo_bonus(self, combo_count: int, base_points: int) -> int:
@@ -49,16 +89,24 @@ class GradingService:
         selected_answer: str,
         time_spent_seconds: int,
         current_combo: int,
+        correct_answer_override: str | None = None,
     ) -> dict:
-        """답안 제출 및 채점."""
+        """답안 제출 및 채점.
+
+        Args:
+            correct_answer_override: 셔플된 경우 사용할 정답 (없으면 원본 사용)
+        """
         if not self.db:
             raise ValueError("Database session required")
+
+        # 셔플된 정답 또는 원본 정답 사용
+        correct_answer = correct_answer_override or question.correct_answer
 
         # 채점
         result = self.grade_answer(
             question_id=question.id,
             selected_answer=selected_answer,
-            correct_answer=question.correct_answer,
+            correct_answer=correct_answer,
             points=question.points,
         )
 
@@ -104,7 +152,7 @@ class GradingService:
 
         return {
             "is_correct": is_correct,
-            "correct_answer": question.correct_answer,
+            "correct_answer": correct_answer,  # 셔플된 정답 반환
             "explanation": question.explanation,
             "points_earned": points_with_bonus,
             "combo_count": new_combo,

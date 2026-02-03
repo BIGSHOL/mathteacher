@@ -14,7 +14,7 @@ export type Grade =
   | 'middle_3'
   | 'high_1'
 
-export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer'
+export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer' | 'fill_in_blank'
 
 /** 문제 카테고리 (트랙): 연산(computation) / 개념(concept) */
 export type QuestionCategory = 'computation' | 'concept'
@@ -83,6 +83,12 @@ export interface QuestionOption {
   text: string
 }
 
+export interface BlankConfig {
+  display_content: string
+  blank_answers: Record<string, { answer: string; position: number }>
+  original_content: string
+}
+
 export interface Question {
   id: string
   concept_id: string
@@ -96,6 +102,7 @@ export interface Question {
   explanation: string
   points: number
   prerequisite_concept_ids?: string[]
+  blank_config?: BlankConfig
 }
 
 // 테스트 타입

@@ -48,6 +48,12 @@ class Question(Base):
         comment="선수 개념 ID 목록 (계통수학 체인)"
     )
 
+    # 빈칸 채우기 설정
+    blank_config: Mapped[dict | None] = mapped_column(
+        JSON, nullable=True,
+        comment="빈칸 채우기 설정: 빈칸 가능 위치, 중요도, 회차별 규칙"
+    )
+
     # 상태
     is_active: Mapped[bool] = mapped_column(default=True)
 

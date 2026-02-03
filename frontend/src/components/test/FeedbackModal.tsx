@@ -20,6 +20,9 @@ interface FeedbackModalProps {
   nextDifficulty?: number
   /** 현재 난이도 (하락 경고 비교용) */
   currentDifficulty?: number
+  /** 빈칸 채우기 부분 점수 정보 */
+  correctCount?: number
+  totalBlanks?: number
   onNext: () => void
 }
 
@@ -35,6 +38,8 @@ export function FeedbackModal({
   isTimeUp = false,
   nextDifficulty,
   currentDifficulty,
+  correctCount,
+  totalBlanks,
   onNext,
 }: FeedbackModalProps) {
   const prevOpen = useRef(false)
@@ -156,6 +161,23 @@ export function FeedbackModal({
                 <div className="mb-4 rounded-xl bg-gray-100 p-4">
                   <div className="text-sm text-gray-500">정답</div>
                   <div className="text-lg font-bold text-gray-900">{correctAnswer}</div>
+                </div>
+              )}
+
+              {/* 빈칸 채우기 부분 점수 */}
+              {correctCount !== undefined && totalBlanks !== undefined && totalBlanks > 0 && (
+                <div className="mb-4 rounded-xl bg-blue-50 border border-blue-200 p-4">
+                  <div className="text-sm text-gray-600 mb-1">빈칸 정답 현황</div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="text-2xl font-bold text-blue-600">{correctCount}</span>
+                      <span className="text-gray-600"> / {totalBlanks}</span>
+                      <span className="ml-2 text-sm text-gray-500">정답</span>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      부분 점수: <span className="font-semibold text-blue-600">{pointsEarned}점</span>
+                    </div>
+                  </div>
                 </div>
               )}
 
