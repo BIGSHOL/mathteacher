@@ -906,6 +906,312 @@ def init_db():
             )
             db.add(stat_test)
 
+            # ============================================================
+            # 빈칸 채우기(fill_in_blank) 문제 추가
+            # ============================================================
+            fill_blank_questions = [
+                Question(
+                    id="question-fb-001",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="fill_in_blank",
+                    difficulty=3,
+                    content="일차방정식 2x + 6 = 0 의 해는 x = _____ 이다.",
+                    options=None,
+                    correct_answer="-3",
+                    explanation="2x + 6 = 0 → 2x = -6 → x = -3",
+                    points=10,
+                    blank_config={
+                        "blank_count": 1,
+                        "accept_formats": ["-3"],
+                    },
+                ),
+                Question(
+                    id="question-fb-002",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="fill_in_blank",
+                    difficulty=5,
+                    content="일차방정식 3x - 9 = 6 의 해는 x = _____ 이다.",
+                    options=None,
+                    correct_answer="5",
+                    explanation="3x - 9 = 6 → 3x = 15 → x = 5",
+                    points=10,
+                    blank_config={
+                        "blank_count": 1,
+                        "accept_formats": ["5"],
+                    },
+                ),
+                Question(
+                    id="question-fb-003",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="fill_in_blank",
+                    difficulty=4,
+                    content="(-12) ÷ 4 + 7 = _____",
+                    options=None,
+                    correct_answer="4",
+                    explanation="(-12) ÷ 4 = -3, -3 + 7 = 4",
+                    points=10,
+                    blank_config={
+                        "blank_count": 1,
+                        "accept_formats": ["4"],
+                    },
+                ),
+                Question(
+                    id="question-fb-004",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="fill_in_blank",
+                    difficulty=6,
+                    content="(-5) × 3 + (-2) × (-4) = _____",
+                    options=None,
+                    correct_answer="-7",
+                    explanation="(-5) × 3 = -15, (-2) × (-4) = 8, -15 + 8 = -7",
+                    points=15,
+                    blank_config={
+                        "blank_count": 1,
+                        "accept_formats": ["-7"],
+                    },
+                ),
+                Question(
+                    id="question-fb-005",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="fill_in_blank",
+                    difficulty=7,
+                    content="일차방정식 5(x - 2) = 3x + 4 의 해는 x = _____ 이다.",
+                    options=None,
+                    correct_answer="7",
+                    explanation="5x - 10 = 3x + 4 → 2x = 14 → x = 7",
+                    points=15,
+                    blank_config={
+                        "blank_count": 1,
+                        "accept_formats": ["7"],
+                    },
+                ),
+            ]
+            for q in fill_blank_questions:
+                db.add(q)
+
+            # ============================================================
+            # 고난이도 문제 추가 (Lv.6~10) - 적응형 테스트 난이도 범위 확대
+            # ============================================================
+
+            # 연산(computation) 고난이도
+            high_op_questions = [
+                Question(
+                    id="question-op-006",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=6,
+                    content="(-2)³ + 3² = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "1"},
+                        {"id": "2", "label": "B", "text": "-1"},
+                        {"id": "3", "label": "C", "text": "17"},
+                        {"id": "4", "label": "D", "text": "-17"},
+                    ],
+                    correct_answer="A",
+                    explanation="(-2)³ = -8, 3² = 9, -8 + 9 = 1",
+                    points=15,
+                ),
+                Question(
+                    id="question-op-007",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=7,
+                    content="|-5| × (-3) + |12 - 20| = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "-7"},
+                        {"id": "2", "label": "B", "text": "7"},
+                        {"id": "3", "label": "C", "text": "-23"},
+                        {"id": "4", "label": "D", "text": "23"},
+                    ],
+                    correct_answer="A",
+                    explanation="|-5| = 5, 5 × (-3) = -15, |12-20| = |-8| = 8, -15 + 8 = -7",
+                    points=15,
+                ),
+                Question(
+                    id="question-op-008",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=8,
+                    content="(-1)¹⁰⁰ + (-1)⁹⁹ = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "2"},
+                        {"id": "2", "label": "B", "text": "-2"},
+                        {"id": "3", "label": "C", "text": "0"},
+                        {"id": "4", "label": "D", "text": "1"},
+                    ],
+                    correct_answer="C",
+                    explanation="(-1)¹⁰⁰ = 1 (짝수 거듭제곱), (-1)⁹⁹ = -1 (홀수 거듭제곱), 1 + (-1) = 0",
+                    points=15,
+                ),
+                Question(
+                    id="question-op-009",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=9,
+                    content="2/3 ÷ (-4/9) × 3/2 = ?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "-9/4"},
+                        {"id": "2", "label": "B", "text": "9/4"},
+                        {"id": "3", "label": "C", "text": "-3/2"},
+                        {"id": "4", "label": "D", "text": "4/9"},
+                    ],
+                    correct_answer="A",
+                    explanation="2/3 ÷ (-4/9) = 2/3 × (-9/4) = -18/12 = -3/2, (-3/2) × (3/2) = -9/4",
+                    points=20,
+                ),
+                Question(
+                    id="question-op-010",
+                    concept_id="concept-002",
+                    category="computation",
+                    part="calc",
+                    question_type="multiple_choice",
+                    difficulty=10,
+                    content="다음 식을 간단히 하면? (-3)² × 2 - 4 × (-2)³ ÷ (-8)",
+                    options=[
+                        {"id": "1", "label": "A", "text": "14"},
+                        {"id": "2", "label": "B", "text": "22"},
+                        {"id": "3", "label": "C", "text": "18"},
+                        {"id": "4", "label": "D", "text": "14"},
+                    ],
+                    correct_answer="B",
+                    explanation="(-3)² = 9, 9 × 2 = 18. (-2)³ = -8, 4 × (-8) = -32, -32 ÷ (-8) = 4. 18 + 4 = 22",
+                    points=20,
+                ),
+            ]
+            for q in high_op_questions:
+                db.add(q)
+
+            # 개념(concept) 고난이도 - 일차방정식
+            high_eq_questions = [
+                Question(
+                    id="question-eq-006",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=6,
+                    content="일차방정식 4x - 3 = 2x + 7 의 해는?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "x = 2"},
+                        {"id": "2", "label": "B", "text": "x = 5"},
+                        {"id": "3", "label": "C", "text": "x = -5"},
+                        {"id": "4", "label": "D", "text": "x = -2"},
+                    ],
+                    correct_answer="B",
+                    explanation="4x - 2x = 7 + 3 → 2x = 10 → x = 5",
+                    points=10,
+                ),
+                Question(
+                    id="question-eq-007",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=7,
+                    content="방정식 2(x + 3) = 3(x - 1) + 11 의 해는?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "x = 2"},
+                        {"id": "2", "label": "B", "text": "x = -2"},
+                        {"id": "3", "label": "C", "text": "x = 1"},
+                        {"id": "4", "label": "D", "text": "x = 4"},
+                    ],
+                    correct_answer="B",
+                    explanation="2x + 6 = 3x - 3 + 11 → 2x + 6 = 3x + 8 → -x = 2 → x = -2",
+                    points=15,
+                ),
+                Question(
+                    id="question-eq-008",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=8,
+                    content="방정식 (x-1)/2 = (2x+3)/5 의 해는?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "x = 11"},
+                        {"id": "2", "label": "B", "text": "x = -11"},
+                        {"id": "3", "label": "C", "text": "x = 7"},
+                        {"id": "4", "label": "D", "text": "x = -7"},
+                    ],
+                    correct_answer="A",
+                    explanation="양변에 10을 곱하면: 5(x-1) = 2(2x+3) → 5x - 5 = 4x + 6 → x = 11",
+                    points=15,
+                ),
+                Question(
+                    id="question-eq-009",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=9,
+                    content="어떤 수의 3배에서 5를 뺀 값이 그 수에 7을 더한 값의 2배와 같다. 그 수는?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "19"},
+                        {"id": "2", "label": "B", "text": "17"},
+                        {"id": "3", "label": "C", "text": "15"},
+                        {"id": "4", "label": "D", "text": "9"},
+                    ],
+                    correct_answer="A",
+                    explanation="x를 어떤 수라 하면: 3x - 5 = 2(x + 7) → 3x - 5 = 2x + 14 → x = 19",
+                    points=20,
+                ),
+                Question(
+                    id="question-eq-010",
+                    concept_id="concept-001",
+                    category="concept",
+                    part="algebra",
+                    question_type="multiple_choice",
+                    difficulty=10,
+                    content="연속하는 세 홀수의 합이 63일 때, 가장 큰 수는?",
+                    options=[
+                        {"id": "1", "label": "A", "text": "21"},
+                        {"id": "2", "label": "B", "text": "23"},
+                        {"id": "3", "label": "C", "text": "25"},
+                        {"id": "4", "label": "D", "text": "19"},
+                    ],
+                    correct_answer="B",
+                    explanation="연속하는 세 홀수를 x-2, x, x+2로 놓으면: (x-2)+x+(x+2)=63 → 3x=63 → x=21. 가장 큰 수는 21+2=23",
+                    points=20,
+                ),
+            ]
+            for q in high_eq_questions:
+                db.add(q)
+
+            # 빈칸 채우기 문제를 포함하는 테스트 생성
+            fill_blank_test = Test(
+                id="test-006",
+                title="빈칸 채우기 연습",
+                description="답을 직접 입력하는 빈칸 채우기 문제",
+                grade="middle_1",
+                concept_ids=["concept-001", "concept-002"],
+                question_ids=[
+                    "question-fb-001", "question-fb-002", "question-fb-003",
+                    "question-fb-004", "question-fb-005",
+                ],
+                question_count=5,
+                time_limit_minutes=10,
+                is_active=True,
+            )
+            db.add(fill_blank_test)
+
             db.flush()
 
             # 계통수학: 개념 선수관계 설정

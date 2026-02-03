@@ -75,6 +75,7 @@ export function BottomNav() {
           <>
             <NavItem to="/tests" icon="📝" label="테스트" />
             <NavItem to="/my-stats" icon="📊" label="내 통계" />
+            <NavItem to="/help" icon="📖" label="도움말" />
             <NavItem to="/profile" icon="👤" label="내 정보" />
           </>
         )}
