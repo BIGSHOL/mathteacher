@@ -12,6 +12,7 @@ class UserRole(str, Enum):
     STUDENT = "student"
     TEACHER = "teacher"
     ADMIN = "admin"
+    MASTER = "master"
 
 
 class Grade(str, Enum):

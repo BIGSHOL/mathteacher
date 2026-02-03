@@ -26,8 +26,9 @@ services:
       dockerfile: Dockerfile
     container_name: mathtest-backend
     environment:
+      ENV: development
       DATABASE_URL: postgresql://postgres:postgres@db:5432/mathtest
-      JWT_SECRET: your-super-secret-key-change-in-production
+      JWT_SECRET: docker-dev-secret-key-32chars-min
     ports:
       - "8000:8000"
     depends_on:
@@ -43,6 +44,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: mathtest-frontend
+    environment:
+      VITE_API_URL: http://backend:8000
     ports:
       - "5173:5173"
     depends_on:

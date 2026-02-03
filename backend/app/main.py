@@ -29,6 +29,30 @@ def init_db():
         if not db.query(User).first():
             auth_service = AuthService(db)
 
+            # Create master (최고 관리자)
+            master = User(
+                id="master-001",
+                email="master@test.com",
+                name="마스터 관리자",
+                role="master",
+                hashed_password=auth_service.hash_password("password123"),
+                is_active=True,
+            )
+            db.add(master)
+            db.flush()
+
+            # Create admin (관리자)
+            admin = User(
+                id="admin-001",
+                email="admin@test.com",
+                name="테스트 관리자",
+                role="admin",
+                hashed_password=auth_service.hash_password("password123"),
+                is_active=True,
+            )
+            db.add(admin)
+            db.flush()
+
             # Create teacher
             teacher = User(
                 id="teacher-001",
@@ -850,14 +874,38 @@ async def root() -> dict[str, str]:
     return {"message": "Math Test API", "docs": "/docs"}
 
 
-# Exception handler for debugging
+# Exception handler - 프로덕션에서는 상세 에러 정보 숨김
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
+    # 서버 로그에는 상세 정보 기록 (디버깅용)
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
-    return JSONResponse(
-        status_code=500,
-        content={"detail": str(exc)},
-    )
+
+    # 클라이언트 응답에는 환경에 따라 다르게 처리
+    if settings.ENV == "development":
+        # 개발 환경: 디버깅을 위해 상세 에러 표시
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "error": {
+                    "code": "INTERNAL_SERVER_ERROR",
+                    "message": str(exc),
+                    "type": type(exc).__name__,
+                }
+            },
+        )
+    else:
+        # 프로덕션/스테이징: 보안을 위해 일반적인 에러 메시지만 표시
+        return JSONResponse(
+            status_code=500,
+            content={
+                "success": False,
+                "error": {
+                    "code": "INTERNAL_SERVER_ERROR",
+                    "message": "서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+                }
+            },
+        )
 
 
 # API v1 Router

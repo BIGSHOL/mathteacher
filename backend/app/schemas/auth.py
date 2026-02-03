@@ -128,6 +128,14 @@ class RegisterTeacherRequest(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
 
 
+class RegisterAdminRequest(BaseModel):
+    """관리자 등록 요청 (마스터 전용)."""
+
+    email: EmailStr
+    password: str = Field(..., min_length=6, max_length=100)
+    name: str = Field(..., min_length=1, max_length=100)
+
+
 class RegisterResponse(BaseModel):
     """회원가입 응답."""
 
