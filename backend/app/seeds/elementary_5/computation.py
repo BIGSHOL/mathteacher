@@ -1,4 +1,4 @@
-"""초등 5학년 연산 문제 - 2022 개정 교육과정 기준."""
+"""초등 5학년 연산 문제 - 2022 개정 교육과정 기준 (1,2,4,5,8,10단원)."""
 
 from .._base import mc, concept, test
 
@@ -12,7 +12,7 @@ def get_computation_data() -> dict:
             grade="elementary_5",
             category="computation",
             part="calc",
-            description="연산 우선순위(괄호→곱셈/나눗셈→덧셈/뺄셈)를 이해하고 혼합 계산을 수행합니다.",
+            description="연산 우선순위(괄호→곱셈/나눗셈→덧셈/뺄셈)를 이해하고 좌결합성을 적용하여 혼합 계산을 정확히 수행합니다.",
         ),
         concept(
             id="concept-e5-divisor",
@@ -20,7 +20,7 @@ def get_computation_data() -> dict:
             grade="elementary_5",
             category="computation",
             part="calc",
-            description="약수와 배수의 정의, 최대공약수(GCD), 최소공배수(LCM)를 구하고 활용합니다.",
+            description="약수와 배수의 정의를 이해하고 최대공약수(GCD)와 최소공배수(LCM)를 거꾸로 나눗셈으로 구합니다.",
         ),
         concept(
             id="concept-e5-reduce",
@@ -28,7 +28,7 @@ def get_computation_data() -> dict:
             grade="elementary_5",
             category="computation",
             part="calc",
-            description="분수의 기본 성질을 이용하여 약분과 통분을 수행하고 기약분수를 만듭니다.",
+            description="분수의 기본 성질을 이용하여 약분으로 기약분수를 만들고 최소공배수로 효율적으로 통분합니다.",
         ),
         concept(
             id="concept-e5-frac-add",
@@ -36,7 +36,7 @@ def get_computation_data() -> dict:
             grade="elementary_5",
             category="computation",
             part="calc",
-            description="이분모 분수의 덧셈과 뺄셈을 통분을 통해 계산하고 대분수 연산을 수행합니다.",
+            description="이분모 분수를 통분하여 덧셈과 뺄셈을 수행하며, 대분수 뺄셈 시 받아내림을 정확히 처리합니다.",
         ),
         concept(
             id="concept-e5-frac-mul",
@@ -44,7 +44,7 @@ def get_computation_data() -> dict:
             grade="elementary_5",
             category="computation",
             part="calc",
-            description="분자끼리, 분모끼리 곱하여 분수의 곱셈을 수행하고 대분수는 가분수로 변환합니다.",
+            description="분자끼리, 분모끼리 곱하여 분수의 곱셈을 수행하고, 대분수는 반드시 가분수로 변환한 후 계산합니다.",
         ),
         concept(
             id="concept-e5-dec-mul",
@@ -52,12 +52,12 @@ def get_computation_data() -> dict:
             grade="elementary_5",
             category="computation",
             part="calc",
-            description="소수점 이동 원리를 이해하고 소수의 곱셈을 수행하며 결과를 어림합니다.",
+            description="소수점 아래 자릿수의 합만큼 이동하는 원리를 이해하고 어림으로 결과를 검증합니다.",
         ),
     ]
 
     questions = [
-        # 1. 자연수의 혼합 계산 (3문제, 난이도 2~4)
+        # 1단원: 자연수의 혼합 계산 (3문제, 난이도 2-4)
         mc(
             id="e5-comp-001",
             concept_id="concept-e5-mixed-calc",
@@ -67,7 +67,7 @@ def get_computation_data() -> dict:
             content="다음 식을 계산하시오.\n\n5 + 3 × 4",
             options=["12", "17", "20", "32"],
             correct="B",
-            explanation="곱셈을 먼저 계산합니다. 5 + (3 × 4) = 5 + 12 = 17입니다.",
+            explanation="곱셈을 먼저 계산합니다. 5 + (3 × 4) = 5 + 12 = 17입니다. 오답 A(12)는 왼쪽부터 순서대로 계산한 경우입니다.",
             points=10,
         ),
         mc(
@@ -76,10 +76,10 @@ def get_computation_data() -> dict:
             category="computation",
             part="calc",
             difficulty=3,
-            content="다음 식을 계산하시오.\n\n(8 + 4) × 3 - 6",
-            options=["24", "30", "36", "42"],
-            correct="B",
-            explanation="괄호 안을 먼저: (8 + 4) = 12, 곱셈: 12 × 3 = 36, 뺄셈: 36 - 6 = 30입니다.",
+            content="다음 식을 계산하시오.\n\n5000 - (500 × 3 + 1000)",
+            options=["1500", "2000", "2500", "3500"],
+            correct="C",
+            explanation="괄호 안 먼저: 500 × 3 = 1500, 1500 + 1000 = 2500. 마지막: 5000 - 2500 = 2500입니다.",
             points=10,
         ),
         mc(
@@ -91,21 +91,21 @@ def get_computation_data() -> dict:
             content="다음 식을 계산하시오.\n\n72 ÷ 4 × 3",
             options=["6", "18", "54", "216"],
             correct="C",
-            explanation="좌결합성: 왼쪽부터 계산. 72 ÷ 4 = 18, 18 × 3 = 54입니다. (72 ÷ 12 = 6은 오답)",
+            explanation="좌결합성: 왼쪽부터 계산. 72 ÷ 4 = 18, 18 × 3 = 54입니다. 오답 A(6)는 72 ÷ (4 × 3) = 72 ÷ 12 = 6으로 잘못 계산한 경우입니다.",
             points=10,
         ),
 
-        # 2. 약수와 배수 (3문제, 난이도 3~6)
+        # 2단원: 약수와 배수 (3문제, 난이도 3-5)
         mc(
             id="e5-comp-004",
             concept_id="concept-e5-divisor",
             category="computation",
             part="calc",
             difficulty=3,
-            content="12의 약수는 모두 몇 개입니까?",
-            options=["4개", "5개", "6개", "7개"],
+            content="24의 약수는 모두 몇 개입니까?",
+            options=["6개", "7개", "8개", "9개"],
             correct="C",
-            explanation="12의 약수는 1, 2, 3, 4, 6, 12로 총 6개입니다. (1과 자기 자신 포함 주의)",
+            explanation="24의 약수는 1, 2, 3, 4, 6, 8, 12, 24로 총 8개입니다. 1과 자기 자신(24)을 반드시 포함해야 합니다.",
             points=10,
         ),
         mc(
@@ -113,11 +113,11 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-divisor",
             category="computation",
             part="calc",
-            difficulty=5,
+            difficulty=4,
             content="12와 18의 최대공약수(GCD)를 구하시오.",
-            options=["3", "6", "9", "18"],
-            correct="B",
-            explanation="12의 약수: 1,2,3,4,6,12 / 18의 약수: 1,2,3,6,9,18 / 공약수 중 가장 큰 수는 6입니다.",
+            options=["2", "3", "6", "9"],
+            correct="C",
+            explanation="거꾸로 나눗셈: 2)12 18 → 3)6 9 → 2 3. GCD = 2 × 3 = 6입니다. 12의 약수: 1,2,3,4,6,12 / 18의 약수: 1,2,3,6,9,18 / 공약수 중 최댓값은 6입니다.",
             points=10,
         ),
         mc(
@@ -125,25 +125,25 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-divisor",
             category="computation",
             part="calc",
-            difficulty=6,
+            difficulty=5,
             content="4와 6의 최소공배수(LCM)를 구하시오.",
             options=["10", "12", "18", "24"],
             correct="B",
-            explanation="4의 배수: 4,8,12,16,... / 6의 배수: 6,12,18,... / 공배수 중 가장 작은 수는 12입니다.",
+            explanation="거꾸로 나눗셈: 2)4 6 → 2 3 (서로소). LCM = 2 × 2 × 3 = 12입니다. 또는 4의 배수: 4,8,12,16,... / 6의 배수: 6,12,18,... / 공배수 중 최솟값은 12입니다.",
             points=10,
         ),
 
-        # 3. 약분과 통분 (3문제, 난이도 4~7)
+        # 4단원: 약분과 통분 (3문제, 난이도 3-5)
         mc(
             id="e5-comp-007",
             concept_id="concept-e5-reduce",
             category="computation",
             part="calc",
-            difficulty=4,
-            content="6/8을 기약분수로 나타내시오.",
-            options=["2/3", "3/4", "4/5", "5/6"],
+            difficulty=3,
+            content="8/12를 기약분수로 나타내시오.",
+            options=["1/2", "2/3", "3/4", "4/6"],
             correct="B",
-            explanation="분자와 분모를 최대공약수 2로 나눕니다. 6÷2/8÷2 = 3/4입니다.",
+            explanation="분자와 분모의 최대공약수는 4입니다. (8÷4)/(12÷4) = 2/3입니다. 오답 D(4/6)는 2로만 약분한 경우로 더 약분이 가능합니다.",
             points=10,
         ),
         mc(
@@ -151,11 +151,11 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-reduce",
             category="computation",
             part="calc",
-            difficulty=5,
+            difficulty=4,
             content="1/2와 1/3을 통분하면 분모는?",
             options=["5", "6", "8", "12"],
             correct="B",
-            explanation="2와 3의 최소공배수는 6입니다. 1/2 = 3/6, 1/3 = 2/6으로 통분합니다.",
+            explanation="2와 3의 최소공배수는 6입니다. 1/2 = 3/6, 1/3 = 2/6으로 통분합니다. (분자도 같은 수로 곱해야 함)",
             points=10,
         ),
         mc(
@@ -163,25 +163,25 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-reduce",
             category="computation",
             part="calc",
-            difficulty=7,
+            difficulty=5,
             content="15/20을 약분한 후, 다시 분모를 12로 통분하면?",
             options=["6/12", "8/12", "9/12", "10/12"],
             correct="C",
-            explanation="15/20 = 3/4 (약분), 3/4 = 9/12 (통분: 분자도 3배)입니다.",
+            explanation="1단계 약분: 15/20 = 3/4 (÷5). 2단계 통분: 3/4 = 9/12 (×3). 분자도 3배 해야 함에 주의하세요.",
             points=10,
         ),
 
-        # 4. 분수의 덧셈과 뺄셈 (3문제, 난이도 5~8)
+        # 5단원: 분수의 덧셈과 뺄셈 (3문제, 난이도 4-6)
         mc(
             id="e5-comp-010",
             concept_id="concept-e5-frac-add",
             category="computation",
             part="calc",
-            difficulty=5,
+            difficulty=4,
             content="1/2 + 1/3을 계산하시오.",
             options=["2/5", "3/6", "5/6", "1"],
             correct="C",
-            explanation="통분: 1/2 = 3/6, 1/3 = 2/6. 따라서 3/6 + 2/6 = 5/6입니다. (1/2+1/3≠2/5 주의)",
+            explanation="통분: 1/2 = 3/6, 1/3 = 2/6. 따라서 3/6 + 2/6 = 5/6입니다. 오답 A(2/5)는 분자끼리, 분모끼리 더한 대표적 오개념입니다. ★★★★★",
             points=10,
         ),
         mc(
@@ -189,11 +189,11 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-frac-add",
             category="computation",
             part="calc",
-            difficulty=7,
+            difficulty=5,
             content="3/4 - 1/3을 계산하시오.",
             options=["2/1", "5/12", "7/12", "11/12"],
-            correct="C",
-            explanation="통분: 3/4 = 9/12, 1/3 = 4/12. 따라서 9/12 - 4/12 = 5/12입니다.",
+            correct="B",
+            explanation="통분: 3/4 = 9/12, 1/3 = 4/12. 따라서 9/12 - 4/12 = 5/12입니다. 오답 C는 통분 후 분자 연산(9-4)을 누락한 경우입니다. ★★★",
             points=10,
         ),
         mc(
@@ -201,25 +201,25 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-frac-add",
             category="computation",
             part="calc",
-            difficulty=8,
+            difficulty=6,
             content="3(1/4) - 1(2/3)을 계산하시오. (대분수 뺄셈)",
-            options=["1(7/12)", "1(5/12)", "2(7/12)", "2(1/12)"],
+            options=["1(7/12)", "1(5/12)", "2(7/12)", "2(5/12)"],
             correct="A",
-            explanation="통분: 3(3/12) - 1(8/12) = 2(15/12) - 1(8/12) = 1(7/12). (받아내림: 3에서 1을 빌려 12/12)",
+            explanation="통분: 3(3/12) - 1(8/12). 3/12 < 8/12이므로 받아내림: 3에서 1을 빌려 2(15/12)로 만듭니다. 2(15/12) - 1(8/12) = 1(7/12)입니다.",
             points=10,
         ),
 
-        # 5. 분수의 곱셈 (3문제, 난이도 6~9)
+        # 8단원: 분수의 곱셈 (3문제, 난이도 4-6)
         mc(
             id="e5-comp-013",
             concept_id="concept-e5-frac-mul",
             category="computation",
             part="calc",
-            difficulty=6,
+            difficulty=4,
             content="2/3 × 3/4를 계산하시오.",
             options=["1/2", "5/7", "6/12", "9/12"],
             correct="A",
-            explanation="(2×3)/(3×4) = 6/12 = 1/2입니다. (중간에 약분하면 더 간단)",
+            explanation="(2×3)/(3×4) = 6/12 = 1/2입니다. 중간에 3끼리 약분하면 더 간단하게 계산할 수 있습니다.",
             points=10,
         ),
         mc(
@@ -227,11 +227,11 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-frac-mul",
             category="computation",
             part="calc",
-            difficulty=8,
-            content="3/4 × 2를 계산하시오.",
-            options=["3/2", "6/4", "3/8", "5/4"],
-            correct="A",
-            explanation="3/4 × 2/1 = 6/4 = 3/2입니다. (기약분수로 나타냄)",
+            difficulty=5,
+            content="2(1/2) × 3을 계산하시오. (대분수는 가분수로 변환)",
+            options=["6(1/2)", "7", "7(1/2)", "8"],
+            correct="C",
+            explanation="2(1/2) = 5/2로 변환. (5/2) × 3 = 15/2 = 7(1/2)입니다. 오답 A는 자연수와 분수를 따로 곱한 오개념입니다. ★★★★",
             points=10,
         ),
         mc(
@@ -239,25 +239,25 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-frac-mul",
             category="computation",
             part="calc",
-            difficulty=9,
-            content="1(1/2) × 2(2/3)을 계산하시오. (대분수는 가분수로 변환)",
+            difficulty=6,
+            content="1(1/2) × 2(2/3)을 계산하시오.",
             options=["2", "3", "4", "5"],
             correct="C",
-            explanation="1(1/2) = 3/2, 2(2/3) = 8/3. (3/2) × (8/3) = 24/6 = 4입니다.",
+            explanation="1(1/2) = 3/2, 2(2/3) = 8/3으로 변환. (3/2) × (8/3) = 24/6 = 4입니다. 대분수는 반드시 가분수로 변환한 후 계산합니다.",
             points=10,
         ),
 
-        # 6. 소수의 곱셈 (3문제, 난이도 7~10)
+        # 10단원: 소수의 곱셈 (3문제, 난이도 4-6)
         mc(
             id="e5-comp-016",
             concept_id="concept-e5-dec-mul",
             category="computation",
             part="calc",
-            difficulty=7,
+            difficulty=4,
             content="1.2 × 3을 계산하시오.",
-            options=["3.6", "4.2", "36", "42"],
-            correct="A",
-            explanation="12 × 3 = 36, 소수점 1자리 → 3.6입니다.",
+            options=["0.36", "3.6", "36", "42"],
+            correct="B",
+            explanation="12 × 3 = 36, 소수점 1자리 → 3.6입니다. 어림: 1 × 3 = 3 정도이므로 3.6이 적절합니다.",
             points=10,
         ),
         mc(
@@ -265,11 +265,11 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-dec-mul",
             category="computation",
             part="calc",
-            difficulty=9,
+            difficulty=5,
             content="0.2 × 0.3을 계산하시오.",
             options=["0.06", "0.6", "6", "60"],
             correct="A",
-            explanation="2 × 3 = 6, 소수점 2자리(0.1×2) → 0.06입니다. (0 처리 주의)",
+            explanation="2 × 3 = 6, 소수점 2자리(0.1×2) → 0.06입니다. 0 처리 주의: 6 앞에 0을 붙여 0.06으로 표기합니다. ★★",
             points=10,
         ),
         mc(
@@ -277,11 +277,11 @@ def get_computation_data() -> dict:
             concept_id="concept-e5-dec-mul",
             category="computation",
             part="calc",
-            difficulty=10,
+            difficulty=6,
             content="2.5 × 1.2를 계산하시오. (어림: 2×1=2, 3×2=6 사이)",
             options=["2.0", "3.0", "3.7", "30"],
             correct="B",
-            explanation="25 × 12 = 300, 소수점 2자리 → 3.00 = 3.0입니다. (어림으로 검증)",
+            explanation="25 × 12 = 300, 소수점 2자리 → 3.00 = 3.0입니다. 어림(2~6 사이)으로 검증하면 3.0이 타당합니다. 오답 D(30)는 소수점 위치 오류입니다. ★★",
             points=10,
         ),
     ]
@@ -290,7 +290,7 @@ def get_computation_data() -> dict:
         test(
             id="test-e5-computation",
             title="초5 연산 종합 테스트",
-            description="혼합 계산, 약수/배수, 약분/통분, 분수 덧뺄셈/곱셈, 소수 곱셈",
+            description="혼합 계산, 약수/배수, 약분/통분, 분수 덧뺄셈/곱셈, 소수 곱셈 (1,2,4,5,8,10단원)",
             grade="elementary_5",
             concept_ids=[
                 "concept-e5-mixed-calc",
