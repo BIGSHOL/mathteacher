@@ -733,6 +733,119 @@ const conc: QuestionTemplate[] = [
       return `${a} ÷ ${b} = ${ans}`
     },
   },
+
+  // ── 추가: 원기둥·원뿔·구 — 회전체 (E6-GEO-05) ──
+  {
+    id: 'e6-conc-11a',
+    grade: G,
+    category: 'concept',
+    level: 9,
+    part: 'geo',
+    conceptId: 'E6-GEO-05',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '직사각형을 한 변을 축으로 한 바퀴 돌리면 어떤 입체도형이 됩니까?',
+        '직각삼각형을 직각을 낀 한 변을 축으로 한 바퀴 돌리면 어떤 입체도형이 됩니까?',
+        '반원을 지름을 축으로 한 바퀴 돌리면 어떤 입체도형이 됩니까?',
+        '원을 지름을 축으로 한 바퀴 돌리면 어떤 입체도형이 됩니까?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) =>
+      ['원기둥', '원뿔', '구', '구'][variant]!,
+    distractorFns: [
+      ({ variant }) => ['원뿔', '원기둥', '원기둥', '원기둥'][variant]!,
+      ({ variant }) => ['구', '구', '원뿔', '원뿔'][variant]!,
+      ({ variant }) => ['원', '원', '원기둥', '타원체'][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '직사각형을 한 변을 축으로 회전하면 원기둥이 됩니다.',
+        '직각삼각형을 직각을 낀 한 변을 축으로 회전하면 원뿔이 됩니다.',
+        '반원을 지름을 축으로 회전하면 구가 됩니다.',
+        '원을 지름을 축으로 회전하면 구가 됩니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
+  {
+    id: 'e6-conc-11b',
+    grade: G,
+    category: 'concept',
+    level: 9,
+    part: 'geo',
+    conceptId: 'E6-GEO-05',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '원기둥의 밑면은 몇 개입니까?',
+        '원뿔의 꼭짓점은 몇 개입니까?',
+        '원기둥의 꼭짓점은 몇 개입니까?',
+        '원뿔의 밑면은 몇 개입니까?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => [2, 1, 0, 1][variant]!,
+    distractorFns: [
+      ({ variant }) => [1, 2, 1, 2][variant]!,
+      ({ variant }) => [3, 0, 2, 0][variant]!,
+      ({ variant }) => [0, 3, 3, 3][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '원기둥은 위와 아래에 합동인 두 원(밑면)이 있으므로 밑면은 2개입니다.',
+        '원뿔은 뾰족한 부분에 꼭짓점이 1개 있습니다.',
+        '원기둥은 모서리만 있고 꼭짓점은 0개입니다.',
+        '원뿔은 아래에 원 모양의 밑면이 1개 있습니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
+
+  // ── 추가: 쌓기나무와 투영도 (E6-GEO-06) ──
+  {
+    id: 'e6-conc-12a',
+    grade: G,
+    category: 'concept',
+    level: 9,
+    part: 'geo',
+    conceptId: 'E6-GEO-06',
+    pattern: '',
+    paramRanges: { a: [2, 5] },
+    contentFn: ({ a }) =>
+      `쌓기나무 ${a}개를 한 줄로 나란히 놓았습니다. 위에서 본 모양에서 보이는 칸 수는?`,
+    answerFn: ({ a }) => a,
+    distractorFns: [
+      () => 1,
+      ({ a }) => a + 1,
+      ({ a }) => a - 1,
+    ],
+    explanationFn: ({ a }, ans) =>
+      `${a}개를 한 줄로 나란히 놓으면 위에서 보았을 때 가로로 ${ans}칸이 보입니다.`,
+  },
+  {
+    id: 'e6-conc-12b',
+    grade: G,
+    category: 'concept',
+    level: 9,
+    part: 'geo',
+    conceptId: 'E6-GEO-06',
+    pattern: '',
+    paramRanges: { a: [2, 4] },
+    contentFn: ({ a }) =>
+      `쌓기나무 ${a}개를 위로 쌓았습니다. 앞에서 본 모양은 세로로 몇 칸입니까?`,
+    answerFn: ({ a }) => a,
+    distractorFns: [
+      () => 1,
+      ({ a }) => a + 1,
+      ({ a }) => a * 2,
+    ],
+    explanationFn: ({ a }, ans) =>
+      `${a}개를 위로 쌓으면 앞에서 보았을 때 세로로 ${ans}칸이 보입니다.`,
+  },
 ]
 
 // Helper: gcd for template closures

@@ -1327,6 +1327,97 @@ const conc: QuestionTemplate[] = [
       return rules[variant]!
     },
   },
+
+  // ── 추가: 다각형의 둘레 (E5-GEO-01) ──
+  {
+    id: 'e5-conc-12a',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'geo',
+    conceptId: 'E5-GEO-01',
+    pattern: '',
+    paramRanges: { a: [3, 8], n: [3, 6] },
+    contentFn: ({ a, n }) => {
+      const names = ['', '', '', '정삼각형', '정사각형', '정오각형', '정육각형']
+      return `한 변의 길이가 ${a}cm인 ${names[n]!}의 둘레는 몇 cm입니까?`
+    },
+    answerFn: ({ a, n }) => a * n,
+    distractorFns: [
+      ({ a, n }) => a * (n - 1),
+      ({ a, n }) => a * (n + 1),
+      ({ a, n }) => a + n,
+    ],
+    explanationFn: ({ a, n }, ans) => {
+      const names = ['', '', '', '정삼각형', '정사각형', '정오각형', '정육각형']
+      return `${names[n]!}은 ${n}개의 변의 길이가 모두 같습니다.\n둘레 = 한 변 × 변의 수 = ${a} × ${n} = ${ans}cm`
+    },
+  },
+  {
+    id: 'e5-conc-12b',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'geo',
+    conceptId: 'E5-GEO-01',
+    pattern: '',
+    paramRanges: { a: [3, 15], b: [3, 15] },
+    contentFn: ({ a, b }) =>
+      `가로가 ${a}cm, 세로가 ${b}cm인 직사각형의 둘레는 몇 cm입니까?`,
+    answerFn: ({ a, b }) => (a + b) * 2,
+    distractorFns: [
+      ({ a, b }) => a + b,
+      ({ a, b }) => a * b,
+      ({ a, b }) => (a + b) * 2 + 2,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `직사각형의 둘레 = (가로 + 세로) × 2 = (${a} + ${b}) × 2 = ${a + b} × 2 = ${ans}cm`,
+  },
+
+  // ── 추가: 합동 (E5-GEO-05) ──
+  {
+    id: 'e5-conc-13a',
+    grade: G,
+    category: 'concept',
+    level: 7,
+    part: 'geo',
+    conceptId: 'E5-GEO-05',
+    pattern: '',
+    paramRanges: { a: [3, 12], b: [4, 10], c: [5, 15] },
+    constraints: ({ a, b, c }) =>
+      a !== b && b !== c && a !== c && a + b > c && a + c > b && b + c > a,
+    contentFn: ({ a, b, c }) =>
+      `삼각형 ABC와 삼각형 DEF가 합동입니다.\nAB = ${a}cm, BC = ${b}cm, CA = ${c}cm일 때, DE의 길이는 몇 cm입니까?`,
+    answerFn: ({ a }) => a,
+    distractorFns: [
+      ({ b }) => b,
+      ({ c }) => c,
+      ({ a, b }) => a + b,
+    ],
+    explanationFn: ({ a }) =>
+      `합동인 두 도형에서 대응변의 길이는 같습니다.\nAB와 DE는 대응변이므로 DE = AB = ${a}cm입니다.`,
+  },
+  {
+    id: 'e5-conc-13b',
+    grade: G,
+    category: 'concept',
+    level: 7,
+    part: 'geo',
+    conceptId: 'E5-GEO-05',
+    pattern: '',
+    paramRanges: { a: [40, 80], b: [30, 70] },
+    constraints: ({ a, b }) => a + b < 180,
+    contentFn: ({ a, b }) =>
+      `삼각형 ABC와 삼각형 DEF가 합동입니다.\n∠A = ${a}°, ∠B = ${b}°일 때, ∠D는 몇 도입니까?`,
+    answerFn: ({ a }) => a,
+    distractorFns: [
+      ({ b }) => b,
+      ({ a, b }) => 180 - a - b,
+      ({ a, b }) => a + b,
+    ],
+    explanationFn: ({ a }) =>
+      `합동인 두 도형에서 대응각의 크기는 같습니다.\n∠A와 ∠D는 대응각이므로 ∠D = ∠A = ${a}°입니다.`,
+  },
 ]
 
 export const elementary5Templates: QuestionTemplate[] = [...comp, ...conc]

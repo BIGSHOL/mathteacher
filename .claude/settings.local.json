@@ -55,7 +55,10 @@
       "Bash(netstat:*)",
       "Bash(git remote add:*)",
       "Bash(py:*)",
-      "Bash(docker compose:*)"
+      "Bash(docker compose:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker ps:*)",
+      "Read(//f//**)"
     ],
     "additionalDirectories": [
       "d:\\ijw-calander\\components\\Timetable\\English",

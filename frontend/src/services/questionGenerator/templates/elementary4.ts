@@ -1092,6 +1092,371 @@ const conc: QuestionTemplate[] = [
     explanationFn: ({ n }, ans) =>
       `n각형의 대각선 개수 = n(n-3) ÷ 2\n${n} × ${n - 3} ÷ 2 = ${n * (n - 3)} ÷ 2 = ${ans}개`,
   },
+
+  // ── 추가: 억 단위 이해 (E4-NUM-02) ──
+  {
+    id: 'e4-conc-11a',
+    grade: G,
+    category: 'concept',
+    level: 2,
+    part: 'calc',
+    conceptId: 'E4-NUM-02',
+    pattern: '',
+    paramRanges: { a: [1, 9], b: [1, 9] },
+    contentFn: ({ a, b }) =>
+      `${a}억 ${b}000만을 숫자로 쓰면?`,
+    answerFn: ({ a, b }) => a * 100000000 + b * 10000000,
+    distractorFns: [
+      ({ a, b }) => a * 10000000 + b * 1000000,
+      ({ a, b }) => a * 1000000000 + b * 100000000,
+      ({ a, b }) => b * 100000000 + a * 10000000,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `${a}억 = ${a * 100000000}, ${b}000만 = ${b * 10000000}\n${a}억 ${b}000만 = ${ans}`,
+  },
+  {
+    id: 'e4-conc-11b',
+    grade: G,
+    category: 'concept',
+    level: 2,
+    part: 'calc',
+    conceptId: 'E4-NUM-02',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '1억은 만이 몇 개인 수입니까?',
+        '1억은 1000만이 몇 개인 수입니까?',
+        '5억은 만이 몇 개인 수입니까?',
+        '1억은 100만이 몇 개인 수입니까?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => [10000, 10, 50000, 100][variant]!,
+    distractorFns: [
+      ({ variant }) => [1000, 100, 5000, 10][variant]!,
+      ({ variant }) => [100000, 1, 500000, 1000][variant]!,
+      ({ variant }) => [10, 1000, 500, 10000][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '1억 = 10000만이므로 만이 10000개입니다.',
+        '1억 = 10 × 1000만이므로 1000만이 10개입니다.',
+        '5억 = 50000만이므로 만이 50000개입니다.',
+        '1억 = 100 × 100만이므로 100만이 100개입니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
+
+  // ── 추가: 조 단위 이해 (E4-NUM-03) ──
+  {
+    id: 'e4-conc-12a',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'calc',
+    conceptId: 'E4-NUM-03',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '1조는 몇 억입니까?',
+        '1조는 1000억이 몇 개인 수입니까?',
+        '3조는 몇 억입니까?',
+        '5조는 몇 억입니까?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => [10000, 10, 30000, 50000][variant]!,
+    distractorFns: [
+      ({ variant }) => [1000, 100, 3000, 5000][variant]!,
+      ({ variant }) => [100000, 1, 300000, 500000][variant]!,
+      ({ variant }) => [100, 1000, 300, 500][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '1조 = 10000억이므로 억이 10000개입니다.',
+        '1조 = 10 × 1000억이므로 1000억이 10개입니다.',
+        '3조 = 30000억이므로 억이 30000개입니다.',
+        '5조 = 50000억이므로 억이 50000개입니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
+  {
+    id: 'e4-conc-12b',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'calc',
+    conceptId: 'E4-NUM-03',
+    pattern: '',
+    paramRanges: { a: [1, 9], b: [1, 9] },
+    contentFn: ({ a, b }) =>
+      `${a}조 ${b}000억은 모두 몇 억입니까?`,
+    answerFn: ({ a, b }) => a * 10000 + b * 1000,
+    distractorFns: [
+      ({ a, b }) => a * 1000 + b * 100,
+      ({ a, b }) => a * 10000 + b,
+      ({ a, b }) => a * 100000 + b * 10000,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `${a}조 = ${a * 10000}억, ${b}000억 = ${b * 1000}억\n${a}조 ${b}000억 = ${a * 10000} + ${b * 1000} = ${ans}억`,
+  },
+
+  // ── 추가: 큰 수 비교 (E4-NUM-04) ──
+  {
+    id: 'e4-conc-13a',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'calc',
+    conceptId: 'E4-NUM-04',
+    pattern: '',
+    paramRanges: { a: [2, 8], b: [4, 7] },
+    contentFn: ({ a, b }) => `${a}${'0'.repeat(b)}은 몇 자리 수입니까?`,
+    answerFn: ({ b }) => b + 1,
+    distractorFns: [
+      ({ b }) => b,
+      ({ b }) => b + 2,
+      ({ b }) => b - 1,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `${a} 뒤에 0이 ${b}개 있으므로 총 ${ans}자리 수입니다.\n큰 수의 크기를 비교할 때는 먼저 자릿수를 비교합니다.`,
+  },
+  {
+    id: 'e4-conc-13b',
+    grade: G,
+    category: 'concept',
+    level: 3,
+    part: 'calc',
+    conceptId: 'E4-NUM-04',
+    pattern: '',
+    paramRanges: { a: [1, 9], b: [1, 9], c: [0, 9], d: [0, 9] },
+    constraints: ({ a, b }) => a !== b,
+    contentFn: ({ a, b, c, d }) =>
+      `${a}${c}${d}5과 ${b}${c}${d}5 중 더 큰 수는?`,
+    answerFn: ({ a, b, c, d }) =>
+      Math.max(a * 1000 + c * 100 + d * 10 + 5, b * 1000 + c * 100 + d * 10 + 5),
+    distractorFns: [
+      ({ a, b, c, d }) =>
+        Math.min(a * 1000 + c * 100 + d * 10 + 5, b * 1000 + c * 100 + d * 10 + 5),
+      ({ a, b, c, d }) => a * 1000 + b * 100 + c * 10 + d,
+      ({ a, b }) => (a + b) * 1000,
+    ],
+    explanationFn: ({ a, b, c, d }) => {
+      const n1 = a * 1000 + c * 100 + d * 10 + 5
+      const n2 = b * 1000 + c * 100 + d * 10 + 5
+      return `같은 자릿수의 두 수는 높은 자리부터 비교합니다.\n천의 자리: ${a} vs ${b} → ${a > b ? a : b}이 더 크므로 ${Math.max(n1, n2)}이 더 큽니다.`
+    },
+  },
+
+  // ── 추가: 삼각형 분류 — 변 (E4-GEO-04) ──
+  {
+    id: 'e4-conc-14a',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'geo',
+    conceptId: 'E4-GEO-04',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '세 변의 길이가 5cm, 5cm, 3cm인 삼각형은 무엇입니까?',
+        '세 변의 길이가 4cm, 4cm, 4cm인 삼각형은 무엇입니까?',
+        '두 변의 길이가 같은 삼각형을 무엇이라고 합니까?',
+        '세 변의 길이가 모두 같은 삼각형을 무엇이라고 합니까?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) =>
+      ['이등변삼각형', '정삼각형', '이등변삼각형', '정삼각형'][variant]!,
+    distractorFns: [
+      ({ variant }) =>
+        ['정삼각형', '이등변삼각형', '정삼각형', '이등변삼각형'][variant]!,
+      ({ variant }) =>
+        ['직각삼각형', '직각삼각형', '예각삼각형', '직각삼각형'][variant]!,
+      ({ variant }) =>
+        ['둔각삼각형', '둔각삼각형', '둔각삼각형', '예각삼각형'][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '두 변의 길이가 5cm로 같으므로 이등변삼각형입니다.',
+        '세 변의 길이가 모두 4cm로 같으므로 정삼각형입니다.',
+        '두 변의 길이가 같은 삼각형을 이등변삼각형이라고 합니다.',
+        '세 변의 길이가 모두 같은 삼각형을 정삼각형이라고 합니다.\n정삼각형은 이등변삼각형이기도 합니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
+  {
+    id: 'e4-conc-14b',
+    grade: G,
+    category: 'concept',
+    level: 6,
+    part: 'geo',
+    conceptId: 'E4-GEO-04',
+    pattern: '',
+    paramRanges: { a: [30, 70] },
+    contentFn: ({ a }) =>
+      `이등변삼각형의 두 밑각이 각각 ${a}°입니다. 꼭지각은 몇 도입니까?`,
+    answerFn: ({ a }) => 180 - 2 * a,
+    distractorFns: [
+      ({ a }) => a,
+      ({ a }) => 180 - a,
+      ({ a }) => 360 - 2 * a,
+    ],
+    explanationFn: ({ a }, ans) =>
+      `삼각형의 세 각의 합 = 180°\n꼭지각 = 180° - ${a}° - ${a}° = 180° - ${2 * a}° = ${ans}°`,
+  },
+
+  // ── 추가: 삼각형 분류 — 각 (E4-GEO-05) ──
+  {
+    id: 'e4-conc-15a',
+    grade: G,
+    category: 'concept',
+    level: 7,
+    part: 'geo',
+    conceptId: 'E4-GEO-05',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '세 각이 60°, 70°, 50°인 삼각형은 무엇삼각형입니까?',
+        '세 각이 30°, 60°, 90°인 삼각형은 무엇삼각형입니까?',
+        '세 각이 20°, 30°, 130°인 삼각형은 무엇삼각형입니까?',
+        '세 각이 모두 예각인 삼각형은 무엇삼각형입니까?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) =>
+      ['예각삼각형', '직각삼각형', '둔각삼각형', '예각삼각형'][variant]!,
+    distractorFns: [
+      ({ variant }) =>
+        ['직각삼각형', '예각삼각형', '예각삼각형', '직각삼각형'][variant]!,
+      ({ variant }) =>
+        ['둔각삼각형', '둔각삼각형', '직각삼각형', '둔각삼각형'][variant]!,
+      ({ variant }) =>
+        ['정삼각형', '정삼각형', '정삼각형', '정삼각형'][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '세 각(60°, 70°, 50°)이 모두 90°보다 작은 예각이므로 예각삼각형입니다.',
+        '한 각이 90°(직각)이므로 직각삼각형입니다.',
+        '한 각(130°)이 90°보다 큰 둔각이므로 둔각삼각형입니다.',
+        '세 각이 모두 예각(90°보다 작은 각)이면 예각삼각형입니다.\n주의: 한 각만 예각이라고 예각삼각형이 아닙니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
+  {
+    id: 'e4-conc-15b',
+    grade: G,
+    category: 'concept',
+    level: 7,
+    part: 'geo',
+    conceptId: 'E4-GEO-05',
+    pattern: '',
+    paramRanges: { a: [30, 80], b: [30, 80] },
+    constraints: ({ a, b }) => a + b < 180 && a + b > 90,
+    contentFn: ({ a, b }) =>
+      `삼각형의 두 각이 ${a}°, ${b}°입니다. 나머지 한 각은 몇 도입니까?`,
+    answerFn: ({ a, b }) => 180 - a - b,
+    distractorFns: [
+      ({ a, b }) => a + b,
+      ({ a, b }) => 360 - a - b,
+      ({ a }) => 180 - a,
+    ],
+    explanationFn: ({ a, b }, ans) =>
+      `삼각형의 세 각의 합 = 180°\n나머지 한 각 = 180° - ${a}° - ${b}° = ${ans}°`,
+  },
+
+  // ── 추가: 꺾은선그래프 (E4-STA-02) ──
+  {
+    id: 'e4-conc-16a',
+    grade: G,
+    category: 'concept',
+    level: 8,
+    part: 'data',
+    conceptId: 'E4-STA-02',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '시간에 따른 기온 변화를 나타내기에 가장 적합한 그래프는?',
+        '1년 동안 키의 변화를 나타내기에 가장 적합한 그래프는?',
+        '연도별 인구 변화를 나타내기에 가장 적합한 그래프는?',
+        '월별 강수량의 변화를 나타내기에 가장 적합한 그래프는?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: () => '꺾은선그래프',
+    distractorFns: [
+      () => '막대그래프',
+      () => '원그래프',
+      () => '그림그래프',
+    ],
+    explanationFn: ({ variant }) => {
+      const items = ['기온', '키', '인구', '강수량']
+      return `시간에 따른 ${items[variant]!}의 변화 추세를 나타내려면 꺾은선그래프가 가장 적합합니다.\n꺾은선그래프는 시간의 흐름에 따른 변화를 선으로 연결하여 추세를 한눈에 볼 수 있습니다.`
+    },
+  },
+  {
+    id: 'e4-conc-16b',
+    grade: G,
+    category: 'concept',
+    level: 8,
+    part: 'data',
+    conceptId: 'E4-STA-02',
+    pattern: '',
+    paramRanges: { variant: [0, 3] },
+    contentFn: ({ variant }) => {
+      const questions = [
+        '꺾은선그래프에서 물결선(≈)을 사용하는 이유는?',
+        '꺾은선그래프에서 선이 가장 가파른 구간은 무엇을 의미합니까?',
+        '꺾은선그래프에서 선이 수평인 구간은 무엇을 의미합니까?',
+        '꺾은선그래프에서 선이 오른쪽 위로 올라가면 무엇을 의미합니까?',
+      ]
+      return questions[variant]!
+    },
+    answerFn: ({ variant }) => [
+      '필요 없는 부분을 줄여 변화를 뚜렷하게 보기 위해',
+      '변화가 가장 큰 구간',
+      '변화가 없는 구간',
+      '값이 증가하고 있다',
+    ][variant]!,
+    distractorFns: [
+      ({ variant }) => [
+        '그래프를 예쁘게 꾸미기 위해',
+        '값이 가장 큰 구간',
+        '값이 0인 구간',
+        '값이 감소하고 있다',
+      ][variant]!,
+      ({ variant }) => [
+        '숫자를 생략하기 위해',
+        '변화가 가장 작은 구간',
+        '자료가 없는 구간',
+        '값이 변하지 않는다',
+      ][variant]!,
+      ({ variant }) => [
+        '눈금 간격을 넓히기 위해',
+        '값이 가장 작은 구간',
+        '측정하지 않은 구간',
+        '값이 일정하다',
+      ][variant]!,
+    ],
+    explanationFn: ({ variant }) => {
+      const explanations = [
+        '물결선(≈)은 필요 없는 부분을 줄여서 변화를 뚜렷하게 나타내기 위해 사용합니다.',
+        '선이 가파를수록 짧은 시간에 큰 변화가 있었음을 의미합니다.',
+        '선이 수평이면 그 구간에서는 값의 변화가 없었음을 의미합니다.',
+        '선이 오른쪽 위로 올라가면 시간이 지남에 따라 값이 증가하고 있음을 의미합니다.',
+      ]
+      return explanations[variant]!
+    },
+  },
 ]
 
 export const elementary4Templates: QuestionTemplate[] = [...comp, ...conc]

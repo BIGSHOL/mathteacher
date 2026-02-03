@@ -2,6 +2,7 @@
 
 초등 4~6학년: docs/work-plans/elementary-math-curriculum-guide.md 기준
 중학교 1~3학년: data/middle_school_math_concepts.md 기준
+고등학교 1학년(공통수학1): data/high1.txt + reports/math-concepts-full.md 기준
 
 각 개념은 고유 ID, 학년, 트랙(연산/개념), 파트(6대 영역), 설명, 선수관계를 포함합니다.
 """
@@ -1050,6 +1051,378 @@ MIDDLE_3_CONCEPTS = [
 
 
 # =============================================
+# 고등학교 1학년 - 공통수학1 (high_1)
+# data/high1.txt + reports/math-concepts-full.md 기준
+# =============================================
+
+HIGH_1_CONCEPTS = [
+    # ── 다항식 (ALG) ──
+    {
+        "id": "H1-ALG-01",
+        "name": "다항식 정리와 연산",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "내림차순 정리, 사칙연산, 곱셈 공식((a±b)³, (a+b+c)²)",
+        "parent_id": "M3-ALG-01",
+        "prerequisites": ["M3-ALG-01"],
+    },
+    {
+        "id": "H1-ALG-02",
+        "name": "다항식의 나눗셈",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "A=BQ+R, 조립제법(호너의 방법), deg(R)<deg(B)",
+        "parent_id": "H1-ALG-01",
+        "prerequisites": ["H1-ALG-01"],
+    },
+    {
+        "id": "H1-ALG-03",
+        "name": "나머지정리",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "P(x)를 (x-a)로 나눈 나머지 = P(a)",
+        "parent_id": "H1-ALG-02",
+        "prerequisites": ["H1-ALG-02"],
+    },
+    {
+        "id": "H1-ALG-04",
+        "name": "인수정리",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "P(a)=0이면 (x-a)는 P(x)의 인수. 고차방정식 해결의 열쇠",
+        "parent_id": "H1-ALG-03",
+        "prerequisites": ["H1-ALG-03"],
+    },
+    {
+        "id": "H1-ALG-05",
+        "name": "인수분해 (고급)",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "고차식·세제곱(a³±b³) 인수분해, 치환, 복이차식, 대칭식",
+        "parent_id": "H1-ALG-04",
+        "prerequisites": ["M3-ALG-02", "H1-ALG-04"],
+    },
+
+    # ── 방정식 (ALG) ──
+    {
+        "id": "H1-ALG-06",
+        "name": "복소수",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "i²=-1, a+bi 형태, 실수부·허수부, 복소수의 상등",
+        "parent_id": "M3-NUM-02",
+        "prerequisites": ["M3-NUM-02"],
+    },
+    {
+        "id": "H1-ALG-07",
+        "name": "복소수의 사칙연산",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "덧뺄셈·곱셈·나눗셈(켤레복소수 이용 분모 실수화)",
+        "parent_id": "H1-ALG-06",
+        "prerequisites": ["H1-ALG-06"],
+    },
+    {
+        "id": "H1-ALG-08",
+        "name": "이차방정식의 판별식",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "D=b²-4ac, D>0 서로 다른 두 실근, D=0 중근, D<0 두 허근",
+        "parent_id": "H1-ALG-06",
+        "prerequisites": ["M3-ALG-03", "H1-ALG-06"],
+    },
+    {
+        "id": "H1-ALG-09",
+        "name": "근과 계수의 관계",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "α+β=-b/a, αβ=c/a. 근을 구하지 않고 대칭식 값 계산",
+        "parent_id": "H1-ALG-08",
+        "prerequisites": ["H1-ALG-08"],
+    },
+    {
+        "id": "H1-ALG-10",
+        "name": "고차방정식",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "삼차·사차 방정식, 인수정리+조립제법으로 차수 낮추기, 상반방정식",
+        "parent_id": "H1-ALG-05",
+        "prerequisites": ["H1-ALG-05", "H1-ALG-04"],
+    },
+    {
+        "id": "H1-ALG-17",
+        "name": "연립이차방정식",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "일차+이차 연립(대입법), 이차+이차 연립(소거법)",
+        "parent_id": "H1-ALG-10",
+        "prerequisites": ["H1-ALG-10", "M2-ALG-04"],
+    },
+
+    # ── 부등식 (ALG) ──
+    {
+        "id": "H1-ALG-11",
+        "name": "이차부등식",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "ax²+bx+c>0 풀이(그래프 이용), 절대부등식(D<0)",
+        "parent_id": "M2-ALG-03",
+        "prerequisites": ["M3-FUNC-01", "M2-ALG-03"],
+    },
+    {
+        "id": "H1-ALG-12",
+        "name": "연립부등식",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "여러 부등식의 공통 해, 수직선 영역 표시",
+        "parent_id": "H1-ALG-11",
+        "prerequisites": ["H1-ALG-11"],
+    },
+    {
+        "id": "H1-ALG-13",
+        "name": "절대값 방정식·부등식",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "|ax+b|=c, |ax+b|<c, 경우 나누기",
+        "parent_id": "M2-ALG-03",
+        "prerequisites": ["M2-ALG-03"],
+    },
+
+    # ── 이차함수 (FUNC) ──
+    {
+        "id": "H1-ALG-14",
+        "name": "이차함수의 최대·최소",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "func",
+        "description": "정의역 제한 시 최대/최소, 꼭짓점과 구간 관계",
+        "parent_id": "M3-FUNC-01",
+        "prerequisites": ["M3-FUNC-01"],
+    },
+    {
+        "id": "H1-ALG-15",
+        "name": "이차함수와 이차방정식",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "func",
+        "description": "그래프와 x축의 교점 = 방정식의 근, 판별식의 기하학적 의미",
+        "parent_id": "H1-ALG-14",
+        "prerequisites": ["H1-ALG-08", "M3-FUNC-01"],
+    },
+    {
+        "id": "H1-ALG-16",
+        "name": "이차함수와 이차부등식",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "func",
+        "description": "그래프를 이용한 부등식 풀이, x축 위/아래 영역",
+        "parent_id": "H1-ALG-15",
+        "prerequisites": ["H1-ALG-11", "H1-ALG-15"],
+    },
+
+    # ── 집합과 명제 (STA) ──
+    {
+        "id": "H1-STA-01",
+        "name": "집합의 뜻과 표현",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "원소, 집합, 원소나열법, 조건제시법, ∈",
+        "parent_id": None,
+        "prerequisites": [],
+    },
+    {
+        "id": "H1-STA-02",
+        "name": "부분집합",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "부분집합, 진부분집합, 공집합, ⊂/⊃/∅",
+        "parent_id": "H1-STA-01",
+        "prerequisites": ["H1-STA-01"],
+    },
+    {
+        "id": "H1-STA-03",
+        "name": "집합의 연산",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "교집합(∩), 합집합(∪), 여집합, 차집합",
+        "parent_id": "H1-STA-01",
+        "prerequisites": ["H1-STA-01"],
+    },
+    {
+        "id": "H1-STA-04",
+        "name": "드모르간 법칙",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "(A∪B)ᶜ=Aᶜ∩Bᶜ, (A∩B)ᶜ=Aᶜ∪Bᶜ",
+        "parent_id": "H1-STA-03",
+        "prerequisites": ["H1-STA-03"],
+    },
+    {
+        "id": "H1-STA-05",
+        "name": "명제와 조건",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "참/거짓 판별, p→q, 진리집합",
+        "parent_id": "H1-STA-01",
+        "prerequisites": ["H1-STA-01"],
+    },
+    {
+        "id": "H1-STA-06",
+        "name": "역·이·대우",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "명제의 역/이/대우 관계, 대우를 이용한 증명",
+        "parent_id": "H1-STA-05",
+        "prerequisites": ["H1-STA-05"],
+    },
+    {
+        "id": "H1-STA-07",
+        "name": "필요조건·충분조건",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "p⊂q이면 p는 충분, q는 필요. 필요충분조건",
+        "parent_id": "H1-STA-05",
+        "prerequisites": ["H1-STA-05", "H1-STA-02"],
+    },
+
+    # ── 경우의 수 (STA) ──
+    {
+        "id": "H1-STA-10",
+        "name": "합의 법칙과 곱의 법칙",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "data",
+        "description": "배반사건의 합, 연속사건의 곱, 포함-배제 원리, 수형도",
+        "parent_id": "M2-STA-01",
+        "prerequisites": ["M2-STA-01"],
+    },
+    {
+        "id": "H1-STA-08",
+        "name": "순열",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "data",
+        "description": "nPr=n!/(n-r)!, 팩토리얼(n!), 0!=1",
+        "parent_id": "H1-STA-10",
+        "prerequisites": ["H1-STA-10"],
+    },
+    {
+        "id": "H1-STA-09",
+        "name": "조합",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "data",
+        "description": "nCr=n!/r!(n-r)!, nCr=nC(n-r), 파스칼 삼각형",
+        "parent_id": "H1-STA-08",
+        "prerequisites": ["H1-STA-08"],
+    },
+    {
+        "id": "H1-STA-11",
+        "name": "순열의 활용",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "data",
+        "description": "이웃하는 순열(묶음), 이웃하지 않는 순열(칸막이)",
+        "parent_id": "H1-STA-08",
+        "prerequisites": ["H1-STA-08"],
+    },
+    {
+        "id": "H1-STA-12",
+        "name": "조합의 활용",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "data",
+        "description": "직선·삼각형·사각형 개수, 분할, 평행사변형(mC2×nC2)",
+        "parent_id": "H1-STA-09",
+        "prerequisites": ["H1-STA-09"],
+    },
+
+    # ── 행렬 (ALG) ──
+    {
+        "id": "H1-ALG-18",
+        "name": "행렬의 뜻과 표현",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "수를 직사각형 배열, 성분(aᵢⱼ), m×n 행렬, 데이터 구조화",
+        "parent_id": None,
+        "prerequisites": [],
+    },
+    {
+        "id": "H1-ALG-19",
+        "name": "행렬의 덧셈·뺄셈·실수배",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "같은 위치 성분끼리 연산, 교환·결합법칙 성립, 영행렬",
+        "parent_id": "H1-ALG-18",
+        "prerequisites": ["H1-ALG-18"],
+    },
+    {
+        "id": "H1-ALG-20",
+        "name": "행렬의 곱셈",
+        "grade": "high_1",
+        "category": "computation",
+        "part": "algebra",
+        "description": "행과 열의 내적, AB≠BA(비가환성), 영인자 존재",
+        "parent_id": "H1-ALG-19",
+        "prerequisites": ["H1-ALG-19"],
+    },
+    {
+        "id": "H1-ALG-21",
+        "name": "단위행렬",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "AE=EA=A, 곱셈의 항등원, 모든 행렬과 교환 가능",
+        "parent_id": "H1-ALG-20",
+        "prerequisites": ["H1-ALG-20"],
+    },
+    {
+        "id": "H1-ALG-22",
+        "name": "역행렬",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "AA⁻¹=E, 2×2 역행렬 공식, ad-bc≠0 존재조건(행렬식)",
+        "parent_id": "H1-ALG-21",
+        "prerequisites": ["H1-ALG-21"],
+    },
+    {
+        "id": "H1-ALG-23",
+        "name": "케일리-해밀턴 정리",
+        "grade": "high_1",
+        "category": "concept",
+        "part": "algebra",
+        "description": "A²-(a+d)A+(ad-bc)E=O, 고차식→1차식 환원(심화)",
+        "parent_id": "H1-ALG-22",
+        "prerequisites": ["H1-ALG-22"],
+    },
+]
+
+
+# =============================================
 # 전체 개념 목록 + 학년 간 연결 맵
 # =============================================
 
@@ -1060,6 +1433,7 @@ ALL_CONCEPTS = (
     + MIDDLE_1_CONCEPTS
     + MIDDLE_2_CONCEPTS
     + MIDDLE_3_CONCEPTS
+    + HIGH_1_CONCEPTS
 )
 
 # 학년 간 연계 흐름 (가이드 문서 기준)
@@ -1099,6 +1473,9 @@ CROSS_GRADE_CHAINS = {
         "M1-ALG-02",  # 일차방정식
         "M2-ALG-04",  # 연립방정식
         "M3-ALG-03",  # 이차방정식
+        "H1-ALG-08",  # 이차방정식의 판별식
+        "H1-ALG-10",  # 고차방정식
+        "H1-ALG-17",  # 연립이차방정식
     ],
     "함수 계통": [
         "E4-ALG-01",  # 규칙 찾기
@@ -1106,6 +1483,47 @@ CROSS_GRADE_CHAINS = {
         "M1-FUNC-01",  # 좌표평면과 그래프
         "M2-FUNC-01",  # 일차함수
         "M3-FUNC-01",  # 이차함수
+        "H1-ALG-14",  # 이차함수의 최대·최소
+        "H1-ALG-15",  # 이차함수와 이차방정식
+    ],
+    "다항식·인수분해 계통": [
+        "M2-ALG-02",  # 다항식의 덧셈·뺄셈·곱셈
+        "M3-ALG-01",  # 다항식의 곱셈과 곱셈공식
+        "M3-ALG-02",  # 인수분해
+        "H1-ALG-01",  # 다항식 정리와 연산
+        "H1-ALG-02",  # 다항식의 나눗셈
+        "H1-ALG-03",  # 나머지정리
+        "H1-ALG-04",  # 인수정리
+        "H1-ALG-05",  # 인수분해 (고급)
+    ],
+    "부등식 계통": [
+        "M2-ALG-03",  # 일차부등식
+        "H1-ALG-11",  # 이차부등식
+        "H1-ALG-12",  # 연립부등식
+        "H1-ALG-13",  # 절대값 방정식·부등식
+        "H1-ALG-16",  # 이차함수와 이차부등식
+    ],
+    "수 체계 계통": [
+        "E4-NUM-07",  # 동분모 분수 덧뺄셈
+        "M1-NUM-04",  # 정수·유리수 사칙연산
+        "M3-NUM-01",  # 제곱근과 실수
+        "M3-NUM-02",  # 근호를 포함한 식의 계산
+        "H1-ALG-06",  # 복소수
+        "H1-ALG-07",  # 복소수의 사칙연산
+    ],
+    "경우의 수·확률 계통": [
+        "M2-STA-01",  # 경우의 수와 확률
+        "H1-STA-10",  # 합의 법칙과 곱의 법칙
+        "H1-STA-08",  # 순열
+        "H1-STA-09",  # 조합
+    ],
+    "행렬 계통": [
+        "H1-ALG-18",  # 행렬의 뜻과 표현
+        "H1-ALG-19",  # 행렬의 덧셈·뺄셈·실수배
+        "H1-ALG-20",  # 행렬의 곱셈
+        "H1-ALG-21",  # 단위행렬
+        "H1-ALG-22",  # 역행렬
+        "H1-ALG-23",  # 케일리-해밀턴 정리
     ],
 }
 
