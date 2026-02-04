@@ -34,7 +34,9 @@ def init_db():
     from app.models.user import RefreshToken
     from app.services.auth_service import AuthService
 
-    # Create all tables (using sync engine)
+    # [임시] 기존 테이블 모두 삭제 후 재생성 (스키마 불일치 해결)
+    # TODO: 배포 후 아래 drop_all 라인 제거할 것
+    Base.metadata.drop_all(bind=sync_engine)
     Base.metadata.create_all(bind=sync_engine)
 
     # Seed initial data if database is empty (using sync session)
