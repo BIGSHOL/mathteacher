@@ -86,11 +86,15 @@ async def reset_database(
     기존 모든 사용자/테스트 기록이 삭제됩니다.
     """
     from app.core.config import settings
-    from app.core.database import Base
+    from app.core.database import Base, async_engine
 
     logger.warning(f"DB reset requested by user {current_user.id} ({current_user.name})")
 
     try:
+        # 0) Close async session & dispose pool to avoid SQLite lock
+        await db.close()
+        await async_engine.dispose()
+
         # 1) Drop all tables (SQLite vs PostgreSQL)
         if settings.DATABASE_URL.startswith("sqlite"):
             Base.metadata.drop_all(bind=sync_engine)
