@@ -7,6 +7,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 const timerSound = new Audio('/sounds/timer.mp3')
 timerSound.volume = 0.5
 
+/** 남은 2초에 재생되는 마지막 긴장감 사운드 */
+const lastTwoSound = new Audio('/sounds/two.mp3')
+lastTwoSound.volume = 0.7
+
 interface CountdownTimerProps {
   /** 제한시간 (초) */
   totalSeconds: number
@@ -81,6 +85,11 @@ export function CountdownTimer({
       timerSound.play().catch(() => {})
       soundPlayingRef.current = true
     }
+    // 남은 2초 → 마지막 긴장감 사운드 추가 재생
+    if (remaining === 2 && isRunning) {
+      lastTwoSound.currentTime = 0
+      lastTwoSound.play().catch(() => {})
+    }
   }, [remaining, isRunning])
 
   // 컴포넌트 언마운트 시 사운드 정리
@@ -88,6 +97,8 @@ export function CountdownTimer({
     return () => {
       timerSound.pause()
       timerSound.currentTime = 0
+      lastTwoSound.pause()
+      lastTwoSound.currentTime = 0
       soundPlayingRef.current = false
     }
   }, [])

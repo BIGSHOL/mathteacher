@@ -472,6 +472,16 @@ export const testHandlers = [
     const questionsRemaining =
       attempt.total_count - attempt.answered_questions.size
 
+    // 오답일 때 AI 피드백 추가
+    const errorTypes = ['계산 실수', '부호 오류', '개념 혼동', '문제 이해 부족']
+    const suggestions = [
+      '계산할 때 중간 과정을 꼭 적어두는 습관을 들이면 실수를 줄일 수 있어요.',
+      '부호가 바뀌는 지점을 표시해두면 실수를 예방할 수 있어요.',
+      '개념 노트를 만들어 핵심 차이점을 정리해 보세요.',
+      '문제를 읽을 때 "구하는 것"과 "주어진 것"을 먼저 구분하는 연습을 해보세요.',
+    ]
+    const randomIdx = Math.floor(Math.random() * errorTypes.length)
+
     return HttpResponse.json({
       success: true,
       data: {
@@ -485,6 +495,10 @@ export const testHandlers = [
         current_score: attempt.score,
         questions_remaining: questionsRemaining,
         next_difficulty: attempt.is_adaptive ? attempt.current_difficulty : undefined,
+        ...(!isCorrect && {
+          error_type: errorTypes[randomIdx],
+          suggestion: suggestions[randomIdx],
+        }),
       },
     })
   }),

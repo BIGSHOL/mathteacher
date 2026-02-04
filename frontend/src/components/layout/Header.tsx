@@ -1,6 +1,6 @@
 // 헤더 컴포넌트
 
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuthStore } from '../../store/authStore'
 import { XpBadge } from '../gamification/XpBar'
@@ -98,12 +98,22 @@ export function Header() {
 }
 
 function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
+  const location = useLocation()
+  const isActive = location.pathname === to || location.pathname.startsWith(to + '/')
+
   return (
     <Link
       to={to}
-      className="text-sm font-medium text-gray-600 transition-colors hover:text-primary-600"
+      className={`relative text-sm font-medium transition-colors ${
+        isActive
+          ? 'text-primary-600'
+          : 'text-gray-600 hover:text-primary-600'
+      }`}
     >
       {children}
+      {isActive && (
+        <span className="absolute -bottom-[19px] left-0 right-0 h-[2px] rounded-full bg-primary-500" />
+      )}
     </Link>
   )
 }

@@ -159,11 +159,11 @@ export function DailyLabPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">지난 기록</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">학습 히스토리</h2>
 
           {Object.keys(historyByDate).length === 0 ? (
             <div className="card p-8 text-center text-gray-400">
-              아직 지난 기록이 없습니다
+              아직 학습 기록이 없습니다
             </div>
           ) : (
             <div className="space-y-3">

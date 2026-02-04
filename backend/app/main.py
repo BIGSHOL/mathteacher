@@ -35,12 +35,12 @@ def init_db():
     from app.models.user import RefreshToken
     from app.services.auth_service import AuthService
 
-    # [임시] 기존 테이블 모두 삭제 후 재생성 (스키마 불일치 해결)
-    # TODO: 배포 후 아래 블록 제거할 것
-    with sync_engine.connect() as conn:
-        conn.execute(sa_text("DROP SCHEMA public CASCADE"))
-        conn.execute(sa_text("CREATE SCHEMA public"))
-        conn.commit()
+    # [개발 전용] 스키마 재생성 - 프로덕션에서는 실행하지 않음
+    if settings.ENV == "development":
+        with sync_engine.connect() as conn:
+            conn.execute(sa_text("DROP SCHEMA public CASCADE"))
+            conn.execute(sa_text("CREATE SCHEMA public"))
+            conn.commit()
     Base.metadata.create_all(bind=sync_engine)
 
     # Seed initial data if database is empty (using sync session)
@@ -1446,10 +1446,20 @@ async def root() -> dict[str, str]:
 
 
 # Exception handler - 프로덕션에서는 상세 에러 정보 숨김
+# CORS 헤더를 에러 응답에도 추가하여 브라우저에서 에러 내용을 확인할 수 있도록 함
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     # 서버 로그에는 상세 정보 기록 (디버깅용)
     logger.error(f"Unhandled exception: {exc}", exc_info=True)
+
+    # Origin 헤더 확인하여 CORS 헤더 추가
+    origin = request.headers.get("origin", "")
+    cors_headers = {}
+    if origin in settings.BACKEND_CORS_ORIGINS:
+        cors_headers = {
+            "Access-Control-Allow-Origin": origin,
+            "Access-Control-Allow-Credentials": "true",
+        }
 
     # 클라이언트 응답에는 환경에 따라 다르게 처리
     if settings.ENV == "development":
@@ -1464,6 +1474,7 @@ async def global_exception_handler(request: Request, exc: Exception):
                     "type": type(exc).__name__,
                 }
             },
+            headers=cors_headers,
         )
     else:
         # 프로덕션/스테이징: 보안을 위해 일반적인 에러 메시지만 표시
@@ -1476,6 +1487,7 @@ async def global_exception_handler(request: Request, exc: Exception):
                     "message": "서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
                 }
             },
+            headers=cors_headers,
         )
 
 
