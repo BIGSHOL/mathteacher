@@ -70,3 +70,15 @@ htmlcov/
 *.bak
 *.tmp
 .cache/
+nul
+
+# Claude Code (local settings)
+.claude/settings.local.json
+
+# Alembic (contains DB credentials)
+backend/alembic.ini
+
+# Demo/test scripts (not part of app)
+backend/demo_*.py
+backend/test_*.py
+!backend/tests/

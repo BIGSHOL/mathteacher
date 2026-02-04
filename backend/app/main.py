@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from sqlalchemy import text as sa_text
 from sqlalchemy.orm import sessionmaker as sync_sessionmaker
 
 from app.core.config import settings
@@ -35,8 +36,11 @@ def init_db():
     from app.services.auth_service import AuthService
 
     # [임시] 기존 테이블 모두 삭제 후 재생성 (스키마 불일치 해결)
-    # TODO: 배포 후 아래 drop_all 라인 제거할 것
-    Base.metadata.drop_all(bind=sync_engine)
+    # TODO: 배포 후 아래 블록 제거할 것
+    with sync_engine.connect() as conn:
+        conn.execute(sa_text("DROP SCHEMA public CASCADE"))
+        conn.execute(sa_text("CREATE SCHEMA public"))
+        conn.commit()
     Base.metadata.create_all(bind=sync_engine)
 
     # Seed initial data if database is empty (using sync session)
