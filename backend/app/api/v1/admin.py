@@ -85,26 +85,28 @@ async def reset_database(
     모든 테이블을 드롭하고 재생성 + 시드 데이터 로드.
     기존 모든 사용자/테스트 기록이 삭제됩니다.
     """
-    from app.models import Base
+    from app.core.config import settings
+    from app.core.database import Base
 
     logger.warning(f"DB reset requested by user {current_user.id} ({current_user.name})")
 
     try:
-        # 1) Drop all tables
-        with sync_engine.connect() as conn:
-            conn.execute(text("DROP SCHEMA public CASCADE"))
-            conn.execute(text("CREATE SCHEMA public"))
-            conn.commit()
+        # 1) Drop all tables (SQLite vs PostgreSQL)
+        if settings.DATABASE_URL.startswith("sqlite"):
+            Base.metadata.drop_all(bind=sync_engine)
+        else:
+            with sync_engine.connect() as conn:
+                conn.execute(text("DROP SCHEMA public CASCADE"))
+                conn.execute(text("CREATE SCHEMA public"))
+                conn.commit()
 
         # 2) Recreate tables
         Base.metadata.create_all(bind=sync_engine)
 
-        # 3) Re-run init_db (seeds users)
+        # 3) Re-run init_db (seeds users) + load_seed_data (seeds concepts/questions)
         import importlib
         main_module = importlib.import_module("app.main")
         main_module.init_db()
-
-        # 4) Re-run load_seed_data (seeds concepts/questions)
         main_module.load_seed_data()
 
         logger.info("DB reset completed successfully")
