@@ -1,241 +1,503 @@
-"""중3 개념 문제 - 이차방정식과 이차함수."""
-from app.seeds._base import mc, concept
+"""중3 개념 카테고리 시드 데이터 - 2022 개정 교육과정.
+
+3단원: 이차방정식
+4단원: 이차함수 (최대·최소 신설)
+5단원: 삼각비
+6단원: 원의 성질
+7단원: 통계 (상자그림 신설/강화)
+"""
+
+from .._base import mc, concept, test
 
 
-def get_concepts():
-    """개념 정의."""
-    return [
+def get_concept_data() -> dict:
+    """개념 카테고리 데이터 반환."""
+
+    # ============================================================
+    # 개념 5개
+    # ============================================================
+    concepts = [
         concept(
             id="concept-m3-quad-eq",
             name="이차방정식",
             grade="middle_3",
             category="concept",
             part="algebra",
-            description="인수분해, 근의 공식을 이용한 이차방정식의 해 구하기"
+            description="인수분해·근의 공식을 이용한 풀이, 판별식, 이차항 계수 조건",
         ),
         concept(
             id="concept-m3-quad-func",
             name="이차함수",
             grade="middle_3",
             category="concept",
-            part="algebra",
-            description="이차함수 y=ax²의 그래프와 성질"
-        )
+            part="func",
+            description="y=ax², 표준형 y=a(x-p)²+q, 꼭짓점·축, 최대·최소(2022 신설)",
+        ),
+        concept(
+            id="concept-m3-trig",
+            name="삼각비",
+            grade="middle_3",
+            category="concept",
+            part="geo",
+            description="sin, cos, tan 정의, 특수각(30°, 45°, 60°), 삼각형 넓이",
+        ),
+        concept(
+            id="concept-m3-circle",
+            name="원의 성질",
+            grade="middle_3",
+            category="concept",
+            part="geo",
+            description="원주각과 중심각, 접선의 성질, 내접 사각형, 접현각",
+        ),
+        concept(
+            id="concept-m3-statistics",
+            name="통계",
+            grade="middle_3",
+            category="concept",
+            part="data",
+            description="대푯값, 분산·표준편차, 사분위수·상자그림(2022 신설), 산점도·상관관계",
+        ),
     ]
 
-
-def get_questions():
-    """개념 문제 목록."""
-    return [
-        # 이차방정식 인수분해 (난이도 1-4)
+    # ============================================================
+    # 이차방정식 (6문제)
+    # ============================================================
+    quad_eq_questions = [
         mc(
             id="m3-conc-001",
             concept_id="concept-m3-quad-eq",
             category="concept",
             part="algebra",
-            difficulty=1,
-            content="x² = 9의 해를 구하시오.",
-            options=[
-                ("x = ±3", True),
-                ("x = 3", False),
-                ("x = 9", False),
-                ("x = ±9", False)
-            ],
+            difficulty=2,
+            content="x² - 4 = 0을 인수분해하여 해를 구하시오.",
+            options=["x = ±2", "x = 2", "x = 4", "x = -2"],
             correct="A",
-            explanation="제곱근을 구하면 x = ±3",
-            points=10
+            explanation="(x + 2)(x - 2) = 0이므로 x = 2 또는 x = -2",
+            points=10,
         ),
         mc(
             id="m3-conc-002",
             concept_id="concept-m3-quad-eq",
             category="concept",
             part="algebra",
-            difficulty=2,
-            content="x² - 4 = 0을 인수분해하여 해를 구하시오.",
-            options=[
-                ("x = ±2", True),
-                ("x = 2", False),
-                ("x = 4", False),
-                ("x = -2", False)
-            ],
+            difficulty=4,
+            content="x² + 7x + 12 = 0의 해를 구하시오.",
+            options=["x = -3 또는 x = -4", "x = 3 또는 x = 4", "x = -2 또는 x = -6", "x = 2 또는 x = 6"],
             correct="A",
-            explanation="(x+2)(x-2) = 0이므로 x = 2 또는 x = -2",
-            points=10
+            explanation="(x + 3)(x + 4) = 0이므로 x = -3 또는 x = -4",
+            points=10,
         ),
         mc(
             id="m3-conc-003",
             concept_id="concept-m3-quad-eq",
             category="concept",
             part="algebra",
-            difficulty=3,
-            content="x² - 5x + 6 = 0을 인수분해하여 해를 구하시오.",
-            options=[
-                ("x = 2 또는 x = 3", True),
-                ("x = 1 또는 x = 6", False),
-                ("x = -2 또는 x = -3", False),
-                ("x = 5 또는 x = 6", False)
-            ],
+            difficulty=6,
+            content="x² + 4x + 1 = 0의 해를 근의 공식으로 구하시오.",
+            options=["x = -2 ± √3", "x = -2 ± √5", "x = 2 ± √3", "x = -4 ± √3"],
             correct="A",
-            explanation="(x-2)(x-3) = 0이므로 x = 2 또는 x = 3",
-            points=10
+            explanation="x = (-4 ± √(16 - 4))/2 = (-4 ± √12)/2 = (-4 ± 2√3)/2 = -2 ± √3",
+            points=10,
         ),
         mc(
             id="m3-conc-004",
             concept_id="concept-m3-quad-eq",
             category="concept",
             part="algebra",
-            difficulty=4,
-            content="x² + 7x + 12 = 0을 인수분해하여 해를 구하시오.",
-            options=[
-                ("x = -3 또는 x = -4", True),
-                ("x = 3 또는 x = 4", False),
-                ("x = -2 또는 x = -6", False),
-                ("x = 2 또는 x = 6", False)
-            ],
+            difficulty=7,
+            content="x² - 6x + 9 = 0의 판별식 D의 값과 근의 개수는?",
+            options=["D = 0, 중근", "D = 9, 서로 다른 두 근", "D = 36, 서로 다른 두 근", "D = -9, 근 없음"],
             correct="A",
-            explanation="(x+3)(x+4) = 0이므로 x = -3 또는 x = -4",
-            points=10
+            explanation="D = b² - 4ac = 36 - 36 = 0이므로 중근(서로 같은 두 실근)을 가집니다.",
+            points=10,
         ),
-
-        # 이차방정식 근의 공식 (난이도 5-7)
         mc(
             id="m3-conc-005",
             concept_id="concept-m3-quad-eq",
             category="concept",
             part="algebra",
-            difficulty=5,
-            content="x² - 2x - 3 = 0의 해를 구하시오.",
-            options=[
-                ("x = 3 또는 x = -1", True),
-                ("x = 1 또는 x = 3", False),
-                ("x = -3 또는 x = 1", False),
-                ("x = 2 또는 x = -3", False)
-            ],
+            difficulty=8,
+            content="x² + 2x + k = 0이 중근을 가질 때, k의 값은?",
+            options=["1", "2", "0", "-1"],
             correct="A",
-            explanation="(x-3)(x+1) = 0이므로 x = 3 또는 x = -1",
-            points=10
+            explanation="중근 조건: D = 0. b² - 4ac = 4 - 4k = 0이므로 k = 1",
+            points=10,
         ),
         mc(
             id="m3-conc-006",
             concept_id="concept-m3-quad-eq",
             category="concept",
             part="algebra",
-            difficulty=6,
-            content="x² + 4x + 1 = 0의 해를 근의 공식으로 구하시오.",
-            options=[
-                ("x = -2 ± √3", True),
-                ("x = -2 ± √5", False),
-                ("x = 2 ± √3", False),
-                ("x = -4 ± √3", False)
-            ],
+            difficulty=9,
+            content="(a - 2)x² + 3x - 1 = 0이 이차방정식이 되기 위한 조건은?",
+            options=["a ≠ 2", "a = 2", "a > 2", "a ≠ 0"],
             correct="A",
-            explanation="x = (-4 ± √(16-4))/2 = (-4 ± √12)/2 = (-4 ± 2√3)/2 = -2 ± √3",
-            points=10
+            explanation="이차방정식이 되려면 이차항의 계수 (a - 2) ≠ 0이므로 a ≠ 2",
+            points=10,
         ),
+    ]
+
+    # ============================================================
+    # 이차함수 (6문제)
+    # ============================================================
+    quad_func_questions = [
         mc(
             id="m3-conc-007",
-            concept_id="concept-m3-quad-eq",
+            concept_id="concept-m3-quad-func",
             category="concept",
-            part="algebra",
-            difficulty=7,
-            content="2x² - 3x - 2 = 0의 해를 구하시오.",
-            options=[
-                ("x = 2 또는 x = -1/2", True),
-                ("x = 1 또는 x = -2", False),
-                ("x = 3 또는 x = -2", False),
-                ("x = 2 또는 x = 1", False)
-            ],
+            part="func",
+            difficulty=2,
+            content="이차함수 y = x²의 꼭짓점의 좌표는?",
+            options=["(0, 0)", "(1, 1)", "(0, 1)", "(1, 0)"],
             correct="A",
-            explanation="(2x+1)(x-2) = 0이므로 x = 2 또는 x = -1/2",
-            points=10
+            explanation="y = x²의 그래프는 원점 (0, 0)이 꼭짓점이고 y축이 대칭축입니다.",
+            points=10,
         ),
-
-        # 이차방정식 판별식 (난이도 8-9)
         mc(
             id="m3-conc-008",
-            concept_id="concept-m3-quad-eq",
+            concept_id="concept-m3-quad-func",
             category="concept",
-            part="algebra",
-            difficulty=8,
-            content="x² - 6x + 9 = 0의 판별식 D의 값은?",
-            options=[
-                ("0", True),
-                ("9", False),
-                ("36", False),
-                ("-9", False)
-            ],
+            part="func",
+            difficulty=4,
+            content="y = 2x²의 그래프는 y = x²의 그래프에 비해 어떠한가?",
+            options=["폭이 더 좁다", "폭이 더 넓다", "아래로 이동한다", "위로 이동한다"],
             correct="A",
-            explanation="D = b² - 4ac = 36 - 36 = 0 (중근을 가짐)",
-            points=10
+            explanation="|a|가 클수록 그래프의 폭이 좁아집니다. |2| > |1|이므로 y = 2x²의 폭이 더 좁습니다.",
+            points=10,
         ),
         mc(
             id="m3-conc-009",
-            concept_id="concept-m3-quad-eq",
+            concept_id="concept-m3-quad-func",
             category="concept",
-            part="algebra",
-            difficulty=9,
-            content="x² + 2x + k = 0이 중근을 가질 때, k의 값은?",
-            options=[
-                ("1", True),
-                ("2", False),
-                ("0", False),
-                ("-1", False)
-            ],
+            part="func",
+            difficulty=5,
+            content="이차함수 y = (x - 3)² + 2의 꼭짓점의 좌표는?",
+            options=["(3, 2)", "(-3, 2)", "(3, -2)", "(-3, -2)"],
             correct="A",
-            explanation="중근 조건: D = 0. 4 - 4k = 0이므로 k = 1",
-            points=10
+            explanation="y = a(x - p)² + q에서 꼭짓점은 (p, q). 따라서 (3, 2)입니다.",
+            points=10,
         ),
-
-        # 이차함수 (난이도 2-6)
         mc(
             id="m3-conc-010",
             concept_id="concept-m3-quad-func",
             category="concept",
-            part="algebra",
-            difficulty=2,
-            content="이차함수 y = x²의 꼭짓점은?",
-            options=[
-                ("(0, 0)", True),
-                ("(1, 1)", False),
-                ("(0, 1)", False),
-                ("(1, 0)", False)
-            ],
+            part="func",
+            difficulty=7,
+            content="y = -x² + 4x - 3의 최댓값은?",
+            options=["1", "2", "-3", "4"],
             correct="A",
-            explanation="y = x²의 꼭짓점은 원점 (0, 0)",
-            points=10
+            explanation="y = -(x² - 4x) - 3 = -(x - 2)² + 4 - 3 = -(x - 2)² + 1. a < 0이므로 꼭짓점에서 최댓값 1",
+            points=10,
         ),
         mc(
             id="m3-conc-011",
             concept_id="concept-m3-quad-func",
             category="concept",
-            part="algebra",
-            difficulty=4,
-            content="이차함수 y = 2x²의 그래프는 y = x²의 그래프를?",
-            options=[
-                ("y축 방향으로 2배 확대", True),
-                ("y축 방향으로 1/2배 축소", False),
-                ("x축 방향으로 2배 확대", False),
-                ("x축의 대칭이동", False)
-            ],
+            part="func",
+            difficulty=8,
+            content="y = -(x - 1)² + 5에서 '최댓값'은?",
+            options=["5", "1", "-1", "(1, 5)"],
             correct="A",
-            explanation="a>1일 때 y축 방향으로 확대됨",
-            points=10
+            explanation="최댓값/최솟값은 항상 y값(함숫값)입니다. x = 1일 때 최댓값 y = 5. (1, 5)는 꼭짓점 좌표이지 최댓값이 아닙니다.",
+            points=10,
         ),
         mc(
             id="m3-conc-012",
             concept_id="concept-m3-quad-func",
             category="concept",
-            part="algebra",
-            difficulty=10,
-            content="이차함수 y = -x² + 4x - 3의 최댓값은?",
+            part="func",
+            difficulty=9,
+            content="y = ax² + bx + c의 그래프가 위로 볼록하고 축이 y축의 오른쪽에 있을 때, a와 b의 부호는?",
+            options=["a < 0, b > 0", "a < 0, b < 0", "a > 0, b > 0", "a > 0, b < 0"],
+            correct="A",
+            explanation="위로 볼록이면 a < 0. 축 x = -b/(2a) > 0이고 a < 0이면 -b/(2a) > 0에서 b > 0",
+            points=10,
+        ),
+    ]
+
+    # ============================================================
+    # 삼각비 (6문제)
+    # ============================================================
+    trig_questions = [
+        mc(
+            id="m3-conc-013",
+            concept_id="concept-m3-trig",
+            category="concept",
+            part="geo",
+            difficulty=2,
+            content="직각삼각형에서 sin A의 정의는?",
             options=[
-                ("1", True),
-                ("4", False),
-                ("-3", False),
-                ("0", False)
+                "기준각의 대변 / 빗변",
+                "밑변 / 빗변",
+                "대변 / 밑변",
+                "빗변 / 대변",
             ],
             correct="A",
-            explanation="y = -(x-2)² + 1로 변형하면 꼭짓점 (2, 1)에서 최댓값 1",
-            points=10
-        )
+            explanation="sin A = (기준각 A의 대변) / 빗변. 빗변은 직각의 대변(가장 긴 변)입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-014",
+            concept_id="concept-m3-trig",
+            category="concept",
+            part="geo",
+            difficulty=3,
+            content="sin 30°의 값은?",
+            options=["1/2", "√3/2", "√2/2", "1"],
+            correct="A",
+            explanation="정삼각형을 반으로 나누면 30-60-90 삼각형이 되고, sin 30° = 1/2",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-015",
+            concept_id="concept-m3-trig",
+            category="concept",
+            part="geo",
+            difficulty=4,
+            content="cos 60°의 값은?",
+            options=["1/2", "√3/2", "√2/2", "1"],
+            correct="A",
+            explanation="30-60-90 삼각형에서 cos 60° = (밑변)/(빗변) = 1/2",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-016",
+            concept_id="concept-m3-trig",
+            category="concept",
+            part="geo",
+            difficulty=5,
+            content="tan 45°의 값은?",
+            options=["1", "√2", "√3/3", "0"],
+            correct="A",
+            explanation="직각이등변삼각형에서 두 변의 길이가 같으므로 tan 45° = 대변/밑변 = 1",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-017",
+            concept_id="concept-m3-trig",
+            category="concept",
+            part="geo",
+            difficulty=7,
+            content="0° < A < 90°에서 항상 성립하는 등식은?",
+            options=[
+                "sin²A + cos²A = 1",
+                "sin A + cos A = 1",
+                "tan A = sin A × cos A",
+                "sin A = 1 - cos A",
+            ],
+            correct="A",
+            explanation="피타고라스 정리에 의해 sin²A + cos²A = 1이 항상 성립합니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-018",
+            concept_id="concept-m3-trig",
+            category="concept",
+            part="geo",
+            difficulty=8,
+            content="두 변의 길이가 5, 8이고 끼인각이 60°인 삼각형의 넓이는?",
+            options=["10√3", "20", "20√3", "40"],
+            correct="A",
+            explanation="S = (1/2) × 5 × 8 × sin 60° = (1/2) × 40 × (√3/2) = 10√3",
+            points=10,
+        ),
     ]
+
+    # ============================================================
+    # 원의 성질 (6문제)
+    # ============================================================
+    circle_questions = [
+        mc(
+            id="m3-conc-019",
+            concept_id="concept-m3-circle",
+            category="concept",
+            part="geo",
+            difficulty=3,
+            content="한 원에서 같은 호에 대한 원주각과 중심각의 관계는?",
+            options=[
+                "원주각 = 중심각의 1/2",
+                "원주각 = 중심각",
+                "원주각 = 중심각의 2배",
+                "관계없다",
+            ],
+            correct="A",
+            explanation="같은 호에 대해 원주각은 중심각의 1/2입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-020",
+            concept_id="concept-m3-circle",
+            category="concept",
+            part="geo",
+            difficulty=4,
+            content="반원(지름)에 대한 원주각의 크기는?",
+            options=["90°", "180°", "60°", "45°"],
+            correct="A",
+            explanation="지름에 대한 중심각은 180°이므로, 원주각 = 180° × 1/2 = 90°",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-021",
+            concept_id="concept-m3-circle",
+            category="concept",
+            part="geo",
+            difficulty=5,
+            content="같은 호 AB에 대한 원주각 ∠APB와 ∠AQB (P, Q는 같은 쪽 호 위의 점)의 관계는?",
+            options=["∠APB = ∠AQB", "∠APB > ∠AQB", "∠APB < ∠AQB", "알 수 없다"],
+            correct="A",
+            explanation="같은 호에 대한 원주각은 어디서 재든 모두 같습니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-022",
+            concept_id="concept-m3-circle",
+            category="concept",
+            part="geo",
+            difficulty=6,
+            content="원에 내접하는 사각형에서 대각의 합은?",
+            options=["180°", "360°", "90°", "270°"],
+            correct="A",
+            explanation="원에 내접하는 사각형의 대각의 합은 항상 180°입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-023",
+            concept_id="concept-m3-circle",
+            category="concept",
+            part="geo",
+            difficulty=7,
+            content="원의 접선과 그 접점을 지나는 반지름이 이루는 각도는?",
+            options=["90°", "180°", "60°", "45°"],
+            correct="A",
+            explanation="접선은 접점에서 반지름과 항상 수직(90°)입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-024",
+            concept_id="concept-m3-circle",
+            category="concept",
+            part="geo",
+            difficulty=8,
+            content="원 밖의 한 점에서 원에 그은 두 접선의 길이에 대해 옳은 것은?",
+            options=["두 접선의 길이가 같다", "두 접선의 길이가 다르다", "접선 길이는 반지름과 같다", "알 수 없다"],
+            correct="A",
+            explanation="원 밖의 한 점에서 원에 그은 두 접선의 길이는 항상 같습니다. (RHS 합동으로 증명)",
+            points=10,
+        ),
+    ]
+
+    # ============================================================
+    # 통계 (6문제)
+    # ============================================================
+    stat_questions = [
+        mc(
+            id="m3-conc-025",
+            concept_id="concept-m3-statistics",
+            category="concept",
+            part="data",
+            difficulty=2,
+            content="편차(변량 - 평균)의 총합은 항상 얼마인가?",
+            options=["0", "평균", "양수", "음수"],
+            correct="A",
+            explanation="편차의 합은 항상 0입니다. 이것이 분산을 구할 때 편차를 제곱하는 이유입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-026",
+            concept_id="concept-m3-statistics",
+            category="concept",
+            part="data",
+            difficulty=4,
+            content="분산의 정의는?",
+            options=["편차 제곱의 평균", "편차의 평균", "변량 제곱의 평균", "평균의 제곱"],
+            correct="A",
+            explanation="분산 = (편차)²의 평균 = Σ(xi - x̄)² / n",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-027",
+            concept_id="concept-m3-statistics",
+            category="concept",
+            part="data",
+            difficulty=5,
+            content="사분위수 Q₁, Q₂, Q₃ 중 Q₂는 무엇을 의미하나?",
+            options=["중앙값", "평균", "최빈값", "사분위범위"],
+            correct="A",
+            explanation="Q₂(제2사분위수) = 전체 자료의 중앙값입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-028",
+            concept_id="concept-m3-statistics",
+            category="concept",
+            part="data",
+            difficulty=6,
+            content="상자그림에서 상자 내부의 선은 무엇을 나타내는가?",
+            options=["중앙값(Q₂)", "평균", "최빈값", "표준편차"],
+            correct="A",
+            explanation="상자그림의 상자 내부 선은 중앙값(Q₂)입니다. 상자그림만으로는 평균을 알 수 없습니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-029",
+            concept_id="concept-m3-statistics",
+            category="concept",
+            part="data",
+            difficulty=7,
+            content="상자그림에서 상자 구간(Q₁~Q₃)이 길면 어떤 의미인가?",
+            options=[
+                "데이터가 넓게 퍼져 있다(밀도 낮음)",
+                "데이터가 많다",
+                "평균이 크다",
+                "이상치가 있다",
+            ],
+            correct="A",
+            explanation="각 구간에는 25%씩 동일한 개수의 데이터가 있습니다. 구간이 길면 같은 25%가 넓게 퍼져 있으므로 밀도가 낮다는 뜻입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-030",
+            concept_id="concept-m3-statistics",
+            category="concept",
+            part="data",
+            difficulty=8,
+            content="'아이스크림 판매량이 많을수록 익사 사고가 많다'라는 자료가 있을 때, 옳은 해석은?",
+            options=[
+                "양의 상관관계이지만 인과관계는 아니다",
+                "아이스크림이 익사의 원인이다",
+                "음의 상관관계이다",
+                "상관관계가 없다",
+            ],
+            correct="A",
+            explanation="상관관계 ≠ 인과관계. 둘 다 기온(제3변수)의 영향을 받는 것이지, 아이스크림이 익사를 일으키는 것이 아닙니다.",
+            points=10,
+        ),
+    ]
+
+    questions = quad_eq_questions + quad_func_questions + trig_questions + circle_questions + stat_questions
+
+    # ============================================================
+    # 테스트 2개
+    # ============================================================
+    tests = [
+        test(
+            id="test-m3-concept-1",
+            title="중3 이차방정식·이차함수 테스트",
+            description="이차방정식(인수분해, 근의 공식, 판별식)과 이차함수(꼭짓점, 최대·최소)",
+            grade="middle_3",
+            concept_ids=["concept-m3-quad-eq", "concept-m3-quad-func"],
+            question_ids=[q["id"] for q in quad_eq_questions + quad_func_questions],
+            time_limit_minutes=35,
+        ),
+        test(
+            id="test-m3-concept-2",
+            title="중3 삼각비·원·통계 테스트",
+            description="삼각비, 원의 성질, 통계(상자그림 포함)",
+            grade="middle_3",
+            concept_ids=["concept-m3-trig", "concept-m3-circle", "concept-m3-statistics"],
+            question_ids=[q["id"] for q in trig_questions + circle_questions + stat_questions],
+            time_limit_minutes=40,
+        ),
+    ]
+
+    return {"concepts": concepts, "questions": questions, "tests": tests}
