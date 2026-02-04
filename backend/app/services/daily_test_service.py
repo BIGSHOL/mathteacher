@@ -349,51 +349,45 @@ class DailyTestService:
     ) -> list[str]:
         """난이도 제한 없이 문제 선택 (폴백).
 
-        단계적 제한 완화로 최소 문제 수(MIN_QUESTIONS_PER_DAILY_TEST) 보장:
+        해금된 단원만 출제 (잠긴 단원 문제 절대 포함 안 함):
         1) 해금 개념 + 중복 제외
         2) 해금 개념 + 중복 허용
-        3) 같은 학년 전체 개념 + 중복 허용
+        부족하면 있는 만큼만 반환 (잠긴 단원 확장 안 함).
         """
-        min_count = min(MIN_QUESTIONS_PER_DAILY_TEST, count)
+
+        # 해금된 개념 ID
+        available_concept_ids: list[str] = []
+        if grade:
+            available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
 
         # 1단계: 해금 개념, 중복 제외
         q1 = self._build_category_filter(
             select(Question.id).where(Question.is_active == True), category  # noqa: E712
         )
-        if grade:
-            available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
-            if available_concept_ids:
-                q1 = q1.where(Question.concept_id.in_(available_concept_ids))
+        if available_concept_ids:
+            q1 = q1.where(Question.concept_id.in_(available_concept_ids))
         if recently_used:
             q1 = q1.where(~Question.id.in_(recently_used))
 
         all_ids = list((await self.db.scalars(q1)).all())
-        if len(all_ids) >= min_count:
-            return random.sample(all_ids, min(count, len(all_ids)))
+        if len(all_ids) >= count:
+            return random.sample(all_ids, count)
+        if all_ids:
+            return random.sample(all_ids, len(all_ids))
 
         # 2단계: 해금 개념, 중복 허용
         q2 = self._build_category_filter(
             select(Question.id).where(Question.is_active == True), category  # noqa: E712
         )
-        if grade and available_concept_ids:
+        if available_concept_ids:
             q2 = q2.where(Question.concept_id.in_(available_concept_ids))
 
         all_ids = list((await self.db.scalars(q2)).all())
-        if len(all_ids) >= min_count:
+        if all_ids:
             return random.sample(all_ids, min(count, len(all_ids)))
 
-        # 3단계: 같은 학년 전체 개념, 중복 허용
-        q3 = self._build_category_filter(
-            select(Question.id).where(Question.is_active == True), category  # noqa: E712
-        )
-        if grade:
-            all_grade_concepts = select(Concept.id).where(Concept.grade == grade)
-            grade_concept_ids = list((await self.db.scalars(all_grade_concepts)).all())
-            if grade_concept_ids:
-                q3 = q3.where(Question.concept_id.in_(grade_concept_ids))
-
-        all_ids = list((await self.db.scalars(q3)).all())
-        return random.sample(all_ids, min(count, len(all_ids)))
+        # 해금 개념에 해당 카테고리 문제가 전혀 없는 경우 → 빈 목록
+        return []
 
     # ------------------------------------------------------------------
     # 헬퍼 메서드
@@ -457,12 +451,7 @@ class DailyTestService:
             .where(Chapter.grade == grade, Chapter.chapter_number == 1)
         )
         first_concepts = await self.db.scalar(first_chapter_stmt)
-        if first_concepts:
-            return first_concepts
-
-        # 최종 폴백: 학년 전체 개념 (챕터 데이터가 없는 학년)
-        stmt = select(Concept.id).where(Concept.grade == grade)
-        return list((await self.db.scalars(stmt)).all())
+        return first_concepts or []
 
     async def _get_mastery_map(self, student_id: str) -> dict[str, int]:
         """학생의 개념별 숙련도 맵."""

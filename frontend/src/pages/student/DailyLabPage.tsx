@@ -386,6 +386,7 @@ function CategoryCard({
   const config = CATEGORY_CONFIG[record.category] ?? CATEGORY_CONFIG['concept']!
   const isCompleted = record.status === 'completed'
   const isInProgress = record.status === 'in_progress'
+  const isEmpty = !record.question_count || record.question_count === 0
 
   const accuracy =
     isCompleted && record.correct_count != null && record.total_count
@@ -394,22 +395,25 @@ function CategoryCard({
 
   return (
     <motion.button
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
-      onClick={onClick}
-      disabled={isStarting}
+      whileHover={!isEmpty ? { scale: 1.03 } : undefined}
+      whileTap={!isEmpty ? { scale: 0.97 } : undefined}
+      onClick={isEmpty ? undefined : onClick}
+      disabled={isStarting || isEmpty}
       className={`
         relative flex flex-col items-center rounded-2xl border-l-4 p-4 text-center
         bg-gradient-to-br ${config.gradient} ${config.border}
         transition-shadow hover:shadow-md
         ${isCompleted ? 'opacity-90' : ''}
+        ${isEmpty ? 'opacity-50 cursor-not-allowed' : ''}
         ${isStarting ? 'animate-pulse' : ''}
       `}
     >
-      <span className="mb-2 text-3xl">{config.icon}</span>
+      <span className="mb-2 text-3xl">{isEmpty ? '🔒' : config.icon}</span>
       <span className="text-sm font-semibold text-gray-800">{record.category_label}</span>
 
-      {isCompleted && accuracy !== null ? (
+      {isEmpty ? (
+        <span className="mt-1 text-[10px] text-gray-400">단원 해금 필요</span>
+      ) : isCompleted && accuracy !== null ? (
         <span
           className={`mt-1 text-lg font-bold ${accuracy >= 80 ? 'text-green-600' : accuracy >= 50 ? 'text-yellow-600' : 'text-red-500'}`}
         >
