@@ -68,7 +68,7 @@ export function BottomNav() {
             <NavItem to="/teacher/dashboard" icon="📊" label="대시보드" />
             <NavItem to="/teacher/students" icon="👥" label="학생관리" />
             {isAdmin && <NavItem to="/admin/users" icon="🔑" label="계정관리" />}
-            <NavItem to="/profile" icon="👤" label="내 정보" />
+            {user?.role === 'master' && <NavItem to="/admin/generate" icon="🤖" label="문제생성" />}
           </>
         ) : (
           // 학생용 네비게이션

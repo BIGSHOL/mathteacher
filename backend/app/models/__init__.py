@@ -8,6 +8,7 @@ from .concept import Concept
 from .concept_mastery import ConceptMastery
 from .daily_test_record import DailyTestRecord
 from .question import Question
+from .question_report import QuestionReport
 from .test import Test
 from .test_attempt import TestAttempt
 from .user import RefreshToken, User
@@ -21,6 +22,7 @@ __all__ = [
     "ConceptMastery",
     "DailyTestRecord",
     "Question",
+    "QuestionReport",
     "RefreshToken",
     "Test",
     "TestAttempt",

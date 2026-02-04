@@ -1,6 +1,6 @@
 // 문제 은행 페이지 (admin/master 전용)
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import api from '../../lib/api'
 import type { Grade, QuestionCategory, QuestionType, ProblemPart, PaginatedResponse } from '../../types'
@@ -108,6 +108,11 @@ const GRADE_LABEL: Record<string, string> = {
   high_1: '공통수학1', high_2: '공통수학2',
 }
 
+/** 단원 이름에서 선행 "N. " 접두사 제거 */
+function stripChapterNum(name: string): string {
+  return name.replace(/^\d+\.\s*/, '')
+}
+
 export function QuestionBankPage() {
   const [questions, setQuestions] = useState<QuestionItem[]>([])
   const [total, setTotal] = useState(0)
@@ -129,53 +134,172 @@ export function QuestionBankPage() {
   // 동적 드롭다운 데이터
   const [chapters, setChapters] = useState<ChapterItem[]>([])
   const [concepts, setConcepts] = useState<ConceptItem[]>([])
+  const [chaptersLoading, setChaptersLoading] = useState(false)
+  const [conceptsLoading, setConceptsLoading] = useState(false)
 
   // 상세 모달
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionItem | null>(null)
 
-  // 학년 변경 시 단원 로드
+  // 검색어 디바운스
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout>>()
+
+  useEffect(() => {
+    searchTimerRef.current = setTimeout(() => setDebouncedSearch(searchQuery), 300)
+    return () => clearTimeout(searchTimerRef.current)
+  }, [searchQuery])
+
+  // 학년 전체 개념 목록 (캐시): 학년 변경 시 한 번 로드
+  const allConceptsRef = useRef<ConceptItem[]>([])
+
+  // 학년 변경 시 단원+개념 한 번에 로드 (단일 API 호출)
   useEffect(() => {
     setChapterFilter('')
     setConceptFilter('')
     if (gradeFilter) {
+      const controller = new AbortController()
+      setChaptersLoading(true)
+      setConceptsLoading(true)
       api
-        .get<{ success: boolean; data: ChapterItem[] }>(
-          `/api/v1/questions/chapters-list?grade=${gradeFilter}`
+        .get<{ success: boolean; data: { chapters: ChapterItem[]; concepts: ConceptItem[] } }>(
+          `/api/v1/questions/filter-options?grade=${gradeFilter}`,
+          { timeout: 10000, signal: controller.signal },
         )
-        .then((res) => setChapters(res.data.data))
-        .catch(() => setChapters([]))
+        .then((res) => {
+          setChapters(res.data.data.chapters)
+          setConcepts(res.data.data.concepts)
+          allConceptsRef.current = res.data.data.concepts
+        })
+        .catch(() => {
+          if (!controller.signal.aborted) {
+            setChapters([])
+            setConcepts([])
+            allConceptsRef.current = []
+          }
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) {
+            setChaptersLoading(false)
+            setConceptsLoading(false)
+          }
+        })
+      return () => controller.abort()
     } else {
       setChapters([])
+      setConcepts([])
+      allConceptsRef.current = []
+      setChaptersLoading(false)
+      setConceptsLoading(false)
     }
   }, [gradeFilter])
 
-  // 단원 변경 시 개념 로드
+  // 단원 변경 시 개념 필터링 (로컬, API 호출 없음)
   useEffect(() => {
     setConceptFilter('')
     if (chapterFilter) {
-      api
-        .get<{ success: boolean; data: ConceptItem[] }>(
-          `/api/v1/questions/concepts-list?chapter_id=${chapterFilter}`
-        )
-        .then((res) => setConcepts(res.data.data))
-        .catch(() => setConcepts([]))
-    } else if (gradeFilter) {
-      api
-        .get<{ success: boolean; data: ConceptItem[] }>(
-          `/api/v1/questions/concepts-list?grade=${gradeFilter}`
-        )
-        .then((res) => setConcepts(res.data.data))
-        .catch(() => setConcepts([]))
+      const ch = chapters.find((c) => c.id === chapterFilter)
+      if (ch && ch.concept_ids.length > 0) {
+        const ids = new Set(ch.concept_ids)
+        setConcepts(allConceptsRef.current.filter((c) => ids.has(c.id)))
+      } else {
+        setConcepts([])
+      }
     } else {
-      setConcepts([])
+      // 단원 미선택 → 학년 전체 개념 복원
+      setConcepts(allConceptsRef.current)
     }
-  }, [chapterFilter, gradeFilter])
+  }, [chapterFilter, chapters])
 
-  const fetchQuestions = useCallback(async () => {
+  // 학기별 개념 그룹 (optgroup용)
+  const conceptGroups = useMemo(() => {
+    if (chapters.length === 0 || concepts.length === 0) return undefined
+    if (chapterFilter) return undefined // 단원 선택 시 flat
+    const conceptMap = new Map(concepts.map((c) => [c.id, c]))
+    const useSemester = gradeFilter && !gradeFilter.startsWith('high_')
+
+    type Entry = { chNum: number; value: string; label: string }
+    const entries: Entry[] = []
+    const assigned = new Set<string>()
+    for (const ch of chapters) {
+      const displayNum = ch.chapter_number <= 6 ? ch.chapter_number : ch.chapter_number - 6
+      for (const cid of ch.concept_ids) {
+        const c = conceptMap.get(cid)
+        if (c) {
+          entries.push({ chNum: ch.chapter_number, value: c.id, label: `${displayNum}. ${c.name}` })
+          assigned.add(cid)
+        }
+      }
+    }
+    for (const c of concepts) {
+      if (!assigned.has(c.id)) entries.push({ chNum: 999, value: c.id, label: c.name })
+    }
+
+    if (useSemester) {
+      const s1 = entries.filter((e) => e.chNum <= 6)
+      const s2 = entries.filter((e) => e.chNum > 6 && e.chNum < 999)
+      const etc = entries.filter((e) => e.chNum === 999)
+      const groups: { label: string; options: { value: string; label: string }[] }[] = []
+      if (s1.length > 0) groups.push({ label: '1학기', options: s1 })
+      if (s2.length > 0) groups.push({ label: '2학기', options: s2 })
+      if (etc.length > 0) groups.push({ label: '기타', options: etc })
+      return groups.length > 0 ? groups : undefined
+    }
+    // 고등 또는 기타: 단원번호 prefix 붙여서 flat
+    return undefined
+  }, [chapters, concepts, chapterFilter, gradeFilter])
+
+  // flat용 개념 옵션 (그룹 미적용 시: 단원 선택됨 or 고등)
+  const conceptOptionsFlat = useMemo(() => {
+    if (conceptGroups) return undefined // 그룹 사용 시 불필요
+    if (concepts.length === 0) return []
+    if (chapterFilter) {
+      // 단원 선택 시: 단순 개념 이름만
+      return concepts.map((c) => ({ value: c.id, label: c.name }))
+    }
+    // 고등: 단원번호 prefix
+    const conceptToChNum = new Map<string, number>()
+    for (const ch of chapters) {
+      for (const cid of ch.concept_ids) conceptToChNum.set(cid, ch.chapter_number)
+    }
+    return concepts.map((c) => {
+      const raw = conceptToChNum.get(c.id)
+      const num = raw ? (raw <= 6 ? raw : raw - 6) : 0
+      return { value: c.id, label: num > 0 ? `${num}. ${c.name}` : c.name }
+    })
+  }, [conceptGroups, concepts, chapters, chapterFilter])
+
+  // 학기별 단원 그룹 (optgroup용)
+  const chapterGroups = useMemo(() => {
+    if (chapters.length === 0) return undefined
+    const useSemester = gradeFilter && !gradeFilter.startsWith('high_')
+    if (!useSemester) {
+      // 고등: flat, 이름에서 중복 번호 제거
+      return undefined
+    }
+    const s1 = chapters.filter((ch) => ch.chapter_number <= 6)
+    const s2 = chapters.filter((ch) => ch.chapter_number > 6)
+    const groups: { label: string; options: { value: string; label: string }[] }[] = []
+    if (s1.length > 0) groups.push({ label: '1학기', options: s1.map((ch) => ({ value: ch.id, label: `${ch.chapter_number}. ${stripChapterNum(ch.name)}` })) })
+    if (s2.length > 0) groups.push({ label: '2학기', options: s2.map((ch) => ({ value: ch.id, label: `${ch.chapter_number - 6}. ${stripChapterNum(ch.name)}` })) })
+    return groups.length > 0 ? groups : undefined
+  }, [chapters, gradeFilter])
+
+  // flat용 단원 옵션 (고등 등 그룹 미적용 시)
+  const chapterOptionsFlat = useMemo(() => {
+    if (chapterGroups) return undefined
+    return chapters.map((ch) => ({ value: ch.id, label: `${ch.chapter_number}. ${stripChapterNum(ch.name)}` }))
+  }, [chapterGroups, chapters])
+
+  // 문제 목록 fetch
+  const fetchRef = useRef(0)
+  const fetchQuestionsRef = useRef<(targetPage: number) => Promise<void>>()
+
+  const fetchQuestions = useCallback(async (targetPage: number) => {
+    const fetchId = ++fetchRef.current
     try {
       setIsLoading(true)
       setError('')
-      const params = new URLSearchParams({ page: page.toString(), page_size: '30' })
+      const params = new URLSearchParams({ page: targetPage.toString(), page_size: '30' })
       if (gradeFilter) params.append('grade', gradeFilter)
       if (categoryFilter) params.append('category', categoryFilter)
       if (typeFilter) params.append('question_type', typeFilter)
@@ -183,31 +307,38 @@ export function QuestionBankPage() {
       if (difficultyFilter) params.append('difficulty', difficultyFilter.toString())
       if (chapterFilter) params.append('chapter_id', chapterFilter)
       if (conceptFilter) params.append('concept_id', conceptFilter)
-      if (searchQuery.trim()) params.append('search', searchQuery.trim())
+      if (debouncedSearch.trim()) params.append('search', debouncedSearch.trim())
 
       const res = await api.get<{
         success: boolean
         data: PaginatedResponse<QuestionItem>
-      }>(`/api/v1/questions?${params}`)
+      }>(`/api/v1/questions?${params}`, { timeout: 15000 })
+
+      if (fetchId !== fetchRef.current) return
 
       setQuestions(res.data.data.items)
       setTotal(res.data.data.total)
       setTotalPages(res.data.data.total_pages)
     } catch {
+      if (fetchId !== fetchRef.current) return
       setError('문제 목록을 불러오는데 실패했습니다.')
     } finally {
-      setIsLoading(false)
+      if (fetchId === fetchRef.current) setIsLoading(false)
     }
-  }, [page, gradeFilter, categoryFilter, typeFilter, partFilter, difficultyFilter, chapterFilter, conceptFilter, searchQuery])
+  }, [gradeFilter, categoryFilter, typeFilter, partFilter, difficultyFilter, chapterFilter, conceptFilter, debouncedSearch])
+  fetchQuestionsRef.current = fetchQuestions
 
-  useEffect(() => {
-    fetchQuestions()
-  }, [fetchQuestions])
-
-  // 필터 변경 시 페이지 리셋
+  // 필터 변경 → 페이지 1로 리셋 + fetch
   useEffect(() => {
     setPage(1)
-  }, [gradeFilter, categoryFilter, typeFilter, partFilter, difficultyFilter, chapterFilter, conceptFilter, searchQuery])
+    fetchQuestions(1)
+  }, [fetchQuestions])
+
+  // 페이지 변경 핸들러 (버튼 클릭 전용, effect 불필요)
+  const handlePageChange = useCallback((newPage: number) => {
+    setPage(newPage)
+    fetchQuestionsRef.current?.(newPage)
+  }, [])
 
   const resetFilters = () => {
     setGradeFilter('')
@@ -218,6 +349,7 @@ export function QuestionBankPage() {
     setChapterFilter('')
     setConceptFilter('')
     setSearchQuery('')
+    setDebouncedSearch('')
     setPage(1)
   }
 
@@ -271,19 +403,20 @@ export function QuestionBankPage() {
               label="단원"
               value={chapterFilter}
               onChange={setChapterFilter}
-              options={chapters.map((ch) => ({
-                value: ch.id,
-                label: `${ch.chapter_number}. ${ch.name}`,
-              }))}
+              options={chapterOptionsFlat}
+              groups={chapterGroups}
               disabled={!gradeFilter}
+              loading={chaptersLoading}
             />
             {/* 개념 */}
             <FilterSelect
               label="개념"
               value={conceptFilter}
               onChange={setConceptFilter}
-              options={concepts.map((c) => ({ value: c.id, label: c.name }))}
+              options={conceptOptionsFlat}
+              groups={conceptGroups}
               disabled={!gradeFilter}
+              loading={conceptsLoading}
             />
             {/* 카테고리 */}
             <FilterSelect
@@ -424,7 +557,7 @@ export function QuestionBankPage() {
               </span>
               <div className="flex gap-1">
                 <button
-                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  onClick={() => handlePageChange(Math.max(1, page - 1))}
                   disabled={page <= 1}
                   className="rounded-lg border px-3 py-1 text-xs disabled:opacity-40 hover:bg-gray-50"
                 >
@@ -444,7 +577,7 @@ export function QuestionBankPage() {
                   return (
                     <button
                       key={p}
-                      onClick={() => setPage(p)}
+                      onClick={() => handlePageChange(p)}
                       className={`rounded-lg px-3 py-1 text-xs font-medium ${
                         p === page
                           ? 'bg-primary-500 text-white'
@@ -456,7 +589,7 @@ export function QuestionBankPage() {
                   )
                 })}
                 <button
-                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  onClick={() => handlePageChange(Math.min(totalPages, page + 1))}
                   disabled={page >= totalPages}
                   className="rounded-lg border px-3 py-1 text-xs disabled:opacity-40 hover:bg-gray-50"
                 >
@@ -487,13 +620,17 @@ function FilterSelect({
   value,
   onChange,
   options,
+  groups,
   disabled,
+  loading,
 }: {
   label: string
   value: string | number
   onChange: (v: string) => void
-  options: { value: string | number; label: string }[]
+  options?: { value: string | number; label: string }[]
+  groups?: { label: string; options: { value: string | number; label: string }[] }[]
   disabled?: boolean
+  loading?: boolean
 }) {
   return (
     <div>
@@ -501,15 +638,21 @@ function FilterSelect({
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        disabled={disabled}
+        disabled={disabled || loading}
         className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-400 disabled:bg-gray-100 disabled:text-gray-400"
       >
-        <option value="">전체</option>
-        {options.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-          </option>
-        ))}
+        <option value="">{loading ? '불러오는 중...' : '전체'}</option>
+        {groups
+          ? groups.map((g) => (
+              <optgroup key={g.label} label={g.label}>
+                {g.options.map((o) => (
+                  <option key={o.value} value={o.value}>{o.label}</option>
+                ))}
+              </optgroup>
+            ))
+          : options?.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
+            ))}
       </select>
     </div>
   )

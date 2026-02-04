@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, String, Text, func, Table, Column
+from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, Index, String, Text, func, Table, Column
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -28,6 +28,9 @@ class Concept(Base):
     """수학 개념 모델."""
 
     __tablename__ = "concepts"
+    __table_args__ = (
+        Index("ix_concept_grade_name", "grade", "name"),
+    )
 
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid4())

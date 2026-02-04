@@ -1,6 +1,6 @@
 """채점 서비스."""
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.question import Question
@@ -135,7 +135,9 @@ class GradingService:
             await self.db.rollback()
             raise
 
-        answered_count = len(attempt.answer_logs)
+        answered_count = await self.db.scalar(
+            select(func.count(AnswerLog.id)).where(AnswerLog.attempt_id == attempt.id)
+        ) or 0
         questions_remaining = attempt.total_count - answered_count
 
         return {
@@ -220,7 +222,9 @@ class GradingService:
             raise
 
         # 남은 문제 수 계산
-        answered_count = len(attempt.answer_logs)
+        answered_count = await self.db.scalar(
+            select(func.count(AnswerLog.id)).where(AnswerLog.attempt_id == attempt.id)
+        ) or 0
         questions_remaining = attempt.total_count - answered_count
 
         return {

@@ -1,5 +1,6 @@
 """인증 API 엔드포인트."""
 
+from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
@@ -8,6 +9,8 @@ import os
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.security import verify_token as _verify_jwt
 
 _testing = os.environ.get("TESTING") == "1"
 
@@ -50,9 +53,8 @@ def get_auth_service(db: AsyncSession = Depends(get_db)) -> AuthService:
 
 async def get_current_user(
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(security)],
-    auth_service: AuthService = Depends(get_auth_service),
 ) -> UserResponse:
-    """현재 사용자 조회."""
+    """현재 사용자 조회 (JWT 페이로드에서 직접 반환, DB 조회 없음)."""
     if not credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -65,7 +67,7 @@ async def get_current_user(
             },
         )
 
-    payload = auth_service.verify_token(credentials.credentials)
+    payload = _verify_jwt(credentials.credentials)
     if not payload:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -78,20 +80,33 @@ async def get_current_user(
             },
         )
 
-    user = await auth_service.get_user_by_id(payload["sub"])
-    if not user:
+    # JWT 페이로드에 사용자 정보가 있으면 DB 조회 없이 반환
+    try:
+        now = datetime.now(timezone.utc)
+        return UserResponse(
+            id=payload["sub"],
+            login_id=payload.get("login_id", ""),
+            name=payload.get("name", ""),
+            role=payload.get("role", "student"),
+            grade=payload.get("grade"),
+            class_id=payload.get("class_id"),
+            level=payload.get("level", 1),
+            total_xp=payload.get("total_xp", 0),
+            current_streak=payload.get("current_streak", 0),
+            created_at=now,
+            updated_at=now,
+        )
+    except Exception:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail={
                 "success": False,
                 "error": {
-                    "code": "USER_NOT_FOUND",
-                    "message": "사용자를 찾을 수 없습니다.",
+                    "code": "INVALID_TOKEN",
+                    "message": "토큰 데이터가 유효하지 않습니다.",
                 },
             },
         )
-
-    return UserResponse.model_validate(user)
 
 
 def require_role(*roles: UserRole):
@@ -136,7 +151,7 @@ async def login(
             },
         )
 
-    access_token = auth_service.create_access_token(user.id)
+    access_token = auth_service.create_access_token_for_user(user)
     refresh_token = auth_service.create_refresh_token(user.id)
 
     # 리프레시 토큰 저장
@@ -219,8 +234,12 @@ async def refresh_token(
     # 기존 토큰 무효화
     await auth_service.revoke_refresh_token(refresh_token_cookie)
 
-    # 새 토큰 발급
-    new_access_token = auth_service.create_access_token(user_id)
+    # 새 토큰 발급 (사용자 정보 포함)
+    user = await auth_service.get_user_by_id(user_id)
+    if user:
+        new_access_token = auth_service.create_access_token_for_user(user)
+    else:
+        new_access_token = auth_service.create_access_token(user_id)
     new_refresh_token = auth_service.create_refresh_token(user_id)
     await auth_service.save_refresh_token(user_id, new_refresh_token)
 

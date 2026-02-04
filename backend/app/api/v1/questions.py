@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func as sa_func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import contains_eager, selectinload
 
 from app.core.database import get_db
 from app.models.chapter import Chapter
@@ -127,10 +128,13 @@ async def create_questions_batch(
         questions.append(q)
 
     await db.commit()
-    for q in questions:
-        await db.refresh(q)
 
-    return ApiResponse(data=[_to_question_with_answer(q) for q in questions])
+    # 배치 재조회 (개별 refresh 대신 한번에 조회)
+    question_ids = [q.id for q in questions]
+    stmt = select(Question).where(Question.id.in_(question_ids)).options(selectinload(Question.concept))
+    refreshed = list((await db.scalars(stmt)).all())
+
+    return ApiResponse(data=[_to_question_with_answer(q) for q in refreshed])
 
 
 # ===========================
@@ -156,10 +160,13 @@ async def list_questions(
     """문제 목록 조회 (필터링/페이징)."""
     stmt = select(Question).where(Question.is_active.is_(True))
 
+    joined_concept = False
     if concept_id:
         stmt = stmt.where(Question.concept_id == concept_id)
     if grade:
         stmt = stmt.join(Concept).where(Concept.grade == grade)
+        stmt = stmt.options(contains_eager(Question.concept))
+        joined_concept = True
     if category:
         stmt = stmt.where(Question.category == category)
     if part:
@@ -175,20 +182,22 @@ async def list_questions(
     if search:
         stmt = stmt.where(Question.content.ilike(f"%{search}%"))
 
+    # JOIN 없으면 selectinload 명시 (모델 기본 selectin 대신 제어)
+    if not joined_concept:
+        stmt = stmt.options(selectinload(Question.concept))
+
     # 총 개수 계산
     count_stmt = select(sa_func.count()).select_from(stmt.subquery())
     total = await db.scalar(count_stmt)
 
     # 페이징 적용
     stmt = stmt.order_by(Question.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
-    questions = (await db.scalars(stmt)).all()
+    questions = (await db.scalars(stmt)).unique().all()
 
-    # concept_id → chapter.name 매핑
-    chapters = (await db.scalars(select(Chapter))).all()
-    concept_chapter_map: dict[str, str] = {}
-    for ch in chapters:
-        for cid in ch.concept_ids or []:
-            concept_chapter_map[cid] = ch.name
+    # concept_id → chapter.name 매핑 (해당 문제의 concept/grade만 조회)
+    q_concept_ids = {q.concept_id for q in questions}
+    q_grades = {q.concept.grade for q in questions if q.concept and q.concept.grade}
+    concept_chapter_map = await _build_concept_chapter_map(db, q_concept_ids, q_grades)
 
     return ApiResponse(
         data=PaginatedResponse(
@@ -201,28 +210,74 @@ async def list_questions(
     )
 
 
+@router.get("/filter-options", response_model=ApiResponse[dict])
+async def get_filter_options(
+    grade: Grade | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(get_current_user),
+):
+    """필터용 단원+개념 목록을 한 번에 조회 (단일 라운드트립)."""
+    # 단원 조회
+    ch_stmt = select(
+        Chapter.id, Chapter.name, Chapter.grade,
+        Chapter.chapter_number, Chapter.concept_ids,
+    ).where(Chapter.is_active.is_(True))
+    if grade:
+        ch_stmt = ch_stmt.where(Chapter.grade == grade)
+    ch_stmt = ch_stmt.order_by(Chapter.grade, Chapter.chapter_number)
+
+    # 개념 조회
+    co_stmt = select(Concept.id, Concept.name, Concept.grade)
+    if grade:
+        co_stmt = co_stmt.where(Concept.grade == grade)
+    co_stmt = co_stmt.order_by(Concept.name)
+
+    ch_rows, co_rows = (await db.execute(ch_stmt)).all(), (await db.execute(co_stmt)).all()
+    return ApiResponse(
+        data={
+            "chapters": [
+                {
+                    "id": r.id,
+                    "name": r.name,
+                    "grade": r.grade.value if hasattr(r.grade, "value") else r.grade,
+                    "chapter_number": r.chapter_number,
+                    "concept_ids": r.concept_ids or [],
+                }
+                for r in ch_rows
+            ],
+            "concepts": [
+                {"id": r.id, "name": r.name, "grade": r.grade.value if hasattr(r.grade, "value") else r.grade}
+                for r in co_rows
+            ],
+        }
+    )
+
+
 @router.get("/chapters-list", response_model=ApiResponse[list[dict]])
 async def list_chapters_for_filter(
     grade: Grade | None = Query(None),
     db: AsyncSession = Depends(get_db),
     _user: UserResponse = Depends(get_current_user),
 ):
-    """필터용 단원 목록 조회."""
-    stmt = select(Chapter).where(Chapter.is_active.is_(True))
+    """필터용 단원 목록 조회 (경량: 필요한 컬럼만 SELECT)."""
+    cols = select(
+        Chapter.id, Chapter.name, Chapter.grade,
+        Chapter.chapter_number, Chapter.concept_ids,
+    ).where(Chapter.is_active.is_(True))
     if grade:
-        stmt = stmt.where(Chapter.grade == grade)
-    stmt = stmt.order_by(Chapter.grade, Chapter.chapter_number)
-    chapters = (await db.scalars(stmt)).all()
+        cols = cols.where(Chapter.grade == grade)
+    cols = cols.order_by(Chapter.grade, Chapter.chapter_number)
+    rows = (await db.execute(cols)).all()
     return ApiResponse(
         data=[
             {
-                "id": ch.id,
-                "name": ch.name,
-                "grade": ch.grade.value if hasattr(ch.grade, "value") else ch.grade,
-                "chapter_number": ch.chapter_number,
-                "concept_ids": ch.concept_ids or [],
+                "id": r.id,
+                "name": r.name,
+                "grade": r.grade.value if hasattr(r.grade, "value") else r.grade,
+                "chapter_number": r.chapter_number,
+                "concept_ids": r.concept_ids or [],
             }
-            for ch in chapters
+            for r in rows
         ]
     )
 
@@ -234,21 +289,22 @@ async def list_concepts_for_filter(
     db: AsyncSession = Depends(get_db),
     _user: UserResponse = Depends(get_current_user),
 ):
-    """필터용 개념 목록 조회."""
+    """필터용 개념 목록 조회 (경량: id, name, grade만 SELECT)."""
+    cols = select(Concept.id, Concept.name, Concept.grade)
     if chapter_id:
         chapter = await db.get(Chapter, chapter_id)
         if chapter and chapter.concept_ids:
-            stmt = select(Concept).where(Concept.id.in_(chapter.concept_ids))
+            stmt = cols.where(Concept.id.in_(chapter.concept_ids))
         else:
             return ApiResponse(data=[])
     elif grade:
-        stmt = select(Concept).where(Concept.grade == grade)
+        stmt = cols.where(Concept.grade == grade)
     else:
-        stmt = select(Concept)
+        stmt = cols
     stmt = stmt.order_by(Concept.name)
-    concepts = (await db.scalars(stmt)).all()
+    rows = (await db.execute(stmt)).all()
     return ApiResponse(
-        data=[{"id": c.id, "name": c.name, "grade": c.grade.value if hasattr(c.grade, "value") else c.grade} for c in concepts]
+        data=[{"id": r.id, "name": r.name, "grade": r.grade.value if hasattr(r.grade, "value") else r.grade} for r in rows]
     )
 
 
@@ -276,12 +332,9 @@ async def get_questions_by_concept(
     )
     questions = (await db.scalars(stmt)).all()
 
-    # concept_id → chapter.name 매핑
-    chapters = (await db.scalars(select(Chapter))).all()
-    concept_chapter_map: dict[str, str] = {}
-    for ch in chapters:
-        for cid in ch.concept_ids or []:
-            concept_chapter_map[cid] = ch.name
+    # concept_id → chapter.name 매핑 (해당 concept의 grade만)
+    concept_grade = {concept.grade} if concept.grade else None
+    concept_chapter_map = await _build_concept_chapter_map(db, {concept_id}, concept_grade)
 
     return ApiResponse(data=[_to_question_with_answer(q, concept_chapter_map) for q in questions])
 
@@ -314,6 +367,24 @@ async def get_question_stats(
 # ===========================
 # 헬퍼
 # ===========================
+
+
+async def _build_concept_chapter_map(
+    db: AsyncSession, concept_ids: set[str], grades: set | None = None
+) -> dict[str, str]:
+    """concept_id → chapter.name 매핑 (필요한 grade의 chapter만 조회)."""
+    if not concept_ids:
+        return {}
+    stmt = select(Chapter)
+    if grades:
+        stmt = stmt.where(Chapter.grade.in_(grades))
+    chapters = (await db.scalars(stmt)).all()
+    result: dict[str, str] = {}
+    for ch in chapters:
+        for cid in ch.concept_ids or []:
+            if cid in concept_ids:
+                result[cid] = ch.name
+    return result
 
 
 def _to_question_with_answer(

@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.concept_mastery import ConceptMastery
-from app.models.concept import Concept
+from app.models.concept import Concept, concept_prerequisites
 from app.models.answer_log import AnswerLog
 from app.models.test_attempt import TestAttempt
 
@@ -183,22 +183,27 @@ class MasteryService:
         Returns:
             tuple: (모두 완료 여부, 미완료 개념 ID 리스트)
         """
-        concept = await self.db.get(Concept, concept_id)
-        if not concept or not concept.prerequisites:
+        # 선수 개념 ID 조회 (concept_prerequisites 테이블 직접 쿼리)
+        prereq_stmt = select(concept_prerequisites.c.prerequisite_id).where(
+            concept_prerequisites.c.concept_id == concept_id
+        )
+        prereq_ids = list((await self.db.scalars(prereq_stmt)).all())
+
+        if not prereq_ids:
             return True, []
 
+        # 배치로 마스터리 조회
+        mastery_stmt = select(ConceptMastery).where(
+            ConceptMastery.student_id == student_id,
+            ConceptMastery.concept_id.in_(prereq_ids),
+        )
+        masteries = {m.concept_id: m for m in (await self.db.scalars(mastery_stmt)).all()}
+
         unmet_prerequisites = []
-
-        for prereq in concept.prerequisites:
-            stmt = select(ConceptMastery).where(
-                ConceptMastery.student_id == student_id,
-                ConceptMastery.concept_id == prereq.id,
-            )
-            mastery = await self.db.scalar(stmt)
-
-            # 마스터리가 없거나 90% 미만이면 선수조건 미달
+        for prereq_id in prereq_ids:
+            mastery = masteries.get(prereq_id)
             if not mastery or mastery.mastery_percentage < MASTERY_THRESHOLD:
-                unmet_prerequisites.append(prereq.id)
+                unmet_prerequisites.append(prereq_id)
 
         return len(unmet_prerequisites) == 0, unmet_prerequisites
 
@@ -218,21 +223,24 @@ class MasteryService:
         if not mastery or not mastery.is_mastered:
             return []
 
-        # 이 개념을 선수조건으로 하는 다음 개념들 찾기
-        concept = await self.db.get(Concept, concept_id)
-        if not concept:
+        # 이 개념을 선수조건으로 하는 다음 개념들 찾기 (concept_prerequisites 직접 쿼리)
+        dep_stmt = select(concept_prerequisites.c.concept_id).where(
+            concept_prerequisites.c.prerequisite_id == concept_id
+        )
+        dependent_ids = list((await self.db.scalars(dep_stmt)).all())
+
+        if not dependent_ids:
             return []
 
         unlocked = []
 
-        # dependents: 이 개념을 선수로 요구하는 개념들
-        for next_concept in concept.dependents:
+        for next_concept_id in dependent_ids:
             # 선수조건 모두 충족되었는지 확인
-            all_met, _ = await self.check_prerequisites_met(student_id, next_concept.id)
+            all_met, _ = await self.check_prerequisites_met(student_id, next_concept_id)
 
             if all_met:
                 # 자동 해제
-                if await self.unlock_concept(student_id, next_concept.id):
-                    unlocked.append(next_concept.id)
+                if await self.unlock_concept(student_id, next_concept_id):
+                    unlocked.append(next_concept_id)
 
         return unlocked

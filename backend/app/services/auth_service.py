@@ -32,8 +32,19 @@ class AuthService:
         return verify_password(plain_password, hashed_password)
 
     def create_access_token(self, user_id: str) -> str:
-        """액세스 토큰 생성."""
+        """액세스 토큰 생성 (user_id만)."""
         return create_access_token(data={"sub": user_id})
+
+    def create_access_token_for_user(self, user) -> str:
+        """사용자 정보를 포함한 액세스 토큰 생성 (DB 조회 없이 인증 가능)."""
+        return create_access_token(data={
+            "sub": user.id,
+            "role": user.role.value if hasattr(user.role, "value") else user.role,
+            "name": user.name,
+            "login_id": user.login_id,
+            "grade": user.grade.value if user.grade and hasattr(user.grade, "value") else user.grade,
+            "class_id": user.class_id,
+        })
 
     def create_refresh_token(self, user_id: str) -> str:
         """리프레시 토큰 생성."""

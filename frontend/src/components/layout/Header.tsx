@@ -45,6 +45,7 @@ export function Header() {
                   <NavLink to="/teacher/dashboard">대시보드</NavLink>
                   <NavLink to="/teacher/students">학생 관리</NavLink>
                   {isAdmin && <NavLink to="/admin/questions">문제 은행</NavLink>}
+                  {user?.role === 'master' && <NavLink to="/admin/generate">문제 생성</NavLink>}
                   {isAdmin && <NavLink to="/admin/users">계정 관리</NavLink>}
                 </>
               ) : (

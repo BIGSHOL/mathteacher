@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Integer, String, Text, func, CheckConstraint
+from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Index, Integer, String, Text, func, CheckConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -20,6 +20,8 @@ class Question(Base):
     __tablename__ = "questions"
     __table_args__ = (
         CheckConstraint("difficulty >= 1 AND difficulty <= 10", name="ck_question_difficulty_range"),
+        Index("ix_question_concept_type_diff_active", "concept_id", "question_type", "difficulty", "is_active"),
+        Index("ix_question_active_created", "is_active", "created_at"),
     )
 
     id: Mapped[str] = mapped_column(
@@ -55,7 +57,7 @@ class Question(Base):
     )
 
     # 상태
-    is_active: Mapped[bool] = mapped_column(default=True)
+    is_active: Mapped[bool] = mapped_column(default=True, index=True)
 
     # 타임스탬프
     created_at: Mapped[datetime] = mapped_column(

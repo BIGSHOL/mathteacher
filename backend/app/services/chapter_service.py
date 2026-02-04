@@ -4,8 +4,9 @@ from datetime import datetime, timezone
 
 from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
-from app.models.chapter import Chapter
+from app.models.chapter import Chapter, chapter_prerequisites
 from app.models.chapter_progress import ChapterProgress
 from app.models.concept_mastery import ConceptMastery
 from app.models.test_attempt import TestAttempt
@@ -69,24 +70,21 @@ class ChapterService:
 
         progress = await self.get_or_create_progress(student_id, chapter_id)
 
-        # 1. 개념별 마스터리 수집
+        # 1. 개념별 마스터리 배치 조회 (루프 쿼리 → 단일 쿼리)
         concept_ids = chapter.concept_ids or []
-        concepts_mastery = {}
+        concepts_mastery = {cid: 0 for cid in concept_ids}
         mastered_count = 0
 
-        for concept_id in concept_ids:
+        if concept_ids:
             stmt = select(ConceptMastery).where(
                 ConceptMastery.student_id == student_id,
-                ConceptMastery.concept_id == concept_id,
+                ConceptMastery.concept_id.in_(concept_ids),
             )
-            mastery = await self.db.scalar(stmt)
-
-            if mastery:
-                concepts_mastery[concept_id] = mastery.mastery_percentage
-                if mastery.mastery_percentage >= MASTERY_THRESHOLD:
+            masteries = list((await self.db.scalars(stmt)).all())
+            for m in masteries:
+                concepts_mastery[m.concept_id] = m.mastery_percentage
+                if m.mastery_percentage >= MASTERY_THRESHOLD:
                     mastered_count += 1
-            else:
-                concepts_mastery[concept_id] = 0
 
         progress.concepts_mastery = concepts_mastery
 
@@ -229,28 +227,47 @@ class ChapterService:
         return True
 
     async def _auto_unlock_next_chapters(self, student_id: str, chapter_id: str) -> list[str]:
-        """단원 완료 시 다음 단원 자동 해제."""
-        chapter = await self.db.get(Chapter, chapter_id)
-        if not chapter:
+        """단원 완료 시 다음 단원 자동 해제 (명시적 쿼리로 lazy='raise' 대응)."""
+        # chapter_prerequisites 테이블에서 이 단원을 선수조건으로 가진 다음 단원 조회
+        dependent_stmt = (
+            select(Chapter)
+            .where(
+                Chapter.id.in_(
+                    select(chapter_prerequisites.c.chapter_id).where(
+                        chapter_prerequisites.c.prerequisite_id == chapter_id
+                    )
+                )
+            )
+            .options(selectinload(Chapter.prerequisites))
+        )
+        next_chapters = list((await self.db.scalars(dependent_stmt)).all())
+        if not next_chapters:
             return []
 
         unlocked = []
 
-        # 이 단원을 선수조건으로 하는 다음 단원들
-        for next_chapter in chapter.dependents:
-            # 선수조건 모두 충족되었는지 확인
-            all_met = True
+        # 각 다음 단원의 선수조건 완료 여부 배치 확인
+        all_prereq_ids = set()
+        for nc in next_chapters:
+            for prereq in nc.prerequisites:
+                all_prereq_ids.add(prereq.id)
 
-            for prereq in next_chapter.prerequisites:
-                stmt = select(ChapterProgress).where(
-                    ChapterProgress.student_id == student_id,
-                    ChapterProgress.chapter_id == prereq.id,
-                )
-                prereq_progress = await self.db.scalar(stmt)
+        # 선수조건 챕터들의 진행 상황을 한번에 조회
+        prereq_progress_map: dict[str, bool] = {}
+        if all_prereq_ids:
+            progress_stmt = select(ChapterProgress).where(
+                ChapterProgress.student_id == student_id,
+                ChapterProgress.chapter_id.in_(all_prereq_ids),
+            )
+            prereq_progresses = list((await self.db.scalars(progress_stmt)).all())
+            for p in prereq_progresses:
+                prereq_progress_map[p.chapter_id] = p.is_completed
 
-                if not prereq_progress or not prereq_progress.is_completed:
-                    all_met = False
-                    break
+        for next_chapter in next_chapters:
+            all_met = all(
+                prereq_progress_map.get(prereq.id, False)
+                for prereq in next_chapter.prerequisites
+            )
 
             if all_met:
                 if await self.unlock_chapter(student_id, next_chapter.id):
@@ -259,7 +276,7 @@ class ChapterService:
         return unlocked
 
     async def get_student_chapters(self, student_id: str, grade: str | None = None) -> list[dict]:
-        """학생의 단원별 진행 상황 조회."""
+        """학생의 단원별 진행 상황 조회 (배치 쿼리)."""
         stmt = select(Chapter).where(Chapter.is_active == True)  # noqa: E712
 
         if grade:
@@ -268,13 +285,21 @@ class ChapterService:
         stmt = stmt.order_by(Chapter.chapter_number)
         chapters = list((await self.db.scalars(stmt)).all())
 
+        if not chapters:
+            return []
+
+        # 모든 챕터의 진행 상황을 한번에 조회
+        chapter_ids = [ch.id for ch in chapters]
+        progress_stmt = select(ChapterProgress).where(
+            ChapterProgress.student_id == student_id,
+            ChapterProgress.chapter_id.in_(chapter_ids),
+        )
+        progresses = list((await self.db.scalars(progress_stmt)).all())
+        progress_map = {p.chapter_id: p for p in progresses}
+
         result = []
         for chapter in chapters:
-            stmt = select(ChapterProgress).where(
-                ChapterProgress.student_id == student_id,
-                ChapterProgress.chapter_id == chapter.id,
-            )
-            progress = await self.db.scalar(stmt)
+            progress = progress_map.get(chapter.id)
 
             result.append({
                 "chapter_id": chapter.id,
@@ -315,7 +340,7 @@ class ChapterService:
                     "message": f"{chapter.name} {in_progress.overall_progress}% 완료! 계속하기",
                 }
 
-        # 2. 완료된 단원이 있으면 다음 단원 추천
+        # 2. 완료된 단원이 있으면 다음 단원 추천 (명시적 쿼리)
         stmt = (
             select(ChapterProgress)
             .where(
@@ -328,14 +353,22 @@ class ChapterService:
         completed = await self.db.scalar(stmt)
 
         if completed:
-            chapter = await self.db.get(Chapter, completed.chapter_id)
-            if chapter and chapter.dependents:
-                next_chapter = chapter.dependents[0]
+            # dependents를 명시적 쿼리로 조회 (lazy='raise' 대응)
+            dependent_stmt = select(Chapter).where(
+                Chapter.id.in_(
+                    select(chapter_prerequisites.c.chapter_id).where(
+                        chapter_prerequisites.c.prerequisite_id == completed.chapter_id
+                    )
+                )
+            )
+            dependents = list((await self.db.scalars(dependent_stmt)).all())
+            if dependents:
+                next_chapter = dependents[0]
                 return {
                     "type": "next",
                     "chapter_id": next_chapter.id,
                     "chapter_name": next_chapter.name,
-                    "message": f"축하합니다! 다음 단원: {next_chapter.name} 🔓",
+                    "message": f"축하합니다! 다음 단원: {next_chapter.name}",
                 }
 
         return None

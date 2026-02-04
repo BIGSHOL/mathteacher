@@ -42,9 +42,9 @@ export function DailyLabPage() {
 
     try {
       const [todayRes, historyRes] = await Promise.all([
-        api.get<{ success: boolean; data: DailyTestTodayResponse & { ai_generated_count?: number } }>('/api/v1/daily-tests/today'),
+        api.get<{ success: boolean; data: DailyTestTodayResponse & { ai_generated_count?: number } }>('/api/v1/daily-tests/today', { timeout: 15000 }),
         api.get<{ success: boolean; data: PaginatedResponse<DailyTestRecord> }>(
-          '/api/v1/daily-tests/history?page=1&page_size=100'
+          '/api/v1/daily-tests/history?page=1&page_size=30', { timeout: 10000 }
         ),
       ])
       setTodayData(todayRes.data.data)

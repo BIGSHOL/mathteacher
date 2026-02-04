@@ -7,6 +7,7 @@ import api from '../../lib/api'
 import { useAuthStore } from '../../store/authStore'
 import { QuestionCard } from '../../components/test/QuestionCard'
 import { FeedbackModal } from '../../components/test/FeedbackModal'
+import { ReportQuestionModal } from '../../components/test/ReportQuestionModal'
 import { ProgressBar } from '../../components/test/ProgressBar'
 import { ComboDisplay } from '../../components/test/ComboDisplay'
 import { CountdownTimer } from '../../components/test/CountdownTimer'
@@ -178,6 +179,9 @@ export function TestPlayPage() {
 
   // 빈칸 채우기 상태
   const [blankValues, setBlankValues] = useState<Record<string, string>>({})
+
+  // 문제 신고 상태
+  const [showReportModal, setShowReportModal] = useState(false)
 
   const isAdaptive = attemptDetail?.attempt.is_adaptive ?? false
   const totalQuestions = attemptDetail?.attempt.total_count ?? 0
@@ -566,7 +570,7 @@ export function TestPlayPage() {
           </AnimatePresence>
         )}
 
-        {/* 힌트 영역 */}
+        {/* 힌트 + 신고 영역 */}
         {!showFeedback && !isFetchingNext && (
           <div className="mt-4">
             {hintText && (
@@ -577,17 +581,31 @@ export function TestPlayPage() {
                 <p className="text-sm text-gray-700">{hintText}</p>
               </div>
             )}
-            {hintLevel < MAX_HINTS && (
+            <div className="flex items-center justify-between">
+              {hintLevel < MAX_HINTS ? (
+                <button
+                  onClick={handleRequestHint}
+                  disabled={isLoadingHint}
+                  className="text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
+                >
+                  {isLoadingHint
+                    ? '힌트 생성 중...'
+                    : `힌트 보기 (${MAX_HINTS - hintLevel}회 남음)`}
+                </button>
+              ) : (
+                <span />
+              )}
               <button
-                onClick={handleRequestHint}
-                disabled={isLoadingHint}
-                className="text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
+                onClick={() => setShowReportModal(true)}
+                className="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-red-500"
+                title="문제 신고"
               >
-                {isLoadingHint
-                  ? '힌트 생성 중...'
-                  : `힌트 보기 (${MAX_HINTS - hintLevel}회 남음)`}
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                </svg>
+                신고
               </button>
-            )}
+            </div>
           </div>
         )}
 
@@ -629,6 +647,15 @@ export function TestPlayPage() {
       <AnimatePresence>
         {difficultyChange && <DifficultyChangeToast change={difficultyChange} />}
       </AnimatePresence>
+
+      {/* 문제 신고 모달 */}
+      {currentQuestion && (
+        <ReportQuestionModal
+          isOpen={showReportModal}
+          questionId={currentQuestion.id}
+          onClose={() => setShowReportModal(false)}
+        />
+      )}
 
       {/* 시험 중지 확인 모달 */}
       <AnimatePresence>

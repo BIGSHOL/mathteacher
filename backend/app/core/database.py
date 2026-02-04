@@ -22,7 +22,16 @@ _async_kwargs: dict = {}
 if _async_url.startswith("sqlite"):
     _async_kwargs["connect_args"] = {"check_same_thread": False}
 
-async_engine = create_async_engine(_async_url, **_async_kwargs)
+_pool_kwargs: dict = {}
+if not _async_url.startswith("sqlite"):
+    _pool_kwargs = {
+        "pool_size": 10,
+        "max_overflow": 20,
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
+
+async_engine = create_async_engine(_async_url, **_async_kwargs, **_pool_kwargs)
 
 # Async session factory
 AsyncSessionLocal = async_sessionmaker(

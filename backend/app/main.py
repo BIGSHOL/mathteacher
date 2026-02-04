@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
@@ -15,6 +16,7 @@ from app.core.database import Base, sync_engine, AsyncSessionLocal, SyncSessionL
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("google_genai").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 # Rate Limiter 설정
@@ -76,21 +78,33 @@ def init_db():
             db.add(teacher)
             db.flush()
 
-            # Create class
-            test_class = Class(
+            # Create classes (학년별 테스트반)
+            test_class_m1 = Class(
                 id="class-001",
-                name="테스트반",
+                name="중1 테스트반",
                 teacher_id="teacher-001",
                 grade="middle_1",
             )
-            db.add(test_class)
+            test_class_e3 = Class(
+                id="class-002",
+                name="초3 테스트반",
+                teacher_id="teacher-001",
+                grade="elementary_3",
+            )
+            test_class_h1 = Class(
+                id="class-003",
+                name="고1 테스트반",
+                teacher_id="teacher-001",
+                grade="high_1",
+            )
+            db.add_all([test_class_m1, test_class_e3, test_class_h1])
             db.flush()
 
-            # Create student
-            student = User(
+            # Create students (학년별 테스트 학생)
+            student_m1 = User(
                 id="student-001",
                 login_id="student01",
-                name="테스트 학생",
+                name="테스트 학생(중1)",
                 role="student",
                 grade="middle_1",
                 class_id="class-001",
@@ -101,7 +115,35 @@ def init_db():
                 current_streak=5,
                 max_streak=7,
             )
-            db.add(student)
+            student_e3 = User(
+                id="student-002",
+                login_id="student02",
+                name="테스트 학생(초3)",
+                role="student",
+                grade="elementary_3",
+                class_id="class-002",
+                hashed_password=auth_service.hash_password("password123"),
+                is_active=True,
+                level=1,
+                total_xp=0,
+                current_streak=0,
+                max_streak=0,
+            )
+            student_h1 = User(
+                id="student-003",
+                login_id="student03",
+                name="테스트 학생(고1)",
+                role="student",
+                grade="high_1",
+                class_id="class-003",
+                hashed_password=auth_service.hash_password("password123"),
+                is_active=True,
+                level=1,
+                total_xp=0,
+                current_streak=0,
+                max_streak=0,
+            )
+            db.add_all([student_m1, student_e3, student_h1])
 
             # Create concept
             concept = Concept(
@@ -1316,26 +1358,154 @@ def init_db():
             for i in range(1, len(m1_chapters)):
                 m1_chapters[i].prerequisites.append(m1_chapters[i - 1])
 
-            # student@test.com에게 1단원 해제 (학습 시작 가능)
-            student_user = db.query(User).filter(User.login_id == "student01").first()
-            if student_user:
-                # 1단원 해제
-                ch1_progress = ChapterProgress(
-                    student_id=student_user.id,
-                    chapter_id="chapter-m1-01",
-                    is_unlocked=True,
-                    unlocked_at=datetime.now(timezone.utc),
-                )
-                db.add(ch1_progress)
+            # =============================================
+            # 전체 학년 Chapter 데이터 (2022 개정 교육과정)
+            # 초3~초6: 12단원 (1학기 6 + 2학기 6)
+            # 중2: 6단원, 중3: 7단원
+            # 공통수학1(high_1): 4단원, 공통수학2(high_2): 3단원
+            # =============================================
+            _chapter_defs = {
+                # --- 초등학교 3학년 (12단원) ---
+                "e3": ("elementary_3", [
+                    ("1. 덧셈과 뺄셈", "세 자리 수의 덧셈과 뺄셈, 받아올림과 받아내림", ["concept-e3-add-sub"]),
+                    ("2. 평면도형", "선분, 반직선, 직선, 각, 직각", ["concept-e3-plane"]),
+                    ("3. 나눗셈", "등분제, 포함제, 곱셈과 나눗셈의 관계", ["concept-e3-div1"]),
+                    ("4. 곱셈", "(몇십몇)×(몇), 올림이 있는 곱셈, 분배법칙의 기초", ["concept-e3-mul1"]),
+                    ("5. 길이와 시간", "km와 m, 시간의 덧셈과 뺄셈", ["concept-e3-length-time"]),
+                    ("6. 분수와 소수", "분수의 개념, 소수의 개념, 분수와 소수의 관계", ["concept-e3-frac-dec"]),
+                    ("7. 곱셈 (2)", "(몇)×(몇십몇), (몇십몇)×(몇십몇)", ["concept-e3-mul2"]),
+                    ("8. 나눗셈 (2)", "(두 자리 수)÷(한 자리 수), 나머지가 있는 나눗셈", ["concept-e3-div2"]),
+                    ("9. 원", "원의 중심, 반지름, 지름, 컴퍼스 사용", ["concept-e3-circle"]),
+                    ("10. 들이와 무게", "L와 mL, kg과 g, 들이와 무게의 덧셈과 뺄셈", ["concept-e3-volume-weight"]),
+                    ("11. 분수 (2)", "단위분수, 진분수, 가분수, 대분수, 분수의 크기 비교", ["concept-e3-frac2"]),
+                    ("12. 자료의 정리", "그림그래프, 자료의 분류와 정리", ["concept-e3-data"]),
+                ]),
+                # --- 초등학교 4학년 (12단원) ---
+                "e4": ("elementary_4", [
+                    ("1. 큰 수", "만, 억, 조, 수의 크기 비교, 자릿값", ["concept-e4-big-num"]),
+                    ("2. 각도", "각의 크기, 예각·직각·둔각, 삼각형 내각의 합", ["concept-e4-angle"]),
+                    ("3. 곱셈과 나눗셈", "(세 자리 수)×(두 자리 수), (세 자리 수)÷(두 자리 수)", ["concept-e4-mul-div"]),
+                    ("4. 평면도형의 이동", "밀기, 뒤집기, 돌리기", ["concept-e4-transform"]),
+                    ("5. 막대그래프", "막대그래프 읽기와 그리기, 눈금 설정", ["concept-e4-bar-graph"]),
+                    ("6. 규칙 찾기", "수의 배열에서 규칙 찾기, 규칙을 식으로 나타내기", ["concept-e4-pattern"]),
+                    ("7. 분수의 덧셈과 뺄셈", "진분수·대분수의 덧셈과 뺄셈, 통분", ["concept-e4-frac-op"]),
+                    ("8. 삼각형", "이등변삼각형, 정삼각형, 예각·직각·둔각삼각형", ["concept-e4-triangle"]),
+                    ("9. 소수의 덧셈과 뺄셈", "소수 두 자리 수의 덧셈과 뺄셈", ["concept-e4-dec-op"]),
+                    ("10. 사각형", "수직과 평행, 평행사변형, 마름모, 사다리꼴", ["concept-e4-quad"]),
+                    ("11. 꺾은선그래프", "꺾은선그래프 읽기와 그리기, 변화 추이", ["concept-e4-line-graph"]),
+                    ("12. 다각형", "정다각형, 대각선, 다각형의 내각의 합", ["concept-e4-polygon"]),
+                ]),
+                # --- 초등학교 5학년 (12단원) ---
+                "e5": ("elementary_5", [
+                    ("1. 자연수의 혼합 계산", "연산의 우선순위, 괄호가 있는 식, 문장제 모델링", ["concept-e5-mixed-calc"]),
+                    ("2. 약수와 배수", "약수, 배수, 최대공약수, 최소공배수", ["concept-e5-divisor"]),
+                    ("3. 규칙과 대응", "두 양 사이의 관계, 대응 관계를 식으로 표현", ["concept-e5-correspondence"]),
+                    ("4. 약분과 통분", "분수의 기본 성질, 약분, 통분, 크기 비교", ["concept-e5-reduce"]),
+                    ("5. 분수의 덧셈과 뺄셈", "이분모 분수의 덧셈과 뺄셈, 대분수 혼합 계산", ["concept-e5-frac-add"]),
+                    ("6. 다각형의 둘레와 넓이", "직사각형, 평행사변형, 삼각형, 사다리꼴, 마름모의 넓이", ["concept-e5-polygon-area"]),
+                    ("7. 수의 범위와 어림하기", "이상, 이하, 초과, 미만, 올림, 버림, 반올림", ["concept-e5-range-rounding"]),
+                    ("8. 분수의 곱셈", "(분수)×(자연수), (자연수)×(분수), (분수)×(분수)", ["concept-e5-frac-mul"]),
+                    ("9. 합동과 대칭", "합동인 도형, 선대칭, 점대칭", ["concept-e5-congruence"]),
+                    ("10. 소수의 곱셈", "(소수)×(자연수), (소수)×(소수), 곱의 소수점 위치", ["concept-e5-dec-mul"]),
+                    ("11. 직육면체", "직육면체와 정육면체, 전개도, 겨냥도", ["concept-e5-cuboid"]),
+                    ("12. 평균과 가능성", "평균 구하기, 가능성의 표현, 경우의 수", ["concept-e5-average"]),
+                ]),
+                # --- 초등학교 6학년 (12단원) ---
+                "e6": ("elementary_6", [
+                    ("1. 분수의 나눗셈", "(자연수)÷(자연수)의 몫을 분수로, (분수)÷(자연수)", ["concept-e6-frac-div1"]),
+                    ("2. 각기둥과 각뿔", "각기둥과 각뿔의 구성 요소, 전개도", ["concept-e6-prism-pyramid"]),
+                    ("3. 소수의 나눗셈", "(소수)÷(자연수), 몫의 소수점 위치", ["concept-e6-dec-div1"]),
+                    ("4. 비와 비율", "비, 비율, 백분율, 기준량과 비교하는 양", ["concept-e6-ratio"]),
+                    ("5. 여러 가지 그래프", "띠그래프, 원그래프, 그래프 해석", ["concept-e6-graphs"]),
+                    ("6. 직육면체의 부피와 겉넓이", "부피 단위, 직육면체의 부피와 겉넓이 구하기", ["concept-e6-volume"]),
+                    ("7. 분수의 나눗셈 (2)", "(분수)÷(분수), 역수 활용", ["concept-e6-frac-div2"]),
+                    ("8. 소수의 나눗셈 (2)", "(소수)÷(소수), 소수점 이동 원리", ["concept-e6-dec-div2"]),
+                    ("9. 공간과 입체", "쌓기나무, 공간 감각, 위·앞·옆에서 본 모양", ["concept-e6-spatial"]),
+                    ("10. 비례식과 비례배분", "비례식의 성질, 비례배분", ["concept-e6-proportion"]),
+                    ("11. 원의 넓이", "원주율, 원의 둘레, 원의 넓이", ["concept-e6-circle-area"]),
+                    ("12. 원기둥, 원뿔, 구", "원기둥의 전개도와 겉넓이, 원뿔, 구의 특징", ["concept-e6-solids"]),
+                ]),
+                # --- 중학교 2학년 (6단원) ---
+                "m2": ("middle_2", [
+                    ("1. 유리수와 순환소수 / 식의 계산", "유한소수, 순환소수, 지수법칙, 다항식 계산", ["concept-m2-rational", "concept-m2-expression"]),
+                    ("2. 일차부등식과 연립방정식", "일차부등식 풀이, 연립일차방정식(가감법·대입법)", ["concept-m2-inequality", "concept-m2-simultaneous"]),
+                    ("3. 일차함수", "기울기, 절편, 그래프, 일차함수와 일차방정식", ["concept-m2-linear-func"]),
+                    ("4. 삼각형과 사각형의 성질", "이등변삼각형, 외심·내심, 평행사변형, 특수사각형", ["concept-m2-triangle", "concept-m2-quadrilateral"]),
+                    ("5. 도형의 닮음과 피타고라스 정리", "닮음 조건, 닮음비, 피타고라스 정리", ["concept-m2-similarity", "concept-m2-pythagoras"]),
+                    ("6. 확률", "경우의 수, 확률의 기본, 여사건, 연속 사건", ["concept-m2-probability"]),
+                ]),
+                # --- 중학교 3학년 (7단원) ---
+                "m3": ("middle_3", [
+                    ("1. 실수와 그 연산", "제곱근, 무리수, 실수의 대소, 근호 계산, 분모의 유리화", ["concept-m3-real-num"]),
+                    ("2. 다항식의 곱셈과 인수분해", "곱셈공식, 인수분해, 완전제곱식", ["concept-m3-factoring"]),
+                    ("3. 이차방정식", "인수분해·완전제곱식·근의 공식 풀이, 판별식", ["concept-m3-quad-eq"]),
+                    ("4. 이차함수", "y=ax², 표준형, 일반형, 꼭짓점, 최대·최소", ["concept-m3-quad-func"]),
+                    ("5. 삼각비", "sin·cos·tan 정의, 특수각, 삼각형 넓이", ["concept-m3-trig"]),
+                    ("6. 원의 성질", "원주각, 중심각, 접선, 내접 사각형", ["concept-m3-circle"]),
+                    ("7. 통계", "대푯값, 산점도, 상관관계, 상자그림", ["concept-m3-statistics"]),
+                ]),
+                # --- 공통수학1 / 고1 1학기 (4단원) ---
+                "h1": ("high_1", [
+                    ("1. 다항식", "다항식 연산, 항등식, 나머지정리, 인수분해", ["concept-h1-polynomial"]),
+                    ("2. 방정식과 부등식", "복소수, 이차방정식, 이차함수, 이차부등식", ["concept-h1-equation"]),
+                    ("3. 경우의 수", "합·곱의 법칙, 순열, 조합", ["concept-h1-counting"]),
+                    ("4. 행렬", "행렬의 덧셈·뺄셈·실수배·곱셈 (2×2 한정)", ["concept-h1-matrix"]),
+                ]),
+                # --- 공통수학2 / 고1 2학기 (3단원) ---
+                "h2": ("high_2", [
+                    ("1. 도형의 방정식", "평면좌표, 직선·원의 방정식, 평행이동·대칭이동", ["concept-h2-plane-coord", "concept-h2-line", "concept-h2-circle", "concept-h2-transform"]),
+                    ("2. 집합과 명제", "집합 연산, 명제와 조건, 절대부등식", ["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"]),
+                    ("3. 함수", "합성함수, 역함수, 유리함수, 무리함수", ["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"]),
+                ]),
+            }
 
-                # 일차방정식 개념 해제 (3단원 학습 위해)
-                concept_mastery = ConceptMastery(
-                    student_id=student_user.id,
-                    concept_id="concept-001",
+            all_new_chapters = {}
+            for prefix, (grade, ch_list) in _chapter_defs.items():
+                grade_chapters = []
+                for idx, (name, desc, cids) in enumerate(ch_list, 1):
+                    ch = Chapter(
+                        id=f"chapter-{prefix}-{idx:02d}",
+                        name=name,
+                        grade=grade,
+                        chapter_number=idx,
+                        description=desc,
+                        concept_ids=cids,
+                        mastery_threshold=90,
+                        final_test_pass_score=90,
+                        require_teacher_approval=False,
+                        is_active=True,
+                    )
+                    db.add(ch)
+                    grade_chapters.append(ch)
+                all_new_chapters[prefix] = grade_chapters
+
+            db.flush()
+
+            # 각 학년 단원 선수관계 설정 (순차)
+            for grade_chapters in all_new_chapters.values():
+                for i in range(1, len(grade_chapters)):
+                    grade_chapters[i].prerequisites.append(grade_chapters[i - 1])
+
+            # 각 테스트 학생에게 1단원 해제 (학습 시작 가능)
+            _unlock_defs = [
+                ("student-001", "chapter-m1-01", "concept-001"),   # 중1
+                ("student-002", "chapter-e3-01", None),            # 초3
+                ("student-003", "chapter-h1-01", None),            # 고1
+            ]
+            for sid, ch_id, concept_id in _unlock_defs:
+                db.add(ChapterProgress(
+                    student_id=sid,
+                    chapter_id=ch_id,
                     is_unlocked=True,
                     unlocked_at=datetime.now(timezone.utc),
-                )
-                db.add(concept_mastery)
+                ))
+                if concept_id:
+                    db.add(ConceptMastery(
+                        student_id=sid,
+                        concept_id=concept_id,
+                        is_unlocked=True,
+                        unlocked_at=datetime.now(timezone.utc),
+                    ))
 
             db.commit()
             print("Database seeded with initial data")
@@ -1490,10 +1660,11 @@ def _cleanup_today_daily_tests(db):
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
-    # Startup
-    init_db()
-    load_seed_data()
-    update_chapter_concept_ids()
+    # Startup - 동기 DB 초기화를 스레드풀에서 실행 (이벤트 루프 블로킹 방지)
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, init_db)
+    await loop.run_in_executor(None, load_seed_data)
+    await loop.run_in_executor(None, update_chapter_concept_ids)
     yield
     # Shutdown
 

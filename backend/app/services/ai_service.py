@@ -9,6 +9,7 @@ from google import genai
 from google.genai import types
 
 from app.core.config import settings
+from app.services.prompt_context import format_prompt_context
 
 logger = logging.getLogger(__name__)
 
@@ -275,12 +276,20 @@ class AIService:
                 f"{existing_list}\n"
             )
 
+        # 교육과정 컨텍스트 주입 (핵심 개념, 오개념, 출제 가이드라인)
+        curriculum_context = format_prompt_context(concept_id, grade)
+        context_section = (
+            f"\n## 교육과정 컨텍스트\n{curriculum_context}\n"
+            if curriculum_context else ""
+        )
+
         prompt = (
             f"당신은 2022 개정 교육과정 기반 {grade_label} 수학 문제 출제 전문가입니다.\n\n"
             f"[개념] {concept_name}\n"
             f"[트랙] {cat_label}\n"
             f"[난이도 범위] {difficulty_min}~{difficulty_max} (1=매우 쉬움, 10=매우 어려움)\n"
-            f"[생성 개수] {count}개\n\n"
+            f"[생성 개수] {count}개\n"
+            f"{context_section}\n"
             f"{type_instruction}\n"
             "## 규칙\n"
             "1. 모든 수학 계산은 반드시 정확해야 합니다. 검산을 수행하세요.\n"
@@ -288,6 +297,7 @@ class AIService:
             f"3. difficulty는 {difficulty_min}~{difficulty_max} 범위에서 다양하게 분포시키세요.\n"
             "4. 한국어로 작성하세요.\n"
             "5. 각 문제가 서로 다른 유형/소재여야 합니다.\n"
+            "6. 위 '학생 주요 오개념' 목록의 오류 유형을 반영하여 매력적인 오답 선지를 만드세요.\n"
             f"{existing_section}\n"
             f"## 출력 형식 (JSON 배열)\n"
             f"예시: [{json_example}]\n\n"

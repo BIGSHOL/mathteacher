@@ -1,5 +1,6 @@
 """일일 테스트 서비스."""
 
+import asyncio
 import logging
 import random
 from datetime import datetime, timedelta, timezone
@@ -617,19 +618,26 @@ class DailyTestService:
             # 이 개념에 대해 생성할 수 (중복 제거 마진을 위해 +2)
             batch = min(remaining + 2, max(3, count // len(concepts) + 2))
 
-            # AI 문제 생성 (기존 문제 전달 + 시드 패턴 ID)
-            result = await ai_service.generate_questions(
-                concept_name=concept.name,
-                concept_id=concept.id,
-                grade=grade_str,
-                category=category if category != "fill_in_blank" else concept.category.value,
-                part=concept.part.value if hasattr(concept.part, "value") else str(concept.part),
-                question_type=q_type,
-                count=batch,
-                existing_contents=list(existing_set)[:20],
-                id_prefix=id_prefix,
-                start_seq=current_seq,
-            )
+            # AI 문제 생성 (기존 문제 전달 + 시드 패턴 ID) - 10초 타임아웃
+            try:
+                result = await asyncio.wait_for(
+                    ai_service.generate_questions(
+                        concept_name=concept.name,
+                        concept_id=concept.id,
+                        grade=grade_str,
+                        category=category if category != "fill_in_blank" else concept.category.value,
+                        part=concept.part.value if hasattr(concept.part, "value") else str(concept.part),
+                        question_type=q_type,
+                        count=batch,
+                        existing_contents=list(existing_set)[:20],
+                        id_prefix=id_prefix,
+                        start_seq=current_seq,
+                    ),
+                    timeout=10.0,
+                )
+            except asyncio.TimeoutError:
+                logger.warning("AI question generation timed out for concept %s", concept.name)
+                result = None
 
             if not result:
                 continue

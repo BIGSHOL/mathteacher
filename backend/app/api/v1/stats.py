@@ -90,8 +90,10 @@ async def get_students_stats(
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """학생 통계 목록 (강사용)."""
+    # 강사는 자신의 반 학생만, 관리자/마스터는 전체 조회
+    teacher_id = current_user.id if current_user.role == UserRole.TEACHER else None
     students, total = await stats_service.get_students_summary(
-        teacher_id=current_user.id,
+        teacher_id=teacher_id,
         class_id=class_id,
         grade=grade,
         page=page,

@@ -82,6 +82,23 @@ class Difficulty(int, Enum):
     LV10 = 10
 
 
+class ReportType(str, Enum):
+    """문제 신고 유형."""
+
+    WRONG_ANSWER = "wrong_answer"      # 정답 오류
+    WRONG_OPTIONS = "wrong_options"    # 보기 오류
+    QUESTION_ERROR = "question_error"  # 문제 오류
+    OTHER = "other"                    # 기타
+
+
+class ReportStatus(str, Enum):
+    """문제 신고 처리 상태."""
+
+    PENDING = "pending"      # 대기
+    RESOLVED = "resolved"    # 처리 완료
+    DISMISSED = "dismissed"  # 반려
+
+
 T = TypeVar("T")
 
 

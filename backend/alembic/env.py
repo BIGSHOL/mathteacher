@@ -3,11 +3,18 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
+from app.core.config import settings
 from app.core.database import Base
+
+# 모든 모델을 import해야 autogenerate가 정상 동작
+import app.models  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
+
+# 앱 설정의 DATABASE_URL을 alembic에 주입
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 target_metadata = Base.metadata
 
