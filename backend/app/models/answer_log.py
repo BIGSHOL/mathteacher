@@ -51,9 +51,9 @@ class AnswerLog(Base):
 
     # 관계
     attempt: Mapped["TestAttempt"] = relationship(
-        "TestAttempt", back_populates="answer_logs"
+        "TestAttempt", back_populates="answer_logs", lazy="selectin"
     )
-    question: Mapped["Question"] = relationship("Question")
+    question: Mapped["Question"] = relationship("Question", lazy="selectin")
 
     def __repr__(self) -> str:
         return f"<AnswerLog {self.id[:8]}>"

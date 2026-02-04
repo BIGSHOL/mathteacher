@@ -1,7 +1,7 @@
 """학생 관리 서비스."""
 
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
 from app.models.class_ import Class
@@ -13,10 +13,10 @@ from app.core.security import get_password_hash
 class StudentService:
     """학생 관리 서비스."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def get_students(
+    async def get_students(
         self,
         teacher_id: str | None = None,
         class_id: str | None = None,
@@ -31,7 +31,7 @@ class StudentService:
         if teacher_id:
             # 강사가 담당하는 반 ID 목록
             class_stmt = select(Class.id).where(Class.teacher_id == teacher_id)
-            class_ids = self.db.scalars(class_stmt).all()
+            class_ids = (await self.db.scalars(class_stmt)).all()
             stmt = stmt.where(User.class_id.in_(class_ids))
 
         if class_id:
@@ -42,25 +42,25 @@ class StudentService:
 
         # 총 개수
         count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = self.db.scalar(count_stmt) or 0
+        total = await self.db.scalar(count_stmt) or 0
 
         # 페이지네이션
         stmt = stmt.order_by(User.name).offset((page - 1) * page_size).limit(page_size)
-        students = list(self.db.scalars(stmt).all())
+        students = list((await self.db.scalars(stmt)).all())
 
         return students, total
 
-    def get_student_by_id(self, student_id: str) -> User | None:
+    async def get_student_by_id(self, student_id: str) -> User | None:
         """학생 조회."""
         stmt = select(User).where(
             User.id == student_id,
             User.role == UserRole.STUDENT,
         )
-        return self.db.scalar(stmt)
+        return await self.db.scalar(stmt)
 
-    def create_student(
+    async def create_student(
         self,
-        email: str,
+        login_id: str,
         password: str,
         name: str,
         grade: Grade,
@@ -69,7 +69,7 @@ class StudentService:
         """학생 생성."""
         hashed_password = get_password_hash(password)
         student = User(
-            email=email,
+            login_id=login_id,
             hashed_password=hashed_password,
             name=name,
             role=UserRole.STUDENT,
@@ -77,17 +77,17 @@ class StudentService:
             class_id=class_id,
         )
         self.db.add(student)
-        self.db.commit()
-        self.db.refresh(student)
+        await self.db.commit()
+        await self.db.refresh(student)
         return student
 
-    def update_student(
+    async def update_student(
         self,
         student_id: str,
         update_data: UserUpdate,
     ) -> User | None:
         """학생 정보 수정."""
-        student = self.get_student_by_id(student_id)
+        student = await self.get_student_by_id(student_id)
         if not student:
             return None
 
@@ -95,65 +95,65 @@ class StudentService:
         for field, value in update_dict.items():
             setattr(student, field, value)
 
-        self.db.commit()
-        self.db.refresh(student)
+        await self.db.commit()
+        await self.db.refresh(student)
         return student
 
-    def delete_student(self, student_id: str) -> bool:
+    async def delete_student(self, student_id: str) -> bool:
         """학생 삭제 (비활성화)."""
-        student = self.get_student_by_id(student_id)
+        student = await self.get_student_by_id(student_id)
         if not student:
             return False
 
         student.is_active = False
-        self.db.commit()
+        await self.db.commit()
         return True
 
-    def check_teacher_access(self, teacher_id: str, student_id: str) -> bool:
+    async def check_teacher_access(self, teacher_id: str, student_id: str) -> bool:
         """강사가 해당 학생에 접근 권한이 있는지 확인."""
-        student = self.get_student_by_id(student_id)
+        student = await self.get_student_by_id(student_id)
         if not student or not student.class_id:
             return False
 
         # 학생이 속한 반의 담당 강사인지 확인
-        class_ = self.db.get(Class, student.class_id)
+        class_ = await self.db.get(Class, student.class_id)
         if not class_:
             return False
 
         return class_.teacher_id == teacher_id
 
-    def reset_password(self, student_id: str, new_password: str) -> User | None:
+    async def reset_password(self, student_id: str, new_password: str) -> User | None:
         """학생 비밀번호 초기화."""
-        student = self.get_student_by_id(student_id)
+        student = await self.get_student_by_id(student_id)
         if not student:
             return None
 
         student.hashed_password = get_password_hash(new_password)
-        self.db.commit()
-        self.db.refresh(student)
+        await self.db.commit()
+        await self.db.refresh(student)
         return student
 
-    def reset_test_history(self, student_id: str) -> bool:
+    async def reset_test_history(self, student_id: str) -> bool:
         """학생 테스트 기록 초기화."""
         from app.models import TestAttempt, AnswerLog
 
-        student = self.get_student_by_id(student_id)
+        student = await self.get_student_by_id(student_id)
         if not student:
             return False
 
         # 학생의 모든 테스트 시도 조회
-        attempts = self.db.scalars(
+        attempts = (await self.db.scalars(
             select(TestAttempt).where(TestAttempt.user_id == student_id)
-        ).all()
+        )).all()
 
         # 답변 로그 삭제
         for attempt in attempts:
-            self.db.execute(
+            await self.db.execute(
                 AnswerLog.__table__.delete().where(AnswerLog.attempt_id == attempt.id)
             )
 
         # 테스트 시도 삭제
-        self.db.execute(
+        await self.db.execute(
             TestAttempt.__table__.delete().where(TestAttempt.user_id == student_id)
         )
 
@@ -163,5 +163,5 @@ class StudentService:
         student.current_streak = 0
         student.max_streak = 0
 
-        self.db.commit()
+        await self.db.commit()
         return True

@@ -3,7 +3,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.test_attempt import TestAttempt
 from app.models.answer_log import AnswerLog
@@ -17,12 +17,12 @@ from app.services.chapter_service import ChapterService
 class PlacementService:
     """진단 평가 및 배치 서비스."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
         self.mastery_service = MasteryService(db)
         self.chapter_service = ChapterService(db)
 
-    def analyze_placement_result(self, attempt_id: str) -> dict:
+    async def analyze_placement_result(self, attempt_id: str) -> dict:
         """진단 평가 결과 분석 및 배치 결정.
 
         Returns:
@@ -36,7 +36,7 @@ class PlacementService:
                 "weak_areas": list,  # 취약 영역
             }
         """
-        attempt = self.db.get(TestAttempt, attempt_id)
+        attempt = await self.db.get(TestAttempt, attempt_id)
         if not attempt or not attempt.completed_at:
             return {}
 
@@ -46,7 +46,7 @@ class PlacementService:
             .where(AnswerLog.attempt_id == attempt_id)
             .order_by(AnswerLog.created_at)
         )
-        answer_logs = list(self.db.scalars(stmt).all())
+        answer_logs = list((await self.db.scalars(stmt)).all())
 
         if not answer_logs:
             return {}
@@ -63,7 +63,7 @@ class PlacementService:
 
             # 이 개념이 속한 단원 찾기 (캐시 활용)
             if concept_id not in concept_to_chapter:
-                chapter = self._find_chapter_by_concept(concept_id)
+                chapter = await self._find_chapter_by_concept(concept_id)
                 concept_to_chapter[concept_id] = chapter.id if chapter else None
 
             chapter_id = concept_to_chapter[concept_id]
@@ -83,16 +83,16 @@ class PlacementService:
                 scores["percentage"] = int(scores["correct"] / scores["total"] * 100)
 
         # 배치 결정 로직
-        placement_result = self._determine_placement(chapter_scores, attempt.score)
+        placement_result = await self._determine_placement(chapter_scores, attempt.score)
 
         return placement_result
 
-    def _find_chapter_by_concept(self, concept_id: str) -> Chapter | None:
+    async def _find_chapter_by_concept(self, concept_id: str) -> Chapter | None:
         """개념 ID로 해당 단원 찾기."""
         stmt = select(Chapter).where(Chapter.concept_ids.contains([concept_id]))
-        return self.db.scalar(stmt)
+        return await self.db.scalar(stmt)
 
-    def _determine_placement(
+    async def _determine_placement(
         self, chapter_scores: dict[str, dict], overall_score: int
     ) -> dict:
         """배치 결정 알고리즘.
@@ -134,7 +134,7 @@ class PlacementService:
         # 시작 단원 정보 조회
         starting_chapter = None
         if starting_chapter_id:
-            starting_chapter = self.db.get(Chapter, starting_chapter_id)
+            starting_chapter = await self.db.get(Chapter, starting_chapter_id)
 
         # 추천 레벨 계산 (전체 점수 기반)
         recommended_level = self._calculate_level(overall_score)
@@ -163,18 +163,18 @@ class PlacementService:
         else:
             return 1
 
-    def apply_placement(self, student_id: str, attempt_id: str) -> bool:
+    async def apply_placement(self, student_id: str, attempt_id: str) -> bool:
         """진단 평가 결과 적용.
 
         - 사용자 레벨 설정
         - 단원 자동 해제
         - 개념 자동 해제
         """
-        result = self.analyze_placement_result(attempt_id)
+        result = await self.analyze_placement_result(attempt_id)
         if not result:
             return False
 
-        user = self.db.get(User, student_id)
+        user = await self.db.get(User, student_id)
         if not user:
             return False
 
@@ -186,7 +186,7 @@ class PlacementService:
 
         # 2. 마스터한 단원들 해제 및 완료 처리
         for chapter_id in result["unlocked_chapters"]:
-            progress = self.chapter_service.get_or_create_progress(student_id, chapter_id)
+            progress = await self.chapter_service.get_or_create_progress(student_id, chapter_id)
             progress.is_unlocked = True
             progress.is_completed = True  # 마스터로 간주
             progress.overall_progress = 100
@@ -195,27 +195,27 @@ class PlacementService:
 
         # 3. 시작 단원 해제
         if result["starting_chapter_id"]:
-            self.chapter_service.unlock_chapter(student_id, result["starting_chapter_id"])
+            await self.chapter_service.unlock_chapter(student_id, result["starting_chapter_id"])
 
         # 4. 해당 단원들의 개념 자동 해제
         for chapter_id in result["unlocked_chapters"] + [result["starting_chapter_id"]]:
             if not chapter_id:
                 continue
 
-            chapter = self.db.get(Chapter, chapter_id)
+            chapter = await self.db.get(Chapter, chapter_id)
             if chapter and chapter.concept_ids:
                 for concept_id in chapter.concept_ids:
-                    self.mastery_service.unlock_concept(student_id, concept_id)
+                    await self.mastery_service.unlock_concept(student_id, concept_id)
 
-        self.db.commit()
+        await self.db.commit()
         return True
 
-    def get_placement_test(self) -> dict | None:
+    async def get_placement_test(self) -> dict | None:
         """진단 평가 테스트 조회."""
         from app.models.test import Test
 
         stmt = select(Test).where(Test.is_placement == True, Test.is_active == True)  # noqa: E712
-        placement_test = self.db.scalar(stmt)
+        placement_test = await self.db.scalar(stmt)
 
         if not placement_test:
             return None

@@ -59,10 +59,10 @@ class TestAttempt(Base):
     question_shuffle_config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
     # 관계
-    test: Mapped["Test"] = relationship("Test", back_populates="attempts")
-    student: Mapped["User"] = relationship("User")
+    test: Mapped["Test"] = relationship("Test", back_populates="attempts", lazy="selectin")
+    student: Mapped["User"] = relationship("User", lazy="selectin")
     answer_logs: Mapped[list["AnswerLog"]] = relationship(
-        "AnswerLog", back_populates="attempt", cascade="all, delete-orphan"
+        "AnswerLog", back_populates="attempt", cascade="all, delete-orphan", lazy="selectin"
     )
 
     def __repr__(self) -> str:

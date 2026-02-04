@@ -1,8 +1,8 @@
 """문제 생성/조회 API 엔드포인트."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func as sa_func
-from sqlalchemy.orm import Session
+from sqlalchemy import func as sa_func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.concept import Concept
@@ -31,14 +31,14 @@ router = APIRouter(prefix="/questions", tags=["questions"])
     response_model=ApiResponse[QuestionWithAnswer],
     status_code=status.HTTP_201_CREATED,
 )
-def create_question(
+async def create_question(
     payload: QuestionCreate,
-    db: Session = Depends(get_db),
-    _user: UserResponse = Depends(require_role("teacher", "admin")),
+    db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(require_role("teacher", "admin", "master")),
 ):
     """단일 문제 생성."""
     # concept 존재 확인
-    concept = db.get(Concept, payload.concept_id)
+    concept = await db.get(Concept, payload.concept_id)
     if not concept:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -62,8 +62,8 @@ def create_question(
         prerequisite_concept_ids=payload.prerequisite_concept_ids,
     )
     db.add(question)
-    db.commit()
-    db.refresh(question)
+    await db.commit()
+    await db.refresh(question)
 
     return ApiResponse(data=_to_question_with_answer(question))
 
@@ -73,10 +73,10 @@ def create_question(
     response_model=ApiResponse[list[QuestionWithAnswer]],
     status_code=status.HTTP_201_CREATED,
 )
-def create_questions_batch(
+async def create_questions_batch(
     payload: list[QuestionCreate],
-    db: Session = Depends(get_db),
-    _user: UserResponse = Depends(require_role("teacher", "admin")),
+    db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(require_role("teacher", "admin", "master")),
 ):
     """문제 일괄 생성 (프론트 템플릿 → DB 파이프라인)."""
     if len(payload) > 100:
@@ -92,7 +92,7 @@ def create_questions_batch(
     concept_ids = {q.concept_id for q in payload}
     existing = {
         c.id
-        for c in db.query(Concept.id).filter(Concept.id.in_(concept_ids)).all()
+        for c in (await db.scalars(select(Concept.id).where(Concept.id.in_(concept_ids)))).all()
     }
     missing = concept_ids - existing
     if missing:
@@ -125,9 +125,9 @@ def create_questions_batch(
         db.add(q)
         questions.append(q)
 
-    db.commit()
+    await db.commit()
     for q in questions:
-        db.refresh(q)
+        await db.refresh(q)
 
     return ApiResponse(data=[_to_question_with_answer(q) for q in questions])
 
@@ -138,7 +138,7 @@ def create_questions_batch(
 
 
 @router.get("", response_model=ApiResponse[PaginatedResponse[QuestionWithAnswer]])
-def list_questions(
+async def list_questions(
     concept_id: str | None = Query(None, description="개념 ID로 필터링"),
     grade: Grade | None = Query(None, description="학년으로 필터링"),
     category: QuestionCategory | None = Query(None),
@@ -146,30 +146,30 @@ def list_questions(
     difficulty: int | None = Query(None, ge=1, le=10),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     _user: UserResponse = Depends(get_current_user),
 ):
     """문제 목록 조회 (필터링/페이징)."""
-    query = db.query(Question).filter(Question.is_active.is_(True))
+    stmt = select(Question).where(Question.is_active.is_(True))
 
     if concept_id:
-        query = query.filter(Question.concept_id == concept_id)
+        stmt = stmt.where(Question.concept_id == concept_id)
     if grade:
-        query = query.join(Concept).filter(Concept.grade == grade)
+        stmt = stmt.join(Concept).where(Concept.grade == grade)
     if category:
-        query = query.filter(Question.category == category)
+        stmt = stmt.where(Question.category == category)
     if part:
-        query = query.filter(Question.part == part)
+        stmt = stmt.where(Question.part == part)
     if difficulty:
-        query = query.filter(Question.difficulty == difficulty)
+        stmt = stmt.where(Question.difficulty == difficulty)
 
-    total = query.count()
-    questions = (
-        query.order_by(Question.created_at.desc())
-        .offset((page - 1) * page_size)
-        .limit(page_size)
-        .all()
-    )
+    # 총 개수 계산
+    count_stmt = select(sa_func.count()).select_from(stmt.subquery())
+    total = await db.scalar(count_stmt)
+
+    # 페이징 적용
+    stmt = stmt.order_by(Question.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
+    questions = (await db.scalars(stmt)).all()
 
     return ApiResponse(
         data=PaginatedResponse(
@@ -183,13 +183,13 @@ def list_questions(
 
 
 @router.get("/by-concept/{concept_id}", response_model=ApiResponse[list[QuestionWithAnswer]])
-def get_questions_by_concept(
+async def get_questions_by_concept(
     concept_id: str,
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
     _user: UserResponse = Depends(get_current_user),
 ):
     """특정 개념의 전체 문제 조회."""
-    concept = db.get(Concept, concept_id)
+    concept = await db.get(Concept, concept_id)
     if not concept:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -199,31 +199,32 @@ def get_questions_by_concept(
             },
         )
 
-    questions = (
-        db.query(Question)
-        .filter(Question.concept_id == concept_id, Question.is_active.is_(True))
+    stmt = (
+        select(Question)
+        .where(Question.concept_id == concept_id, Question.is_active.is_(True))
         .order_by(Question.difficulty)
-        .all()
     )
+    questions = (await db.scalars(stmt)).all()
 
     return ApiResponse(data=[_to_question_with_answer(q) for q in questions])
 
 
 @router.get("/stats", response_model=ApiResponse[dict])
-def get_question_stats(
-    db: Session = Depends(get_db),
-    _user: UserResponse = Depends(require_role("teacher", "admin")),
+async def get_question_stats(
+    db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(require_role("teacher", "admin", "master")),
 ):
     """문제 통계 (개념별 문제 수)."""
-    stats = (
-        db.query(
+    stmt = (
+        select(
             Question.concept_id,
             sa_func.count(Question.id).label("count"),
         )
-        .filter(Question.is_active.is_(True))
+        .where(Question.is_active.is_(True))
         .group_by(Question.concept_id)
-        .all()
     )
+
+    stats = (await db.execute(stmt)).all()
 
     return ApiResponse(
         data={

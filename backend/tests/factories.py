@@ -1,7 +1,7 @@
 """Factory Boy 팩토리 정의."""
 
 import factory
-from factory import Faker
+from factory import Faker, Sequence
 
 from app.schemas.common import Difficulty, Grade, QuestionType, UserRole
 
@@ -13,7 +13,7 @@ class UserFactory(factory.Factory):
         model = dict
 
     id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
-    email = Faker("email")
+    login_id = Sequence(lambda n: f"testuser{n:03d}")
     name = Faker("name")
     role = UserRole.STUDENT
     grade = Grade.MIDDLE_1

@@ -13,6 +13,7 @@ export type Grade =
   | 'middle_2'
   | 'middle_3'
   | 'high_1'
+  | 'high_2'
 
 export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer' | 'fill_in_blank'
 
@@ -52,7 +53,7 @@ export interface PaginatedResponse<T> {
 // 사용자 타입
 export interface User {
   id: string
-  email: string
+  login_id: string
   name: string
   role: UserRole
   grade?: Grade
@@ -170,6 +171,8 @@ export interface SubmitAnswerResponse {
   current_score: number
   questions_remaining: number
   next_difficulty?: number
+  error_type?: string
+  suggestion?: string
 }
 
 // 적응형 다음 문제 응답
@@ -266,4 +269,28 @@ export interface DashboardAlert {
   message: string
   current_grade?: Grade
   recommended_grade?: Grade
+}
+
+// 일일 테스트 타입
+export type DailyTestCategory = 'concept' | 'computation' | 'fill_in_blank'
+
+export interface DailyTestRecord {
+  id: string
+  date: string
+  category: DailyTestCategory
+  category_label: string
+  status: 'pending' | 'in_progress' | 'completed'
+  test_id: string
+  attempt_id?: string
+  score?: number
+  max_score?: number
+  correct_count?: number
+  total_count?: number
+  completed_at?: string
+  question_count: number
+}
+
+export interface DailyTestTodayResponse {
+  date: string
+  tests: DailyTestRecord[]
 }

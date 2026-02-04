@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 
 from .common import Grade, UserRole
 
@@ -15,7 +15,7 @@ from .common import Grade, UserRole
 class UserBase(BaseModel):
     """사용자 기본 스키마."""
 
-    email: EmailStr
+    login_id: str = Field(..., min_length=4, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
     name: str = Field(..., min_length=1, max_length=100)
     role: UserRole
 
@@ -60,8 +60,8 @@ class UserResponse(UserBase):
 class LoginRequest(BaseModel):
     """로그인 요청."""
 
-    email: EmailStr
-    password: str
+    login_id: str = Field(..., min_length=1, max_length=50)
+    password: str = Field(..., min_length=1)
 
 
 class LoginResponse(BaseModel):
@@ -114,7 +114,7 @@ class LogoutResponse(BaseModel):
 class RegisterStudentRequest(BaseModel):
     """학생 등록 요청."""
 
-    email: EmailStr
+    login_id: str = Field(..., min_length=4, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=6, max_length=100)
     name: str = Field(..., min_length=1, max_length=100)
     grade: Grade
@@ -124,7 +124,7 @@ class RegisterStudentRequest(BaseModel):
 class RegisterTeacherRequest(BaseModel):
     """강사 등록 요청."""
 
-    email: EmailStr
+    login_id: str = Field(..., min_length=4, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=6, max_length=100)
     name: str = Field(..., min_length=1, max_length=100)
 
@@ -132,7 +132,7 @@ class RegisterTeacherRequest(BaseModel):
 class RegisterAdminRequest(BaseModel):
     """관리자 등록 요청 (마스터 전용)."""
 
-    email: EmailStr
+    login_id: str = Field(..., min_length=4, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=6, max_length=100)
     name: str = Field(..., min_length=1, max_length=100)
 

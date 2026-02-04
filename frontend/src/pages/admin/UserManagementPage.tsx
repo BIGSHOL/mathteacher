@@ -8,7 +8,7 @@ import type { UserRole, Grade, PaginatedResponse } from '../../types'
 
 interface UserListItem {
   id: string
-  email: string
+  login_id: string
   name: string
   role: UserRole
   grade?: Grade
@@ -23,9 +23,9 @@ const ROLE_CONFIG: Record<UserRole, { label: string; color: string }> = {
   student: { label: '학생', color: 'bg-green-100 text-green-700' },
 }
 
-const GRADE_OPTIONS: { value: Grade; label: string }[] = [
-  { value: 'elementary_1', label: '초등 1학년' },
-  { value: 'elementary_2', label: '초등 2학년' },
+const GRADE_OPTIONS: { value: Grade; label: string; disabled?: boolean }[] = [
+  { value: 'elementary_1', label: '초등 1학년', disabled: true },
+  { value: 'elementary_2', label: '초등 2학년', disabled: true },
   { value: 'elementary_3', label: '초등 3학년' },
   { value: 'elementary_4', label: '초등 4학년' },
   { value: 'elementary_5', label: '초등 5학년' },
@@ -34,6 +34,7 @@ const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 'middle_2', label: '중등 2학년' },
   { value: 'middle_3', label: '중등 3학년' },
   { value: 'high_1', label: '고등 1학년' },
+  { value: 'high_2', label: '고등 2학년' },
 ]
 
 export function UserManagementPage() {
@@ -73,7 +74,7 @@ export function UserManagementPage() {
 
   const filteredUsers = users.filter((u) =>
     u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    u.email.toLowerCase().includes(searchQuery.toLowerCase())
+    u.login_id.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const getCreatableRoles = (): { value: UserRole; label: string }[] => {
@@ -159,7 +160,7 @@ export function UserManagementPage() {
           <div className="relative">
             <input
               type="text"
-              placeholder="이름 또는 이메일로 검색..."
+              placeholder="이름 또는 아이디로 검색..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:w-72"
@@ -197,7 +198,7 @@ export function UserManagementPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-4 text-left text-sm font-medium text-gray-600">이름</th>
-                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-600">이메일</th>
+                    <th className="px-6 py-4 text-left text-sm font-medium text-gray-600">아이디</th>
                     <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">역할</th>
                     <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">학년</th>
                     <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">가입일</th>
@@ -220,7 +221,7 @@ export function UserManagementPage() {
                           <span className="font-medium text-gray-900">{user.name}</span>
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-gray-600">{user.email}</td>
+                      <td className="px-6 py-4 text-gray-600">{user.login_id}</td>
                       <td className="px-6 py-4 text-center">
                         <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${ROLE_CONFIG[user.role].color}`}>
                           {ROLE_CONFIG[user.role].label}
@@ -273,7 +274,7 @@ interface CreateUserModalProps {
 
 function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModalProps) {
   const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
+  const [loginId, setLoginId] = useState('')
   const [password, setPassword] = useState('')
   const [role, setRole] = useState<UserRole>(creatableRoles[0]?.value || 'student')
   const [grade, setGrade] = useState<Grade | ''>('')
@@ -289,7 +290,7 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
     try {
       await api.post('/api/v1/auth/register', {
         name,
-        email,
+        login_id: loginId,
         password,
         role,
         ...(role === 'student' && grade ? { grade } : {}),
@@ -342,13 +343,13 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">이메일</label>
+              <label className="mb-1 block text-sm font-medium text-gray-700">아이디</label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                value={loginId}
+                onChange={(e) => setLoginId(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                placeholder="user@example.com"
+                placeholder="아이디를 입력하세요"
                 required
               />
             </div>
@@ -392,8 +393,8 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
                   >
                     <option value="">선택하세요</option>
                     {GRADE_OPTIONS.map((g) => (
-                      <option key={g.value} value={g.value}>
-                        {g.label}
+                      <option key={g.value} value={g.value} disabled={g.disabled}>
+                        {g.label}{g.disabled ? ' (준비중)' : ''}
                       </option>
                     ))}
                   </select>

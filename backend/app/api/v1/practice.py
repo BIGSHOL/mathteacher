@@ -6,7 +6,7 @@ from uuid import uuid4
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.question import Question
@@ -40,13 +40,13 @@ class PracticeStartData(BaseModel):
 async def start_practice(
     request: PracticeStartRequest,
     current_user: UserResponse = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     """빠른 연습 시작 - 동적 적응형 테스트 생성."""
 
     # 1. 해당 학년의 개념 ID 조회
     concept_stmt = select(Concept.id).where(Concept.grade == request.grade)
-    concept_ids = list(db.scalars(concept_stmt).all())
+    concept_ids = list((await db.scalars(concept_stmt)).all())
 
     if not concept_ids:
         raise HTTPException(
@@ -69,7 +69,7 @@ async def start_practice(
             Question.is_active == True,  # noqa: E712
         )
     )
-    all_questions = list(db.scalars(q_stmt).all())
+    all_questions = list((await db.scalars(q_stmt)).all())
 
     if not all_questions:
         raise HTTPException(
@@ -98,14 +98,14 @@ async def start_practice(
         is_active=True,
     )
     db.add(practice_test)
-    db.flush()
+    await db.flush()
 
     # 4. 시작 난이도에 가장 가까운 첫 문제 선택
     first_question = _select_closest_question(
         all_questions, request.starting_difficulty, exclude_ids=[]
     )
     if not first_question:
-        db.rollback()
+        await db.rollback()
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail={
@@ -129,8 +129,8 @@ async def start_practice(
         adaptive_question_ids=[first_question.id],
     )
     db.add(attempt)
-    db.commit()
-    db.refresh(attempt)
+    await db.commit()
+    await db.refresh(attempt)
 
     return ApiResponse(data=PracticeStartData(attempt_id=attempt.id))
 

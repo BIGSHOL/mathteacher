@@ -23,6 +23,10 @@ interface FeedbackModalProps {
   /** 빈칸 채우기 부분 점수 정보 */
   correctCount?: number
   totalBlanks?: number
+  /** AI 오류 유형 (오답 시) */
+  errorType?: string
+  /** AI 학습 제안 (오답 시) */
+  suggestion?: string
   onNext: () => void
 }
 
@@ -40,6 +44,8 @@ export function FeedbackModal({
   currentDifficulty,
   correctCount,
   totalBlanks,
+  errorType,
+  suggestion,
   onNext,
 }: FeedbackModalProps) {
   const prevOpen = useRef(false)
@@ -186,6 +192,22 @@ export function FeedbackModal({
                 <div className="mb-6">
                   <div className="mb-2 text-sm font-medium text-gray-500">해설</div>
                   <p className="text-gray-700">{explanation}</p>
+                </div>
+              )}
+
+              {/* AI 분석 (오답 시) */}
+              {!isCorrect && (errorType || suggestion) && (
+                <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
+                  {errorType && (
+                    <div className="mb-2 flex items-center gap-2">
+                      <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-600">
+                        {errorType}
+                      </span>
+                    </div>
+                  )}
+                  {suggestion && (
+                    <p className="text-sm text-blue-700">{suggestion}</p>
+                  )}
                 </div>
               )}
 

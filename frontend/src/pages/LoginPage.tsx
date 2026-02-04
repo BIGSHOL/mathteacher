@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { useAuthStore } from '../store/authStore'
 
 export function LoginPage() {
-  const [email, setEmail] = useState('')
+  const [loginId, setLoginId] = useState('')
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -23,7 +23,7 @@ export function LoginPage() {
         return '/teacher/dashboard'
       case 'student':
       default:
-        return '/tests'
+        return '/daily-lab'
     }
   }
 
@@ -33,10 +33,10 @@ export function LoginPage() {
     setError('')
 
     try {
-      await login(email, password)
+      await login(loginId, password)
       // 로그인 후 사용자 정보로 리다이렉트 경로 결정
       const currentUser = useAuthStore.getState().user
-      const redirectPath = from || (currentUser ? getDefaultPath(currentUser.role) : '/tests')
+      const redirectPath = from || (currentUser ? getDefaultPath(currentUser.role) : '/daily-lab')
       navigate(redirectPath, { replace: true })
     } catch (err) {
       setError(err instanceof Error ? err.message : '로그인에 실패했습니다.')
@@ -71,17 +71,18 @@ export function LoginPage() {
           )}
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              이메일
+            <label htmlFor="loginId" className="block text-sm font-medium text-gray-700 mb-1">
+              아이디
             </label>
             <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="loginId"
+              type="text"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
               className="input"
-              placeholder="example@academy.com"
+              placeholder="아이디를 입력하세요"
               required
+              minLength={4}
             />
           </div>
 

@@ -1,7 +1,7 @@
 // 인증 API Mock 핸들러
 
 import { http, HttpResponse } from 'msw'
-import { mockUsers, mockPasswords, findUserByEmail, verifyPassword, findUserById } from '../data/users'
+import { mockUsers, mockPasswords, findUserByLoginId, verifyPassword, findUserById } from '../data/users'
 import type { UserRole } from '../../types'
 
 // 간단한 토큰 생성 (실제로는 JWT 사용)
@@ -23,17 +23,17 @@ const validRefreshTokens = new Set<string>()
 export const authHandlers = [
   // POST /api/v1/auth/login
   http.post('/api/v1/auth/login', async ({ request }) => {
-    const body = (await request.json()) as { email: string; password: string }
-    const { email, password } = body
+    const body = (await request.json()) as { login_id: string; password: string }
+    const { login_id, password } = body
 
-    const user = findUserByEmail(email)
-    if (!user || !verifyPassword(email, password)) {
+    const user = findUserByLoginId(login_id)
+    if (!user || !verifyPassword(login_id, password)) {
       return HttpResponse.json(
         {
           success: false,
           error: {
             code: 'INVALID_CREDENTIALS',
-            message: '이메일 또는 비밀번호가 올바르지 않습니다.',
+            message: '아이디 또는 비밀번호가 올바르지 않습니다.',
           },
         },
         { status: 401 }
@@ -229,7 +229,7 @@ export const authHandlers = [
     }
 
     const body = (await request.json()) as {
-      email: string
+      login_id: string
       password: string
       name: string
       role: string
@@ -267,14 +267,14 @@ export const authHandlers = [
       )
     }
 
-    // 이메일 중복 체크
-    if (findUserByEmail(body.email)) {
+    // 아이디 중복 체크
+    if (findUserByLoginId(body.login_id)) {
       return HttpResponse.json(
         {
           success: false,
           error: {
-            code: 'EMAIL_ALREADY_EXISTS',
-            message: '이미 사용 중인 이메일입니다.',
+            code: 'LOGIN_ID_ALREADY_EXISTS',
+            message: '이미 사용 중인 아이디입니다.',
           },
         },
         { status: 400 }
@@ -283,7 +283,7 @@ export const authHandlers = [
 
     const newUser = {
       id: `user-${Date.now()}`,
-      email: body.email,
+      login_id: body.login_id,
       name: body.name,
       role: requestedRole,
       grade: body.grade,
@@ -297,7 +297,7 @@ export const authHandlers = [
 
     // mock 데이터에 추가 (세션 내 로그인 가능하도록)
     mockUsers.push(newUser as typeof mockUsers[number])
-    mockPasswords[body.email] = body.password
+    mockPasswords[body.login_id] = body.password
 
     return HttpResponse.json(
       {
@@ -357,8 +357,8 @@ export const authHandlers = [
     return HttpResponse.json({
       success: true,
       data: {
-        items: filteredUsers.map(({ id, email, name, role, grade, class_id, created_at }) => ({
-          id, email, name, role, grade, class_id, created_at,
+        items: filteredUsers.map(({ id, login_id, name, role, grade, class_id, created_at }) => ({
+          id, login_id, name, role, grade, class_id, created_at,
         })),
         total: filteredUsers.length,
         page: 1,

@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta, timezone
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
 from app.core.security import (
@@ -20,7 +20,7 @@ from app.schemas.auth import UserCreate, UserResponse
 class AuthService:
     """인증 서비스."""
 
-    def __init__(self, db: Session | None = None):
+    def __init__(self, db: AsyncSession | None = None):
         self.db = db
 
     def hash_password(self, password: str) -> str:
@@ -43,22 +43,22 @@ class AuthService:
         """토큰 검증."""
         return verify_token(token)
 
-    def get_user_by_email(self, email: str) -> User | None:
-        """이메일로 사용자 조회."""
+    async def get_user_by_login_id(self, login_id: str) -> User | None:
+        """로그인 ID로 사용자 조회."""
         if not self.db:
             raise ValueError("Database session required")
-        stmt = select(User).where(User.email == email)
-        return self.db.scalar(stmt)
+        stmt = select(User).where(User.login_id == login_id)
+        return await self.db.scalar(stmt)
 
-    def get_user_by_id(self, user_id: str) -> User | None:
+    async def get_user_by_id(self, user_id: str) -> User | None:
         """ID로 사용자 조회."""
         if not self.db:
             raise ValueError("Database session required")
-        return self.db.get(User, user_id)
+        return await self.db.get(User, user_id)
 
-    def authenticate_user(self, email: str, password: str) -> User | None:
+    async def authenticate_user(self, login_id: str, password: str) -> User | None:
         """사용자 인증."""
-        user = self.get_user_by_email(email)
+        user = await self.get_user_by_login_id(login_id)
         if not user:
             return None
         if not self.verify_password(password, user.hashed_password):
@@ -67,14 +67,14 @@ class AuthService:
             return None
         return user
 
-    def create_user(self, user_data: UserCreate) -> User:
+    async def create_user(self, user_data: UserCreate) -> User:
         """사용자 생성."""
         if not self.db:
             raise ValueError("Database session required")
 
         hashed_password = self.hash_password(user_data.password)
         user = User(
-            email=user_data.email,
+            login_id=user_data.login_id,
             hashed_password=hashed_password,
             name=user_data.name,
             role=user_data.role,
@@ -82,11 +82,11 @@ class AuthService:
             class_id=user_data.class_id,
         )
         self.db.add(user)
-        self.db.commit()
-        self.db.refresh(user)
+        await self.db.commit()
+        await self.db.refresh(user)
         return user
 
-    def save_refresh_token(self, user_id: str, token: str) -> RefreshToken:
+    async def save_refresh_token(self, user_id: str, token: str) -> RefreshToken:
         """리프레시 토큰 저장."""
         if not self.db:
             raise ValueError("Database session required")
@@ -100,10 +100,10 @@ class AuthService:
             expires_at=expires_at,
         )
         self.db.add(refresh_token)
-        self.db.commit()
+        await self.db.commit()
         return refresh_token
 
-    def get_refresh_token(self, token: str) -> RefreshToken | None:
+    async def get_refresh_token(self, token: str) -> RefreshToken | None:
         """리프레시 토큰 조회."""
         if not self.db:
             raise ValueError("Database session required")
@@ -112,20 +112,20 @@ class AuthService:
             RefreshToken.is_revoked == False,  # noqa: E712
             RefreshToken.expires_at > datetime.now(timezone.utc),
         )
-        return self.db.scalar(stmt)
+        return await self.db.scalar(stmt)
 
-    def revoke_refresh_token(self, token: str) -> bool:
+    async def revoke_refresh_token(self, token: str) -> bool:
         """리프레시 토큰 무효화."""
         if not self.db:
             raise ValueError("Database session required")
-        refresh_token = self.get_refresh_token(token)
+        refresh_token = await self.get_refresh_token(token)
         if not refresh_token:
             return False
         refresh_token.is_revoked = True
-        self.db.commit()
+        await self.db.commit()
         return True
 
-    def revoke_all_user_tokens(self, user_id: str) -> None:
+    async def revoke_all_user_tokens(self, user_id: str) -> None:
         """사용자의 모든 리프레시 토큰 무효화."""
         if not self.db:
             raise ValueError("Database session required")
@@ -133,7 +133,7 @@ class AuthService:
             RefreshToken.user_id == user_id,
             RefreshToken.is_revoked == False,  # noqa: E712
         )
-        tokens = self.db.scalars(stmt).all()
+        tokens = (await self.db.scalars(stmt)).all()
         for token in tokens:
             token.is_revoked = True
-        self.db.commit()
+        await self.db.commit()

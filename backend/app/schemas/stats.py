@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from .common import Grade
 
@@ -44,6 +44,17 @@ class TrackStats(BaseModel):
     accuracy_rate: float
 
 
+class QuotaProgress(BaseModel):
+    """일일 할당량 진행 상황."""
+
+    daily_quota: int
+    correct_today: int
+    quota_remaining: int
+    accumulated_quota: int
+    quota_met: bool
+    carry_over: bool
+
+
 class StudentStats(BaseModel):
     """학생 통계."""
 
@@ -62,6 +73,7 @@ class StudentStats(BaseModel):
     strong_concepts: list[ConceptStat]
     computation_stats: TrackStats | None = None
     concept_stats: TrackStats | None = None
+    quota: QuotaProgress | None = None
 
 
 class StudentStatsSummary(BaseModel):
@@ -103,7 +115,7 @@ class StudentDetailStats(StudentStats):
     """학생 상세 통계."""
 
     name: str
-    email: str
+    login_id: str
     grade: Grade
     class_name: str
     recent_tests: list[RecentTest]
@@ -192,3 +204,26 @@ class DashboardStats(BaseModel):
     today: TodayStats
     this_week: WeekStats
     alerts: list[DashboardAlert]
+
+
+# ===========================
+# 할당량 설정 스키마
+# ===========================
+
+
+class QuotaUpdateRequest(BaseModel):
+    """반 할당량 설정 요청."""
+
+    daily_quota: int = Field(ge=1, le=100, description="일일 목표 정답 수")
+    quota_carry_over: bool = Field(description="미달성 할당량 이월 여부")
+
+
+class StudentQuotaStatus(BaseModel):
+    """학생별 할당량 상태 (강사 조회용)."""
+
+    student_id: str
+    student_name: str
+    correct_today: int
+    daily_quota: int
+    accumulated_quota: int
+    quota_met: bool

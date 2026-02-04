@@ -1,3 +1,4 @@
+export { DailyLabPage } from './DailyLabPage'
 export { TestListPage } from './TestListPage'
 export { TestStartPage } from './TestStartPage'
 export { TestPlayPage } from './TestPlayPage'

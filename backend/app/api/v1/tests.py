@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.models.question import Question
@@ -33,27 +33,28 @@ from app.services.test_service import TestService
 from app.services.grading_service import GradingService
 from app.services.gamification_service import GamificationService
 from app.services.adaptive_service import AdaptiveService
+from app.services.ai_service import AIService
 from app.api.v1.auth import get_current_user, require_role
 
 router = APIRouter(prefix="/tests", tags=["tests"])
 
 
-def get_test_service(db: Session = Depends(get_db)) -> TestService:
+def get_test_service(db: AsyncSession = Depends(get_db)) -> TestService:
     """테스트 서비스 의존성."""
     return TestService(db)
 
 
-def get_grading_service(db: Session = Depends(get_db)) -> GradingService:
+def get_grading_service(db: AsyncSession = Depends(get_db)) -> GradingService:
     """채점 서비스 의존성."""
     return GradingService(db)
 
 
-def get_gamification_service(db: Session = Depends(get_db)) -> GamificationService:
+def get_gamification_service(db: AsyncSession = Depends(get_db)) -> GamificationService:
     """게이미피케이션 서비스 의존성."""
     return GamificationService(db)
 
 
-def get_adaptive_service(db: Session = Depends(get_db)) -> AdaptiveService:
+def get_adaptive_service(db: AsyncSession = Depends(get_db)) -> AdaptiveService:
     """적응형 서비스 의존성."""
     return AdaptiveService(db)
 
@@ -67,7 +68,7 @@ async def get_available_tests(
     test_service: TestService = Depends(get_test_service),
 ):
     """풀 수 있는 테스트 목록 조회."""
-    results, total = test_service.get_available_tests(
+    results, total = await test_service.get_available_tests(
         student_id=current_user.id,
         grade=grade,
         page=page,
@@ -111,7 +112,7 @@ async def get_available_tests(
 @router.get("/review/wrong-questions", response_model=ApiResponse[ReviewResponse])
 async def get_wrong_questions(
     current_user: UserResponse = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     """틀렸던 문제 목록 조회 (복습용)."""
     from app.models.answer_log import AnswerLog
@@ -155,7 +156,7 @@ async def get_wrong_questions(
         .order_by(desc(wrong_subq.c.wrong_count))
     )
 
-    results = db.execute(stmt).all()
+    results = (await db.execute(stmt)).all()
 
     items = []
     for question, wrong_count, last_attempted_at in results:
@@ -171,7 +172,7 @@ async def get_wrong_questions(
             .order_by(desc(AnswerLog.created_at))
             .limit(1)
         )
-        last_selected = db.scalar(last_answer_stmt) or ""
+        last_selected = (await db.scalar(last_answer_stmt)) or ""
 
         items.append(
             WrongQuestionItem(
@@ -204,7 +205,7 @@ async def get_test_detail(
     test_service: TestService = Depends(get_test_service),
 ):
     """테스트 상세 조회 (문제 포함, 정답 제외)."""
-    result = test_service.get_test_with_questions(test_id)
+    result = await test_service.get_test_with_questions(test_id)
     if not result:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -263,12 +264,12 @@ async def start_test(
     current_user: UserResponse = Depends(get_current_user),
     test_service: TestService = Depends(get_test_service),
     adaptive_service: AdaptiveService = Depends(get_adaptive_service),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     """테스트 시작."""
     from app.models.test import Test as TestModel
 
-    test = db.get(TestModel, test_id)
+    test = await db.get(TestModel, test_id)
     if not test or not test.is_active:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -283,7 +284,7 @@ async def start_test(
 
     if test.is_adaptive:
         # 적응형 테스트: 첫 문제만 선택
-        first_question = adaptive_service.select_first_question(test, current_user.id)
+        first_question = await adaptive_service.select_first_question(test, current_user.id)
         if not first_question:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -296,10 +297,10 @@ async def start_test(
                 },
             )
 
-        initial_diff = adaptive_service.get_initial_difficulty_for(test, current_user.id)
+        initial_diff = await adaptive_service.get_initial_difficulty_for(test, current_user.id)
 
         # 시도 생성
-        attempt = test_service.start_test(test_id, current_user.id)
+        attempt = await test_service.start_test(test_id, current_user.id)
         if not attempt:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -318,7 +319,7 @@ async def start_test(
         attempt.current_difficulty = initial_diff
         attempt.adaptive_question_ids = [first_question.id]
         attempt.max_score = first_question.points  # 첫 문제 점수로 시작
-        db.commit()
+        await db.commit()
 
         question_responses = [
             QuestionResponse(
@@ -358,7 +359,7 @@ async def start_test(
         )
 
     # 고정형 테스트 (문제 풀 + 셔플 지원)
-    attempt = test_service.start_test(test_id, current_user.id)
+    attempt = await test_service.start_test(test_id, current_user.id)
     if not attempt:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -372,7 +373,7 @@ async def start_test(
         )
 
     # 셔플 적용된 문제 가져오기
-    shuffled_questions = test_service.get_attempt_questions(attempt.id)
+    shuffled_questions = await test_service.get_attempt_questions(attempt.id)
     if not shuffled_questions:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -435,11 +436,11 @@ async def submit_answer(
     current_user: UserResponse = Depends(get_current_user),
     test_service: TestService = Depends(get_test_service),
     grading_service: GradingService = Depends(get_grading_service),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     """답안 제출 (즉시 채점)."""
     # 시도 확인
-    attempt = test_service.get_attempt_by_id(attempt_id)
+    attempt = await test_service.get_attempt_by_id(attempt_id)
     if not attempt:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -479,7 +480,7 @@ async def submit_answer(
         )
 
     # 이미 답안을 제출했는지 확인
-    if test_service.check_already_answered(attempt_id, request.question_id):
+    if await test_service.check_already_answered(attempt_id, request.question_id):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
@@ -492,7 +493,7 @@ async def submit_answer(
         )
 
     # 문제 조회
-    question = db.get(Question, request.question_id)
+    question = await db.get(Question, request.question_id)
     if not question:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -506,15 +507,15 @@ async def submit_answer(
         )
 
     # 현재 콤보
-    current_combo = test_service.get_current_combo(attempt_id)
+    current_combo = await test_service.get_current_combo(attempt_id)
 
     # 셔플된 정답 가져오기 (셔플이 적용된 경우)
-    correct_answer_override = test_service.get_correct_answer_for_attempt(
+    correct_answer_override = await test_service.get_correct_answer_for_attempt(
         attempt_id, request.question_id
     )
 
     # 채점
-    result = grading_service.submit_answer(
+    result = await grading_service.submit_answer(
         attempt=attempt,
         question=question,
         selected_answer=request.selected_answer,
@@ -526,7 +527,47 @@ async def submit_answer(
     # 적응형이면 다음 난이도 힌트 추가
     if attempt.is_adaptive:
         adaptive_svc = AdaptiveService(db)
-        result["next_difficulty"] = adaptive_svc.peek_next_difficulty(attempt)
+        result["next_difficulty"] = await adaptive_svc.peek_next_difficulty(attempt)
+
+    # ── AI 연동 (실패해도 기존 결과 유지) ──
+    ai_svc = AIService()
+
+    # AI 유연 채점: 빈칸 채우기 + 규칙 기반 오답 → AI 재판정
+    if (
+        not result["is_correct"]
+        and question.question_type
+        and question.question_type.value == "fill_in_blank"
+    ):
+        ai_grade = await ai_svc.grade_fill_blank(
+            question_content=question.content,
+            correct_answer=question.correct_answer,
+            student_answer=request.selected_answer,
+            accept_formats=None,
+        )
+        if ai_grade and ai_grade["is_correct"] and ai_grade.get("confidence", 0) >= 0.8:
+            # AI가 정답으로 판정 → DB 보정
+            result = await grading_service.override_to_correct(
+                attempt=attempt,
+                question=question,
+                prev_result=result,
+                current_combo=current_combo,
+            )
+
+    # AI 피드백: 오답인 경우 오류 분석
+    if not result["is_correct"] and request.selected_answer:
+        fb = await ai_svc.generate_feedback(
+            question_content=question.content,
+            correct_answer=result["correct_answer"],
+            student_answer=request.selected_answer,
+            explanation=question.explanation or "",
+            student_grade=current_user.grade.value if current_user.grade else "",
+        )
+        if fb:
+            result["error_type"] = fb.get("error_type", "")
+            result["suggestion"] = fb.get("suggestion", "")
+
+    result.setdefault("error_type", "")
+    result.setdefault("suggestion", "")
 
     return ApiResponse(data=SubmitAnswerResponse(**result))
 
@@ -542,7 +583,7 @@ async def get_next_question(
     adaptive_service: AdaptiveService = Depends(get_adaptive_service),
 ):
     """적응형 테스트 다음 문제 조회."""
-    attempt = test_service.get_attempt_by_id(attempt_id)
+    attempt = await test_service.get_attempt_by_id(attempt_id)
     if not attempt:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -606,7 +647,7 @@ async def get_next_question(
             )
         )
 
-    question, target_difficulty = adaptive_service.select_next_question(attempt)
+    question, target_difficulty = await adaptive_service.select_next_question(attempt)
 
     if not question:
         return ApiResponse(
@@ -651,11 +692,11 @@ async def complete_test(
     current_user: UserResponse = Depends(get_current_user),
     test_service: TestService = Depends(get_test_service),
     gamification_service: GamificationService = Depends(get_gamification_service),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     """테스트 완료."""
     # 시도 확인
-    attempt = test_service.get_attempt_by_id(attempt_id)
+    attempt = await test_service.get_attempt_by_id(attempt_id)
     if not attempt:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -695,11 +736,11 @@ async def complete_test(
         )
 
     # 시도 완료
-    completed_attempt = test_service.complete_attempt(attempt_id)
+    completed_attempt = await test_service.complete_attempt(attempt_id)
 
     # 사용자 게이미피케이션 업데이트
     from app.models.user import User
-    user = db.get(User, current_user.id)
+    user = await db.get(User, current_user.id)
     KST = timezone(timedelta(hours=9))
     today = datetime.now(KST).date().isoformat()
 
@@ -712,7 +753,7 @@ async def complete_test(
             "total_count": completed_attempt.total_count,
         }
 
-    gamification_result = gamification_service.update_user_gamification(
+    gamification_result = await gamification_service.update_user_gamification(
         user=user,
         xp_earned=completed_attempt.xp_earned,
         today=today,
@@ -727,13 +768,18 @@ async def complete_test(
     chapter_service = ChapterService(db)
 
     # 개념별 숙련도 업데이트
-    mastery_service.update_mastery_from_attempt(current_user.id, attempt_id)
+    await mastery_service.update_mastery_from_attempt(current_user.id, attempt_id)
 
     # 관련 단원 진행률 업데이트 (테스트의 개념들이 속한 단원)
     # TODO: 테스트와 단원 연결 후 구현
 
+    # 일일 테스트 기록 동기화
+    from app.services.daily_test_service import DailyTestService
+    daily_service = DailyTestService(db)
+    await daily_service.try_complete_daily_test(attempt_id)
+
     # 답안 기록 조회
-    details = test_service.get_attempt_with_details(attempt_id)
+    details = await test_service.get_attempt_with_details(attempt_id)
     answer_logs = details["answer_logs"] if details else []
 
     return ApiResponse(
@@ -758,10 +804,10 @@ async def get_attempt(
     attempt_id: str,
     current_user: UserResponse = Depends(get_current_user),
     test_service: TestService = Depends(get_test_service),
-    db: Session = Depends(get_db),
+    db: AsyncSession = Depends(get_db),
 ):
     """시도 결과 조회."""
-    details = test_service.get_attempt_with_details(attempt_id)
+    details = await test_service.get_attempt_with_details(attempt_id)
     if not details:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -797,12 +843,12 @@ async def get_attempt(
         q_ids = attempt.adaptive_question_ids
         q_map = {}
         for qid in q_ids:
-            q = db.get(Question, qid)
+            q = await db.get(Question, qid)
             if q:
                 q_map[qid] = q
         questions = [q_map[qid] for qid in q_ids if qid in q_map]
     else:
-        test_with_questions = test_service.get_test_with_questions(test.id)
+        test_with_questions = await test_service.get_test_with_questions(test.id)
         questions = test_with_questions["questions"] if test_with_questions else []
 
     question_responses = [

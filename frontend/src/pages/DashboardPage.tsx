@@ -4,12 +4,22 @@ import { useAuthStore } from '../store/authStore'
 import { Link } from 'react-router-dom'
 import api from '../lib/api'
 
+interface QuotaProgress {
+  daily_quota: number
+  correct_today: number
+  quota_remaining: number
+  accumulated_quota: number
+  quota_met: boolean
+  carry_over: boolean
+}
+
 interface StudentStats {
   today_solved: number
   current_streak: number
   max_streak: number
   level: number
   total_xp: number
+  quota: QuotaProgress | null
 }
 
 export function DashboardPage() {
@@ -35,11 +45,23 @@ export function DashboardPage() {
           <p className="text-gray-600">{user?.name || '학생'}님, 오늘도 열심히 공부해요!</p>
         </motion.div>
 
+        {/* 할당량 프로그레스 */}
+        {stats?.quota && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-6"
+          >
+            <QuotaCard quota={stats.quota} />
+          </motion.div>
+        )}
+
         {/* 통계 카드 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ delay: 0.15 }}
           className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
         >
           <StatCard label="오늘 학습" value={`${stats?.today_solved ?? 0}문제`} icon="📝" />
@@ -130,5 +152,50 @@ function LearningCard({ title, description, icon, href }: LearningCardProps) {
         <p className="text-sm text-gray-600">{description}</p>
       </Link>
     </motion.div>
+  )
+}
+
+function QuotaCard({ quota }: { quota: QuotaProgress }) {
+  const target = quota.carry_over ? quota.accumulated_quota : quota.daily_quota
+  const progress = Math.min(100, Math.round((quota.correct_today / target) * 100))
+
+  return (
+    <div className={`card p-5 border-2 ${quota.quota_met ? 'border-green-300 bg-green-50' : 'border-blue-200 bg-white'}`}>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">{quota.quota_met ? '\u2705' : '\uD83C\uDFAF'}</span>
+          <span className="font-semibold text-gray-900">
+            {quota.quota_met ? '\uC624\uB298 \uBAA9\uD45C \uB2EC\uC131!' : '\uC624\uB298 \uBAA9\uD45C'}
+          </span>
+        </div>
+        <span className="text-sm text-gray-500">
+          {quota.carry_over && quota.accumulated_quota > quota.daily_quota
+            ? `(\uB204\uC801 ${quota.accumulated_quota}\uBB38\uC81C)`
+            : `\uB9E4\uC77C ${quota.daily_quota}\uBB38\uC81C`}
+        </span>
+      </div>
+
+      <div className="flex items-end justify-between mb-2">
+        <span className="text-3xl font-bold text-gray-900">
+          {quota.correct_today}<span className="text-lg text-gray-400">/{target}</span>
+        </span>
+        <span className="text-sm font-medium text-gray-500">{progress}%</span>
+      </div>
+
+      <div className="w-full bg-gray-200 rounded-full h-3">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+          className={`h-3 rounded-full ${quota.quota_met ? 'bg-green-500' : 'bg-blue-500'}`}
+        />
+      </div>
+
+      {!quota.quota_met && quota.quota_remaining > 0 && (
+        <p className="text-sm text-gray-500 mt-2">
+          \uC815\uB2F5 <span className="font-semibold text-blue-600">{quota.quota_remaining}\uBB38\uC81C</span> \uB0A8\uC558\uC5B4\uC694
+        </p>
+      )}
+    </div>
   )
 }

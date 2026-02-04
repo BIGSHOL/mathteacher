@@ -5,13 +5,23 @@ from datetime import datetime, timezone
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from sqlalchemy.orm import sessionmaker as sync_sessionmaker
 
 from app.core.config import settings
-from app.core.database import Base, engine, SessionLocal
+from app.core.database import Base, sync_engine, AsyncSessionLocal
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Rate Limiter 설정
+limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
+
+# Sync session factory (for init_db and load_seed_data)
+SyncSessionLocal = sync_sessionmaker(bind=sync_engine, autocommit=False, autoflush=False)
 
 
 def init_db():
@@ -19,16 +29,16 @@ def init_db():
     # Import all models to register them with Base
     from app.models import (
         User, Class, Concept, Question, Test, TestAttempt, AnswerLog,
-        Chapter, ChapterProgress, ConceptMastery
+        Chapter, ChapterProgress, ConceptMastery, DailyTestRecord
     )
     from app.models.user import RefreshToken
     from app.services.auth_service import AuthService
 
-    # Create all tables
-    Base.metadata.create_all(bind=engine)
+    # Create all tables (using sync engine)
+    Base.metadata.create_all(bind=sync_engine)
 
-    # Seed initial data if database is empty
-    db = SessionLocal()
+    # Seed initial data if database is empty (using sync session)
+    db = SyncSessionLocal()
     try:
         if not db.query(User).first():
             auth_service = AuthService(db)
@@ -36,7 +46,7 @@ def init_db():
             # Create master (최고 관리자)
             master = User(
                 id="master-001",
-                email="master@test.com",
+                login_id="master01",
                 name="마스터 관리자",
                 role="master",
                 hashed_password=auth_service.hash_password("password123"),
@@ -48,7 +58,7 @@ def init_db():
             # Create admin (관리자)
             admin = User(
                 id="admin-001",
-                email="admin@test.com",
+                login_id="admin01",
                 name="테스트 관리자",
                 role="admin",
                 hashed_password=auth_service.hash_password("password123"),
@@ -60,7 +70,7 @@ def init_db():
             # Create teacher
             teacher = User(
                 id="teacher-001",
-                email="teacher@test.com",
+                login_id="teacher01",
                 name="테스트 강사",
                 role="teacher",
                 hashed_password=auth_service.hash_password("password123"),
@@ -82,7 +92,7 @@ def init_db():
             # Create student
             student = User(
                 id="student-001",
-                email="student@test.com",
+                login_id="student01",
                 name="테스트 학생",
                 role="student",
                 grade="middle_1",
@@ -1275,7 +1285,7 @@ def init_db():
             chapter3.prerequisites.append(chapter2)  # 3단원은 2단원 선행
 
             # student@test.com에게 1단원 해제 (학습 시작 가능)
-            student_user = db.query(User).filter(User.email == "student@test.com").first()
+            student_user = db.query(User).filter(User.login_id == "student01").first()
             if student_user:
                 # 1단원 해제
                 ch1_progress = ChapterProgress(
@@ -1307,7 +1317,7 @@ def load_seed_data():
     from app.models.question import Question
     from app.models.test import Test
 
-    db = SessionLocal()
+    db = SyncSessionLocal()
     try:
         # Check if seed data already loaded (by checking for seed-style concept IDs)
         seed_exists = db.query(Concept).filter(Concept.id.like("concept-m1-%")).first()
@@ -1403,13 +1413,17 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Rate Limiter를 앱에 연결
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
 # CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PATCH", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "Origin", "X-Requested-With"],
 )
 
 

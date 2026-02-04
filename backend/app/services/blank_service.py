@@ -2,7 +2,7 @@
 
 import random
 import hashlib
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.question import Question
 
@@ -10,7 +10,7 @@ from app.models.question import Question
 class BlankService:
     """빈칸 채우기 문제 생성 및 관리."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
     def generate_blanks_for_attempt(

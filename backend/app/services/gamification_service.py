@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
 
@@ -28,7 +28,7 @@ MAX_DEFENSE = 3  # 레벨다운 방어 실드 최대 개수
 class GamificationService:
     """게이미피케이션 서비스."""
 
-    def __init__(self, db: Session | None = None):
+    def __init__(self, db: AsyncSession | None = None):
         self.db = db
 
     def calculate_xp(
@@ -218,7 +218,7 @@ class GamificationService:
                 "defense_remaining": MAX_DEFENSE,
             }
 
-    def update_user_gamification(
+    async def update_user_gamification(
         self,
         user: User,
         xp_earned: int,
@@ -298,7 +298,7 @@ class GamificationService:
         user.max_streak = max(user.max_streak, streak_result["new_streak"])
         user.last_activity_date = datetime.fromisoformat(today)
 
-        self.db.commit()
+        await self.db.commit()
 
         return {
             "level_up": level_up,

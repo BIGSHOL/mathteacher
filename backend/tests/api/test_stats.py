@@ -1,21 +1,21 @@
 """통계 API 테스트 (RED 상태 - 실패하는 테스트)."""
 
 import pytest
-from fastapi.testclient import TestClient
+from httpx import AsyncClient
 
 
 class TestGetMyStats:
     """내 통계 조회 테스트."""
 
-    def test_get_my_stats_success(self, client: TestClient) -> None:
+    async def test_get_my_stats_success(self, client: AsyncClient) -> None:
         """내 통계 조회 성공."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "student@test.com", "password": "password123"},
+            json={"login_id": "student01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/me",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -28,24 +28,24 @@ class TestGetMyStats:
         assert "weak_concepts" in data["data"]
         assert "strong_concepts" in data["data"]
 
-    def test_get_my_stats_without_auth(self, client: TestClient) -> None:
+    async def test_get_my_stats_without_auth(self, client: AsyncClient) -> None:
         """인증 없이 조회 시도."""
-        response = client.get("/api/v1/stats/me")
+        response = await client.get("/api/v1/stats/me")
         assert response.status_code == 401
 
 
 class TestGetStudentStats:
     """학생 통계 목록 조회 테스트 (강사용)."""
 
-    def test_get_student_stats_success(self, client: TestClient) -> None:
+    async def test_get_student_stats_success(self, client: AsyncClient) -> None:
         """학생 통계 목록 조회 성공."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/students",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -55,30 +55,30 @@ class TestGetStudentStats:
         assert "items" in data["data"]
         assert "total" in data["data"]
 
-    def test_get_student_stats_with_filter(self, client: TestClient) -> None:
+    async def test_get_student_stats_with_filter(self, client: AsyncClient) -> None:
         """필터와 함께 학생 통계 조회."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/students?grade=middle_1&sort_by=accuracy&sort_order=desc",
             headers={"Authorization": f"Bearer {access_token}"},
         )
 
         assert response.status_code == 200
 
-    def test_get_student_stats_forbidden_for_student(self, client: TestClient) -> None:
+    async def test_get_student_stats_forbidden_for_student(self, client: AsyncClient) -> None:
         """학생이 조회 시도 (권한 없음)."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "student@test.com", "password": "password123"},
+            json={"login_id": "student01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/students",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -89,17 +89,17 @@ class TestGetStudentStats:
 class TestGetStudentDetail:
     """학생 상세 통계 조회 테스트 (강사용)."""
 
-    def test_get_student_detail_success(self, client: TestClient) -> None:
+    async def test_get_student_detail_success(self, client: AsyncClient) -> None:
         """학생 상세 통계 조회 성공."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
         # 테스트 데이터의 실제 학생 ID 사용
         student_id = "student-001"
-        response = client.get(
+        response = await client.get(
             f"/api/v1/stats/students/{student_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -110,15 +110,15 @@ class TestGetStudentDetail:
         assert "daily_activity" in data["data"]
         assert "weak_concepts" in data["data"]
 
-    def test_get_student_detail_not_found(self, client: TestClient) -> None:
+    async def test_get_student_detail_not_found(self, client: AsyncClient) -> None:
         """존재하지 않는 학생 조회."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/students/nonexistent-id",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -129,17 +129,17 @@ class TestGetStudentDetail:
 class TestGetClassStats:
     """반 통계 조회 테스트."""
 
-    def test_get_class_stats_success(self, client: TestClient) -> None:
+    async def test_get_class_stats_success(self, client: AsyncClient) -> None:
         """반 통계 조회 성공."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
         # 테스트 데이터의 실제 반 ID 사용
         class_id = "class-001"
-        response = client.get(
+        response = await client.get(
             f"/api/v1/stats/class/{class_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -150,32 +150,32 @@ class TestGetClassStats:
         assert "average_accuracy" in data["data"]
         assert "top_students" in data["data"]
 
-    def test_get_class_stats_not_found(self, client: TestClient) -> None:
+    async def test_get_class_stats_not_found(self, client: AsyncClient) -> None:
         """존재하지 않는 반 조회."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/class/nonexistent-id",
             headers={"Authorization": f"Bearer {access_token}"},
         )
 
         assert response.status_code == 404
 
-    def test_get_class_stats_forbidden(self, client: TestClient) -> None:
+    async def test_get_class_stats_forbidden(self, client: AsyncClient) -> None:
         """다른 강사의 반 조회 시도 - 존재하지 않는 반은 404."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
         # 존재하지 않는 반 ID -> 404
         other_class_id = "other-teacher-class-id"
-        response = client.get(
+        response = await client.get(
             f"/api/v1/stats/class/{other_class_id}",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -187,15 +187,15 @@ class TestGetClassStats:
 class TestGetConceptStats:
     """개념별 통계 조회 테스트."""
 
-    def test_get_concept_stats_success(self, client: TestClient) -> None:
+    async def test_get_concept_stats_success(self, client: AsyncClient) -> None:
         """개념별 통계 조회 성공."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/concepts",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -207,15 +207,15 @@ class TestGetConceptStats:
             assert "concept_name" in data["data"][0]
             assert "accuracy_rate" in data["data"][0]
 
-    def test_get_concept_stats_with_filter(self, client: TestClient) -> None:
+    async def test_get_concept_stats_with_filter(self, client: AsyncClient) -> None:
         """필터와 함께 개념별 통계 조회."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/concepts?grade=middle_1",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -226,15 +226,15 @@ class TestGetConceptStats:
 class TestGetDashboardStats:
     """대시보드 통계 조회 테스트."""
 
-    def test_get_dashboard_stats_success(self, client: TestClient) -> None:
+    async def test_get_dashboard_stats_success(self, client: AsyncClient) -> None:
         """대시보드 통계 조회 성공."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "teacher@test.com", "password": "password123"},
+            json={"login_id": "teacher01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/dashboard",
             headers={"Authorization": f"Bearer {access_token}"},
         )
@@ -245,17 +245,17 @@ class TestGetDashboardStats:
         assert "this_week" in data["data"]
         assert "alerts" in data["data"]
 
-    def test_get_dashboard_stats_forbidden_for_student(
-        self, client: TestClient
+    async def test_get_dashboard_stats_forbidden_for_student(
+        self, client: AsyncClient
     ) -> None:
         """학생이 대시보드 조회 시도."""
-        login_response = client.post(
+        login_response = await client.post(
             "/api/v1/auth/login",
-            json={"email": "student@test.com", "password": "password123"},
+            json={"login_id": "student01", "password": "password123"},
         )
         access_token = login_response.json()["data"]["access_token"]
 
-        response = client.get(
+        response = await client.get(
             "/api/v1/stats/dashboard",
             headers={"Authorization": f"Bearer {access_token}"},
         )

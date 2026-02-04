@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, Field
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.schemas import (
@@ -26,12 +26,12 @@ class ResetPasswordRequest(BaseModel):
 router = APIRouter(prefix="/students", tags=["students"])
 
 
-def get_student_service(db: Session = Depends(get_db)) -> StudentService:
+def get_student_service(db: AsyncSession = Depends(get_db)) -> StudentService:
     """학생 서비스 의존성."""
     return StudentService(db)
 
 
-def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
+def get_auth_service(db: AsyncSession = Depends(get_db)) -> AuthService:
     """인증 서비스 의존성."""
     return AuthService(db)
 
@@ -42,14 +42,14 @@ async def get_students(
     grade: Grade | None = Query(None, description="학년 필터"),
     page: int = Query(1, ge=1, description="페이지 번호"),
     page_size: int = Query(20, ge=1, le=100, description="페이지 크기"),
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     student_service: StudentService = Depends(get_student_service),
 ):
     """학생 목록 조회 (강사/관리자 전용)."""
     # 강사는 자신의 반 학생만 조회 가능
     teacher_id = current_user.id if current_user.role == UserRole.TEACHER else None
 
-    students, total = student_service.get_students(
+    students, total = await student_service.get_students(
         teacher_id=teacher_id,
         class_id=class_id,
         grade=grade,
@@ -73,11 +73,11 @@ async def get_students(
 @router.get("/{student_id}", response_model=ApiResponse[UserResponse])
 async def get_student(
     student_id: str,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     student_service: StudentService = Depends(get_student_service),
 ):
     """학생 상세 조회."""
-    student = student_service.get_student_by_id(student_id)
+    student = await student_service.get_student_by_id(student_id)
     if not student:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -92,7 +92,7 @@ async def get_student(
 
     # 강사는 자신의 반 학생만 조회 가능
     if current_user.role == UserRole.TEACHER:
-        if not student_service.check_teacher_access(current_user.id, student_id):
+        if not await student_service.check_teacher_access(current_user.id, student_id):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail={
@@ -114,27 +114,27 @@ async def get_student(
 )
 async def create_student(
     request: RegisterStudentRequest,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     student_service: StudentService = Depends(get_student_service),
     auth_service: AuthService = Depends(get_auth_service),
 ):
     """학생 생성 (강사/관리자 전용)."""
-    # 이메일 중복 체크
-    existing_user = auth_service.get_user_by_email(request.email)
+    # 아이디 중복 체크
+    existing_user = await auth_service.get_user_by_login_id(request.login_id)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
                 "success": False,
                 "error": {
-                    "code": "EMAIL_ALREADY_EXISTS",
-                    "message": "이미 사용 중인 이메일입니다.",
+                    "code": "LOGIN_ID_ALREADY_EXISTS",
+                    "message": "이미 사용 중인 아이디입니다.",
                 },
             },
         )
 
-    student = student_service.create_student(
-        email=request.email,
+    student = await student_service.create_student(
+        login_id=request.login_id,
         password=request.password,
         name=request.name,
         grade=request.grade,
@@ -148,13 +148,13 @@ async def create_student(
 async def update_student(
     student_id: str,
     request: UserUpdate,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     student_service: StudentService = Depends(get_student_service),
 ):
     """학생 정보 수정."""
     # 강사는 자신의 반 학생만 수정 가능
     if current_user.role == UserRole.TEACHER:
-        if not student_service.check_teacher_access(current_user.id, student_id):
+        if not await student_service.check_teacher_access(current_user.id, student_id):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail={
@@ -166,7 +166,7 @@ async def update_student(
                 },
             )
 
-    student = student_service.update_student(student_id, request)
+    student = await student_service.update_student(student_id, request)
     if not student:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -185,13 +185,13 @@ async def update_student(
 @router.delete("/{student_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_student(
     student_id: str,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     student_service: StudentService = Depends(get_student_service),
 ):
     """학생 삭제 (비활성화)."""
     # 강사는 자신의 반 학생만 삭제 가능
     if current_user.role == UserRole.TEACHER:
-        if not student_service.check_teacher_access(current_user.id, student_id):
+        if not await student_service.check_teacher_access(current_user.id, student_id):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail={
@@ -203,7 +203,7 @@ async def delete_student(
                 },
             )
 
-    success = student_service.delete_student(student_id)
+    success = await student_service.delete_student(student_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -221,13 +221,13 @@ async def delete_student(
 async def reset_student_password(
     student_id: str,
     request: ResetPasswordRequest,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     student_service: StudentService = Depends(get_student_service),
 ):
     """학생 비밀번호 초기화 (강사/관리자 전용)."""
     # 강사는 자신의 반 학생만 수정 가능
     if current_user.role == UserRole.TEACHER:
-        if not student_service.check_teacher_access(current_user.id, student_id):
+        if not await student_service.check_teacher_access(current_user.id, student_id):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail={
@@ -239,7 +239,7 @@ async def reset_student_password(
                 },
             )
 
-    student = student_service.reset_password(student_id, request.new_password)
+    student = await student_service.reset_password(student_id, request.new_password)
     if not student:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -258,13 +258,13 @@ async def reset_student_password(
 @router.post("/{student_id}/reset-history", response_model=ApiResponse[dict])
 async def reset_student_history(
     student_id: str,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     student_service: StudentService = Depends(get_student_service),
 ):
     """학생 테스트 기록 초기화 (강사/관리자 전용)."""
     # 강사는 자신의 반 학생만 수정 가능
     if current_user.role == UserRole.TEACHER:
-        if not student_service.check_teacher_access(current_user.id, student_id):
+        if not await student_service.check_teacher_access(current_user.id, student_id):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail={
@@ -276,7 +276,7 @@ async def reset_student_history(
                 },
             )
 
-    success = student_service.reset_test_history(student_id)
+    success = await student_service.reset_test_history(student_id)
     if not success:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

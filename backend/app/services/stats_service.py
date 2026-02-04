@@ -4,7 +4,7 @@ from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
 from app.models.class_ import Class
@@ -44,7 +44,7 @@ def _to_kst_date(dt):
 class StatsService:
     """통계 서비스."""
 
-    def __init__(self, db: Session | None = None):
+    def __init__(self, db: AsyncSession | None = None):
         self.db = db
 
     def calculate_accuracy_rate(self, correct: int, total: int) -> float:
@@ -83,12 +83,12 @@ class StatsService:
 
         return sorted(weak, key=lambda x: x["accuracy_rate"])
 
-    def get_student_stats(self, student_id: str) -> dict | None:
+    async def get_student_stats(self, student_id: str) -> dict | None:
         """학생 통계 조회."""
         if not self.db:
             raise ValueError("Database session required")
 
-        student = self.db.get(User, student_id)
+        student = await self.db.get(User, student_id)
         if not student or student.role != UserRole.STUDENT:
             return None
 
@@ -97,23 +97,26 @@ class StatsService:
             TestAttempt.student_id == student_id,
             TestAttempt.completed_at.isnot(None),
         )
-        attempts = list(self.db.scalars(attempts_stmt).all())
+        attempts = list((await self.db.scalars(attempts_stmt)).all())
 
         total_tests = len(attempts)
         total_questions = sum(a.total_count for a in attempts)
         correct_answers = sum(a.correct_count for a in attempts)
         accuracy_rate = self.calculate_accuracy_rate(correct_answers, total_questions)
 
-        # 평균 풀이 시간
-        total_time = 0
-        answer_count = 0
-        for attempt in attempts:
-            logs = list(self.db.scalars(
-                select(AnswerLog).where(AnswerLog.attempt_id == attempt.id)
-            ).all())
-            for log in logs:
-                total_time += log.time_spent_seconds
-                answer_count += 1
+        # 평균 풀이 시간 - N+1 쿼리 수정: 한 번의 집계 쿼리로 교체
+        attempt_ids = [a.id for a in attempts]
+        if attempt_ids:
+            time_stmt = select(
+                func.sum(AnswerLog.time_spent_seconds),
+                func.count(),
+            ).where(AnswerLog.attempt_id.in_(attempt_ids))
+            time_result = (await self.db.execute(time_stmt)).first()
+            total_time = time_result[0] or 0
+            answer_count = time_result[1] or 0
+        else:
+            total_time = 0
+            answer_count = 0
 
         avg_time = total_time / answer_count if answer_count > 0 else 0
 
@@ -127,7 +130,7 @@ class StatsService:
             AnswerLog.created_at >= today_start,
             AnswerLog.created_at < today_end,
         )
-        today_solved = self.db.scalar(today_solved_stmt) or 0
+        today_solved = await self.db.scalar(today_solved_stmt) or 0
 
         # 개념별/트랙별 통계 계산
         from app.models.question import Question
@@ -138,7 +141,7 @@ class StatsService:
             .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
             .where(TestAttempt.student_id == student_id)
         )
-        all_logs = list(self.db.execute(all_logs_stmt).all())
+        all_logs = list((await self.db.execute(all_logs_stmt)).all())
 
         # 개념별 집계
         concept_agg: dict[str, dict] = defaultdict(
@@ -165,7 +168,7 @@ class StatsService:
             concepts_stmt = select(Concept.id, Concept.name).where(
                 Concept.id.in_(concept_ids)
             )
-            for cid, cname in self.db.execute(concepts_stmt).all():
+            for cid, cname in (await self.db.execute(concepts_stmt)).all():
                 concept_names[cid] = cname
 
         # 취약 개념 (정답률 < 60%) / 강점 개념 (정답률 >= 80%)
@@ -226,7 +229,7 @@ class StatsService:
             "concept_stats": concept_stats,
         }
 
-    def get_dashboard_stats(self, teacher_id: str) -> dict:
+    async def get_dashboard_stats(self, teacher_id: str) -> dict:
         """대시보드 통계 조회."""
         if not self.db:
             raise ValueError("Database session required")
@@ -236,7 +239,7 @@ class StatsService:
 
         # 담당 반 조회
         classes_stmt = select(Class).where(Class.teacher_id == teacher_id)
-        classes = list(self.db.scalars(classes_stmt).all())
+        classes = list((await self.db.scalars(classes_stmt)).all())
         class_ids = [c.id for c in classes]
 
         # 담당 학생 조회
@@ -245,7 +248,7 @@ class StatsService:
             User.role == UserRole.STUDENT,
             User.is_active == True,  # noqa: E712
         )
-        students = list(self.db.scalars(students_stmt).all())
+        students = list((await self.db.scalars(students_stmt)).all())
         student_ids = [s.id for s in students]
 
         # 오늘 통계 (KST 기준)
@@ -255,7 +258,7 @@ class StatsService:
             TestAttempt.started_at >= today_start,
             TestAttempt.started_at < today_end,
         )
-        today_attempts = list(self.db.scalars(today_attempts_stmt).all())
+        today_attempts = list((await self.db.scalars(today_attempts_stmt)).all())
 
         today_active = len(set(a.student_id for a in today_attempts))
         today_tests = len([a for a in today_attempts if a.completed_at])
@@ -269,7 +272,7 @@ class StatsService:
             TestAttempt.student_id.in_(student_ids),
             TestAttempt.started_at >= week_start,
         )
-        week_attempts = list(self.db.scalars(week_attempts_stmt).all())
+        week_attempts = list((await self.db.scalars(week_attempts_stmt)).all())
 
         week_active = len(set(a.student_id for a in week_attempts))
         week_tests = len([a for a in week_attempts if a.completed_at])
@@ -315,7 +318,7 @@ class StatsService:
             "alerts": alerts[:10],  # 최대 10개
         }
 
-    def get_students_summary(
+    async def get_students_summary(
         self,
         teacher_id: str,
         class_id: str | None = None,
@@ -331,7 +334,7 @@ class StatsService:
         classes_stmt = select(Class).where(Class.teacher_id == teacher_id)
         if class_id:
             classes_stmt = classes_stmt.where(Class.id == class_id)
-        classes = list(self.db.scalars(classes_stmt).all())
+        classes = list((await self.db.scalars(classes_stmt)).all())
         class_map = {c.id: c for c in classes}
         class_ids = [c.id for c in classes]
 
@@ -346,12 +349,12 @@ class StatsService:
 
         # 총 개수
         count_stmt = select(func.count()).select_from(students_stmt.subquery())
-        total = self.db.scalar(count_stmt) or 0
+        total = await self.db.scalar(count_stmt) or 0
 
         # 페이지네이션
         students_stmt = students_stmt.order_by(User.name)
         students_stmt = students_stmt.offset((page - 1) * page_size).limit(page_size)
-        students = list(self.db.scalars(students_stmt).all())
+        students = list((await self.db.scalars(students_stmt)).all())
 
         result = []
         for student in students:
@@ -360,7 +363,7 @@ class StatsService:
                 TestAttempt.student_id == student.id,
                 TestAttempt.completed_at.isnot(None),
             )
-            tests_completed = self.db.scalar(attempts_stmt) or 0
+            tests_completed = await self.db.scalar(attempts_stmt) or 0
 
             # 정답률
             stats_stmt = select(
@@ -370,7 +373,7 @@ class StatsService:
                 TestAttempt.student_id == student.id,
                 TestAttempt.completed_at.isnot(None),
             )
-            stats = self.db.execute(stats_stmt).first()
+            stats = (await self.db.execute(stats_stmt)).first()
             correct = stats[0] or 0
             total_q = stats[1] or 0
             accuracy = self.calculate_accuracy_rate(correct, total_q)
@@ -392,7 +395,7 @@ class StatsService:
 
         return result, total
 
-    def get_student_detail(
+    async def get_student_detail(
         self,
         student_id: str,
         teacher_id: str,
@@ -401,28 +404,28 @@ class StatsService:
         if not self.db:
             raise ValueError("Database session required")
 
-        student = self.db.get(User, student_id)
+        student = await self.db.get(User, student_id)
         if not student or student.role != UserRole.STUDENT:
             return None
 
         # 권한 확인: 담당 반의 학생인지
         if student.class_id:
-            class_ = self.db.get(Class, student.class_id)
+            class_ = await self.db.get(Class, student.class_id)
             if class_ and class_.teacher_id != teacher_id:
                 # admin이 아니면 접근 불가
-                teacher = self.db.get(User, teacher_id)
+                teacher = await self.db.get(User, teacher_id)
                 if not teacher or teacher.role != UserRole.ADMIN:
                     return None
 
         # 기본 통계
-        base_stats = self.get_student_stats(student_id)
+        base_stats = await self.get_student_stats(student_id)
         if not base_stats:
             return None
 
         # 반 정보
         class_name = ""
         if student.class_id:
-            class_ = self.db.get(Class, student.class_id)
+            class_ = await self.db.get(Class, student.class_id)
             if class_:
                 class_name = class_.name
 
@@ -431,11 +434,11 @@ class StatsService:
             TestAttempt.student_id == student_id,
             TestAttempt.completed_at.isnot(None),
         ).order_by(TestAttempt.completed_at.desc()).limit(10)
-        recent_attempts = list(self.db.scalars(recent_attempts_stmt).all())
+        recent_attempts = list((await self.db.scalars(recent_attempts_stmt)).all())
 
         recent_tests = []
         for attempt in recent_attempts:
-            test = self.db.get(Test, attempt.test_id)
+            test = await self.db.get(Test, attempt.test_id)
             if test:
                 recent_tests.append({
                     "test_id": test.id,
@@ -460,7 +463,7 @@ class StatsService:
                 TestAttempt.started_at >= day_start,
                 TestAttempt.started_at < day_end,
             )
-            day_attempts = list(self.db.scalars(day_attempts_stmt).all())
+            day_attempts = list((await self.db.scalars(day_attempts_stmt)).all())
 
             tests_completed = len(day_attempts)
             questions_answered = sum(a.total_count for a in day_attempts)
@@ -477,14 +480,14 @@ class StatsService:
         return {
             **base_stats,
             "name": student.name,
-            "email": student.email,
+            "login_id": student.login_id,
             "grade": student.grade,
             "class_name": class_name,
             "recent_tests": recent_tests,
             "daily_activity": daily_activity,
         }
 
-    def get_class_stats(
+    async def get_class_stats(
         self,
         class_id: str,
         teacher_id: str,
@@ -493,13 +496,13 @@ class StatsService:
         if not self.db:
             raise ValueError("Database session required")
 
-        class_ = self.db.get(Class, class_id)
+        class_ = await self.db.get(Class, class_id)
         if not class_:
             return None
 
         # 권한 확인
         if class_.teacher_id != teacher_id:
-            teacher = self.db.get(User, teacher_id)
+            teacher = await self.db.get(User, teacher_id)
             if not teacher or teacher.role != UserRole.ADMIN:
                 return {"error": "forbidden"}
 
@@ -509,7 +512,7 @@ class StatsService:
             User.role == UserRole.STUDENT,
             User.is_active == True,  # noqa: E712
         )
-        students = list(self.db.scalars(students_stmt).all())
+        students = list((await self.db.scalars(students_stmt)).all())
         student_ids = [s.id for s in students]
 
         student_count = len(students)
@@ -529,22 +532,23 @@ class StatsService:
                 "daily_stats": [],
             }
 
-        # 평균 정답률 및 레벨
-        total_correct = 0
-        total_questions = 0
+        # 평균 정답률 및 레벨 - N+1 쿼리 수정: IN절로 한 번에 조회
         total_level = sum(s.level for s in students)
 
-        for student_id in student_ids:
-            stats_stmt = select(
+        if student_ids:
+            total_stats_stmt = select(
                 func.sum(TestAttempt.correct_count),
                 func.sum(TestAttempt.total_count),
             ).where(
-                TestAttempt.student_id == student_id,
+                TestAttempt.student_id.in_(student_ids),
                 TestAttempt.completed_at.isnot(None),
             )
-            stats = self.db.execute(stats_stmt).first()
-            total_correct += stats[0] or 0
-            total_questions += stats[1] or 0
+            total_stats = (await self.db.execute(total_stats_stmt)).first()
+            total_correct = total_stats[0] or 0
+            total_questions = total_stats[1] or 0
+        else:
+            total_correct = 0
+            total_questions = 0
 
         average_accuracy = self.calculate_accuracy_rate(total_correct, total_questions)
         average_level = round(total_level / student_count, 1) if student_count > 0 else 0
@@ -558,23 +562,32 @@ class StatsService:
             TestAttempt.started_at >= today_start,
             TestAttempt.started_at < today_end,
         )
-        tests_completed_today = self.db.scalar(today_tests_stmt) or 0
+        tests_completed_today = await self.db.scalar(today_tests_stmt) or 0
 
-        # 상위 학생 (정답률 기준, 최대 5명)
-        top_students = []
+        # 상위 학생 (정답률 기준, 최대 5명) - N+1 쿼리 수정: GROUP BY로 한 번에 조회
+        if student_ids:
+            per_student_stmt = select(
+                TestAttempt.student_id,
+                func.sum(TestAttempt.correct_count).label("correct"),
+                func.sum(TestAttempt.total_count).label("total"),
+            ).where(
+                TestAttempt.student_id.in_(student_ids),
+                TestAttempt.completed_at.isnot(None),
+            ).group_by(TestAttempt.student_id)
+
+            per_student_stats = {}
+            for row in await self.db.execute(per_student_stmt):
+                per_student_stats[row.student_id] = {
+                    "correct": row.correct or 0,
+                    "total": row.total or 0,
+                }
+        else:
+            per_student_stats = {}
+
         student_accuracies = []
         for student in students:
-            stats_stmt = select(
-                func.sum(TestAttempt.correct_count),
-                func.sum(TestAttempt.total_count),
-            ).where(
-                TestAttempt.student_id == student.id,
-                TestAttempt.completed_at.isnot(None),
-            )
-            stats = self.db.execute(stats_stmt).first()
-            correct = stats[0] or 0
-            total_q = stats[1] or 0
-            accuracy = self.calculate_accuracy_rate(correct, total_q)
+            s = per_student_stats.get(student.id, {"correct": 0, "total": 0})
+            accuracy = self.calculate_accuracy_rate(s["correct"], s["total"])
             student_accuracies.append({
                 "user_id": student.id,
                 "name": student.name,
@@ -589,7 +602,7 @@ class StatsService:
         )[:5]
 
         # 담당 강사 이름
-        teacher = self.db.get(User, class_.teacher_id)
+        teacher = await self.db.get(User, class_.teacher_id)
         teacher_name = teacher.name if teacher else ""
 
         # 일별 통계 (최근 7일, KST 기준)
@@ -603,7 +616,7 @@ class StatsService:
                 TestAttempt.started_at >= day_start,
                 TestAttempt.started_at < day_end,
             )
-            day_attempts = list(self.db.scalars(day_attempts_stmt).all())
+            day_attempts = list((await self.db.scalars(day_attempts_stmt)).all())
 
             active = len(set(a.student_id for a in day_attempts))
             tests = len(day_attempts)
@@ -633,7 +646,7 @@ class StatsService:
             "daily_stats": daily_stats,
         }
 
-    def get_concept_stats(
+    async def get_concept_stats(
         self,
         teacher_id: str,
         grade: Grade | None = None,
@@ -649,7 +662,7 @@ class StatsService:
         classes_stmt = select(Class).where(Class.teacher_id == teacher_id)
         if class_id:
             classes_stmt = classes_stmt.where(Class.id == class_id)
-        classes = list(self.db.scalars(classes_stmt).all())
+        classes = list((await self.db.scalars(classes_stmt)).all())
         class_ids = [c.id for c in classes]
 
         if not class_ids:
@@ -661,7 +674,7 @@ class StatsService:
             User.role == UserRole.STUDENT,
             User.is_active == True,  # noqa: E712
         )
-        students = list(self.db.scalars(students_stmt).all())
+        students = list((await self.db.scalars(students_stmt)).all())
         student_ids = [s.id for s in students]
 
         if not student_ids:
@@ -671,7 +684,7 @@ class StatsService:
         concepts_stmt = select(Concept)
         if grade:
             concepts_stmt = concepts_stmt.where(Concept.grade == grade)
-        concepts = list(self.db.scalars(concepts_stmt).all())
+        concepts = list((await self.db.scalars(concepts_stmt)).all())
 
         result = []
         for concept in concepts:
@@ -679,7 +692,7 @@ class StatsService:
             question_ids_stmt = select(Question.id).where(
                 Question.concept_id == concept.id
             )
-            question_ids = list(self.db.scalars(question_ids_stmt).all())
+            question_ids = list((await self.db.scalars(question_ids_stmt)).all())
 
             if not question_ids:
                 continue
@@ -690,7 +703,7 @@ class StatsService:
             ).join(TestAttempt).where(
                 TestAttempt.student_id.in_(student_ids),
             )
-            logs = list(self.db.scalars(logs_stmt).all())
+            logs = list((await self.db.scalars(logs_stmt)).all())
 
             if not logs:
                 continue
@@ -705,7 +718,7 @@ class StatsService:
                 student_count_stmt = select(func.count(func.distinct(TestAttempt.student_id))).where(
                     TestAttempt.id.in_(attempt_ids)
                 )
-                student_count = self.db.scalar(student_count_stmt) or 0
+                student_count = await self.db.scalar(student_count_stmt) or 0
             else:
                 student_count = 0
 
@@ -726,3 +739,103 @@ class StatsService:
             })
 
         return sorted(result, key=lambda x: x["accuracy_rate"])
+
+    # ===========================
+    # 일일 할당량 (Daily Quota)
+    # ===========================
+
+    async def _count_correct_today(self, student_id: str) -> int:
+        """오늘 정답 수 계산 (KST 기준)."""
+        today = _kst_today()
+        today_start, today_end = _kst_day_utc_range(today)
+        stmt = (
+            select(func.count())
+            .select_from(AnswerLog)
+            .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
+            .where(
+                TestAttempt.student_id == student_id,
+                AnswerLog.is_correct.is_(True),
+                AnswerLog.created_at >= today_start,
+                AnswerLog.created_at < today_end,
+            )
+        )
+        return await self.db.scalar(stmt) or 0
+
+    async def get_student_quota_progress(self, student_id: str) -> dict | None:
+        """학생의 일일 할당량 진행 상황 조회."""
+        user = await self.db.get(User, student_id)
+        if not user or not user.class_id:
+            return None
+
+        cls = await self.db.get(Class, user.class_id)
+        if not cls:
+            return None
+
+        daily_quota = cls.daily_quota or 20
+        carry_over = cls.quota_carry_over or False
+        correct_today = await self._count_correct_today(student_id)
+
+        # 누적 모드 계산
+        if carry_over and user.last_quota_met_date:
+            last_met = _to_kst_date(user.last_quota_met_date)
+            today = _kst_today()
+            days_behind = max(1, (today - last_met).days)
+            accumulated_quota = daily_quota * days_behind
+        else:
+            accumulated_quota = daily_quota
+
+        quota_remaining = max(0, accumulated_quota - correct_today)
+        quota_met = correct_today >= accumulated_quota
+
+        return {
+            "daily_quota": daily_quota,
+            "correct_today": correct_today,
+            "quota_remaining": quota_remaining,
+            "accumulated_quota": accumulated_quota,
+            "quota_met": quota_met,
+            "carry_over": carry_over,
+        }
+
+    async def check_and_update_quota_met(self, student_id: str) -> bool:
+        """할당량 달성 체크 후 last_quota_met_date 갱신. True면 새로 달성."""
+        progress = await self.get_student_quota_progress(student_id)
+        if not progress or not progress["quota_met"]:
+            return False
+
+        user = await self.db.get(User, student_id)
+        today = _kst_today()
+        last_met = _to_kst_date(user.last_quota_met_date) if user.last_quota_met_date else None
+
+        if last_met != today:
+            # KST 오늘 날짜를 UTC로 변환해서 저장
+            user.last_quota_met_date = datetime(today.year, today.month, today.day) - timedelta(hours=9)
+            await self.db.commit()
+            return True
+        return False
+
+    async def get_class_quota_progress(self, class_id: str) -> list[dict]:
+        """반 전체 학생의 할당량 진행 현황."""
+        cls = await self.db.get(Class, class_id)
+        if not cls:
+            return []
+
+        students = (
+            (await self.db.scalars(
+                select(User).where(
+                    User.class_id == class_id,
+                    User.role == UserRole.STUDENT,
+                    User.is_active.is_(True),
+                )
+            )).all()
+        )
+
+        result = []
+        for student in students:
+            progress = await self.get_student_quota_progress(student.id)
+            if progress:
+                result.append({
+                    "student_id": student.id,
+                    "student_name": student.name,
+                    **progress,
+                })
+        return result

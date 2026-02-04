@@ -1,12 +1,15 @@
-def test_health_check(client):
+from httpx import AsyncClient
+
+
+async def test_health_check(client):
     """Test health check endpoint."""
-    response = client.get("/health")
+    response = await client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "healthy"}
 
 
-def test_root(client):
+async def test_root(client):
     """Test root endpoint."""
-    response = client.get("/")
+    response = await client.get("/")
     assert response.status_code == 200
     assert "Math Test API" in response.json()["message"]

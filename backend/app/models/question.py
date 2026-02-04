@@ -66,7 +66,7 @@ class Question(Base):
     )
 
     # 관계
-    concept: Mapped["Concept"] = relationship("Concept", back_populates="questions")
+    concept: Mapped["Concept"] = relationship("Concept", back_populates="questions", lazy="selectin")
 
     def __repr__(self) -> str:
         return f"<Question {self.id[:8]}>"

@@ -1,7 +1,7 @@
 """통계 API 엔드포인트."""
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
 from app.schemas import (
@@ -9,9 +9,11 @@ from app.schemas import (
     DashboardStats,
     Grade,
     PaginatedResponse,
+    QuotaProgress,
     StudentStats,
     StudentStatsSummary,
     StudentDetailStats,
+    StudentQuotaStatus,
     ClassDetailStats,
     ConceptDetailStat,
     RecentTest,
@@ -29,7 +31,7 @@ from app.api.v1.auth import get_current_user, require_role
 router = APIRouter(prefix="/stats", tags=["stats"])
 
 
-def get_stats_service(db: Session = Depends(get_db)) -> StatsService:
+def get_stats_service(db: AsyncSession = Depends(get_db)) -> StatsService:
     """통계 서비스 의존성."""
     return StatsService(db)
 
@@ -40,7 +42,7 @@ async def get_my_stats(
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """내 통계 조회 (학생용)."""
-    stats = stats_service.get_student_stats(current_user.id)
+    stats = await stats_service.get_student_stats(current_user.id)
     if not stats:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -53,16 +55,20 @@ async def get_my_stats(
             },
         )
 
-    return ApiResponse(data=StudentStats(**stats))
+    # 할당량 정보 추가
+    quota_data = await stats_service.get_student_quota_progress(current_user.id)
+    quota = QuotaProgress(**quota_data) if quota_data else None
+
+    return ApiResponse(data=StudentStats(**stats, quota=quota))
 
 
 @router.get("/dashboard", response_model=ApiResponse[DashboardStats])
 async def get_dashboard(
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """대시보드 통계 (강사용)."""
-    stats = stats_service.get_dashboard_stats(current_user.id)
+    stats = await stats_service.get_dashboard_stats(current_user.id)
 
     return ApiResponse(
         data=DashboardStats(
@@ -79,11 +85,11 @@ async def get_students_stats(
     grade: Grade | None = Query(None, description="학년 필터"),
     page: int = Query(1, ge=1, description="페이지 번호"),
     page_size: int = Query(20, ge=1, le=100, description="페이지 크기"),
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """학생 통계 목록 (강사용)."""
-    students, total = stats_service.get_students_summary(
+    students, total = await stats_service.get_students_summary(
         teacher_id=current_user.id,
         class_id=class_id,
         grade=grade,
@@ -123,11 +129,11 @@ async def get_students_stats(
 @router.get("/students/{student_id}", response_model=ApiResponse[StudentDetailStats])
 async def get_student_detail(
     student_id: str,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """학생 상세 통계 (강사용)."""
-    stats = stats_service.get_student_detail(student_id, current_user.id)
+    stats = await stats_service.get_student_detail(student_id, current_user.id)
     if not stats:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -154,11 +160,11 @@ async def get_student_detail(
 @router.get("/class/{class_id}", response_model=ApiResponse[ClassDetailStats])
 async def get_class_stats(
     class_id: str,
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """반 통계 (강사용)."""
-    stats = stats_service.get_class_stats(class_id, current_user.id)
+    stats = await stats_service.get_class_stats(class_id, current_user.id)
     if not stats:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -205,11 +211,11 @@ async def get_class_stats(
 async def get_concept_stats(
     grade: Grade | None = Query(None, description="학년 필터"),
     class_id: str | None = Query(None, description="반 ID 필터"),
-    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN)),
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """개념별 통계 (강사용)."""
-    stats = stats_service.get_concept_stats(current_user.id, grade, class_id)
+    stats = await stats_service.get_concept_stats(current_user.id, grade, class_id)
 
     return ApiResponse(
         data=[
@@ -225,5 +231,29 @@ async def get_concept_stats(
                 difficulty_distribution=s["difficulty_distribution"],
             )
             for s in stats
+        ]
+    )
+
+
+@router.get("/class/{class_id}/quota-progress", response_model=ApiResponse[list[StudentQuotaStatus]])
+async def get_class_quota_progress(
+    class_id: str,
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
+    stats_service: StatsService = Depends(get_stats_service),
+):
+    """반 전체 할당량 진행 현황 (강사용)."""
+    progress_list = await stats_service.get_class_quota_progress(class_id)
+
+    return ApiResponse(
+        data=[
+            StudentQuotaStatus(
+                student_id=p["student_id"],
+                student_name=p["student_name"],
+                correct_today=p["correct_today"],
+                daily_quota=p["daily_quota"],
+                accumulated_quota=p["accumulated_quota"],
+                quota_met=p["quota_met"],
+            )
+            for p in progress_list
         ]
     )

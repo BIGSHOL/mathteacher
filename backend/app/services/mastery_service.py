@@ -3,7 +3,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.concept_mastery import ConceptMastery
 from app.models.concept import Concept
@@ -16,10 +16,10 @@ MASTERY_THRESHOLD = 90  # 90% 이상이면 마스터
 class MasteryService:
     """개념 숙련도 추적 및 관리."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def get_or_create_mastery(
+    async def get_or_create_mastery(
         self, student_id: str, concept_id: str
     ) -> ConceptMastery:
         """개념 숙련도 조회 또는 생성."""
@@ -27,7 +27,7 @@ class MasteryService:
             ConceptMastery.student_id == student_id,
             ConceptMastery.concept_id == concept_id,
         )
-        mastery = self.db.scalar(stmt)
+        mastery = await self.db.scalar(stmt)
 
         if not mastery:
             mastery = ConceptMastery(
@@ -36,23 +36,23 @@ class MasteryService:
                 is_unlocked=False,  # 기본적으로 잠김
             )
             self.db.add(mastery)
-            self.db.flush()
+            await self.db.flush()
 
         return mastery
 
-    def unlock_concept(self, student_id: str, concept_id: str) -> bool:
+    async def unlock_concept(self, student_id: str, concept_id: str) -> bool:
         """개념 잠금 해제."""
-        mastery = self.get_or_create_mastery(student_id, concept_id)
+        mastery = await self.get_or_create_mastery(student_id, concept_id)
 
         if not mastery.is_unlocked:
             mastery.is_unlocked = True
             mastery.unlocked_at = datetime.now(timezone.utc)
-            self.db.commit()
+            await self.db.commit()
             return True
 
         return False
 
-    def update_mastery_from_attempt(
+    async def update_mastery_from_attempt(
         self, student_id: str, attempt_id: str
     ) -> dict[str, int]:
         """테스트 시도 결과로 개념 숙련도 업데이트.
@@ -61,7 +61,7 @@ class MasteryService:
             dict: 업데이트된 개념별 숙련도 {concept_id: mastery_percentage}
         """
         # 시도 조회
-        attempt = self.db.get(TestAttempt, attempt_id)
+        attempt = await self.db.get(TestAttempt, attempt_id)
         if not attempt or not attempt.completed_at:
             return {}
 
@@ -71,7 +71,7 @@ class MasteryService:
             .where(AnswerLog.attempt_id == attempt_id)
             .order_by(AnswerLog.created_at)
         )
-        answer_logs = list(self.db.scalars(stmt).all())
+        answer_logs = list((await self.db.scalars(stmt)).all())
 
         if not answer_logs:
             return {}
@@ -104,7 +104,7 @@ class MasteryService:
         updated_masteries = {}
 
         for concept_id, stats in concept_stats.items():
-            mastery = self.get_or_create_mastery(student_id, concept_id)
+            mastery = await self.get_or_create_mastery(student_id, concept_id)
 
             # 누적 통계 업데이트
             mastery.total_attempts += stats["total"]
@@ -133,10 +133,10 @@ class MasteryService:
 
             updated_masteries[concept_id] = mastery.mastery_percentage
 
-        self.db.commit()
+        await self.db.commit()
         return updated_masteries
 
-    def get_student_masteries(
+    async def get_student_masteries(
         self, student_id: str, grade: str | None = None
     ) -> list[dict]:
         """학생의 개념별 숙련도 조회."""
@@ -146,11 +146,21 @@ class MasteryService:
             # Concept와 조인하여 grade 필터링
             stmt = stmt.join(Concept).where(Concept.grade == grade)
 
-        masteries = list(self.db.scalars(stmt).all())
+        masteries = list((await self.db.scalars(stmt)).all())
+
+        # N+1 쿼리 방지: 모든 concept을 한 번에 조회
+        concept_ids = [m.concept_id for m in masteries]
+        if concept_ids:
+            concepts = list((await self.db.scalars(
+                select(Concept).where(Concept.id.in_(concept_ids))
+            )).all())
+            concept_map = {c.id: c for c in concepts}
+        else:
+            concept_map = {}
 
         result = []
         for m in masteries:
-            concept = self.db.get(Concept, m.concept_id)
+            concept = concept_map.get(m.concept_id)
             result.append({
                 "concept_id": m.concept_id,
                 "concept_name": concept.name if concept else "Unknown",
@@ -165,7 +175,7 @@ class MasteryService:
 
         return result
 
-    def check_prerequisites_met(
+    async def check_prerequisites_met(
         self, student_id: str, concept_id: str
     ) -> tuple[bool, list[str]]:
         """선수 개념이 모두 마스터되었는지 확인.
@@ -173,7 +183,7 @@ class MasteryService:
         Returns:
             tuple: (모두 완료 여부, 미완료 개념 ID 리스트)
         """
-        concept = self.db.get(Concept, concept_id)
+        concept = await self.db.get(Concept, concept_id)
         if not concept or not concept.prerequisites:
             return True, []
 
@@ -184,7 +194,7 @@ class MasteryService:
                 ConceptMastery.student_id == student_id,
                 ConceptMastery.concept_id == prereq.id,
             )
-            mastery = self.db.scalar(stmt)
+            mastery = await self.db.scalar(stmt)
 
             # 마스터리가 없거나 90% 미만이면 선수조건 미달
             if not mastery or mastery.mastery_percentage < MASTERY_THRESHOLD:
@@ -192,7 +202,7 @@ class MasteryService:
 
         return len(unmet_prerequisites) == 0, unmet_prerequisites
 
-    def auto_unlock_next_concepts(self, student_id: str, concept_id: str) -> list[str]:
+    async def auto_unlock_next_concepts(self, student_id: str, concept_id: str) -> list[str]:
         """개념 마스터 시 다음 개념 자동 해제.
 
         Returns:
@@ -203,13 +213,13 @@ class MasteryService:
             ConceptMastery.student_id == student_id,
             ConceptMastery.concept_id == concept_id,
         )
-        mastery = self.db.scalar(stmt)
+        mastery = await self.db.scalar(stmt)
 
         if not mastery or not mastery.is_mastered:
             return []
 
         # 이 개념을 선수조건으로 하는 다음 개념들 찾기
-        concept = self.db.get(Concept, concept_id)
+        concept = await self.db.get(Concept, concept_id)
         if not concept:
             return []
 
@@ -218,11 +228,11 @@ class MasteryService:
         # dependents: 이 개념을 선수로 요구하는 개념들
         for next_concept in concept.dependents:
             # 선수조건 모두 충족되었는지 확인
-            all_met, _ = self.check_prerequisites_met(student_id, next_concept.id)
+            all_met, _ = await self.check_prerequisites_met(student_id, next_concept.id)
 
             if all_met:
                 # 자동 해제
-                if self.unlock_concept(student_id, next_concept.id):
+                if await self.unlock_concept(student_id, next_concept.id):
                     unlocked.append(next_concept.id)
 
         return unlocked

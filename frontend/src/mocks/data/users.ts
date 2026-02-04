@@ -5,7 +5,7 @@ import type { User } from '../../types'
 export const mockUsers: User[] = [
   {
     id: 'student-1',
-    email: 'student@test.com',
+    login_id: 'student01',
     name: '김철수',
     role: 'student',
     grade: 'middle_1',
@@ -18,7 +18,7 @@ export const mockUsers: User[] = [
   },
   {
     id: 'student-2',
-    email: 'student2@test.com',
+    login_id: 'student02',
     name: '이영희',
     role: 'student',
     grade: 'middle_1',
@@ -31,7 +31,7 @@ export const mockUsers: User[] = [
   },
   {
     id: 'teacher-1',
-    email: 'teacher@test.com',
+    login_id: 'teacher01',
     name: '박선생',
     role: 'teacher',
     level: 1,
@@ -42,7 +42,7 @@ export const mockUsers: User[] = [
   },
   {
     id: 'admin-1',
-    email: 'admin@test.com',
+    login_id: 'admin01',
     name: '최관리',
     role: 'admin',
     level: 1,
@@ -53,7 +53,7 @@ export const mockUsers: User[] = [
   },
   {
     id: 'master-1',
-    email: 'master@test.com',
+    login_id: 'master01',
     name: '정마스터',
     role: 'master',
     level: 1,
@@ -65,21 +65,21 @@ export const mockUsers: User[] = [
 ]
 
 export const mockPasswords: Record<string, string> = {
-  'student@test.com': 'password123',
-  'student2@test.com': 'password123',
-  'teacher@test.com': 'password123',
-  'admin@test.com': 'password123',
-  'master@test.com': 'password123',
+  'student01': 'password123',
+  'student02': 'password123',
+  'teacher01': 'password123',
+  'admin01': 'password123',
+  'master01': 'password123',
 }
 
-export function findUserByEmail(email: string): User | undefined {
-  return mockUsers.find((user) => user.email === email)
+export function findUserByLoginId(login_id: string): User | undefined {
+  return mockUsers.find((user) => user.login_id === login_id)
 }
 
 export function findUserById(id: string): User | undefined {
   return mockUsers.find((user) => user.id === id)
 }
 
-export function verifyPassword(email: string, password: string): boolean {
-  return mockPasswords[email] === password
+export function verifyPassword(login_id: string, password: string): boolean {
+  return mockPasswords[login_id] === password
 }

@@ -4,7 +4,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from sqlalchemy.orm import Session
+import os
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from sqlalchemy.ext.asyncio import AsyncSession
+
+_testing = os.environ.get("TESTING") == "1"
 
 from app.core.config import settings
 from app.core.database import get_db
@@ -30,17 +35,20 @@ from app.services.auth_service import AuthService
 router = APIRouter(prefix="/auth", tags=["auth"])
 security = HTTPBearer(auto_error=False)
 
+# Rate Limiter 인스턴스
+limiter = Limiter(key_func=get_remote_address)
+
 # 쿠키 설정 상수
 REFRESH_TOKEN_COOKIE_NAME = "refresh_token"
 REFRESH_TOKEN_MAX_AGE = settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60  # seconds
 
 
-def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
+def get_auth_service(db: AsyncSession = Depends(get_db)) -> AuthService:
     """인증 서비스 의존성."""
     return AuthService(db)
 
 
-def get_current_user(
+async def get_current_user(
     credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(security)],
     auth_service: AuthService = Depends(get_auth_service),
 ) -> UserResponse:
@@ -70,7 +78,7 @@ def get_current_user(
             },
         )
 
-    user = auth_service.get_user_by_id(payload["sub"])
+    user = await auth_service.get_user_by_id(payload["sub"])
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -89,7 +97,7 @@ def get_current_user(
 def require_role(*roles: UserRole):
     """역할 권한 검증 의존성."""
 
-    def role_checker(current_user: UserResponse = Depends(get_current_user)):
+    async def role_checker(current_user: UserResponse = Depends(get_current_user)):
         if current_user.role not in roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -107,13 +115,15 @@ def require_role(*roles: UserRole):
 
 
 @router.post("/login", response_model=ApiResponse[LoginResponse])
+@limiter.limit("10000/minute" if _testing else "10/minute")
 async def login(
-    request: LoginRequest,
+    request: Request,
+    login_request: LoginRequest,
     response: Response,
     auth_service: AuthService = Depends(get_auth_service),
 ):
     """로그인."""
-    user = auth_service.authenticate_user(request.email, request.password)
+    user = await auth_service.authenticate_user(login_request.login_id, login_request.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -121,7 +131,7 @@ async def login(
                 "success": False,
                 "error": {
                     "code": "INVALID_CREDENTIALS",
-                    "message": "이메일 또는 비밀번호가 올바르지 않습니다.",
+                    "message": "아이디 또는 비밀번호가 올바르지 않습니다.",
                 },
             },
         )
@@ -130,7 +140,7 @@ async def login(
     refresh_token = auth_service.create_refresh_token(user.id)
 
     # 리프레시 토큰 저장
-    auth_service.save_refresh_token(user.id, refresh_token)
+    await auth_service.save_refresh_token(user.id, refresh_token)
 
     # HttpOnly 쿠키로 refresh token 설정 (XSS 방지)
     response.set_cookie(
@@ -174,7 +184,7 @@ async def refresh_token(
         )
 
     # 기존 토큰 검증
-    stored_token = auth_service.get_refresh_token(refresh_token_cookie)
+    stored_token = await auth_service.get_refresh_token(refresh_token_cookie)
     if not stored_token:
         # 무효한 토큰이면 쿠키 삭제
         response.delete_cookie(key=REFRESH_TOKEN_COOKIE_NAME, path="/api/v1/auth")
@@ -207,12 +217,12 @@ async def refresh_token(
     user_id = payload["sub"]
 
     # 기존 토큰 무효화
-    auth_service.revoke_refresh_token(refresh_token_cookie)
+    await auth_service.revoke_refresh_token(refresh_token_cookie)
 
     # 새 토큰 발급
     new_access_token = auth_service.create_access_token(user_id)
     new_refresh_token = auth_service.create_refresh_token(user_id)
-    auth_service.save_refresh_token(user_id, new_refresh_token)
+    await auth_service.save_refresh_token(user_id, new_refresh_token)
 
     # 새 refresh token을 HttpOnly 쿠키로 설정
     response.set_cookie(
@@ -244,7 +254,7 @@ async def logout(
     """로그아웃 (HttpOnly 쿠키에서 refresh token 읽기)."""
     # 쿠키에서 refresh token이 있으면 무효화
     if refresh_token_cookie:
-        auth_service.revoke_refresh_token(refresh_token_cookie)
+        await auth_service.revoke_refresh_token(refresh_token_cookie)
 
     # 쿠키 삭제
     response.delete_cookie(key=REFRESH_TOKEN_COOKIE_NAME, path="/api/v1/auth")
@@ -263,8 +273,10 @@ async def get_me(current_user: UserResponse = Depends(get_current_user)):
     response_model=ApiResponse[RegisterResponse],
     status_code=status.HTTP_201_CREATED,
 )
+@limiter.limit("10000/minute" if _testing else "5/minute")
 async def register(
-    request: RegisterStudentRequest | RegisterTeacherRequest | RegisterAdminRequest,
+    request: Request,
+    register_request: RegisterStudentRequest | RegisterTeacherRequest | RegisterAdminRequest,
     current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     auth_service: AuthService = Depends(get_auth_service),
 ):
@@ -275,32 +287,32 @@ async def register(
     - ADMIN: 학생, 강사 생성 가능
     - MASTER: 학생, 강사, 관리자 생성 가능
     """
-    # 이메일 중복 체크
-    existing_user = auth_service.get_user_by_email(request.email)
+    # 아이디 중복 체크
+    existing_user = await auth_service.get_user_by_login_id(register_request.login_id)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail={
                 "success": False,
                 "error": {
-                    "code": "EMAIL_ALREADY_EXISTS",
-                    "message": "이미 사용 중인 이메일입니다.",
+                    "code": "LOGIN_ID_ALREADY_EXISTS",
+                    "message": "이미 사용 중인 아이디입니다.",
                 },
             },
         )
 
     # 역할 결정 및 권한 검증
-    if isinstance(request, RegisterStudentRequest):
+    if isinstance(register_request, RegisterStudentRequest):
         role = UserRole.STUDENT
         user_data = UserCreate(
-            email=request.email,
-            password=request.password,
-            name=request.name,
+            login_id=register_request.login_id,
+            password=register_request.password,
+            name=register_request.name,
             role=role,
-            grade=request.grade,
-            class_id=request.class_id,
+            grade=register_request.grade,
+            class_id=register_request.class_id,
         )
-    elif isinstance(request, RegisterTeacherRequest):
+    elif isinstance(register_request, RegisterTeacherRequest):
         # 강사 생성은 ADMIN, MASTER만 가능
         if current_user.role == UserRole.TEACHER:
             raise HTTPException(
@@ -315,9 +327,9 @@ async def register(
             )
         role = UserRole.TEACHER
         user_data = UserCreate(
-            email=request.email,
-            password=request.password,
-            name=request.name,
+            login_id=register_request.login_id,
+            password=register_request.password,
+            name=register_request.name,
             role=role,
         )
     else:  # RegisterAdminRequest
@@ -335,13 +347,13 @@ async def register(
             )
         role = UserRole.ADMIN
         user_data = UserCreate(
-            email=request.email,
-            password=request.password,
-            name=request.name,
+            login_id=register_request.login_id,
+            password=register_request.password,
+            name=register_request.name,
             role=role,
         )
 
-    user = auth_service.create_user(user_data)
+    user = await auth_service.create_user(user_data)
 
     return ApiResponse(
         data=RegisterResponse(

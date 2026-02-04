@@ -212,6 +212,8 @@ class SubmitAnswerResponse(BaseModel):
     current_score: int
     questions_remaining: int
     next_difficulty: int | None = None
+    error_type: str = ""
+    suggestion: str = ""
 
 
 class AnswerLogResponse(BaseModel):

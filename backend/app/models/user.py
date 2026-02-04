@@ -22,7 +22,7 @@ class User(Base):
     id: Mapped[str] = mapped_column(
         String(36), primary_key=True, default=lambda: str(uuid4())
     )
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
+    login_id: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
     name: Mapped[str] = mapped_column(String(100))
     role: Mapped[UserRole] = mapped_column(
@@ -41,6 +41,9 @@ class User(Base):
     level_down_defense: Mapped[int] = mapped_column(Integer, default=3)
     last_activity_date: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
+    )
+    last_quota_met_date: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, comment="마지막 할당량 달성 날짜"
     )
 
     # 상태
@@ -67,11 +70,11 @@ class User(Base):
 
     # 관계
     class_: Mapped["Class | None"] = relationship(
-        "Class", back_populates="students", foreign_keys=[class_id]
+        "Class", back_populates="students", foreign_keys=[class_id], lazy="selectin"
     )
 
     def __repr__(self) -> str:
-        return f"<User {self.email}>"
+        return f"<User {self.login_id}>"
 
 
 class RefreshToken(Base):
@@ -93,7 +96,7 @@ class RefreshToken(Base):
     )
 
     # 관계
-    user: Mapped["User"] = relationship("User")
+    user: Mapped["User"] = relationship("User", lazy="selectin")
 
     def __repr__(self) -> str:
         return f"<RefreshToken {self.id}>"

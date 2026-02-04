@@ -152,14 +152,21 @@ export function TestPlayPage() {
   const [difficultyChange, setDifficultyChange] = useState<DifficultyChange | null>(null)
   const difficultyChangeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
+  // 힌트 상태
+  const [hintText, setHintText] = useState<string | null>(null)
+  const [hintLevel, setHintLevel] = useState(0)
+  const [isLoadingHint, setIsLoadingHint] = useState(false)
+  const MAX_HINTS = 3
+
   // 타이머 상태
   const [timerKey, setTimerKey] = useState(0)
   const [isTimeUp, setIsTimeUp] = useState(false)
 
   const isAdaptive = attemptDetail?.attempt.is_adaptive ?? false
   const totalQuestions = attemptDetail?.attempt.total_count ?? 0
-  const category = attemptDetail?.attempt.category
-  const timeLimit = category ? (TIME_LIMITS[category] ?? DEFAULT_TIME_LIMIT) : DEFAULT_TIME_LIMIT
+  const currentQuestion: Question | undefined = attemptDetail?.test.questions[currentIndex]
+  const category = currentQuestion?.category
+  const timeLimit = TIME_LIMITS[category ?? ''] ?? DEFAULT_TIME_LIMIT
 
   // 클린업
   useEffect(() => {
@@ -198,8 +205,6 @@ export function TestPlayPage() {
       setSelectedAnswer(answer)
     }
   }
-
-  const currentQuestion: Question | undefined = attemptDetail?.test.questions[currentIndex]
 
   /** 답안 제출 (시간초과 시 빈 답 전송) */
   const submitAnswer = useCallback(async (answer: string) => {
@@ -254,6 +259,30 @@ export function TestPlayPage() {
     setIsTimeUp(true)
     submitAnswer(selectedAnswer ?? '')
   }, [showFeedback, isSubmitting, selectedAnswer, submitAnswer])
+
+  /** AI 힌트 요청 */
+  const handleRequestHint = async () => {
+    if (!currentQuestion || hintLevel >= MAX_HINTS || isLoadingHint) return
+    setIsLoadingHint(true)
+    try {
+      const res = await api.post<{ success: boolean; data: { hint: string; hint_level: number } }>(
+        '/api/v1/ai/hint',
+        {
+          question_content: currentQuestion.content,
+          question_type: currentQuestion.question_type,
+          options: currentQuestion.options?.map((o) => o.text),
+          student_grade: user?.grade || '',
+          hint_level: hintLevel + 1,
+        }
+      )
+      setHintText(res.data.data.hint)
+      setHintLevel((prev) => prev + 1)
+    } catch {
+      // AI 힌트 실패 시 무시
+    } finally {
+      setIsLoadingHint(false)
+    }
+  }
 
   const completeTest = useCallback(async () => {
     if (!attemptId) return
@@ -328,6 +357,8 @@ export function TestPlayPage() {
         setFeedbackData(null)
         setShowFeedback(false)
         setIsTimeUp(false)
+        setHintText(null)
+        setHintLevel(0)
         setStartTime(Date.now())
         setTimerKey((prev) => prev + 1)
       } catch {
@@ -345,6 +376,8 @@ export function TestPlayPage() {
         setFeedbackData(null)
         setShowFeedback(false)
         setIsTimeUp(false)
+        setHintText(null)
+        setHintLevel(0)
         setStartTime(Date.now())
         setTimerKey((prev) => prev + 1)
       }
@@ -451,6 +484,31 @@ export function TestPlayPage() {
           </AnimatePresence>
         )}
 
+        {/* 힌트 영역 */}
+        {!showFeedback && !isFetchingNext && (
+          <div className="mt-4">
+            {hintText && (
+              <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                <div className="mb-1 text-sm font-medium text-amber-700">
+                  힌트 {hintLevel}
+                </div>
+                <p className="text-sm text-gray-700">{hintText}</p>
+              </div>
+            )}
+            {hintLevel < MAX_HINTS && (
+              <button
+                onClick={handleRequestHint}
+                disabled={isLoadingHint}
+                className="text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
+              >
+                {isLoadingHint
+                  ? '힌트 생성 중...'
+                  : `힌트 보기 (${MAX_HINTS - hintLevel}회 남음)`}
+              </button>
+            )}
+          </div>
+        )}
+
         {/* 제출 버튼 */}
         {!showFeedback && !isFetchingNext && (
           <div className="mt-6 text-center">
@@ -480,6 +538,8 @@ export function TestPlayPage() {
         isTimeUp={isTimeUp}
         nextDifficulty={isAdaptive && difficultyChange ? difficultyChange.to : undefined}
         currentDifficulty={isAdaptive && difficultyChange ? difficultyChange.from : undefined}
+        errorType={feedbackData?.error_type}
+        suggestion={feedbackData?.suggestion}
         onNext={handleNextQuestion}
       />
 

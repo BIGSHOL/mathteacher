@@ -7,7 +7,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || ''
 
 interface User {
   id: string
-  email: string
+  login_id: string
   name: string
   role: UserRole
   grade?: Grade
@@ -21,7 +21,7 @@ interface AuthState {
   accessToken: string | null
   isAuthenticated: boolean
   isRefreshing: boolean
-  login: (email: string, password: string) => Promise<void>
+  login: (login_id: string, password: string) => Promise<void>
   logout: () => Promise<void>
   refreshToken: () => Promise<boolean>
   setUser: (user: User) => void
@@ -36,12 +36,12 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isRefreshing: false,
 
-      login: async (email: string, password: string) => {
+      login: async (login_id: string, password: string) => {
         const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include', // HttpOnly 쿠키 수신을 위해 필요
-          body: JSON.stringify({ email, password }),
+          body: JSON.stringify({ login_id, password }),
         })
 
         if (!response.ok) {
@@ -55,7 +55,7 @@ export const useAuthStore = create<AuthState>()(
         set({
           user: {
             id: data.user.id,
-            email: data.user.email,
+            login_id: data.user.login_id,
             name: data.user.name,
             role: data.user.role,
             grade: data.user.grade,

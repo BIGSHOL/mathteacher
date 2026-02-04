@@ -1,6 +1,7 @@
 """채점 서비스."""
 
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.question import Question
 from app.models.test_attempt import TestAttempt
@@ -10,7 +11,7 @@ from app.models.answer_log import AnswerLog
 class GradingService:
     """채점 서비스."""
 
-    def __init__(self, db: Session | None = None):
+    def __init__(self, db: AsyncSession | None = None):
         self.db = db
 
     def grade_answer(
@@ -82,7 +83,73 @@ class GradingService:
 
         return int(base_points * multiplier)
 
-    def submit_answer(
+    async def override_to_correct(
+        self,
+        attempt: TestAttempt,
+        question: Question,
+        prev_result: dict,
+        current_combo: int,
+    ) -> dict:
+        """AI 유연 채점에서 정답 판정 시, 기존 오답 기록을 정답으로 보정."""
+        if not self.db:
+            raise ValueError("Database session required")
+
+        # 가장 최근 AnswerLog 조회
+        stmt = (
+            select(AnswerLog)
+            .where(AnswerLog.attempt_id == attempt.id)
+            .where(AnswerLog.question_id == question.id)
+            .order_by(AnswerLog.created_at.desc())
+            .limit(1)
+        )
+        row = await self.db.execute(stmt)
+        answer_log = row.scalar_one_or_none()
+
+        if not answer_log:
+            return prev_result
+
+        # 새 콤보/점수/XP 계산
+        new_combo = current_combo + 1
+        points_with_bonus = self.calculate_combo_bonus(new_combo, question.points)
+        xp_earned = points_with_bonus // 2
+
+        old_points = answer_log.points_earned  # 0 (오답이었으므로)
+
+        # AnswerLog 업데이트
+        answer_log.is_correct = True
+        answer_log.combo_count = new_combo
+        answer_log.points_earned = points_with_bonus
+
+        # TestAttempt 업데이트
+        attempt.score = min(
+            attempt.score - old_points + points_with_bonus, attempt.max_score
+        )
+        attempt.xp_earned += xp_earned
+        attempt.correct_count += 1
+        attempt.combo_max = max(attempt.combo_max, new_combo)
+
+        try:
+            await self.db.commit()
+            await self.db.refresh(attempt)
+        except Exception:
+            await self.db.rollback()
+            raise
+
+        answered_count = len(attempt.answer_logs)
+        questions_remaining = attempt.total_count - answered_count
+
+        return {
+            "is_correct": True,
+            "correct_answer": prev_result.get("correct_answer", question.correct_answer),
+            "explanation": question.explanation,
+            "points_earned": points_with_bonus,
+            "combo_count": new_combo,
+            "xp_earned": xp_earned,
+            "current_score": attempt.score,
+            "questions_remaining": questions_remaining,
+        }
+
+    async def submit_answer(
         self,
         attempt: TestAttempt,
         question: Question,
@@ -135,16 +202,22 @@ class GradingService:
             question_difficulty=question.difficulty,
             question_category=question.category.value if question.category else None,
         )
-        self.db.add(answer_log)
 
-        # 시도 업데이트 (max_score 초과 방지)
-        attempt.score = min(attempt.score + points_with_bonus, attempt.max_score)
-        attempt.xp_earned += xp_earned
-        if is_correct:
-            attempt.correct_count += 1
-        attempt.combo_max = max(attempt.combo_max, new_combo)
+        try:
+            self.db.add(answer_log)
 
-        self.db.commit()
+            # 시도 업데이트 (max_score 초과 방지)
+            attempt.score = min(attempt.score + points_with_bonus, attempt.max_score)
+            attempt.xp_earned += xp_earned
+            if is_correct:
+                attempt.correct_count += 1
+            attempt.combo_max = max(attempt.combo_max, new_combo)
+
+            await self.db.commit()
+            await self.db.refresh(attempt)
+        except Exception:
+            await self.db.rollback()
+            raise
 
         # 남은 문제 수 계산
         answered_count = len(attempt.answer_logs)

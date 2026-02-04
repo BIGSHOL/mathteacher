@@ -48,6 +48,11 @@ from .test import (
     ReviewResponse,
     NextQuestionResponse,
 )
+from .daily_test import (
+    DailyTestRecordResponse,
+    DailyTestStartResponse,
+    DailyTestTodayResponse,
+)
 from .stats import (
     ClassDetailStats,
     ClassStats,
@@ -57,8 +62,11 @@ from .stats import (
     DailyClassStat,
     DashboardAlert,
     DashboardStats,
+    QuotaProgress,
+    QuotaUpdateRequest,
     RecentTest,
     StudentDetailStats,
+    StudentQuotaStatus,
     StudentStats,
     StudentStatsSummary,
     TodayStats,
@@ -113,6 +121,10 @@ __all__ = [
     "WrongQuestionItem",
     "ReviewResponse",
     "NextQuestionResponse",
+    # daily_test
+    "DailyTestRecordResponse",
+    "DailyTestStartResponse",
+    "DailyTestTodayResponse",
     # stats
     "ClassDetailStats",
     "ClassStats",

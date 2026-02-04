@@ -1,74 +1,88 @@
 """테스트 설정 및 픽스처."""
 
 import os
-import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
-from fastapi.testclient import TestClient
 
 # 테스트 환경 설정 (import 전에 설정)
 os.environ["DATABASE_URL"] = "sqlite:///:memory:"
 os.environ["JWT_SECRET_KEY"] = "test-secret-key-for-testing-only"
+os.environ["TESTING"] = "1"
 
-from app.main import app
+import pytest
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.pool import StaticPool
+from httpx import ASGITransport, AsyncClient
+
+from app.main import app, limiter
 from app.core.database import Base, get_db
 from app.models import User, Class, Concept, Question, Test, TestAttempt, AnswerLog
 from app.services.auth_service import AuthService
 
+# 테스트 환경에서 Rate Limiter 비활성화
+limiter.enabled = False
 
-# 테스트용 SQLite 엔진
-SQLALCHEMY_DATABASE_URL = "sqlite:///:memory:"
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
+
+# 테스트용 async SQLite 엔진 (StaticPool로 단일 커넥션 공유)
+test_engine = create_async_engine(
+    "sqlite+aiosqlite:///:memory:",
     connect_args={"check_same_thread": False},
     poolclass=StaticPool,
 )
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+TestingSessionLocal = async_sessionmaker(
+    bind=test_engine, class_=AsyncSession, expire_on_commit=False,
+)
 
 
-def override_get_db():
+async def override_get_db():
     """테스트용 DB 세션."""
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+    async with TestingSessionLocal() as session:
+        yield session
 
 
 @pytest.fixture(scope="function")
-def db_session():
+async def db_session():
     """각 테스트마다 새로운 DB 세션 제공."""
-    Base.metadata.create_all(bind=engine)
-    db = TestingSessionLocal()
-    yield db
-    db.close()
-    Base.metadata.drop_all(bind=engine)
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+    async with TestingSessionLocal() as session:
+        yield session
+
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest.fixture(scope="function")
-def client(db_session):
+async def client():
     """테스트 클라이언트."""
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
     app.dependency_overrides[get_db] = override_get_db
-    Base.metadata.create_all(bind=engine)
+    limiter.reset()
 
     # 테스트 데이터 생성
-    _create_test_data(db_session)
+    async with TestingSessionLocal() as session:
+        await _create_test_data(session)
 
-    yield TestClient(app)
+    transport = ASGITransport(app=app)
+    async with AsyncClient(transport=transport, base_url="http://test") as ac:
+        yield ac
 
     app.dependency_overrides.clear()
-    Base.metadata.drop_all(bind=engine)
+
+    async with test_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
 
 
-def _create_test_data(db):
+async def _create_test_data(db: AsyncSession):
     """테스트용 기본 데이터 생성."""
-    auth_service = AuthService(db)
+    auth_service = AuthService()
 
     # 강사 생성
     teacher = User(
         id="teacher-001",
-        email="teacher@test.com",
+        login_id="teacher01",
         name="테스트 강사",
         role="teacher",
         hashed_password=auth_service.hash_password("password123"),
@@ -92,7 +106,7 @@ def _create_test_data(db):
     # 학생 생성
     student = User(
         id="student-001",
-        email="student@test.com",
+        login_id="student01",
         name="테스트 학생",
         role="student",
         grade="middle_1",
@@ -178,7 +192,7 @@ def _create_test_data(db):
     )
     db.add(question3)
 
-    # 테스트 생성
+    # 테스트 생성 (shuffle_options=False로 설정)
     test = Test(
         id="test-001",
         title="일차방정식 테스트",
@@ -189,7 +203,8 @@ def _create_test_data(db):
         question_count=3,
         time_limit_minutes=10,
         is_active=True,
+        shuffle_options=False,
     )
     db.add(test)
 
-    db.commit()
+    await db.commit()

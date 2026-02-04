@@ -30,9 +30,9 @@ describe('LoginPage', () => {
   })
 
   describe('렌더링', () => {
-    it('이메일 입력 필드가 표시된다', () => {
+    it('아이디 입력 필드가 표시된다', () => {
       renderLogin()
-      expect(screen.getByLabelText(/이메일/i)).toBeInTheDocument()
+      expect(screen.getByLabelText(/아이디/i)).toBeInTheDocument()
     })
 
     it('비밀번호 입력 필드가 표시된다', () => {
@@ -51,7 +51,7 @@ describe('LoginPage', () => {
       const user = userEvent.setup()
       renderLogin()
 
-      await user.type(screen.getByLabelText(/이메일/i), 'student@test.com')
+      await user.type(screen.getByLabelText(/아이디/i), 'student01')
       await user.type(screen.getByLabelText(/비밀번호/i), 'password123')
       await user.click(screen.getByRole('button', { name: /로그인/i }))
 
@@ -64,7 +64,7 @@ describe('LoginPage', () => {
       const user = userEvent.setup()
       renderLogin()
 
-      await user.type(screen.getByLabelText(/이메일/i), 'student@test.com')
+      await user.type(screen.getByLabelText(/아이디/i), 'student01')
       await user.type(screen.getByLabelText(/비밀번호/i), 'wrong_password')
       await user.click(screen.getByRole('button', { name: /로그인/i }))
 
@@ -73,7 +73,7 @@ describe('LoginPage', () => {
       })
     })
 
-    it('이메일 필드가 비어있으면 제출되지 않는다', async () => {
+    it('아이디 필드가 비어있으면 제출되지 않는다', async () => {
       const user = userEvent.setup()
       renderLogin()
 
@@ -87,7 +87,7 @@ describe('LoginPage', () => {
       const user = userEvent.setup()
       renderLogin()
 
-      await user.type(screen.getByLabelText(/이메일/i), 'student@test.com')
+      await user.type(screen.getByLabelText(/아이디/i), 'student01')
       await user.click(screen.getByRole('button', { name: /로그인/i }))
 
       expect(mockNavigate).not.toHaveBeenCalled()
@@ -99,7 +99,7 @@ describe('LoginPage', () => {
       const user = userEvent.setup()
       renderLogin()
 
-      await user.type(screen.getByLabelText(/이메일/i), 'student@test.com')
+      await user.type(screen.getByLabelText(/아이디/i), 'student01')
       await user.type(screen.getByLabelText(/비밀번호/i), 'password123')
 
       const button = screen.getByRole('button', { name: /로그인/i })
@@ -113,7 +113,7 @@ describe('LoginPage', () => {
       const user = userEvent.setup()
       renderLogin()
 
-      await user.type(screen.getByLabelText(/이메일/i), 'student@test.com')
+      await user.type(screen.getByLabelText(/아이디/i), 'student01')
       await user.type(screen.getByLabelText(/비밀번호/i), 'password123')
       await user.click(screen.getByRole('button', { name: /로그인/i }))
 

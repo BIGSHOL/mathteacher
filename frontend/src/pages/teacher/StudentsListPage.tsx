@@ -2,10 +2,30 @@
 
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import api from '../../lib/api'
 import type { StudentStatsSummary, PaginatedResponse, Grade } from '../../types'
 import { StreakBadge } from '../../components/gamification/StreakDisplay'
+
+const GRADE_OPTIONS: { value: Grade; label: string; disabled?: boolean }[] = [
+  { value: 'elementary_1', label: '초등 1학년', disabled: true },
+  { value: 'elementary_2', label: '초등 2학년', disabled: true },
+  { value: 'elementary_3', label: '초등 3학년' },
+  { value: 'elementary_4', label: '초등 4학년' },
+  { value: 'elementary_5', label: '초등 5학년' },
+  { value: 'elementary_6', label: '초등 6학년' },
+  { value: 'middle_1', label: '중등 1학년' },
+  { value: 'middle_2', label: '중등 2학년' },
+  { value: 'middle_3', label: '중등 3학년' },
+  { value: 'high_1', label: '고등 1학년' },
+  { value: 'high_2', label: '고등 2학년' },
+]
+
+interface ClassItem {
+  id: string
+  name: string
+  grade: string
+}
 
 export function StudentsListPage() {
   const navigate = useNavigate()
@@ -16,6 +36,7 @@ export function StudentsListPage() {
   const [totalPages, setTotalPages] = useState(1)
   const [gradeFilter, setGradeFilter] = useState<Grade | ''>('')
   const [searchQuery, setSearchQuery] = useState('')
+  const [showCreateModal, setShowCreateModal] = useState(false)
 
   useEffect(() => {
     fetchStudents()
@@ -51,22 +72,13 @@ export function StudentsListPage() {
     student.name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
-  const gradeOptions: { value: Grade | ''; label: string }[] = [
+  const gradeFilterOptions: { value: Grade | ''; label: string; disabled?: boolean }[] = [
     { value: '', label: '전체 학년' },
-    { value: 'elementary_1', label: '초등 1학년' },
-    { value: 'elementary_2', label: '초등 2학년' },
-    { value: 'elementary_3', label: '초등 3학년' },
-    { value: 'elementary_4', label: '초등 4학년' },
-    { value: 'elementary_5', label: '초등 5학년' },
-    { value: 'elementary_6', label: '초등 6학년' },
-    { value: 'middle_1', label: '중등 1학년' },
-    { value: 'middle_2', label: '중등 2학년' },
-    { value: 'middle_3', label: '중등 3학년' },
-    { value: 'high_1', label: '고등 1학년' },
+    ...GRADE_OPTIONS,
   ]
 
   const formatGrade = (grade: Grade): string => {
-    const gradeMap: Record<Grade, string> = {
+    const gradeMap: Record<string, string> = {
       elementary_1: '초1',
       elementary_2: '초2',
       elementary_3: '초3',
@@ -77,6 +89,7 @@ export function StudentsListPage() {
       middle_2: '중2',
       middle_3: '중3',
       high_1: '고1',
+      high_2: '고2',
     }
     return gradeMap[grade] || grade
   }
@@ -111,10 +124,20 @@ export function StudentsListPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-8 flex items-center justify-between"
         >
-          <h1 className="text-2xl font-bold text-gray-900">학생 관리</h1>
-          <p className="text-gray-600">담당 학생들의 학습 현황을 확인하세요</p>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">학생 관리</h1>
+            <p className="text-gray-600">담당 학생들의 학습 현황을 확인하세요</p>
+          </div>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setShowCreateModal(true)}
+            className="rounded-xl bg-primary-500 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-600"
+          >
+            + 학생 추가
+          </motion.button>
         </motion.div>
 
         {/* 필터 & 검색 */}
@@ -133,9 +156,9 @@ export function StudentsListPage() {
               }}
               className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
             >
-              {gradeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+              {gradeFilterOptions.map((option) => (
+                <option key={option.value} value={option.value} disabled={option.disabled}>
+                  {option.label}{option.disabled ? ' (준비중)' : ''}
                 </option>
               ))}
             </select>
@@ -299,6 +322,216 @@ export function StudentsListPage() {
           </motion.div>
         )}
       </div>
+
+      {/* 학생 추가 모달 */}
+      <AnimatePresence>
+        {showCreateModal && (
+          <CreateStudentModal
+            onClose={() => setShowCreateModal(false)}
+            onCreated={() => {
+              setShowCreateModal(false)
+              fetchStudents()
+            }}
+          />
+        )}
+      </AnimatePresence>
     </div>
+  )
+}
+
+// 학생 추가 모달
+interface CreateStudentModalProps {
+  onClose: () => void
+  onCreated: () => void
+}
+
+function CreateStudentModal({ onClose, onCreated }: CreateStudentModalProps) {
+  const [name, setName] = useState('')
+  const [loginId, setLoginId] = useState('')
+  const [password, setPassword] = useState('')
+  const [grade, setGrade] = useState<Grade | ''>('')
+  const [classId, setClassId] = useState('')
+  const [classes, setClasses] = useState<ClassItem[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    fetchClasses()
+  }, [])
+
+  const fetchClasses = async () => {
+    try {
+      const response = await api.get<{ success: boolean; data: { items: ClassItem[] } }>(
+        '/api/v1/classes'
+      )
+      const items = response.data.data.items
+      setClasses(items)
+      if (items.length > 0 && items[0]) {
+        setClassId(items[0].id)
+      }
+    } catch {
+      // 반 목록을 불러오지 못해도 직접 입력 가능
+    }
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!grade) {
+      setError('학년을 선택해주세요.')
+      return
+    }
+    if (!classId) {
+      setError('반을 선택해주세요.')
+      return
+    }
+
+    setIsSubmitting(true)
+    setError('')
+
+    try {
+      await api.post('/api/v1/students', {
+        name,
+        login_id: loginId,
+        password,
+        grade,
+        class_id: classId,
+      })
+      onCreated()
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { detail?: { error?: { message?: string } } } } }
+      const msg = axiosErr?.response?.data?.detail?.error?.message
+      setError(msg || '학생 추가에 실패했습니다.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 z-50 bg-black/50"
+      />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      >
+        <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <h2 className="mb-6 text-xl font-bold text-gray-900">학생 추가</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
+            )}
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">이름</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                placeholder="홍길동"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">아이디</label>
+              <input
+                type="text"
+                value={loginId}
+                onChange={(e) => setLoginId(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                placeholder="아이디를 입력하세요"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">비밀번호</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                placeholder="6자 이상"
+                required
+                minLength={6}
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">학년</label>
+              <select
+                value={grade}
+                onChange={(e) => setGrade(e.target.value as Grade | '')}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                required
+              >
+                <option value="">선택하세요</option>
+                {GRADE_OPTIONS.map((g) => (
+                  <option key={g.value} value={g.value} disabled={g.disabled}>
+                    {g.label}{g.disabled ? ' (준비중)' : ''}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">반</label>
+              {classes.length > 0 ? (
+                <select
+                  value={classId}
+                  onChange={(e) => setClassId(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  required
+                >
+                  {classes.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  value={classId}
+                  onChange={(e) => setClassId(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                  placeholder="반 ID 입력"
+                  required
+                />
+              )}
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                취소
+              </button>
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50"
+              >
+                {isSubmitting ? '추가 중...' : '학생 추가'}
+              </motion.button>
+            </div>
+          </form>
+        </div>
+      </motion.div>
+    </>
   )
 }

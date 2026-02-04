@@ -7,7 +7,7 @@ describe('Auth API', () => {
   describe('POST /api/v1/auth/login', () => {
     it('유효한 자격증명으로 로그인 성공', async () => {
       const response = await api.post('/api/v1/auth/login', {
-        email: 'student@test.com',
+        login_id: 'student01',
         password: 'password123',
       })
 
@@ -15,13 +15,13 @@ describe('Auth API', () => {
       expect(response.data.success).toBe(true)
       expect(response.data.data.access_token).toBeDefined()
       expect(response.data.data.refresh_token).toBeDefined()
-      expect(response.data.data.user.email).toBe('student@test.com')
+      expect(response.data.data.user.login_id).toBe('student01')
     })
 
     it('잘못된 비밀번호로 로그인 실패', async () => {
       try {
         await api.post('/api/v1/auth/login', {
-          email: 'student@test.com',
+          login_id: 'student01',
           password: 'wrong_password',
         })
       } catch (error: unknown) {
@@ -31,10 +31,10 @@ describe('Auth API', () => {
       }
     })
 
-    it('존재하지 않는 이메일로 로그인 실패', async () => {
+    it('존재하지 않는 아이디로 로그인 실패', async () => {
       try {
         await api.post('/api/v1/auth/login', {
-          email: 'nonexistent@test.com',
+          login_id: 'nonexistent_user',
           password: 'password123',
         })
       } catch (error: unknown) {
@@ -48,7 +48,7 @@ describe('Auth API', () => {
     it('유효한 refresh token으로 갱신 성공', async () => {
       // 먼저 로그인
       const loginResponse = await api.post('/api/v1/auth/login', {
-        email: 'student@test.com',
+        login_id: 'student01',
         password: 'password123',
       })
       const refreshToken = loginResponse.data.data.refresh_token
@@ -79,7 +79,7 @@ describe('Auth API', () => {
     it('인증된 사용자 정보 조회 성공', async () => {
       // 먼저 로그인
       const loginResponse = await api.post('/api/v1/auth/login', {
-        email: 'student@test.com',
+        login_id: 'student01',
         password: 'password123',
       })
       const accessToken = loginResponse.data.data.access_token
@@ -90,7 +90,7 @@ describe('Auth API', () => {
       })
 
       expect(response.status).toBe(200)
-      expect(response.data.data.email).toBe('student@test.com')
+      expect(response.data.data.login_id).toBe('student01')
     })
 
     it('인증 없이 조회 실패', async () => {

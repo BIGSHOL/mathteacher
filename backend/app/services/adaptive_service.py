@@ -3,7 +3,7 @@
 import random
 
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.answer_log import AnswerLog
 from app.models.question import Question
@@ -18,10 +18,10 @@ MAX_DIFFICULTY = 10
 class AdaptiveService:
     """적응형 난이도 서비스 (1-10 정수 난이도 체계)."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
 
-    def determine_initial_difficulty(
+    async def determine_initial_difficulty(
         self, student_id: str, concept_ids: list[str]
     ) -> int:
         """Phase A: 학생 레벨과 정답률 기반 초기 난이도 결정.
@@ -31,10 +31,10 @@ class AdaptiveService:
         0.35 ~ 0.65     → 난이도 6 (medium 영역 중심)
         >= 0.65          → 난이도 8 (hard 영역 중심)
         """
-        student = self.db.get(User, student_id)
+        student = await self.db.get(User, student_id)
         level = student.level if student else 1
 
-        accuracy = self._get_concept_accuracy(student_id, concept_ids)
+        accuracy = await self._get_concept_accuracy(student_id, concept_ids)
         readiness = (level / 10) * 0.4 + accuracy * 0.6
 
         if readiness < 0.35:
@@ -44,20 +44,20 @@ class AdaptiveService:
         else:
             return 8
 
-    def select_first_question(
+    async def select_first_question(
         self, test: Test, student_id: str
     ) -> Question | None:
         """Phase A: 초기 난이도에 맞는 첫 번째 문제 선택."""
-        target = self.determine_initial_difficulty(student_id, test.concept_ids)
-        return self._select_closest_question(test, target, exclude_ids=[])
+        target = await self.determine_initial_difficulty(student_id, test.concept_ids)
+        return await self._select_closest_question(test, target, exclude_ids=[])
 
-    def get_initial_difficulty_for(
+    async def get_initial_difficulty_for(
         self, test: Test, student_id: str
     ) -> int:
         """초기 난이도 값 반환 (attempt에 기록용)."""
-        return self.determine_initial_difficulty(student_id, test.concept_ids)
+        return await self.determine_initial_difficulty(student_id, test.concept_ids)
 
-    def select_next_question(
+    async def select_next_question(
         self, attempt: TestAttempt
     ) -> tuple[Question | None, int]:
         """Phase B: 실시간 적응형 다음 문제 선택.
@@ -71,11 +71,11 @@ class AdaptiveService:
 
         # 최근 답안 기록 조회
         logs = list(
-            self.db.scalars(
+            (await self.db.scalars(
                 select(AnswerLog)
                 .where(AnswerLog.attempt_id == attempt.id)
                 .order_by(AnswerLog.created_at.desc())
-            ).all()
+            )).all()
         )
 
         current = attempt.current_difficulty or 6
@@ -84,7 +84,7 @@ class AdaptiveService:
         # 문제 풀에서 선택
         test = attempt.test
         exclude_ids = attempt.adaptive_question_ids or []
-        question = self._select_closest_question(test, target, exclude_ids)
+        question = await self._select_closest_question(test, target, exclude_ids)
 
         if not question:
             return None, target
@@ -94,11 +94,11 @@ class AdaptiveService:
         attempt.adaptive_question_ids = new_ids
         attempt.current_difficulty = target
         attempt.max_score += question.points
-        self.db.flush()
+        await self.db.flush()
 
         return question, target
 
-    def peek_next_difficulty(self, attempt: TestAttempt) -> int | None:
+    async def peek_next_difficulty(self, attempt: TestAttempt) -> int | None:
         """다음 문제의 예상 난이도 (UI 힌트용)."""
         if not attempt.is_adaptive:
             return None
@@ -108,11 +108,11 @@ class AdaptiveService:
             return None
 
         logs = list(
-            self.db.scalars(
+            (await self.db.scalars(
                 select(AnswerLog)
                 .where(AnswerLog.attempt_id == attempt.id)
                 .order_by(AnswerLog.created_at.desc())
-            ).all()
+            )).all()
         )
 
         current = attempt.current_difficulty or 6
@@ -154,7 +154,7 @@ class AdaptiveService:
                 step = 2
             return max(current - step, MIN_DIFFICULTY)
 
-    def _select_closest_question(
+    async def _select_closest_question(
         self, test: Test, target: int, exclude_ids: list[str]
     ) -> Question | None:
         """target 난이도에 가장 가까운 문제 선택.
@@ -166,13 +166,13 @@ class AdaptiveService:
             for diff in [target + spread, target - spread]:
                 if diff < MIN_DIFFICULTY or diff > MAX_DIFFICULTY:
                     continue
-                pool = self._get_pool_by_difficulty(test, diff, exclude_ids)
+                pool = await self._get_pool_by_difficulty(test, diff, exclude_ids)
                 candidates.extend(pool)
             if candidates:
                 return random.choice(candidates)
         return None
 
-    def _get_pool_by_difficulty(
+    async def _get_pool_by_difficulty(
         self, test: Test, difficulty: int, exclude_ids: list[str]
     ) -> list[Question]:
         """특정 난이도의 사용 가능한 문제 풀 조회."""
@@ -187,9 +187,9 @@ class AdaptiveService:
         if exclude_ids:
             stmt = stmt.where(Question.id.notin_(exclude_ids))
 
-        return list(self.db.scalars(stmt).all())
+        return list((await self.db.scalars(stmt)).all())
 
-    def _get_concept_accuracy(
+    async def _get_concept_accuracy(
         self, student_id: str, concept_ids: list[str]
     ) -> float:
         """학생의 특정 개념에 대한 과거 정답률."""
@@ -207,7 +207,7 @@ class AdaptiveService:
                 Question.concept_id.in_(concept_ids),
             )
         )
-        result = self.db.execute(stmt).first()
+        result = (await self.db.execute(stmt)).first()
         if not result or not result.total:
             return 0.5  # 기록 없으면 중립값
 

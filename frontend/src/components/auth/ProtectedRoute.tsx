@@ -37,7 +37,7 @@ function getDefaultPath(role: UserRole): string {
       return '/teacher/dashboard'
     case 'student':
     default:
-      return '/tests'
+      return '/daily-lab'
   }
 }
 

@@ -18,6 +18,7 @@ const GRADE_LABELS: Record<Grade, string> = {
   middle_2: '중등 2학년',
   middle_3: '중등 3학년',
   high_1: '고등 1학년',
+  high_2: '고등 2학년',
 }
 
 export function MyStatsPage() {

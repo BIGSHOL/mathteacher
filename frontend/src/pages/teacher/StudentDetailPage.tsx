@@ -38,7 +38,7 @@ interface DailyActivity {
 interface StudentDetail {
   user_id: string
   name: string
-  email: string
+  login_id: string
   grade: Grade
   class_name: string
   total_tests: number
@@ -243,7 +243,7 @@ export function StudentDetailPage() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">{data.name}</h1>
-                <p className="text-gray-500">{data.email}</p>
+                <p className="text-gray-500">{data.login_id}</p>
                 <div className="mt-1 flex items-center gap-3 text-sm text-gray-600">
                   <span>{formatGrade(data.grade)}</span>
                   <span>{data.class_name}</span>

@@ -3,7 +3,7 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.chapter import Chapter
 from app.models.chapter_progress import ChapterProgress
@@ -20,11 +20,11 @@ TEACHER_APPROVAL_MIN_SCORE = 60  # 60점 이상: 선생님 승인 가능
 class ChapterService:
     """단원 진행 상황 관리."""
 
-    def __init__(self, db: Session):
+    def __init__(self, db: AsyncSession):
         self.db = db
         self.mastery_service = MasteryService(db)
 
-    def get_or_create_progress(
+    async def get_or_create_progress(
         self, student_id: str, chapter_id: str
     ) -> ChapterProgress:
         """단원 진행 상황 조회 또는 생성."""
@@ -32,7 +32,7 @@ class ChapterService:
             ChapterProgress.student_id == student_id,
             ChapterProgress.chapter_id == chapter_id,
         )
-        progress = self.db.scalar(stmt)
+        progress = await self.db.scalar(stmt)
 
         if not progress:
             progress = ChapterProgress(
@@ -41,33 +41,33 @@ class ChapterService:
                 is_unlocked=False,
             )
             self.db.add(progress)
-            self.db.flush()
+            await self.db.flush()
 
         return progress
 
-    def unlock_chapter(self, student_id: str, chapter_id: str) -> bool:
+    async def unlock_chapter(self, student_id: str, chapter_id: str) -> bool:
         """단원 잠금 해제."""
-        progress = self.get_or_create_progress(student_id, chapter_id)
+        progress = await self.get_or_create_progress(student_id, chapter_id)
 
         if not progress.is_unlocked:
             progress.is_unlocked = True
             progress.unlocked_at = datetime.now(timezone.utc)
-            self.db.commit()
+            await self.db.commit()
             return True
 
         return False
 
-    def update_chapter_progress(self, student_id: str, chapter_id: str) -> dict:
+    async def update_chapter_progress(self, student_id: str, chapter_id: str) -> dict:
         """단원 진행률 업데이트 및 완료 여부 체크.
 
         Returns:
             dict: 진행 상황 정보
         """
-        chapter = self.db.get(Chapter, chapter_id)
+        chapter = await self.db.get(Chapter, chapter_id)
         if not chapter:
             return {}
 
-        progress = self.get_or_create_progress(student_id, chapter_id)
+        progress = await self.get_or_create_progress(student_id, chapter_id)
 
         # 1. 개념별 마스터리 수집
         concept_ids = chapter.concept_ids or []
@@ -79,7 +79,7 @@ class ChapterService:
                 ConceptMastery.student_id == student_id,
                 ConceptMastery.concept_id == concept_id,
             )
-            mastery = self.db.scalar(stmt)
+            mastery = await self.db.scalar(stmt)
 
             if mastery:
                 concepts_mastery[concept_id] = mastery.mastery_percentage
@@ -99,7 +99,7 @@ class ChapterService:
 
         # 3. 종합 테스트 확인
         if chapter.final_test_id:
-            self._check_final_test(student_id, chapter, progress)
+            await self._check_final_test(student_id, chapter, progress)
 
         # 4. 완료 조건 체크
         is_complete = self._check_chapter_completion(chapter, progress, mastered_count, len(concept_ids))
@@ -109,9 +109,9 @@ class ChapterService:
             progress.completed_at = datetime.now(timezone.utc)
 
             # 다음 단원 자동 해제
-            unlocked = self._auto_unlock_next_chapters(student_id, chapter_id)
+            unlocked = await self._auto_unlock_next_chapters(student_id, chapter_id)
 
-        self.db.commit()
+        await self.db.commit()
 
         return {
             "chapter_id": chapter_id,
@@ -125,7 +125,7 @@ class ChapterService:
             "is_completed": progress.is_completed,
         }
 
-    def _check_final_test(
+    async def _check_final_test(
         self, student_id: str, chapter: Chapter, progress: ChapterProgress
     ):
         """종합 테스트 결과 확인 및 업데이트."""
@@ -143,7 +143,7 @@ class ChapterService:
             .order_by(TestAttempt.score.desc())
             .limit(1)
         )
-        best_attempt = self.db.scalar(stmt)
+        best_attempt = await self.db.scalar(stmt)
 
         if best_attempt:
             progress.final_test_attempted = True
@@ -195,11 +195,11 @@ class ChapterService:
         # 종합 테스트가 없으면 개념 마스터만으로 완료
         return True
 
-    def approve_chapter(
+    async def approve_chapter(
         self, student_id: str, chapter_id: str, teacher_id: str, feedback: str | None = None
     ) -> bool:
         """선생님의 단원 완료 승인."""
-        progress = self.get_or_create_progress(student_id, chapter_id)
+        progress = await self.get_or_create_progress(student_id, chapter_id)
 
         # 승인 조건: 60점 이상
         if not progress.final_test_score or progress.final_test_score < TEACHER_APPROVAL_MIN_SCORE:
@@ -211,7 +211,7 @@ class ChapterService:
         progress.approval_feedback = feedback
 
         # 완료 조건 재체크
-        chapter = self.db.get(Chapter, chapter_id)
+        chapter = await self.db.get(Chapter, chapter_id)
         if chapter:
             concept_count = len(chapter.concept_ids or [])
             mastered_count = sum(
@@ -223,14 +223,14 @@ class ChapterService:
                 progress.completed_at = datetime.now(timezone.utc)
 
                 # 다음 단원 해제
-                self._auto_unlock_next_chapters(student_id, chapter_id)
+                await self._auto_unlock_next_chapters(student_id, chapter_id)
 
-        self.db.commit()
+        await self.db.commit()
         return True
 
-    def _auto_unlock_next_chapters(self, student_id: str, chapter_id: str) -> list[str]:
+    async def _auto_unlock_next_chapters(self, student_id: str, chapter_id: str) -> list[str]:
         """단원 완료 시 다음 단원 자동 해제."""
-        chapter = self.db.get(Chapter, chapter_id)
+        chapter = await self.db.get(Chapter, chapter_id)
         if not chapter:
             return []
 
@@ -246,19 +246,19 @@ class ChapterService:
                     ChapterProgress.student_id == student_id,
                     ChapterProgress.chapter_id == prereq.id,
                 )
-                prereq_progress = self.db.scalar(stmt)
+                prereq_progress = await self.db.scalar(stmt)
 
                 if not prereq_progress or not prereq_progress.is_completed:
                     all_met = False
                     break
 
             if all_met:
-                if self.unlock_chapter(student_id, next_chapter.id):
+                if await self.unlock_chapter(student_id, next_chapter.id):
                     unlocked.append(next_chapter.id)
 
         return unlocked
 
-    def get_student_chapters(self, student_id: str, grade: str | None = None) -> list[dict]:
+    async def get_student_chapters(self, student_id: str, grade: str | None = None) -> list[dict]:
         """학생의 단원별 진행 상황 조회."""
         stmt = select(Chapter).where(Chapter.is_active == True)  # noqa: E712
 
@@ -266,7 +266,7 @@ class ChapterService:
             stmt = stmt.where(Chapter.grade == grade)
 
         stmt = stmt.order_by(Chapter.chapter_number)
-        chapters = list(self.db.scalars(stmt).all())
+        chapters = list((await self.db.scalars(stmt)).all())
 
         result = []
         for chapter in chapters:
@@ -274,7 +274,7 @@ class ChapterService:
                 ChapterProgress.student_id == student_id,
                 ChapterProgress.chapter_id == chapter.id,
             )
-            progress = self.db.scalar(stmt)
+            progress = await self.db.scalar(stmt)
 
             result.append({
                 "chapter_id": chapter.id,
@@ -290,7 +290,7 @@ class ChapterService:
 
         return result
 
-    def get_next_recommendation(self, student_id: str) -> dict | None:
+    async def get_next_recommendation(self, student_id: str) -> dict | None:
         """다음 학습 추천."""
         # 1. 해제되었지만 완료되지 않은 단원 찾기
         stmt = (
@@ -302,10 +302,10 @@ class ChapterService:
             )
             .order_by(ChapterProgress.overall_progress.desc())
         )
-        in_progress = self.db.scalar(stmt)
+        in_progress = await self.db.scalar(stmt)
 
         if in_progress:
-            chapter = self.db.get(Chapter, in_progress.chapter_id)
+            chapter = await self.db.get(Chapter, in_progress.chapter_id)
             if chapter:
                 return {
                     "type": "continue",
@@ -325,10 +325,10 @@ class ChapterService:
             .order_by(ChapterProgress.completed_at.desc())
             .limit(1)
         )
-        completed = self.db.scalar(stmt)
+        completed = await self.db.scalar(stmt)
 
         if completed:
-            chapter = self.db.get(Chapter, completed.chapter_id)
+            chapter = await self.db.get(Chapter, completed.chapter_id)
             if chapter and chapter.dependents:
                 next_chapter = chapter.dependents[0]
                 return {

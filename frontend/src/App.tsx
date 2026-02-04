@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
-import { TestListPage, TestStartPage, TestPlayPage, TestResultPage, MyStatsPage, ReviewPage, QuickPracticeSetupPage, HelpPage } from './pages/student'
+import { DailyLabPage, TestListPage, TestStartPage, TestPlayPage, TestResultPage, MyStatsPage, ReviewPage, QuickPracticeSetupPage, HelpPage } from './pages/student'
 import { TeacherDashboardPage, TeacherStudentsListPage, TeacherStudentDetailPage } from './pages/teacher'
 import { UserManagementPage } from './pages/admin'
 import { MainLayout } from './components/layout'
@@ -38,6 +38,14 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
 
           {/* 학생용 라우트 */}
+          <Route
+            path="/daily-lab"
+            element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <DailyLabPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/tests"
             element={

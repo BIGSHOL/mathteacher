@@ -59,7 +59,8 @@
       "Bash(docker-compose up:*)",
       "Bash(docker ps:*)",
       "Read(//f//**)",
-      "Read(//f/math_test/backend/app/api/**)"
+      "Read(//f/math_test/backend/app/api/**)",
+      "Read(//c/Users/user/AppData/Local/Python/pythoncore-3.14-64/Lib/site-packages/slowapi/**)"
     ],
     "additionalDirectories": [
       "d:\\ijw-calander\\components\\Timetable\\English",

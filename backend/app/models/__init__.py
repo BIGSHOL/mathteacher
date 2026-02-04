@@ -6,6 +6,7 @@ from .chapter_progress import ChapterProgress
 from .class_ import Class
 from .concept import Concept
 from .concept_mastery import ConceptMastery
+from .daily_test_record import DailyTestRecord
 from .question import Question
 from .test import Test
 from .test_attempt import TestAttempt
@@ -18,6 +19,7 @@ __all__ = [
     "Class",
     "Concept",
     "ConceptMastery",
+    "DailyTestRecord",
     "Question",
     "RefreshToken",
     "Test",
