@@ -57,11 +57,12 @@ async def get_today_tests(
     db: AsyncSession = Depends(get_db),
 ):
     """오늘의 일일 테스트 3개 조회 (없으면 자동 생성)."""
-    records = await service.get_today_tests(current_user.id)
+    records, ai_count = await service.get_today_tests(current_user.id)
     return ApiResponse(
         data=DailyTestTodayResponse(
             date=service.get_today_str(),
             tests=[await _to_response(r, db) for r in records],
+            ai_generated_count=ai_count,
         )
     )
 

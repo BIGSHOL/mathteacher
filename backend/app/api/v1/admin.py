@@ -91,11 +91,37 @@ async def reset_database(
     logger.warning(f"DB reset requested by user {current_user.id} ({current_user.name})")
 
     try:
-        # 0) Close async session & dispose pool to avoid SQLite lock
+        # 0) AI 생성 문제 백업 (id가 'ai-'로 시작하는 문제)
+        from app.models.question import Question
+        from sqlalchemy.orm import Session as SyncSession
+
+        ai_questions_backup = []
+        with SyncSession(sync_engine) as sync_db:
+            ai_qs = sync_db.query(Question).filter(
+                Question.id.like("ai-%")
+            ).all()
+            for q in ai_qs:
+                ai_questions_backup.append({
+                    "id": q.id,
+                    "concept_id": q.concept_id,
+                    "category": q.category.value if hasattr(q.category, "value") else str(q.category),
+                    "part": q.part.value if hasattr(q.part, "value") else str(q.part),
+                    "question_type": q.question_type.value if hasattr(q.question_type, "value") else str(q.question_type),
+                    "difficulty": q.difficulty,
+                    "content": q.content,
+                    "options": q.options,
+                    "correct_answer": q.correct_answer,
+                    "explanation": q.explanation,
+                    "points": q.points,
+                    "blank_config": q.blank_config,
+                })
+        logger.info("Backed up %d AI-generated questions", len(ai_questions_backup))
+
+        # 1) Close async session & dispose pool to avoid SQLite lock
         await db.close()
         await async_engine.dispose()
 
-        # 1) Drop all tables (SQLite vs PostgreSQL)
+        # 2) Drop all tables (SQLite vs PostgreSQL)
         if settings.DATABASE_URL.startswith("sqlite"):
             Base.metadata.drop_all(bind=sync_engine)
         else:
@@ -104,20 +130,54 @@ async def reset_database(
                 conn.execute(text("CREATE SCHEMA public"))
                 conn.commit()
 
-        # 2) Recreate tables
+        # 3) Recreate tables
         Base.metadata.create_all(bind=sync_engine)
 
-        # 3) Re-run init_db (seeds users) + load_seed_data (seeds concepts/questions)
+        # 4) Re-run init_db (seeds users) + load_seed_data (seeds concepts/questions)
         import importlib
         main_module = importlib.import_module("app.main")
         main_module.init_db()
         main_module.load_seed_data()
 
+        # 5) AI 생성 문제 복원 (개념이 존재하는 것만)
+        restored = 0
+        if ai_questions_backup:
+            with SyncSession(sync_engine) as sync_db:
+                from app.models.concept import Concept
+                existing_concepts = {
+                    c.id for c in sync_db.query(Concept.id).all()
+                }
+                for q_data in ai_questions_backup:
+                    if q_data["concept_id"] not in existing_concepts:
+                        continue
+                    # 이미 존재하는 ID는 건너뛰기
+                    if sync_db.get(Question, q_data["id"]):
+                        continue
+                    q = Question(
+                        id=q_data["id"],
+                        concept_id=q_data["concept_id"],
+                        category=q_data["category"],
+                        part=q_data["part"],
+                        question_type=q_data["question_type"],
+                        difficulty=q_data["difficulty"],
+                        content=q_data["content"],
+                        options=q_data["options"],
+                        correct_answer=q_data["correct_answer"],
+                        explanation=q_data["explanation"],
+                        points=q_data["points"],
+                        blank_config=q_data.get("blank_config"),
+                        is_active=True,
+                    )
+                    sync_db.add(q)
+                    restored += 1
+                sync_db.commit()
+        logger.info("Restored %d AI-generated questions", restored)
+
         logger.info("DB reset completed successfully")
         return ApiResponse(
             success=True,
-            data={"reset": True},
-            message="DB 초기화 완료! 시드 데이터가 재생성되었습니다. 다시 로그인해주세요.",
+            data={"reset": True, "ai_questions_restored": restored},
+            message=f"DB 초기화 완료! 시드 데이터 재생성 + AI 문제 {restored}개 복원. 다시 로그인해주세요.",
         )
     except Exception as e:
         logger.error(f"DB reset failed: {e}")

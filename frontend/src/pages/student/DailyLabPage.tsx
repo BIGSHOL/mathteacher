@@ -22,7 +22,9 @@ export function DailyLabPage() {
   const [todayData, setTodayData] = useState<DailyTestTodayResponse | null>(null)
   const [history, setHistory] = useState<DailyTestRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingPhase, setLoadingPhase] = useState<'init' | 'ai'>('init')
   const [starting, setStarting] = useState<string | null>(null)
+  const [aiGenerated, setAiGenerated] = useState(false)
 
   const [viewYear, setViewYear] = useState(() => new Date().getFullYear())
   const [viewMonth, setViewMonth] = useState(() => new Date().getMonth())
@@ -33,18 +35,28 @@ export function DailyLabPage() {
 
   const loadData = async () => {
     setLoading(true)
+    setLoadingPhase('init')
+
+    // 2초 이상 걸리면 AI 생성 메시지로 전환
+    const aiTimer = setTimeout(() => setLoadingPhase('ai'), 2000)
+
     try {
       const [todayRes, historyRes] = await Promise.all([
-        api.get<{ success: boolean; data: DailyTestTodayResponse }>('/api/v1/daily-tests/today'),
+        api.get<{ success: boolean; data: DailyTestTodayResponse & { ai_generated_count?: number } }>('/api/v1/daily-tests/today'),
         api.get<{ success: boolean; data: PaginatedResponse<DailyTestRecord> }>(
           '/api/v1/daily-tests/history?page=1&page_size=100'
         ),
       ])
       setTodayData(todayRes.data.data)
       setHistory(historyRes.data.data.items)
+      if (todayRes.data.data.ai_generated_count && todayRes.data.data.ai_generated_count > 0) {
+        setAiGenerated(true)
+        setTimeout(() => setAiGenerated(false), 4000)
+      }
     } catch {
       // ignore
     } finally {
+      clearTimeout(aiTimer)
       setLoading(false)
     }
   }
@@ -142,8 +154,13 @@ export function DailyLabPage() {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center py-20">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent" />
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary-500 border-t-transparent" />
+            <p className="text-sm text-gray-500 animate-pulse">
+              {loadingPhase === 'ai'
+                ? 'AI가 새로운 문제를 만들고 있어요...'
+                : '오늘의 문제를 준비하고 있어요...'}
+            </p>
           </div>
         </div>
       </div>
@@ -174,6 +191,18 @@ export function DailyLabPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* AI 생성 알림 */}
+        {aiGenerated && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            className="mb-4 rounded-lg bg-indigo-50 border border-indigo-200 px-4 py-3 text-sm text-indigo-700"
+          >
+            AI가 새로운 문제를 생성했어요! 다음부터는 더 빠르게 로딩됩니다.
+          </motion.div>
+        )}
 
         {/* 오늘의 학습 카드 */}
         {isCurrentMonth && todayData && (

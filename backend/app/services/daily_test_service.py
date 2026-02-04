@@ -1,5 +1,6 @@
 """일일 테스트 서비스."""
 
+import logging
 import random
 from datetime import datetime, timedelta, timezone
 
@@ -17,7 +18,10 @@ from app.models.test import Test
 from app.models.test_attempt import TestAttempt
 from app.models.user import User
 from app.schemas.common import QuestionCategory, QuestionType
+from app.services.ai_service import AIService
 from app.services.test_service import TestService
+
+logger = logging.getLogger(__name__)
 
 QUESTIONS_PER_DAILY_TEST = 10
 MIN_QUESTIONS_PER_DAILY_TEST = 3
@@ -35,6 +39,7 @@ class DailyTestService:
 
     def __init__(self, db: AsyncSession):
         self.db = db
+        self._ai_generated_count = 0
 
     def get_today_str(self) -> str:
         """오늘 날짜 문자열 (KST)."""
@@ -44,12 +49,16 @@ class DailyTestService:
     # 공개 메서드
     # ------------------------------------------------------------------
 
-    async def get_today_tests(self, student_id: str) -> list[DailyTestRecord]:
-        """오늘의 3개 카테고리 테스트 (없으면 자동 생성)."""
+    async def get_today_tests(self, student_id: str) -> tuple[list[DailyTestRecord], int]:
+        """오늘의 3개 카테고리 테스트 (없으면 자동 생성).
+
+        Returns:
+            (레코드 목록, AI 생성 문제 수)
+        """
         records = []
         for cat in DAILY_CATEGORIES:
             records.append(await self.get_or_create_daily_test(student_id, cat))
-        return records
+        return records, self._ai_generated_count
 
     async def get_or_create_daily_test(
         self, student_id: str, category: str
@@ -181,11 +190,25 @@ class DailyTestService:
     # ------------------------------------------------------------------
 
     async def _generate_test(self, student_id: str, category: str, date: str) -> Test:
-        """카테고리에 맞는 테스트 생성."""
+        """카테고리에 맞는 테스트 생성. 시드 부족 시 AI 동적 생성."""
         student = await self.db.get(User, student_id)
         grade = student.grade if student else None
 
         question_ids = await self._select_questions(student_id, category, grade)
+
+        # 시드 문제가 최소 기준 미달 → AI로 추가 생성 후 DB 저장
+        # 연산(computation)은 시드가 충분하므로 빈칸/개념만 AI 생성
+        if (
+            len(question_ids) < MIN_QUESTIONS_PER_DAILY_TEST
+            and grade
+            and category in ("concept", "fill_in_blank")
+        ):
+            needed = MIN_QUESTIONS_PER_DAILY_TEST - len(question_ids)
+            ai_ids = await self._generate_ai_questions(
+                student_id, category, grade, needed
+            )
+            question_ids.extend(ai_ids)
+
         question_count = len(question_ids)
 
         # 관련 개념 ID 수집
@@ -473,3 +496,117 @@ class DailyTestService:
             ConceptMastery.unlocked_at >= cutoff,
         )
         return set((await self.db.scalars(stmt)).all())
+
+    async def _generate_ai_questions(
+        self,
+        student_id: str,
+        category: str,
+        grade,
+        count: int,
+    ) -> list[str]:
+        """AI로 문제를 생성하여 DB에 저장하고 ID 목록을 반환.
+
+        생성된 문제는 DB에 영구 저장되어 다음에 시드 문제처럼 재활용됩니다.
+        기존 문제 content를 AI에게 전달하여 중복 생성을 방지합니다.
+        """
+        # 해금된 개념 중 하나를 선택
+        available_concept_ids = await self._get_student_available_concept_ids(
+            student_id, grade
+        )
+        if not available_concept_ids:
+            return []
+
+        # 개념 정보 조회
+        concept_stmt = select(Concept).where(
+            Concept.id.in_(available_concept_ids)
+        )
+        concepts = list((await self.db.scalars(concept_stmt)).all())
+        if not concepts:
+            return []
+
+        # question_type 결정
+        if category == "fill_in_blank":
+            q_type = "fill_in_blank"
+        else:
+            q_type = "multiple_choice"
+
+        # 기존 문제 content 수집 (중복 방지용)
+        existing_stmt = select(Question.content).where(
+            Question.concept_id.in_(available_concept_ids),
+            Question.is_active == True,  # noqa: E712
+        )
+        existing_contents = list((await self.db.scalars(existing_stmt)).all())
+        existing_set = set(c.strip() for c in existing_contents if c)
+
+        # 개념별로 분배하여 생성 (한 개념에 몰리지 않게)
+        ai_service = AIService()
+        generated_ids: list[str] = []
+        remaining = count
+
+        random.shuffle(concepts)
+        for concept in concepts:
+            if remaining <= 0:
+                break
+
+            # 이 개념에 대해 생성할 수 (중복 제거 마진을 위해 +2)
+            batch = min(remaining + 2, max(3, count // len(concepts) + 2))
+
+            # AI 문제 생성 (기존 문제 전달하여 중복 방지)
+            result = await ai_service.generate_questions(
+                concept_name=concept.name,
+                concept_id=concept.id,
+                grade=grade.value if hasattr(grade, "value") else str(grade),
+                category=category if category != "fill_in_blank" else concept.category.value,
+                part=concept.part.value if hasattr(concept.part, "value") else str(concept.part),
+                question_type=q_type,
+                count=batch,
+                existing_contents=list(existing_set)[:20],  # 최대 20개 전달
+            )
+
+            if not result:
+                continue
+
+            # DB에 저장 (영구 저장 → 다음에 시드처럼 재활용)
+            for q_dict in result:
+                if remaining <= 0:
+                    break
+
+                # 중복 체크: content가 기존과 동일하면 건너뛰기
+                content = q_dict.get("content", "").strip()
+                if content in existing_set:
+                    logger.debug("Skipping duplicate AI question: %s", content[:50])
+                    continue
+
+                try:
+                    q = Question(
+                        id=q_dict["id"],
+                        concept_id=q_dict["concept_id"],
+                        category=q_dict["category"],
+                        part=q_dict["part"],
+                        question_type=q_dict["question_type"],
+                        difficulty=q_dict["difficulty"],
+                        content=content,
+                        options=q_dict.get("options"),
+                        correct_answer=q_dict["correct_answer"],
+                        explanation=q_dict.get("explanation", ""),
+                        points=q_dict.get("points", 10),
+                        blank_config=q_dict.get("blank_config"),
+                        is_active=True,
+                    )
+                    self.db.add(q)
+                    generated_ids.append(q.id)
+                    existing_set.add(content)  # 이번 배치 내 중복도 방지
+                    remaining -= 1
+                except Exception:
+                    logger.warning("Failed to save AI question: %s", q_dict.get("id"))
+                    continue
+
+        if generated_ids:
+            await self.db.flush()
+            self._ai_generated_count += len(generated_ids)
+            logger.info(
+                "AI generated %d questions for student %s category %s (saved to DB)",
+                len(generated_ids), student_id[:8], category,
+            )
+
+        return generated_ids

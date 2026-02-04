@@ -1,7 +1,9 @@
-"""AI 보조 서비스 (Gemini) - 힌트, 유연 채점, 피드백."""
+"""AI 보조 서비스 (Gemini) - 힌트, 유연 채점, 피드백, 문제 동적 생성."""
 
 import json
 import logging
+import re
+from uuid import uuid4
 
 from google import genai
 from google.genai import types
@@ -189,4 +191,182 @@ class AIService:
             }
         except Exception:
             logger.exception("AI feedback generation failed")
+            return None
+
+    async def generate_questions(
+        self,
+        concept_name: str,
+        concept_id: str,
+        grade: str,
+        category: str,
+        part: str,
+        question_type: str,
+        count: int,
+        difficulty_min: int = 1,
+        difficulty_max: int = 10,
+        existing_contents: list[str] | None = None,
+    ) -> list[dict] | None:
+        """Gemini로 문제를 동적 생성. 실패 시 None.
+
+        Args:
+            concept_name: 개념 이름 (예: "소인수분해")
+            concept_id: 개념 ID
+            grade: 학년 (예: "middle_1")
+            category: "computation" 또는 "concept"
+            part: "calc", "algebra", "func", "geo", "data", "word"
+            question_type: "multiple_choice" 또는 "fill_in_blank"
+            count: 생성할 문제 수
+            difficulty_min: 최소 난이도
+            difficulty_max: 최대 난이도
+            existing_contents: 기존 문제 content 목록 (중복 방지)
+
+        Returns:
+            Question 모델에 바로 넣을 수 있는 dict 리스트
+        """
+        client = _get_client()
+        if not client:
+            return None
+
+        grade_label = GRADE_LABELS.get(grade, grade)
+        cat_label = "연산" if category == "computation" else "개념"
+
+        if question_type == "fill_in_blank":
+            type_instruction = (
+                "빈칸 채우기 문제를 생성하세요.\n"
+                '- content: 문제 텍스트 (예: "72를 소인수분해하면?")\n'
+                "- options: null\n"
+                '- correct_answer: 정답 (예: "2³×3²")\n'
+                '- accept_formats: 허용 답안 리스트 (예: ["2^3×3^2", "2^3*3^2"])\n'
+            )
+            json_example = (
+                '{"content": "72를 소인수분해하면?", '
+                '"correct_answer": "2³×3²", '
+                '"explanation": "72=2×36=2×2×18=2×2×2×9=2³×3²", '
+                '"difficulty": 4, '
+                '"accept_formats": ["2^3*3^2"]}'
+            )
+        else:
+            type_instruction = (
+                "객관식(4지선다) 문제를 생성하세요.\n"
+                "- 반드시 선지 4개 (A, B, C, D)\n"
+                "- 오개념을 반영한 매력적인 오답 선지 포함\n"
+                "- correct_answer: 정답 라벨 (A/B/C/D 중 하나)\n"
+            )
+            json_example = (
+                '{"content": "24의 약수의 개수는?", '
+                '"options": [{"label":"A","text":"4개"},{"label":"B","text":"6개"},'
+                '{"label":"C","text":"8개"},{"label":"D","text":"10개"}], '
+                '"correct_answer": "C", '
+                '"explanation": "24=2³×3이므로 약수의 개수=(3+1)(1+1)=8개", '
+                '"difficulty": 5}'
+            )
+
+        # 중복 방지: 기존 문제 목록을 프롬프트에 포함
+        existing_section = ""
+        if existing_contents:
+            existing_list = "\n".join(f"- {c}" for c in existing_contents[:20])
+            existing_section = (
+                f"\n## 이미 존재하는 문제 (중복 금지)\n"
+                f"아래 문제들과 동일하거나 숫자만 바꾼 유사 문제는 절대 생성하지 마세요:\n"
+                f"{existing_list}\n"
+            )
+
+        prompt = (
+            f"당신은 2022 개정 교육과정 기반 {grade_label} 수학 문제 출제 전문가입니다.\n\n"
+            f"[개념] {concept_name}\n"
+            f"[트랙] {cat_label}\n"
+            f"[난이도 범위] {difficulty_min}~{difficulty_max} (1=매우 쉬움, 10=매우 어려움)\n"
+            f"[생성 개수] {count}개\n\n"
+            f"{type_instruction}\n"
+            "## 규칙\n"
+            "1. 모든 수학 계산은 반드시 정확해야 합니다. 검산을 수행하세요.\n"
+            "2. explanation에 풀이 과정을 포함하세요.\n"
+            f"3. difficulty는 {difficulty_min}~{difficulty_max} 범위에서 다양하게 분포시키세요.\n"
+            "4. 한국어로 작성하세요.\n"
+            "5. 각 문제가 서로 다른 유형/소재여야 합니다.\n"
+            f"{existing_section}\n"
+            f"## 출력 형식 (JSON 배열)\n"
+            f"예시: [{json_example}]\n\n"
+            f"반드시 {count}개의 문제를 JSON 배열로만 출력하세요. 다른 텍스트는 포함하지 마세요."
+        )
+
+        try:
+            response = client.models.generate_content(
+                model=settings.GEMINI_MODEL_NAME,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    temperature=0.5,
+                    max_output_tokens=4096,
+                ),
+            )
+            text = response.text.strip()
+
+            # JSON 추출
+            if "```" in text:
+                match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
+                if match:
+                    text = match.group(1)
+
+            questions_raw = json.loads(text)
+            if not isinstance(questions_raw, list):
+                questions_raw = [questions_raw]
+
+            # Question 모델에 맞게 변환
+            result = []
+            for q in questions_raw[:count]:
+                qid = f"ai-{uuid4().hex[:12]}"
+                diff = int(q.get("difficulty", 5))
+                diff = max(1, min(10, diff))
+
+                question_dict = {
+                    "id": qid,
+                    "concept_id": concept_id,
+                    "category": category,
+                    "part": part,
+                    "question_type": question_type,
+                    "difficulty": diff,
+                    "content": q.get("content", ""),
+                    "correct_answer": q.get("correct_answer", ""),
+                    "explanation": q.get("explanation", ""),
+                    "points": 10,
+                    "is_active": True,
+                }
+
+                if question_type == "multiple_choice":
+                    options = q.get("options", [])
+                    if options and isinstance(options, list):
+                        formatted = []
+                        labels = ["A", "B", "C", "D"]
+                        for i, opt in enumerate(options[:4]):
+                            if isinstance(opt, dict):
+                                formatted.append({
+                                    "id": str(i + 1),
+                                    "label": opt.get("label", labels[i]),
+                                    "text": str(opt.get("text", "")),
+                                })
+                            else:
+                                formatted.append({
+                                    "id": str(i + 1),
+                                    "label": labels[i],
+                                    "text": str(opt),
+                                })
+                        question_dict["options"] = formatted
+                    else:
+                        question_dict["options"] = None
+                else:
+                    question_dict["options"] = None
+                    accept = q.get("accept_formats", [])
+                    question_dict["blank_config"] = {
+                        "blank_count": 1,
+                        "accept_formats": accept if accept else [q.get("correct_answer", "")],
+                    }
+
+                if question_dict["content"]:
+                    result.append(question_dict)
+
+            logger.info("AI generated %d questions for concept %s", len(result), concept_name)
+            return result
+
+        except Exception:
+            logger.exception("AI question generation failed for concept %s", concept_name)
             return None

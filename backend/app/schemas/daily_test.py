@@ -37,6 +37,7 @@ class DailyTestTodayResponse(BaseModel):
 
     date: str
     tests: list[DailyTestRecordResponse]
+    ai_generated_count: int = 0
 
 
 class DailyTestStartResponse(BaseModel):
