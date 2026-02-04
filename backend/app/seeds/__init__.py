@@ -8,6 +8,7 @@ from app.seeds.middle_1 import get_all_data as m1_data
 from app.seeds.middle_2 import get_all_data as m2_data
 from app.seeds.middle_3 import get_all_data as m3_data
 from app.seeds.high_1 import get_all_data as h1_data
+from app.seeds.high_2 import get_all_data as h2_data
 
 
 def get_all_grade_seed_data() -> dict:
@@ -24,7 +25,7 @@ def get_all_grade_seed_data() -> dict:
     all_questions = []
     all_tests = []
 
-    for grade_fn in [e3_data, e4_data, e5_data, e6_data, m1_data, m2_data, m3_data, h1_data]:
+    for grade_fn in [e3_data, e4_data, e5_data, e6_data, m1_data, m2_data, m3_data, h1_data, h2_data]:
         data = grade_fn()
         all_concepts.extend(data.get("concepts", []))
         all_questions.extend(data.get("questions", []))
