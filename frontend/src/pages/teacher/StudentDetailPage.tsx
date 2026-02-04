@@ -35,6 +35,22 @@ interface DailyActivity {
   accuracy_rate: number
 }
 
+interface ChapterProgress {
+  chapter_id: string
+  chapter_name: string
+  chapter_number: number
+  is_unlocked: boolean
+  is_completed: boolean
+  overall_progress: number
+  concepts_mastery: Record<string, number>
+}
+
+interface TrackStats {
+  total_questions: number
+  correct_answers: number
+  accuracy_rate: number
+}
+
 interface StudentDetail {
   user_id: string
   name: string
@@ -50,10 +66,14 @@ interface StudentDetail {
   max_streak: number
   level: number
   total_xp: number
+  today_solved: number
+  computation_stats?: TrackStats
+  concept_stats?: TrackStats
   weak_concepts: ConceptStat[]
   strong_concepts: ConceptStat[]
   recent_tests: RecentTest[]
   daily_activity: DailyActivity[]
+  chapter_progress: ChapterProgress[]
 }
 
 const formatGrade = (grade: Grade): string => {
@@ -96,6 +116,9 @@ export function StudentDetailPage() {
   const [showResetHistoryModal, setShowResetHistoryModal] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
+
+  // 단원 잠금 해제 관련 상태
+  const [chapterActionLoading, setChapterActionLoading] = useState<string | null>(null)
 
   useEffect(() => {
     if (studentId) {
@@ -195,6 +218,19 @@ export function StudentDetailPage() {
       setActionMessage({ type: 'error', text: '기록 초기화에 실패했습니다.' })
     } finally {
       setActionLoading(false)
+    }
+  }
+
+  const handleToggleChapterLock = async (chapterId: string, _currentlyUnlocked: boolean) => {
+    if (!studentId) return
+    setChapterActionLoading(chapterId)
+    try {
+      await api.post(`/api/v1/chapters/students/${studentId}/unlock/${chapterId}`)
+      await fetchDetail()
+    } catch {
+      setActionMessage({ type: 'error', text: '단원 잠금 상태 변경에 실패했습니다.' })
+    } finally {
+      setChapterActionLoading(null)
     }
   }
 
@@ -433,7 +469,7 @@ export function StudentDetailPage() {
           )}
         </AnimatePresence>
 
-        {/* 핵심 지표 */}
+        {/* 핵심 지표 - 8개 카드 (2행 4열) */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -443,8 +479,143 @@ export function StudentDetailPage() {
           <StatCard label="총 테스트" value={`${data.total_tests}회`} />
           <StatCard label="정답률" value={`${data.accuracy_rate}%`} color={data.accuracy_rate >= 80 ? 'green' : data.accuracy_rate >= 60 ? 'yellow' : 'red'} />
           <StatCard label="평균 풀이 시간" value={`${data.average_time_per_question.toFixed(1)}초`} />
-          <StatCard label="최대 스트릭" value={`${data.max_streak}회`} />
+          <StatCard label="최대 스트릭" value={`${data.max_streak}일`} />
+          <StatCard label="현재 레벨" value={`Lv.${data.level}`} color="purple" />
+          <StatCard label="총 XP" value={`${data.total_xp.toLocaleString()} XP`} />
+          <StatCard label="현재 스트릭" value={`${data.current_streak}일`} color={data.current_streak > 0 ? 'green' : undefined} />
+          <StatCard label="오늘 풀이" value={`${data.today_solved}문제`} />
         </motion.div>
+
+        {/* 단원 진행 상황 */}
+        {data.chapter_progress && data.chapter_progress.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mb-6 rounded-2xl bg-white p-6 shadow-sm"
+          >
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">단원 진행 상황</h2>
+            <div className="space-y-3">
+              {data.chapter_progress.map((chapter) => {
+                const statusIcon = chapter.is_completed ? '✓' : chapter.is_unlocked ? '📖' : '🔒'
+                const statusText = chapter.is_completed ? '완료' : chapter.is_unlocked ? '진행중' : '잠김'
+                const statusColor = chapter.is_completed ? 'text-green-600' : chapter.is_unlocked ? 'text-blue-600' : 'text-gray-400'
+
+                return (
+                  <div key={chapter.chapter_id} className="flex items-center gap-3 rounded-lg border border-gray-200 p-3">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-sm font-medium ${statusColor}`}>{statusIcon}</span>
+                        <span className="text-sm font-medium text-gray-800">
+                          {chapter.chapter_number}. {chapter.chapter_name}
+                        </span>
+                        <span className={`text-xs ${statusColor}`}>({statusText})</span>
+                      </div>
+                      <div className="mt-2 flex items-center gap-2">
+                        <div className="h-2 flex-1 overflow-hidden rounded-full bg-gray-200">
+                          <div
+                            className="h-full rounded-full bg-primary-500 transition-all"
+                            style={{ width: `${chapter.overall_progress}%` }}
+                          />
+                        </div>
+                        <span className="text-xs font-medium text-gray-600">{chapter.overall_progress}%</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => handleToggleChapterLock(chapter.chapter_id, chapter.is_unlocked)}
+                      disabled={chapterActionLoading === chapter.chapter_id}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                        chapter.is_unlocked
+                          ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                          : 'bg-green-100 text-green-700 hover:bg-green-200'
+                      } disabled:opacity-50`}
+                    >
+                      {chapterActionLoading === chapter.chapter_id
+                        ? '...'
+                        : chapter.is_unlocked
+                        ? '잠금'
+                        : '해제'}
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {/* 트랙별 분석 */}
+        {(data.computation_stats || data.concept_stats) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.17 }}
+            className="mb-6 grid gap-4 md:grid-cols-2"
+          >
+            {/* 연산 트랙 */}
+            {data.computation_stats && (
+              <div className="rounded-2xl bg-white p-6 shadow-sm">
+                <h2 className="mb-4 text-lg font-semibold text-gray-900">연산 트랙</h2>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">총 문제 수</span>
+                    <span className="text-sm font-semibold text-gray-900">{data.computation_stats.total_questions}문제</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">정답 수</span>
+                    <span className="text-sm font-semibold text-gray-900">{data.computation_stats.correct_answers}문제</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">정답률</span>
+                    <span className={`text-sm font-semibold ${
+                      data.computation_stats.accuracy_rate >= 80 ? 'text-green-600' :
+                      data.computation_stats.accuracy_rate >= 60 ? 'text-yellow-600' : 'text-red-600'
+                    }`}>
+                      {data.computation_stats.accuracy_rate}%
+                    </span>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-blue-500 transition-all"
+                      style={{ width: `${data.computation_stats.accuracy_rate}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* 개념 트랙 */}
+            {data.concept_stats && (
+              <div className="rounded-2xl bg-white p-6 shadow-sm">
+                <h2 className="mb-4 text-lg font-semibold text-gray-900">개념 트랙</h2>
+                <div className="space-y-3">
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">총 문제 수</span>
+                    <span className="text-sm font-semibold text-gray-900">{data.concept_stats.total_questions}문제</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">정답 수</span>
+                    <span className="text-sm font-semibold text-gray-900">{data.concept_stats.correct_answers}문제</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-sm text-gray-600">정답률</span>
+                    <span className={`text-sm font-semibold ${
+                      data.concept_stats.accuracy_rate >= 80 ? 'text-green-600' :
+                      data.concept_stats.accuracy_rate >= 60 ? 'text-yellow-600' : 'text-red-600'
+                    }`}>
+                      {data.concept_stats.accuracy_rate}%
+                    </span>
+                  </div>
+                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className="h-full rounded-full bg-purple-500 transition-all"
+                      style={{ width: `${data.concept_stats.accuracy_rate}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         <div className="grid gap-6 lg:grid-cols-2">
           {/* 취약 개념 */}
@@ -508,6 +679,40 @@ export function StudentDetailPage() {
           </motion.div>
         </div>
 
+        {/* 일일 활동 */}
+        {data.daily_activity && data.daily_activity.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.27 }}
+            className="mt-6 rounded-2xl bg-white p-6 shadow-sm"
+          >
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">일일 활동 (최근 7일)</h2>
+            <div className="grid grid-cols-7 gap-2">
+              {data.daily_activity.map((day) => {
+                const date = new Date(day.date)
+                const accuracyColor = day.accuracy_rate >= 80 ? 'bg-green-100 text-green-700' :
+                                     day.accuracy_rate >= 60 ? 'bg-yellow-100 text-yellow-700' :
+                                     day.questions_answered > 0 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'
+
+                return (
+                  <div key={day.date} className={`rounded-lg p-3 text-center ${accuracyColor}`}>
+                    <div className="text-xs font-medium">
+                      {date.getMonth() + 1}/{date.getDate()}
+                    </div>
+                    <div className="mt-1 text-lg font-bold">
+                      {day.questions_answered}
+                    </div>
+                    <div className="text-xs">
+                      {day.questions_answered > 0 ? `${day.accuracy_rate}%` : '-'}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+
         {/* 최근 테스트 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -557,7 +762,10 @@ export function StudentDetailPage() {
 }
 
 function StatCard({ label, value, color }: { label: string; value: string; color?: string }) {
-  const colorClass = color === 'green' ? 'text-green-600' : color === 'red' ? 'text-red-600' : color === 'yellow' ? 'text-yellow-600' : 'text-gray-900'
+  const colorClass = color === 'green' ? 'text-green-600' :
+                     color === 'red' ? 'text-red-600' :
+                     color === 'yellow' ? 'text-yellow-600' :
+                     color === 'purple' ? 'text-purple-600' : 'text-gray-900'
   return (
     <div className="rounded-xl bg-white p-4 shadow-sm">
       <p className="text-sm text-gray-500">{label}</p>

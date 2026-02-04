@@ -77,6 +77,7 @@ class QuestionResponse(QuestionBase):
 
     id: str
     concept_id: str
+    concept_name: str = ""
     options: list[QuestionOption] | None = None
     prerequisite_concept_ids: list[str] | None = None
 
@@ -139,6 +140,7 @@ class AvailableTestResponse(TestResponse):
     is_completed: bool = False
     best_score: int | None = None
     attempt_count: int = 0
+    difficulty: int = 5  # 문제 평균 난이도 (1~10)
 
 
 class TestWithQuestionsResponse(TestResponse):

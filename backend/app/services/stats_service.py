@@ -8,6 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
 from app.models.class_ import Class
+from app.models.chapter import Chapter
+from app.models.chapter_progress import ChapterProgress
 from app.models.test import Test
 from app.models.test_attempt import TestAttempt
 from app.models.answer_log import AnswerLog
@@ -477,6 +479,56 @@ class StatsService:
                 "accuracy_rate": accuracy,
             })
 
+        # 단원별 진행률 조회
+        chapter_progress_list = []
+        if student.grade:
+            chapters_stmt = (
+                select(Chapter)
+                .where(Chapter.grade == student.grade, Chapter.is_active == True)  # noqa: E712
+                .order_by(Chapter.chapter_number)
+            )
+            chapters = list((await self.db.scalars(chapters_stmt)).all())
+
+            # 학생의 모든 ChapterProgress 조회
+            progress_stmt = select(ChapterProgress).where(
+                ChapterProgress.student_id == student_id
+            )
+            progress_map = {
+                p.chapter_id: p
+                for p in (await self.db.scalars(progress_stmt)).all()
+            }
+
+            # 개념 이름 맵
+            all_concept_ids = []
+            for ch in chapters:
+                all_concept_ids.extend(ch.concept_ids or [])
+            concept_name_map: dict[str, str] = {}
+            if all_concept_ids:
+                cn_stmt = select(Concept.id, Concept.name).where(
+                    Concept.id.in_(list(set(all_concept_ids)))
+                )
+                for row in (await self.db.execute(cn_stmt)).all():
+                    concept_name_map[row[0]] = row[1]
+
+            for ch in chapters:
+                prog = progress_map.get(ch.id)
+                # concepts_mastery를 개념 이름 기반으로 변환
+                named_mastery = {}
+                if prog and prog.concepts_mastery:
+                    for cid, pct in prog.concepts_mastery.items():
+                        cname = concept_name_map.get(cid, cid)
+                        named_mastery[cname] = pct
+
+                chapter_progress_list.append({
+                    "chapter_id": ch.id,
+                    "chapter_name": ch.name,
+                    "chapter_number": ch.chapter_number,
+                    "is_unlocked": prog.is_unlocked if prog else False,
+                    "is_completed": prog.is_completed if prog else False,
+                    "overall_progress": prog.overall_progress if prog else 0,
+                    "concepts_mastery": named_mastery,
+                })
+
         return {
             **base_stats,
             "name": student.name,
@@ -485,6 +537,7 @@ class StatsService:
             "class_name": class_name,
             "recent_tests": recent_tests,
             "daily_activity": daily_activity,
+            "chapter_progress": chapter_progress_list,
         }
 
     async def get_class_stats(

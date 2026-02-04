@@ -142,6 +142,62 @@ async def get_student_chapter_progress(
     )
 
 
+@router.post("/students/{student_id}/unlock/{chapter_id}", response_model=ApiResponse[dict])
+async def toggle_chapter_unlock(
+    student_id: str,
+    chapter_id: str,
+    current_user: UserResponse = Depends(
+        require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    """단원 해금/잠금 토글 (관리자)."""
+    from app.models.chapter_progress import ChapterProgress
+    from app.models.chapter import Chapter
+    from sqlalchemy import select
+    from datetime import datetime, timezone
+
+    chapter = await db.get(Chapter, chapter_id)
+    if not chapter:
+        raise HTTPException(status_code=404, detail="단원을 찾을 수 없습니다")
+
+    stmt = select(ChapterProgress).where(
+        ChapterProgress.student_id == student_id,
+        ChapterProgress.chapter_id == chapter_id,
+    )
+    progress = await db.scalar(stmt)
+
+    if progress and progress.is_unlocked:
+        # 이미 해금됨 → 잠금
+        progress.is_unlocked = False
+        progress.unlocked_at = None
+        await db.commit()
+        return ApiResponse(
+            success=True,
+            data={"chapter_id": chapter_id, "is_unlocked": False},
+            message=f"'{chapter.name}' 단원이 잠금 처리되었습니다",
+        )
+    else:
+        # 잠금 → 해금
+        if not progress:
+            progress = ChapterProgress(
+                student_id=student_id,
+                chapter_id=chapter_id,
+                is_unlocked=True,
+                unlocked_at=datetime.now(timezone.utc),
+            )
+            db.add(progress)
+        else:
+            progress.is_unlocked = True
+            progress.unlocked_at = datetime.now(timezone.utc)
+        await db.commit()
+        return ApiResponse(
+            success=True,
+            data={"chapter_id": chapter_id, "is_unlocked": True},
+            message=f"'{chapter.name}' 단원이 해금되었습니다",
+        )
+
+
 # ===== 진단 평가 (Placement Test) =====
 
 @router.get("/placement/test", response_model=ApiResponse[dict])

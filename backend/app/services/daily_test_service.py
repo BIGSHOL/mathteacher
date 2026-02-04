@@ -7,6 +7,8 @@ from sqlalchemy import select, func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.chapter import Chapter
+from app.models.chapter_progress import ChapterProgress
 from app.models.concept import Concept
 from app.models.concept_mastery import ConceptMastery
 from app.models.daily_test_record import DailyTestRecord
@@ -246,12 +248,12 @@ class DailyTestService:
                 Question.category == QuestionCategory.COMPUTATION
             )
 
-        # 학년 필터: 해당 학년의 개념에 속하는 문제
+        # 학년 필터: 해금된 단원의 개념에 속하는 문제만 출제
         if grade:
-            grade_concept_ids = await self._get_grade_concept_ids(grade)
-            if grade_concept_ids:
+            available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
+            if available_concept_ids:
                 base_query = base_query.where(
-                    Question.concept_id.in_(grade_concept_ids)
+                    Question.concept_id.in_(available_concept_ids)
                 )
 
         all_questions = list((await self.db.scalars(base_query)).all())
@@ -330,10 +332,10 @@ class DailyTestService:
             )
 
         if grade:
-            grade_concept_ids = await self._get_grade_concept_ids(grade)
-            if grade_concept_ids:
+            available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
+            if available_concept_ids:
                 base_query = base_query.where(
-                    Question.concept_id.in_(grade_concept_ids)
+                    Question.concept_id.in_(available_concept_ids)
                 )
 
         if recently_used:
@@ -392,8 +394,41 @@ class DailyTestService:
                 used.extend(qids)
         return list(set(used))
 
-    async def _get_grade_concept_ids(self, grade) -> list[str]:
-        """해당 학년의 모든 개념 ID."""
+    async def _get_student_available_concept_ids(self, student_id: str, grade) -> list[str]:
+        """학생이 해금한 단원에 속하는 개념 ID만 반환."""
+        # 해금된 챕터 조회
+        unlocked_stmt = (
+            select(ChapterProgress.chapter_id)
+            .where(
+                ChapterProgress.student_id == student_id,
+                ChapterProgress.is_unlocked == True,  # noqa: E712
+            )
+        )
+        unlocked_chapter_ids = list((await self.db.scalars(unlocked_stmt)).all())
+
+        if unlocked_chapter_ids:
+            # 해금된 챕터의 concept_ids 수집
+            chapter_stmt = select(Chapter.concept_ids).where(
+                Chapter.id.in_(unlocked_chapter_ids)
+            )
+            concept_id_lists = list((await self.db.scalars(chapter_stmt)).all())
+            available = []
+            for cids in concept_id_lists:
+                if cids:
+                    available.extend(cids)
+            if available:
+                return list(set(available))
+
+        # 폴백: 해금된 챕터가 없으면 해당 학년 1단원 개념만 반환
+        first_chapter_stmt = (
+            select(Chapter.concept_ids)
+            .where(Chapter.grade == grade, Chapter.chapter_number == 1)
+        )
+        first_concepts = await self.db.scalar(first_chapter_stmt)
+        if first_concepts:
+            return first_concepts
+
+        # 최종 폴백: 학년 전체 개념 (챕터 데이터가 없는 학년)
         stmt = select(Concept.id).where(Concept.grade == grade)
         return list((await self.db.scalars(stmt)).all())
 

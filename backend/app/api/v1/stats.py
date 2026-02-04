@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.schemas import (
     ApiResponse,
+    ChapterProgressStat,
     DashboardStats,
     Grade,
     PaginatedResponse,
@@ -152,6 +153,9 @@ async def get_student_detail(
                 **stats,
                 "recent_tests": [RecentTest(**t) for t in stats["recent_tests"]],
                 "daily_activity": [DailyActivity(**d) for d in stats["daily_activity"]],
+                "chapter_progress": [
+                    ChapterProgressStat(**cp) for cp in stats.get("chapter_progress", [])
+                ],
             }
         )
     )

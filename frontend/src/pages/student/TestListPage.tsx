@@ -7,12 +7,13 @@ import { clsx } from 'clsx'
 import api from '../../lib/api'
 import type { AvailableTest, PaginatedResponse, QuestionCategory } from '../../types'
 
-type CategoryFilter = 'all' | QuestionCategory
+type CategoryFilter = 'all' | QuestionCategory | 'comprehensive'
 
 const CATEGORY_TABS: { key: CategoryFilter; label: string; icon: string }[] = [
   { key: 'all', label: '전체', icon: '📋' },
   { key: 'computation', label: '연산', icon: '🧮' },
   { key: 'concept', label: '개념', icon: '📚' },
+  { key: 'comprehensive', label: '종합', icon: '📝' },
 ]
 
 export function TestListPage() {
@@ -54,7 +55,9 @@ export function TestListPage() {
 
   const filteredTests = activeCategory === 'all'
     ? tests
-    : tests.filter((t) => t.category === activeCategory)
+    : activeCategory === 'comprehensive'
+      ? tests.filter((t) => !t.category || (t.category !== 'computation' && t.category !== 'concept'))
+      : tests.filter((t) => t.category === activeCategory)
 
   const handleStartTest = (testId: string) => {
     navigate(`/test/${testId}`)
@@ -145,11 +148,15 @@ interface TestCardProps {
 }
 
 function TestCard({ test, index, onStart }: TestCardProps) {
-  const getDifficultyColor = () => {
-    if (test.question_count <= 5) return 'bg-green-100 text-green-700'
-    if (test.question_count <= 10) return 'bg-yellow-100 text-yellow-700'
+  const getLevelColor = (lv: number) => {
+    if (lv <= 2) return 'bg-green-100 text-green-700'
+    if (lv <= 4) return 'bg-emerald-100 text-emerald-700'
+    if (lv <= 6) return 'bg-yellow-100 text-yellow-700'
+    if (lv <= 8) return 'bg-orange-100 text-orange-700'
     return 'bg-red-100 text-red-700'
   }
+
+  const level = test.difficulty ?? 5
 
   const getCardStyle = () => {
     if (test.category === 'computation') {
@@ -200,7 +207,10 @@ function TestCard({ test, index, onStart }: TestCardProps) {
         </div>
 
         <div className="mb-4 flex flex-wrap gap-2">
-          <span className={`rounded-full px-2 py-1 text-xs font-medium ${getDifficultyColor()}`}>
+          <span className={clsx('rounded-full px-2.5 py-1 text-xs font-bold', getLevelColor(level))}>
+            Lv.{level}
+          </span>
+          <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
             {test.question_count}문제
           </span>
           {test.time_limit_minutes && (

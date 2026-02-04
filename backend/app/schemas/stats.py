@@ -111,6 +111,18 @@ class DailyActivity(BaseModel):
     accuracy_rate: float
 
 
+class ChapterProgressStat(BaseModel):
+    """단원별 진행 통계."""
+
+    chapter_id: str
+    chapter_name: str
+    chapter_number: int
+    is_unlocked: bool = False
+    is_completed: bool = False
+    overall_progress: int = 0
+    concepts_mastery: dict[str, int] = {}  # concept_name → mastery %
+
+
 class StudentDetailStats(StudentStats):
     """학생 상세 통계."""
 
@@ -120,6 +132,7 @@ class StudentDetailStats(StudentStats):
     class_name: str
     recent_tests: list[RecentTest]
     daily_activity: list[DailyActivity]
+    chapter_progress: list[ChapterProgressStat] = []
 
 
 # ===========================

@@ -111,6 +111,20 @@ class TestService:
         else:
             stats_map = {}
 
+        # 각 테스트의 문제 평균 난이도 조회
+        all_question_ids = []
+        for t in tests:
+            all_question_ids.extend(t.question_ids or [])
+        diff_map: dict[str, int] = {}
+        if all_question_ids:
+            diff_stmt = select(Question.id, Question.difficulty).where(
+                Question.id.in_(list(set(all_question_ids)))
+            )
+            q_diff = {row[0]: row[1] for row in (await self.db.execute(diff_stmt)).all()}
+            for t in tests:
+                diffs = [q_diff[qid] for qid in (t.question_ids or []) if qid in q_diff]
+                diff_map[t.id] = round(sum(diffs) / len(diffs)) if diffs else 5
+
         # 각 테스트에 대한 학생의 시도 정보 추가
         result = []
         for test in tests:
@@ -120,6 +134,7 @@ class TestService:
                 "is_completed": stats["attempt_count"] > 0,
                 "best_score": stats["best_score"],
                 "attempt_count": stats["attempt_count"],
+                "difficulty": diff_map.get(test.id, 5),
             })
 
         return result, total
@@ -247,10 +262,20 @@ class TestService:
         shuffle_config = attempt.question_shuffle_config or {}
         result = []
 
+        # 개념 이름 일괄 조회
+        from app.models.concept import Concept
+        concept_ids = list({q.concept_id for q in ordered_questions if q.concept_id})
+        concept_name_map: dict[str, str] = {}
+        if concept_ids:
+            concept_stmt = select(Concept.id, Concept.name).where(Concept.id.in_(concept_ids))
+            for row in (await self.db.execute(concept_stmt)).all():
+                concept_name_map[row[0]] = row[1]
+
         for q in ordered_questions:
             q_data = {
                 "id": q.id,
                 "concept_id": q.concept_id,
+                "concept_name": concept_name_map.get(q.concept_id, ""),
                 "category": q.category,
                 "part": q.part,
                 "content": q.content,
@@ -308,6 +333,20 @@ class TestService:
             "answer_logs": answer_logs,
             "test": test,
         }
+
+    async def abandon_attempt(self, attempt_id: str, student_id: str) -> bool:
+        """시험 시도를 포기(삭제)합니다. 본인의 미완료 시도만 삭제 가능."""
+        attempt = await self.get_attempt_by_id(attempt_id)
+        if not attempt:
+            return False
+        if attempt.student_id != student_id:
+            return False
+        if attempt.completed_at is not None:
+            return False
+
+        await self.db.delete(attempt)
+        await self.db.commit()
+        return True
 
     async def check_already_answered(self, attempt_id: str, question_id: str) -> bool:
         """이미 답안을 제출했는지 확인."""

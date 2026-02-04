@@ -37,10 +37,13 @@ def init_db():
 
     # [개발 전용] 스키마 재생성 - 프로덕션에서는 실행하지 않음
     if settings.ENV == "development":
-        with sync_engine.connect() as conn:
-            conn.execute(sa_text("DROP SCHEMA public CASCADE"))
-            conn.execute(sa_text("CREATE SCHEMA public"))
-            conn.commit()
+        if settings.DATABASE_URL.startswith("sqlite"):
+            Base.metadata.drop_all(bind=sync_engine)
+        else:
+            with sync_engine.connect() as conn:
+                conn.execute(sa_text("DROP SCHEMA public CASCADE"))
+                conn.execute(sa_text("CREATE SCHEMA public"))
+                conn.commit()
     Base.metadata.create_all(bind=sync_engine)
 
     # Seed initial data if database is empty (using sync session)
@@ -1240,55 +1243,90 @@ def init_db():
             # 통계(concept-005) ← 사칙연산(concept-002) 필요
             stat_concept.prerequisites.append(op_concept)
 
-            # 2022 개정 교육과정 단원 구조 (예시: 중1 첫 단원)
-            chapter1 = Chapter(
-                id="chapter-m1-01",
-                name="1. 소인수분해",
-                grade="middle_1",
-                chapter_number=1,
-                description="소수, 합성수, 소인수분해, 최대공약수, 최소공배수",
-                concept_ids=[],  # TODO: 소인수분해 관련 개념 추가
-                mastery_threshold=90,
-                final_test_pass_score=90,
-                require_teacher_approval=False,
-                is_active=True,
-            )
-            db.add(chapter1)
-
-            chapter2 = Chapter(
-                id="chapter-m1-02",
-                name="2. 정수와 유리수",
-                grade="middle_1",
-                chapter_number=2,
-                description="부호, 사칙연산, 혼합 계산, 절댓값",
-                concept_ids=[],
-                mastery_threshold=90,
-                final_test_pass_score=90,
-                require_teacher_approval=False,
-                is_active=True,
-            )
-            db.add(chapter2)
-
-            chapter3 = Chapter(
-                id="chapter-m1-03",
-                name="3. 문자와 식 / 일차방정식",
-                grade="middle_1",
-                chapter_number=3,
-                description="식의 값, 일차방정식 풀이, 활용 문제",
-                concept_ids=["concept-001"],  # 일차방정식 개념
-                final_test_id="test-001",  # 일차방정식 테스트를 종합 테스트로
-                mastery_threshold=90,
-                final_test_pass_score=90,
-                require_teacher_approval=False,
-                is_active=True,
-            )
-            db.add(chapter3)
+            # 2022 개정 교육과정 중1 단원 구조 (6단원, 완전 순차)
+            m1_chapters = [
+                Chapter(
+                    id="chapter-m1-01",
+                    name="1. 소인수분해",
+                    grade="middle_1",
+                    chapter_number=1,
+                    description="소수, 합성수, 소인수분해, 최대공약수, 최소공배수",
+                    concept_ids=["M1-NUM-01", "M1-NUM-02"],
+                    mastery_threshold=90,
+                    final_test_pass_score=90,
+                    require_teacher_approval=False,
+                    is_active=True,
+                ),
+                Chapter(
+                    id="chapter-m1-02",
+                    name="2. 정수와 유리수",
+                    grade="middle_1",
+                    chapter_number=2,
+                    description="양수·음수, 절댓값, 정수·유리수 사칙연산, 혼합 계산",
+                    concept_ids=["M1-NUM-03", "M1-NUM-04"],
+                    mastery_threshold=90,
+                    final_test_pass_score=90,
+                    require_teacher_approval=False,
+                    is_active=True,
+                ),
+                Chapter(
+                    id="chapter-m1-03",
+                    name="3. 문자와 식 / 일차방정식",
+                    grade="middle_1",
+                    chapter_number=3,
+                    description="문자 사용, 식의 값, 일차식 계산, 등식의 성질, 일차방정식 풀이",
+                    concept_ids=["M1-ALG-01", "M1-ALG-02", "concept-001"],
+                    final_test_id="test-001",
+                    mastery_threshold=90,
+                    final_test_pass_score=90,
+                    require_teacher_approval=False,
+                    is_active=True,
+                ),
+                Chapter(
+                    id="chapter-m1-04",
+                    name="4. 좌표평면과 그래프",
+                    grade="middle_1",
+                    chapter_number=4,
+                    description="순서쌍, 좌표평면, 사분면, 정비례·반비례 그래프",
+                    concept_ids=["M1-FUNC-01"],
+                    mastery_threshold=90,
+                    final_test_pass_score=90,
+                    require_teacher_approval=False,
+                    is_active=True,
+                ),
+                Chapter(
+                    id="chapter-m1-05",
+                    name="5. 기본 도형과 작도",
+                    grade="middle_1",
+                    chapter_number=5,
+                    description="점·선·면·각, 작도, 삼각형 합동조건, 다각형 내각·외각",
+                    concept_ids=["M1-GEO-01", "M1-GEO-02", "M1-GEO-03"],
+                    mastery_threshold=90,
+                    final_test_pass_score=90,
+                    require_teacher_approval=False,
+                    is_active=True,
+                ),
+                Chapter(
+                    id="chapter-m1-06",
+                    name="6. 자료의 정리와 해석",
+                    grade="middle_1",
+                    chapter_number=6,
+                    description="줄기와 잎 그림, 도수분포표, 히스토그램, 상대도수",
+                    concept_ids=["M1-STA-01"],
+                    mastery_threshold=90,
+                    final_test_pass_score=90,
+                    require_teacher_approval=False,
+                    is_active=True,
+                ),
+            ]
+            for ch in m1_chapters:
+                db.add(ch)
 
             db.flush()
 
-            # 단원 선수관계 설정
-            chapter2.prerequisites.append(chapter1)  # 2단원은 1단원 선행
-            chapter3.prerequisites.append(chapter2)  # 3단원은 2단원 선행
+            # 단원 선수관계 설정 (완전 순차: 1→2→3→4→5→6)
+            for i in range(1, len(m1_chapters)):
+                m1_chapters[i].prerequisites.append(m1_chapters[i - 1])
 
             # student@test.com에게 1단원 해제 (학습 시작 가능)
             student_user = db.query(User).filter(User.login_id == "student01").first()

@@ -68,6 +68,8 @@ async def get_available_tests(
     test_service: TestService = Depends(get_test_service),
 ):
     """풀 수 있는 테스트 목록 조회."""
+    if not grade:
+        grade = current_user.grade
     results, total = await test_service.get_available_tests(
         student_id=current_user.id,
         grade=grade,
@@ -95,6 +97,7 @@ async def get_available_tests(
                 is_completed=r["is_completed"],
                 best_score=r["best_score"],
                 attempt_count=r["attempt_count"],
+                difficulty=r.get("difficulty", 5),
             )
         )
 
@@ -226,6 +229,7 @@ async def get_test_detail(
         QuestionResponse(
             id=q.id,
             concept_id=q.concept_id,
+            concept_name=q.concept.name if q.concept else "",
             category=q.category,
             part=q.part,
             question_type=q.question_type,
@@ -325,6 +329,7 @@ async def start_test(
             QuestionResponse(
                 id=first_question.id,
                 concept_id=first_question.concept_id,
+                concept_name=first_question.concept.name if first_question.concept else "",
                 category=first_question.category,
                 part=first_question.part,
                 question_type=first_question.question_type,
@@ -390,6 +395,7 @@ async def start_test(
         QuestionResponse(
             id=q["id"],
             concept_id=q.get("concept_id", ""),
+            concept_name=q.get("concept_name", ""),
             category=q["category"],
             part=q["part"],
             question_type=q["question_type"],
@@ -668,6 +674,9 @@ async def get_next_question(
             question=QuestionResponse(
                 id=question.id,
                 concept_id=question.concept_id,
+                concept_name=question.concept.name if question.concept else "",
+                category=question.category,
+                part=question.part,
                 question_type=question.question_type,
                 difficulty=question.difficulty,
                 content=question.content,
@@ -799,6 +808,31 @@ async def complete_test(
     )
 
 
+@router.delete(
+    "/attempts/{attempt_id}/abandon",
+    response_model=ApiResponse[dict],
+)
+async def abandon_attempt(
+    attempt_id: str,
+    current_user: UserResponse = Depends(get_current_user),
+    test_service: TestService = Depends(get_test_service),
+):
+    """시험 시도 포기 (미완료 시도만 삭제 가능)."""
+    success = await test_service.abandon_attempt(attempt_id, current_user.id)
+    if not success:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "ABANDON_FAILED",
+                    "message": "시험을 포기할 수 없습니다. 이미 완료된 시험이거나 존재하지 않습니다.",
+                },
+            },
+        )
+    return ApiResponse(data={"message": "시험이 포기되었습니다."})
+
+
 @router.get("/attempts/{attempt_id}", response_model=ApiResponse[GetAttemptResponse])
 async def get_attempt(
     attempt_id: str,
@@ -848,6 +882,47 @@ async def get_attempt(
                 q_map[qid] = q
         questions = [q_map[qid] for qid in q_ids if qid in q_map]
     else:
+        # 셔플 적용된 문제 목록 사용 (시작 시 저장된 셔플 순서 유지)
+        shuffled_questions = await test_service.get_attempt_questions(attempt.id)
+        if shuffled_questions:
+            question_responses = [
+                QuestionResponse(
+                    id=q["id"],
+                    concept_id=q.get("concept_id", ""),
+                    concept_name=q.get("concept_name", ""),
+                    category=q["category"],
+                    part=q["part"],
+                    question_type=q["question_type"],
+                    difficulty=q["difficulty"],
+                    content=q["content"],
+                    options=q["options"],
+                    explanation="" if not attempt.completed_at else q.get("explanation", ""),
+                    points=q["points"],
+                )
+                for q in shuffled_questions
+            ]
+
+            return ApiResponse(
+                data=GetAttemptResponse(
+                    attempt=TestAttemptResponse.model_validate(attempt),
+                    answers=[AnswerLogResponse.model_validate(log) for log in details["answer_logs"]],
+                    test=TestWithQuestionsResponse(
+                        id=test.id,
+                        title=test.title,
+                        description=test.description,
+                        grade=test.grade,
+                        concept_ids=test.concept_ids,
+                        question_count=test.question_count,
+                        time_limit_minutes=test.time_limit_minutes,
+                        is_active=test.is_active,
+                        is_adaptive=test.is_adaptive,
+                        created_at=test.created_at,
+                        questions=question_responses,
+                    ),
+                )
+            )
+
+        # 셔플 데이터가 없으면 원본 사용
         test_with_questions = await test_service.get_test_with_questions(test.id)
         questions = test_with_questions["questions"] if test_with_questions else []
 
@@ -855,6 +930,7 @@ async def get_attempt(
         QuestionResponse(
             id=q.id,
             concept_id=q.concept_id,
+            concept_name=q.concept.name if q.concept else "",
             category=q.category,
             part=q.part,
             question_type=q.question_type,

@@ -93,6 +93,7 @@ export interface BlankConfig {
 export interface Question {
   id: string
   concept_id: string
+  concept_name?: string
   category: QuestionCategory
   part: ProblemPart
   question_type: QuestionType
@@ -125,6 +126,7 @@ export interface AvailableTest extends Test {
   is_completed: boolean
   best_score?: number
   attempt_count: number
+  difficulty?: number  // 평균 난이도 1~10
 }
 
 export interface TestWithQuestions extends Test {

@@ -54,6 +54,7 @@ from .daily_test import (
     DailyTestTodayResponse,
 )
 from .stats import (
+    ChapterProgressStat,
     ClassDetailStats,
     ClassStats,
     ConceptDetailStat,

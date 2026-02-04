@@ -29,12 +29,17 @@ export function QuestionCard({
     <div className="card p-6">
       {/* 문제 번호 & 카테고리 & 난이도 */}
       <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="rounded-full bg-primary-100 px-3 py-1 text-sm font-medium text-primary-700">
             {questionNumber}번 문제
           </span>
           {question.category && (
             <CategoryBadge category={question.category} />
+          )}
+          {question.concept_name && (
+            <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              {question.concept_name}
+            </span>
           )}
         </div>
         <DifficultyBadge difficulty={question.difficulty} />
