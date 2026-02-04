@@ -24,7 +24,7 @@ class TestAttempt(Base):
         String(36), primary_key=True, default=lambda: str(uuid4())
     )
     test_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("tests.id"), index=True
+        String(100), ForeignKey("tests.id"), index=True
     )
     student_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("users.id"), index=True

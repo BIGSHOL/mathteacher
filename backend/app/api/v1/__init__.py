@@ -12,6 +12,7 @@ from .chapters import router as chapters_router
 from .practice import router as practice_router
 from .ai_assist import router as ai_assist_router
 from .daily_tests import router as daily_tests_router
+from .admin import router as admin_router
 
 api_router = APIRouter(prefix="/api/v1")
 api_router.include_router(auth_router)
@@ -24,3 +25,4 @@ api_router.include_router(chapters_router, prefix="/chapters", tags=["chapters"]
 api_router.include_router(practice_router)
 api_router.include_router(ai_assist_router)
 api_router.include_router(daily_tests_router)
+api_router.include_router(admin_router, prefix="/admin", tags=["admin"])

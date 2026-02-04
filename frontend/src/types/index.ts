@@ -296,3 +296,16 @@ export interface DailyTestTodayResponse {
   date: string
   tests: DailyTestRecord[]
 }
+
+// 단원 진행 상황 타입
+export interface ChapterProgressItem {
+  chapter_id: string
+  chapter_number: number
+  name: string
+  description: string
+  is_unlocked: boolean
+  overall_progress: number
+  is_completed: boolean
+  final_test_score: number | null
+  teacher_approved: boolean
+}

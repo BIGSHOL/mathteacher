@@ -20,7 +20,7 @@ class Test(Base):
     __tablename__ = "tests"
 
     id: Mapped[str] = mapped_column(
-        String(36), primary_key=True, default=lambda: str(uuid4())
+        String(100), primary_key=True, default=lambda: str(uuid4())
     )
     title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text, default="")

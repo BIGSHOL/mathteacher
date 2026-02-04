@@ -38,13 +38,16 @@ const GRADE_OPTIONS: { value: Grade; label: string; disabled?: boolean }[] = [
 ]
 
 export function UserManagementPage() {
-  const { user: currentUser } = useAuthStore()
+  const { user: currentUser, logout } = useAuthStore()
   const [users, setUsers] = useState<UserListItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('')
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [isResetting, setIsResetting] = useState(false)
+  const [isUpdatingChapters, setIsUpdatingChapters] = useState(false)
+  const [adminMessage, setAdminMessage] = useState('')
 
   useEffect(() => {
     fetchUsers()
@@ -102,6 +105,40 @@ export function UserManagementPage() {
     })
   }
 
+  const handleResetDB = async () => {
+    if (!confirm('정말 DB를 완전 초기화하시겠습니까?\n\n모든 사용자/테스트 기록이 삭제되고 시드 데이터가 재생성됩니다.\n이 작업은 되돌릴 수 없습니다.')) return
+    if (!confirm('마지막 확인: 진짜 초기화할까요?')) return
+
+    setIsResetting(true)
+    setAdminMessage('')
+    try {
+      const res = await api.post<{ success: boolean; message: string }>('/api/v1/admin/reset-db')
+      setAdminMessage(res.data.message || 'DB 초기화 완료!')
+      // DB 초기화 후 로그아웃 (세션 무효화됨)
+      setTimeout(() => {
+        logout()
+        window.location.href = '/login'
+      }, 2000)
+    } catch {
+      setAdminMessage('DB 초기화 실패. 서버 로그를 확인하세요.')
+    } finally {
+      setIsResetting(false)
+    }
+  }
+
+  const handleUpdateChapters = async () => {
+    setIsUpdatingChapters(true)
+    setAdminMessage('')
+    try {
+      const res = await api.post<{ success: boolean; message: string; data: { updated_chapters: number } }>('/api/v1/admin/update-chapters')
+      setAdminMessage(res.data.message || `${res.data.data.updated_chapters}개 챕터 업데이트`)
+    } catch {
+      setAdminMessage('챕터 업데이트 실패.')
+    } finally {
+      setIsUpdatingChapters(false)
+    }
+  }
+
   if (isLoading && users.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -135,6 +172,44 @@ export function UserManagementPage() {
             + 새 계정 만들기
           </motion.button>
         </motion.div>
+
+        {/* DB 관리 (마스터/관리자) */}
+        {(currentUser?.role === 'master' || currentUser?.role === 'admin') && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mb-6 rounded-2xl border border-red-200 bg-red-50 p-4"
+          >
+            <h3 className="mb-3 text-sm font-semibold text-red-800">DB 관리</h3>
+            {adminMessage && (
+              <div className="mb-3 rounded-lg bg-white p-3 text-sm text-gray-700">
+                {adminMessage}
+              </div>
+            )}
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={handleUpdateChapters}
+                disabled={isUpdatingChapters}
+                className="rounded-lg bg-orange-500 px-4 py-2 text-sm font-medium text-white hover:bg-orange-600 disabled:opacity-50"
+              >
+                {isUpdatingChapters ? '업데이트 중...' : '챕터 concept_ids 업데이트'}
+              </button>
+              {currentUser?.role === 'master' && (
+                <button
+                  onClick={handleResetDB}
+                  disabled={isResetting}
+                  className="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                >
+                  {isResetting ? '초기화 중...' : 'DB 전체 초기화 (위험)'}
+                </button>
+              )}
+            </div>
+            <p className="mt-2 text-xs text-red-600">
+              챕터 업데이트: concept_ids만 갱신 (안전) | DB 초기화: 모든 데이터 삭제 후 재생성
+            </p>
+          </motion.div>
+        )}
 
         {/* 필터 & 검색 */}
         <motion.div

@@ -145,6 +145,10 @@ export function TestPlayPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // 시험 중지 상태
+  const [showAbandonConfirm, setShowAbandonConfirm] = useState(false)
+  const [isAbandoning, setIsAbandoning] = useState(false)
+
   // 적응형 전용 상태
   const [currentDifficulty, setCurrentDifficulty] = useState<number>(6)
   const [questionsAnswered, setQuestionsAnswered] = useState(0)
@@ -384,6 +388,21 @@ export function TestPlayPage() {
     }
   }, [attemptDetail, attemptId, isAdaptive, currentIndex, questionsAnswered, totalQuestions, completeTest])
 
+  /** 시험 포기 */
+  const handleAbandonTest = async () => {
+    if (!attemptId) return
+    try {
+      setIsAbandoning(true)
+      await api.delete(`/api/v1/tests/attempts/${attemptId}/abandon`)
+    } catch {
+      // 삭제 실패해도 나가기
+    } finally {
+      setIsAbandoning(false)
+      setShowAbandonConfirm(false)
+      navigate('/tests')
+    }
+  }
+
   // 진행률 계산
   const progressCurrent = isAdaptive ? questionsAnswered + 1 : currentIndex + 1
   const progressTotal = isAdaptive ? totalQuestions : (attemptDetail?.test.questions.length ?? 0)
@@ -422,6 +441,15 @@ export function TestPlayPage() {
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              <button
+                onClick={() => setShowAbandonConfirm(true)}
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                title="시험 중지"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
               <h1 className="text-lg font-semibold text-gray-900">
                 {attemptDetail.test.title}
               </h1>
@@ -546,6 +574,58 @@ export function TestPlayPage() {
       {/* 난이도 변경 토스트 */}
       <AnimatePresence>
         {difficultyChange && <DifficultyChangeToast change={difficultyChange} />}
+      </AnimatePresence>
+
+      {/* 시험 중지 확인 모달 */}
+      <AnimatePresence>
+        {showAbandonConfirm && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-black/50"
+              onClick={() => !isAbandoning && setShowAbandonConfirm(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+              className="fixed left-1/2 top-1/2 z-50 w-[90%] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl"
+            >
+              <div className="mb-4 text-center">
+                <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-red-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900">시험을 중지하시겠습니까?</h3>
+                <p className="mt-2 text-sm text-gray-500">
+                  시험을 중지하면 현재까지의 풀이 기록이
+                  <span className="font-semibold text-red-500"> 모두 삭제</span>되며,
+                  점수와 경험치가 반영되지 않습니다.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowAbandonConfirm(false)}
+                  disabled={isAbandoning}
+                  className="flex-1 rounded-xl bg-gray-100 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-200 disabled:opacity-50"
+                >
+                  계속 풀기
+                </button>
+                <button
+                  onClick={handleAbandonTest}
+                  disabled={isAbandoning}
+                  className="flex-1 rounded-xl bg-red-500 py-3 text-sm font-semibold text-white transition-colors hover:bg-red-600 disabled:opacity-50"
+                >
+                  {isAbandoning ? '중지 중...' : '시험 중지'}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
       </AnimatePresence>
     </div>
   )

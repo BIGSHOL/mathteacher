@@ -1,11 +1,190 @@
 // 학생 내 통계 페이지
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { motion } from 'framer-motion'
+import { clsx } from 'clsx'
 import api from '../../lib/api'
 import { XpBar } from '../../components/gamification/XpBar'
 import { useAuthStore } from '../../store/authStore'
-import type { StudentStats, TrackStats, Grade } from '../../types'
+import type { StudentStats, TrackStats, Grade, ChapterProgressItem } from '../../types'
+
+/** 레벨별 아이콘 & 칭호 (15레벨 체계) */
+function getLevelMeta(level: number): { icon: string; title: string } {
+  if (level <= 1) return { icon: '🌱', title: '새싹' }
+  if (level <= 2) return { icon: '🌿', title: '성장' }
+  if (level <= 3) return { icon: '🛡️', title: '수호자' }
+  if (level <= 4) return { icon: '⚔️', title: '전사' }
+  if (level <= 5) return { icon: '🔮', title: '마법사' }
+  if (level <= 6) return { icon: '🦅', title: '독수리' }
+  if (level <= 7) return { icon: '💎', title: '다이아' }
+  if (level <= 8) return { icon: '🐉', title: '드래곤' }
+  if (level <= 9) return { icon: '👑', title: '왕관' }
+  if (level <= 10) return { icon: '🏆', title: '챔피언' }
+  if (level <= 11) return { icon: '⚡', title: '번개' }
+  if (level <= 12) return { icon: '🌟', title: '별빛' }
+  if (level <= 13) return { icon: '🔱', title: '신화' }
+  if (level <= 14) return { icon: '🌀', title: '초월' }
+  return { icon: '💠', title: '전설' }
+}
+
+/**
+ * 스트릭 불꽃 애니메이션 컴포넌트
+ * streak 1~2: 약한 불씨 (작은 불꽃 1개, 느린 흔들림)
+ * streak 3~5: 커지는 불꽃 (불꽃 2~3개, 중간 흔들림)
+ * streak 6~10: 타오르는 불꽃 (불꽃 여러개, 빠른 흔들림 + 파티클)
+ * streak 11+: 활활 타오르는 대형 불꽃 (최대 강도 + 글로우 + 파티클 다수)
+ */
+function StreakFire({ streak }: { streak: number }) {
+  const intensity = streak <= 0 ? 0 : streak <= 2 ? 1 : streak <= 5 ? 2 : streak <= 10 ? 3 : 4
+
+  // 강도별 설정
+  const config = useMemo(() => {
+    switch (intensity) {
+      case 0: return { flames: 0, size: 0, speed: 0, sparks: 0, glow: 0 }
+      case 1: return { flames: 1, size: 24, speed: 2.5, sparks: 0, glow: 0 }
+      case 2: return { flames: 3, size: 30, speed: 1.8, sparks: 2, glow: 0.15 }
+      case 3: return { flames: 5, size: 36, speed: 1.2, sparks: 4, glow: 0.3 }
+      case 4: return { flames: 7, size: 44, speed: 0.8, sparks: 7, glow: 0.5 }
+      default: return { flames: 1, size: 24, speed: 2.5, sparks: 0, glow: 0 }
+    }
+  }, [intensity])
+
+  // 불꽃 파티클 데이터
+  const flameData = useMemo(() =>
+    Array.from({ length: config.flames }, (_, i) => ({
+      id: i,
+      xOff: (i - (config.flames - 1) / 2) * (intensity <= 1 ? 0 : intensity <= 2 ? 6 : 5),
+      heightRatio: i === Math.floor(config.flames / 2) ? 1 : 0.6 + Math.random() * 0.3,
+      delay: i * 0.12,
+      hue: 20 + (i % 3) * 15, // 주황 ~ 빨강 변화
+    })),
+    [config.flames, intensity]
+  )
+
+  // 불씨 (스파크) 파티클
+  const sparkData = useMemo(() =>
+    Array.from({ length: config.sparks }, (_, i) => ({
+      id: i,
+      x: -12 + Math.random() * 24,
+      delay: i * 0.3 + Math.random() * 0.5,
+      duration: 0.8 + Math.random() * 0.6,
+      size: 2 + Math.random() * 2,
+    })),
+    [config.sparks]
+  )
+
+  if (intensity === 0) {
+    return (
+      <div className="flex items-center justify-center" style={{ width: 56, height: 56 }}>
+        <div className="h-3 w-3 rounded-full bg-orange-300/40" />
+      </div>
+    )
+  }
+
+  const containerH = config.size + 20
+
+  return (
+    <div className="relative flex items-end justify-center" style={{ width: 60, height: containerH }}>
+      {/* 글로우 이펙트 (바닥) */}
+      {config.glow > 0 && (
+        <motion.div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full"
+          style={{
+            width: config.size * 1.5,
+            height: config.size * 0.5,
+            background: `radial-gradient(ellipse, rgba(255,120,0,${config.glow}) 0%, rgba(255,60,0,${config.glow * 0.5}) 40%, transparent 70%)`,
+            filter: `blur(${2 + intensity * 2}px)`,
+          }}
+          animate={{ opacity: [0.6, 1, 0.6], scaleX: [0.9, 1.1, 0.9] }}
+          transition={{ duration: config.speed * 0.8, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      )}
+
+      {/* 불꽃 레이어 */}
+      {flameData.map((f) => {
+        const h = config.size * f.heightRatio
+        const w = h * 0.55
+        return (
+          <motion.div
+            key={f.id}
+            className="absolute bottom-0"
+            style={{
+              left: `calc(50% + ${f.xOff}px)`,
+              width: w,
+              height: h,
+              transform: 'translateX(-50%)',
+              borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+              background: `linear-gradient(to top,
+                hsl(${f.hue}, 100%, 55%) 0%,
+                hsl(${f.hue + 15}, 100%, 50%) 30%,
+                hsl(${f.hue + 30}, 95%, 45%) 60%,
+                rgba(255,80,0,0.3) 85%,
+                transparent 100%)`,
+              filter: `blur(${intensity <= 1 ? 1.5 : 1}px)`,
+            }}
+            animate={{
+              scaleX: [1, intensity <= 1 ? 1.05 : 1.15, 0.9, 1],
+              scaleY: [1, intensity <= 1 ? 1.03 : 1.12, 0.95, 1],
+              x: [0, (f.id % 2 === 0 ? 2 : -2) * (intensity <= 1 ? 0.5 : 1), 0],
+              rotate: [0, f.id % 2 === 0 ? 3 : -3, 0],
+            }}
+            transition={{
+              duration: config.speed,
+              repeat: Infinity,
+              delay: f.delay,
+              ease: 'easeInOut',
+            }}
+          />
+        )
+      })}
+
+      {/* 중심 밝은 코어 */}
+      <motion.div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2"
+        style={{
+          width: config.size * 0.3,
+          height: config.size * 0.45,
+          borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
+          background: 'linear-gradient(to top, #fff8 0%, #ffd54f88 40%, transparent 100%)',
+          filter: 'blur(2px)',
+        }}
+        animate={{
+          scaleY: [1, 1.1, 0.95, 1],
+          opacity: [0.7, 1, 0.7],
+        }}
+        transition={{ duration: config.speed * 0.7, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* 스파크(불씨) 파티클 - intensity 2+ */}
+      {sparkData.map((s) => (
+        <motion.div
+          key={`spark-${s.id}`}
+          className="absolute rounded-full"
+          style={{
+            width: s.size,
+            height: s.size,
+            left: `calc(50% + ${s.x}px)`,
+            bottom: config.size * 0.4,
+            background: 'radial-gradient(circle, #ffe082, #ff9800)',
+            boxShadow: '0 0 3px 1px rgba(255,150,0,0.6)',
+          }}
+          animate={{
+            y: [0, -(20 + intensity * 10), -(35 + intensity * 15)],
+            x: [0, s.x > 0 ? 6 : -6, s.x > 0 ? 10 : -10],
+            opacity: [1, 0.7, 0],
+            scale: [1, 0.7, 0.3],
+          }}
+          transition={{
+            duration: s.duration,
+            repeat: Infinity,
+            delay: s.delay,
+            ease: 'easeOut',
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 const GRADE_LABELS: Record<Grade, string> = {
   elementary_1: '초등 1학년',
@@ -24,6 +203,7 @@ const GRADE_LABELS: Record<Grade, string> = {
 export function MyStatsPage() {
   const { user } = useAuthStore()
   const [stats, setStats] = useState<StudentStats | null>(null)
+  const [chapters, setChapters] = useState<ChapterProgressItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -38,10 +218,14 @@ export function MyStatsPage() {
       setIsLoading(true)
       setError('')
 
-      const response = await api.get<{ success: boolean; data: StudentStats }>(
-        '/api/v1/stats/me'
-      )
-      setStats(response.data.data)
+      const [statsRes, chaptersRes] = await Promise.all([
+        api.get<{ success: boolean; data: StudentStats }>('/api/v1/stats/me'),
+        api.get<{ success: boolean; data: ChapterProgressItem[] }>('/api/v1/chapters/progress').catch(() => null),
+      ])
+      setStats(statsRes.data.data)
+      if (chaptersRes?.data?.data) {
+        setChapters(chaptersRes.data.data)
+      }
     } catch {
       setError('통계를 불러오는데 실패했습니다.')
     } finally {
@@ -120,10 +304,24 @@ export function MyStatsPage() {
           className="grid gap-4 md:grid-cols-2"
         >
           {/* 레벨 카드 */}
-          <div className="rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 p-6 text-white shadow-lg">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 p-6 text-white shadow-lg">
+            {/* 레벨 아이콘 배경 */}
+            <motion.div
+              className="pointer-events-none absolute -right-4 -top-4 select-none opacity-15"
+              animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              style={{ fontSize: 100 }}
+            >
+              {getLevelMeta(stats.level).icon}
+            </motion.div>
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <span className="text-sm font-medium opacity-75">현재 레벨</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium opacity-75">현재 레벨</span>
+                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold">
+                    {getLevelMeta(stats.level).icon} {getLevelMeta(stats.level).title}
+                  </span>
+                </div>
                 <p className="font-math text-5xl font-black mt-1">Lv.{stats.level}</p>
               </div>
               <div className="text-right">
@@ -135,10 +333,10 @@ export function MyStatsPage() {
           </div>
 
           {/* 스트릭 카드 */}
-          <div className="rounded-2xl bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 p-6 text-white shadow-lg">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 p-6 text-white shadow-lg">
             <div className="mb-3 flex items-center justify-between">
               <span className="text-sm font-medium opacity-75">연속 학습 스트릭</span>
-              <span className="text-3xl">🔥</span>
+              <StreakFire streak={stats.current_streak} />
             </div>
             <div className="mb-4">
               <p className="font-math text-5xl font-black">{stats.current_streak}</p>
@@ -206,6 +404,22 @@ export function MyStatsPage() {
                   color="emerald"
                 />
               )}
+            </div>
+          </motion.div>
+        )}
+
+        {/* 단원 진행 상황 */}
+        {chapters.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 }}
+          >
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">단원 진행 상황</h2>
+            <div className="space-y-3">
+              {chapters.map((ch) => (
+                <ChapterRow key={ch.chapter_id} chapter={ch} />
+              ))}
             </div>
           </motion.div>
         )}
@@ -354,6 +568,65 @@ function ConceptBar({ name, accuracy, color }: ConceptBarProps) {
           className={`h-full rounded-full ${barColor}`}
         />
       </div>
+    </div>
+  )
+}
+
+// 단원 진행 상황 행
+function ChapterRow({ chapter: ch }: { chapter: ChapterProgressItem }) {
+  const isLocked = !ch.is_unlocked
+  const progress = ch.overall_progress
+
+  return (
+    <div
+      className={clsx(
+        'rounded-xl p-4 shadow-sm transition-shadow hover:shadow-md',
+        isLocked ? 'bg-gray-100 opacity-60' : ch.is_completed ? 'bg-green-50' : 'bg-white'
+      )}
+    >
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-lg">
+            {isLocked ? '🔒' : ch.is_completed ? '✅' : '📖'}
+          </span>
+          <span className={clsx('font-semibold', isLocked ? 'text-gray-400' : 'text-gray-900')}>
+            {ch.name}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          {ch.is_completed && ch.final_test_score != null && (
+            <span className="text-xs font-medium text-green-600">
+              최종 {ch.final_test_score}점
+            </span>
+          )}
+          {ch.teacher_approved && (
+            <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+              승인됨
+            </span>
+          )}
+          {!isLocked && !ch.is_completed && (
+            <span className="font-math text-sm font-bold text-primary-600">{progress}%</span>
+          )}
+        </div>
+      </div>
+      {!isLocked && (
+        <div className="h-2.5 overflow-hidden rounded-full bg-gray-200">
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className={clsx(
+              'h-full rounded-full',
+              ch.is_completed
+                ? 'bg-gradient-to-r from-green-400 to-green-600'
+                : 'bg-gradient-to-r from-primary-400 to-primary-600'
+            )}
+          />
+        </div>
+      )}
+      {isLocked && (
+        <p className="text-xs text-gray-400">이전 단원을 완료하면 해금됩니다</p>
+      )}
     </div>
   )
 }

@@ -42,7 +42,7 @@ class Chapter(Base):
         JSON, default=list, comment="이 단원에 포함된 개념 ID 목록"
     )
     final_test_id: Mapped[str | None] = mapped_column(
-        String(36), nullable=True, comment="단원 종합 테스트 ID"
+        String(100), nullable=True, comment="단원 종합 테스트 ID"
     )
 
     # 완료 조건

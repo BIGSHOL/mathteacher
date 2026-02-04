@@ -48,7 +48,7 @@ export function Header() {
                 </>
               ) : (
                 <>
-                  <NavLink to="/daily-lab">오늘의 수학</NavLink>
+                  <NavLink to="/daily-lab">이달의 수학</NavLink>
                   <NavLink to="/tests">테스트</NavLink>
                   <NavLink to="/my-stats">내 통계</NavLink>
                 </>

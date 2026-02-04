@@ -54,7 +54,7 @@ class User(Base):
         Boolean, default=False, comment="진단 평가 완료 여부"
     )
     placement_test_id: Mapped[str | None] = mapped_column(
-        String(36), nullable=True, comment="완료한 진단 평가 시도 ID"
+        String(100), nullable=True, comment="완료한 진단 평가 시도 ID"
     )
     placement_result: Mapped[dict | None] = mapped_column(
         JSON, nullable=True, comment="진단 평가 결과 (시작 단원, 레벨 등)"

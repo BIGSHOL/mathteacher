@@ -46,15 +46,13 @@ export function QuestionCard({
       </div>
 
       {/* 문제 내용 */}
-      {question.question_type !== 'fill_in_blank' && (
-        <div className="mb-6">
-          <p className="text-lg font-medium text-gray-900">
-            <MathText text={question.content} />
-          </p>
-        </div>
-      )}
+      <div className="mb-6">
+        <p className="text-lg font-medium text-gray-900">
+          <MathText text={question.content} />
+        </p>
+      </div>
 
-      {/* 빈칸 채우기 */}
+      {/* 빈칸 채우기 (blank_config가 있으면 전용 UI, 없으면 단답형 입력) */}
       {question.question_type === 'fill_in_blank' && question.blank_config && (
         <div className="mb-6">
           <FillInBlankInput
@@ -82,8 +80,9 @@ export function QuestionCard({
         </div>
       )}
 
-      {/* 단답형 */}
-      {question.question_type === 'short_answer' && (
+      {/* 단답형 / 빈칸 채우기 (blank_config 없을 때) */}
+      {(question.question_type === 'short_answer' ||
+        (question.question_type === 'fill_in_blank' && !question.blank_config)) && (
         <input
           type="text"
           placeholder="정답을 입력하세요"

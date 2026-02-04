@@ -7,22 +7,37 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.user import User
 
 
-# 레벨별 필요 XP
+# 레벨별 필요 누적 XP (15레벨 체계)
+# 완벽 테스트(10문제) ≈ 89 XP, 평균 테스트(7/10) ≈ 37 XP
+# 스트릭 보너스 포함 시 평균 ~44 XP
 LEVEL_XP_REQUIREMENTS = {
-    1: 0,
-    2: 100,
-    3: 250,
-    4: 450,
-    5: 700,
-    6: 1000,
-    7: 1400,
-    8: 1900,
-    9: 2500,
-    10: 3200,
+    1: 0,       # 시작
+    2: 60,      # +60   (~1.5 avg tests)
+    3: 160,     # +100  (~2.3 avg tests)
+    4: 300,     # +140  (~3.2 avg tests)
+    5: 500,     # +200  (~4.5 avg tests)
+    6: 750,     # +250  (~5.7 avg tests)
+    7: 1050,    # +300  (~6.8 avg tests)
+    8: 1400,    # +350  (~8.0 avg tests)
+    9: 1800,    # +400  (~9.1 avg tests)
+    10: 2300,   # +500  (~11.4 avg tests) - 기존 최고 레벨
+    11: 2900,   # +600  (~13.6 avg tests)
+    12: 3600,   # +700  (~15.9 avg tests)
+    13: 4500,   # +900  (~20.5 avg tests)
+    14: 5600,   # +1100 (~25.0 avg tests)
+    15: 7000,   # +1400 (~31.8 avg tests) - 전설
 }
 
-MAX_LEVEL = 10
+MAX_LEVEL = 15
 MAX_DEFENSE = 3  # 레벨다운 방어 실드 최대 개수
+
+# 스트릭 XP 보너스 배율
+STREAK_BONUS_TIERS = [
+    (30, 0.50),   # 30일+: +50%
+    (14, 0.35),   # 14일+: +35%
+    (7, 0.20),    # 7일+:  +20%
+    (3, 0.10),    # 3일+:  +10%
+]
 
 
 class GamificationService:
@@ -31,35 +46,19 @@ class GamificationService:
     def __init__(self, db: AsyncSession | None = None):
         self.db = db
 
-    def calculate_xp(
-        self,
-        score: int,
-        max_score: int,
-        combo_max: int,
-        time_bonus: bool = False,
-    ) -> int:
-        """XP 계산."""
-        # 기본 XP: 점수의 절반
-        base_xp = score // 2
+    @staticmethod
+    def get_streak_bonus_rate(streak: int) -> float:
+        """스트릭에 따른 XP 보너스 배율 반환."""
+        for threshold, rate in STREAK_BONUS_TIERS:
+            if streak >= threshold:
+                return rate
+        return 0.0
 
-        # 정답률 보너스 (90% 이상: +20%, 80% 이상: +10%)
-        accuracy = score / max_score if max_score > 0 else 0
-        if accuracy >= 0.9:
-            base_xp = int(base_xp * 1.2)
-        elif accuracy >= 0.8:
-            base_xp = int(base_xp * 1.1)
-
-        # 콤보 보너스 (5콤보 이상: +10XP, 10콤보 이상: +25XP)
-        if combo_max >= 10:
-            base_xp += 25
-        elif combo_max >= 5:
-            base_xp += 10
-
-        # 시간 보너스
-        if time_bonus:
-            base_xp = int(base_xp * 1.1)
-
-        return base_xp
+    def apply_streak_bonus(self, base_xp: int, streak: int) -> tuple[int, float]:
+        """스트릭 보너스를 적용한 XP와 보너스율 반환."""
+        rate = self.get_streak_bonus_rate(streak)
+        bonus = int(base_xp * rate)
+        return base_xp + bonus, rate
 
     def get_level_for_xp(self, total_xp: int) -> int:
         """XP에 해당하는 레벨 계산."""
@@ -234,14 +233,7 @@ class GamificationService:
         if not self.db:
             raise ValueError("Database session required")
 
-        # 레벨업 체크 (XP 기반)
-        level_result = self.check_level_up(
-            current_level=user.level,
-            current_xp=user.total_xp,
-            xp_earned=xp_earned,
-        )
-
-        # 스트릭 업데이트
+        # 스트릭 업데이트 (XP 보너스 계산 전에 먼저)
         last_activity = (
             user.last_activity_date.isoformat()
             if user.last_activity_date
@@ -251,6 +243,17 @@ class GamificationService:
             current_streak=user.current_streak,
             last_activity_date=last_activity,
             today=today,
+        )
+
+        # 스트릭 보너스 적용
+        new_streak = streak_result["new_streak"]
+        boosted_xp, streak_bonus_rate = self.apply_streak_bonus(xp_earned, new_streak)
+
+        # 레벨업 체크 (스트릭 보너스 적용된 XP 기반)
+        level_result = self.check_level_up(
+            current_level=user.level,
+            current_xp=user.total_xp,
+            xp_earned=boosted_xp,
         )
 
         # 사용자 업데이트
@@ -305,6 +308,9 @@ class GamificationService:
             "level_down": level_down,
             "new_level": final_level if (level_up or level_down) else None,
             "total_xp": level_result["total_xp"],
+            "xp_earned_base": xp_earned,
+            "xp_earned_total": boosted_xp,
+            "streak_bonus_rate": streak_bonus_rate,
             "current_streak": streak_result["new_streak"],
             "streak_broken": streak_result["streak_broken"],
             "level_down_defense": user.level_down_defense,

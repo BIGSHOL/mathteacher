@@ -41,7 +41,7 @@ class DailyTestRecord(Base):
 
     # 기존 Test/TestAttempt 연결
     test_id: Mapped[str] = mapped_column(
-        String(36), ForeignKey("tests.id")
+        String(100), ForeignKey("tests.id")
     )
     attempt_id: Mapped[str | None] = mapped_column(
         String(36), ForeignKey("test_attempts.id"), nullable=True

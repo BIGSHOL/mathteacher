@@ -82,8 +82,12 @@ api.interceptors.response.use(
         return api(originalRequest)
       } catch (refreshError) {
         processQueue(refreshError as Error, null)
-        useAuthStore.getState().logout()
-        window.location.href = '/login'
+        // 로그인 페이지에서는 리다이렉트하지 않음 (무한 루프 방지)
+        if (window.location.pathname !== '/login') {
+          localStorage.removeItem('auth-storage')
+          await useAuthStore.getState().logout()
+          window.location.href = '/login'
+        }
         return Promise.reject(refreshError)
       } finally {
         isRefreshing = false

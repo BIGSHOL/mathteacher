@@ -142,12 +142,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
-      // accessToken은 localStorage에 저장하지 않음 (보안)
-      // user 정보만 저장하여 페이지 새로고침 시 UI 유지
       partialize: (state) => ({
         user: state.user,
         isAuthenticated: state.isAuthenticated,
-        // accessToken은 제외 - 메모리에만 저장
+        accessToken: state.accessToken,
       }),
     }
   )
