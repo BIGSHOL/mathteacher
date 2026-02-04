@@ -1301,11 +1301,95 @@ def init_db():
         db.close()
 
 
+def load_seed_data():
+    """Load structured seed data (concepts, questions, tests) from seeds module."""
+    from app.models.concept import Concept
+    from app.models.question import Question
+    from app.models.test import Test
+
+    db = SessionLocal()
+    try:
+        # Check if seed data already loaded (by checking for seed-style concept IDs)
+        seed_exists = db.query(Concept).filter(Concept.id.like("concept-m1-%")).first()
+        if seed_exists:
+            logger.info("Seed data already loaded, skipping")
+            return
+
+        logger.info("Loading seed data from seeds module...")
+        from app.seeds import get_all_grade_seed_data
+        data = get_all_grade_seed_data()
+
+        existing_concepts = {c.id for c in db.query(Concept.id).all()}
+        existing_questions = {q.id for q in db.query(Question.id).all()}
+        existing_tests = {t.id for t in db.query(Test.id).all()}
+
+        # Concepts
+        created_concepts = 0
+        for c in data["concepts"]:
+            if c["id"] not in existing_concepts:
+                db.add(Concept(
+                    id=c["id"], name=c["name"], grade=c["grade"],
+                    category=c["category"], part=c["part"],
+                    description=c.get("description", ""),
+                    parent_id=c.get("parent_id"),
+                ))
+                created_concepts += 1
+        db.flush()
+
+        # Questions
+        created_questions = 0
+        for q in data["questions"]:
+            if q["id"] not in existing_questions:
+                db.add(Question(
+                    id=q["id"], concept_id=q["concept_id"],
+                    category=q["category"], part=q["part"],
+                    question_type=q["question_type"], difficulty=q["difficulty"],
+                    content=q["content"], options=q.get("options"),
+                    correct_answer=q["correct_answer"],
+                    explanation=q.get("explanation", ""),
+                    points=q.get("points", 10),
+                    blank_config=q.get("blank_config"),
+                ))
+                created_questions += 1
+        db.flush()
+
+        # Tests
+        created_tests = 0
+        for t in data["tests"]:
+            if t["id"] not in existing_tests:
+                db.add(Test(
+                    id=t["id"], title=t["title"],
+                    description=t.get("description", ""),
+                    grade=t["grade"], concept_ids=t["concept_ids"],
+                    question_ids=t["question_ids"],
+                    question_count=t.get("question_count", len(t["question_ids"])),
+                    time_limit_minutes=t.get("time_limit_minutes"),
+                    is_adaptive=t.get("is_adaptive", False),
+                    is_active=t.get("is_active", True),
+                    use_question_pool=t.get("use_question_pool", False),
+                    questions_per_attempt=t.get("questions_per_attempt"),
+                    shuffle_options=t.get("shuffle_options", True),
+                ))
+                created_tests += 1
+
+        db.commit()
+        logger.info(
+            f"Seed data loaded: {created_concepts} concepts, "
+            f"{created_questions} questions, {created_tests} tests"
+        )
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to load seed data: {e}")
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
     # Startup
     init_db()
+    load_seed_data()
     yield
     # Shutdown
 
