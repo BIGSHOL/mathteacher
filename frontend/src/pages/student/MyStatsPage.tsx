@@ -36,43 +36,63 @@ function getLevelMeta(level: number): { icon: string; title: string } {
  */
 function getFlameTheme(streak: number) {
   if (streak >= 300) return {
-    hueBase: 270,       // 보라-검정 기조
-    gradient: (hue: number) =>
-      `linear-gradient(to top, hsl(${hue},30%,15%) 0%, hsl(${hue},40%,20%) 30%, hsl(280,50%,25%) 60%, rgba(40,0,60,0.3) 85%, transparent 100%)`,
-    core: 'linear-gradient(to top, rgba(180,140,255,0.5) 0%, rgba(100,50,180,0.3) 40%, transparent 100%)',
-    glowColor: (g: number) => `radial-gradient(ellipse, rgba(80,0,120,${g}) 0%, rgba(40,0,80,${g * 0.5}) 40%, transparent 70%)`,
-    sparkBg: 'radial-gradient(circle, #c4b5fd, #7c3aed)',
-    sparkShadow: '0 0 3px 1px rgba(124,58,237,0.6)',
+    hueBase: 270,
+    flameStops: (hue: number) => [
+      { off: '0%', color: `hsl(${hue}, 40%, 18%)` },
+      { off: '30%', color: `hsl(${hue + 5}, 50%, 22%)` },
+      { off: '55%', color: `hsl(280, 55%, 28%)` },
+      { off: '80%', color: `hsl(285, 45%, 22%)`, opacity: 0.8 },
+      { off: '100%', color: `hsl(290, 35%, 15%)`, opacity: 0.2 },
+    ],
+    coreBottom: '#b48cff', coreMid: '#7c3aed', coreTop: '#4c1d95',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(100,0,150,${g}) 0%, rgba(60,0,100,${g * 0.6}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #ddd6fe, #7c3aed)',
+    sparkShadow: '0 0 4px 2px rgba(124,58,237,0.7)',
     label: '암흑',
   }
   if (streak >= 100) return {
-    hueBase: 210,
-    gradient: (hue: number) =>
-      `linear-gradient(to top, hsl(${hue},10%,90%) 0%, hsl(${hue},15%,85%) 30%, hsl(220,20%,80%) 60%, rgba(220,220,240,0.3) 85%, transparent 100%)`,
-    core: 'linear-gradient(to top, rgba(255,255,255,0.8) 0%, rgba(200,210,255,0.5) 40%, transparent 100%)',
-    glowColor: (g: number) => `radial-gradient(ellipse, rgba(200,210,255,${g}) 0%, rgba(180,190,240,${g * 0.5}) 40%, transparent 70%)`,
-    sparkBg: 'radial-gradient(circle, #ffffff, #c7d2fe)',
-    sparkShadow: '0 0 4px 2px rgba(200,210,255,0.8)',
+    hueBase: 220,
+    flameStops: (hue: number) => [
+      { off: '0%', color: `hsl(${hue}, 20%, 94%)` },
+      { off: '30%', color: `hsl(${hue}, 25%, 90%)` },
+      { off: '55%', color: `hsl(220, 30%, 86%)` },
+      { off: '80%', color: `hsl(230, 25%, 80%)`, opacity: 0.85 },
+      { off: '100%', color: `hsl(240, 20%, 72%)`, opacity: 0.2 },
+    ],
+    coreBottom: '#ffffff', coreMid: '#e0e7ff', coreTop: '#c7d2fe',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(220,225,255,${g}) 0%, rgba(200,205,250,${g * 0.6}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #ffffff, #e0e7ff)',
+    sparkShadow: '0 0 5px 2px rgba(220,225,255,0.9)',
     label: '백염',
   }
   if (streak >= 30) return {
     hueBase: 210,
-    gradient: (hue: number) =>
-      `linear-gradient(to top, hsl(${hue},100%,55%) 0%, hsl(${hue + 10},95%,50%) 30%, hsl(${hue + 20},90%,45%) 60%, rgba(0,100,255,0.3) 85%, transparent 100%)`,
-    core: 'linear-gradient(to top, rgba(180,220,255,0.6) 0%, rgba(100,180,255,0.4) 40%, transparent 100%)',
-    glowColor: (g: number) => `radial-gradient(ellipse, rgba(60,130,255,${g}) 0%, rgba(30,80,200,${g * 0.5}) 40%, transparent 70%)`,
-    sparkBg: 'radial-gradient(circle, #93c5fd, #3b82f6)',
-    sparkShadow: '0 0 3px 1px rgba(59,130,246,0.6)',
+    flameStops: (hue: number) => [
+      { off: '0%', color: `hsl(${hue}, 100%, 58%)` },
+      { off: '30%', color: `hsl(${hue + 10}, 100%, 52%)` },
+      { off: '55%', color: `hsl(${hue + 20}, 95%, 46%)` },
+      { off: '80%', color: `hsl(${hue + 25}, 90%, 38%)`, opacity: 0.8 },
+      { off: '100%', color: `hsl(${hue + 30}, 80%, 30%)`, opacity: 0.15 },
+    ],
+    coreBottom: '#bfdbfe', coreMid: '#60a5fa', coreTop: '#3b82f6',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(60,130,255,${g}) 0%, rgba(30,80,200,${g * 0.6}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #dbeafe, #3b82f6)',
+    sparkShadow: '0 0 4px 2px rgba(59,130,246,0.7)',
     label: '청염',
   }
   return {
     hueBase: 20,
-    gradient: (hue: number) =>
-      `linear-gradient(to top, hsl(${hue},100%,55%) 0%, hsl(${hue + 15},100%,50%) 30%, hsl(${hue + 30},95%,45%) 60%, rgba(255,80,0,0.3) 85%, transparent 100%)`,
-    core: 'linear-gradient(to top, #fff8 0%, #ffd54f88 40%, transparent 100%)',
-    glowColor: (g: number) => `radial-gradient(ellipse, rgba(255,120,0,${g}) 0%, rgba(255,60,0,${g * 0.5}) 40%, transparent 70%)`,
-    sparkBg: 'radial-gradient(circle, #ffe082, #ff9800)',
-    sparkShadow: '0 0 3px 1px rgba(255,150,0,0.6)',
+    flameStops: (hue: number) => [
+      { off: '0%', color: `hsl(${hue}, 100%, 55%)` },
+      { off: '30%', color: `hsl(${hue + 12}, 100%, 50%)` },
+      { off: '55%', color: `hsl(${hue + 25}, 98%, 46%)` },
+      { off: '80%', color: `hsl(${hue + 30}, 92%, 38%)`, opacity: 0.8 },
+      { off: '100%', color: `hsl(${hue + 35}, 80%, 30%)`, opacity: 0.15 },
+    ],
+    coreBottom: '#ffffff', coreMid: '#ffd54f', coreTop: '#ff9800',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(255,120,0,${g}) 0%, rgba(255,60,0,${g * 0.6}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #fff3e0, #ff9800)',
+    sparkShadow: '0 0 4px 2px rgba(255,150,0,0.7)',
     label: null,
   }
 }
@@ -82,6 +102,9 @@ function getFlameTheme(streak: number) {
  * streak 1~2: 약한 불씨 / 3~5: 중간 / 6~10: 강함 / 11+: 최대
  * 30일+: 파란 불꽃 / 100일+: 흰 불꽃 / 300일+: 검은 불꽃
  */
+/** SVG 불꽃 경로 (뾰족한 꼭대기 + 넓은 바닥) */
+const FLAME_PATH = 'M50 0 C50 0 62 18 68 35 C74 52 78 68 75 80 C72 90 63 98 50 100 C37 98 28 90 25 80 C22 68 26 52 32 35 C38 18 50 0 50 0Z'
+
 function StreakFire({ streak }: { streak: number }) {
   const intensity = streak <= 0 ? 0 : streak <= 2 ? 1 : streak <= 5 ? 2 : streak <= 10 ? 3 : 4
   const theme = getFlameTheme(streak)
@@ -89,18 +112,18 @@ function StreakFire({ streak }: { streak: number }) {
   const config = useMemo(() => {
     switch (intensity) {
       case 0: return { flames: 0, size: 0, speed: 0, sparks: 0, glow: 0 }
-      case 1: return { flames: 1, size: 24, speed: 2.5, sparks: 0, glow: 0 }
-      case 2: return { flames: 3, size: 30, speed: 1.8, sparks: 2, glow: 0.15 }
-      case 3: return { flames: 5, size: 36, speed: 1.2, sparks: 4, glow: 0.3 }
-      case 4: return { flames: 7, size: 44, speed: 0.8, sparks: 7, glow: 0.5 }
-      default: return { flames: 1, size: 24, speed: 2.5, sparks: 0, glow: 0 }
+      case 1: return { flames: 1, size: 36, speed: 2.5, sparks: 0, glow: 0 }
+      case 2: return { flames: 3, size: 44, speed: 1.8, sparks: 2, glow: 0.25 }
+      case 3: return { flames: 5, size: 52, speed: 1.2, sparks: 4, glow: 0.45 }
+      case 4: return { flames: 7, size: 60, speed: 0.8, sparks: 7, glow: 0.65 }
+      default: return { flames: 1, size: 36, speed: 2.5, sparks: 0, glow: 0 }
     }
   }, [intensity])
 
   const flameData = useMemo(() =>
     Array.from({ length: config.flames }, (_, i) => ({
       id: i,
-      xOff: (i - (config.flames - 1) / 2) * (intensity <= 1 ? 0 : intensity <= 2 ? 6 : 5),
+      xOff: (i - (config.flames - 1) / 2) * (intensity <= 1 ? 0 : intensity <= 2 ? 8 : 6),
       heightRatio: i === Math.floor(config.flames / 2) ? 1 : 0.6 + Math.random() * 0.3,
       delay: i * 0.12,
       hue: theme.hueBase + (i % 3) * 10,
@@ -111,10 +134,10 @@ function StreakFire({ streak }: { streak: number }) {
   const sparkData = useMemo(() =>
     Array.from({ length: config.sparks }, (_, i) => ({
       id: i,
-      x: -12 + Math.random() * 24,
+      x: -14 + Math.random() * 28,
       delay: i * 0.3 + Math.random() * 0.5,
       duration: 0.8 + Math.random() * 0.6,
-      size: 2 + Math.random() * 2,
+      size: 3 + Math.random() * 2,
     })),
     [config.sparks]
   )
@@ -130,13 +153,14 @@ function StreakFire({ streak }: { streak: number }) {
   const containerH = config.size + 20
 
   return (
-    <div className="relative flex items-end justify-center" style={{ width: 60, height: containerH }}>
+    <div className="relative flex items-end justify-center" style={{ width: 76, height: containerH }}>
       {/* 히든 불꽃 라벨 */}
       {theme.label && (
         <motion.div
-          className="absolute -top-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/20 px-1.5 py-0.5 text-[9px] font-bold backdrop-blur-sm"
+          className="absolute -top-2 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/25 px-2 py-0.5 text-[10px] font-bold backdrop-blur-sm"
           initial={{ opacity: 0, y: 5 }}
           animate={{ opacity: 1, y: 0 }}
+          style={{ textShadow: '0 0 4px rgba(255,255,255,0.5)' }}
         >
           {theme.label}
         </motion.div>
@@ -147,17 +171,17 @@ function StreakFire({ streak }: { streak: number }) {
         <motion.div
           className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full"
           style={{
-            width: config.size * 1.5,
+            width: config.size * 1.6,
             height: config.size * 0.5,
             background: theme.glowColor(config.glow),
-            filter: `blur(${2 + intensity * 2}px)`,
+            filter: `blur(${4 + intensity}px)`,
           }}
-          animate={{ opacity: [0.6, 1, 0.6], scaleX: [0.9, 1.1, 0.9] }}
+          animate={{ opacity: [0.7, 1, 0.7], scaleX: [0.9, 1.1, 0.9] }}
           transition={{ duration: config.speed * 0.8, repeat: Infinity, ease: 'easeInOut' }}
         />
       )}
 
-      {/* 불꽃 레이어 */}
+      {/* SVG 불꽃 레이어 */}
       {flameData.map((f) => {
         const h = config.size * f.heightRatio
         const w = h * 0.55
@@ -170,15 +194,12 @@ function StreakFire({ streak }: { streak: number }) {
               width: w,
               height: h,
               transform: 'translateX(-50%)',
-              borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-              background: theme.gradient(f.hue),
-              filter: `blur(${intensity <= 1 ? 1.5 : 1}px)`,
             }}
             animate={{
-              scaleX: [1, intensity <= 1 ? 1.05 : 1.15, 0.9, 1],
-              scaleY: [1, intensity <= 1 ? 1.03 : 1.12, 0.95, 1],
+              scaleX: [1, intensity <= 1 ? 1.06 : 1.15, 0.92, 1],
+              scaleY: [1, intensity <= 1 ? 1.04 : 1.12, 0.94, 1],
               x: [0, (f.id % 2 === 0 ? 2 : -2) * (intensity <= 1 ? 0.5 : 1), 0],
-              rotate: [0, f.id % 2 === 0 ? 3 : -3, 0],
+              rotate: [0, f.id % 2 === 0 ? 4 : -4, 0],
             }}
             transition={{
               duration: config.speed,
@@ -186,26 +207,45 @@ function StreakFire({ streak }: { streak: number }) {
               delay: f.delay,
               ease: 'easeInOut',
             }}
-          />
+          >
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%">
+              <defs>
+                <linearGradient id={`flame-${f.id}-${streak}`} x1="0.5" y1="1" x2="0.5" y2="0">
+                  {theme.flameStops(f.hue).map((s, si) => (
+                    <stop key={si} offset={s.off} stopColor={s.color} stopOpacity={s.opacity ?? 1} />
+                  ))}
+                </linearGradient>
+              </defs>
+              <path d={FLAME_PATH} fill={`url(#flame-${f.id}-${streak})`} />
+            </svg>
+          </motion.div>
         )
       })}
 
-      {/* 중심 밝은 코어 */}
+      {/* 중심 밝은 코어 (SVG) */}
       <motion.div
         className="absolute bottom-0 left-1/2 -translate-x-1/2"
         style={{
-          width: config.size * 0.3,
-          height: config.size * 0.45,
-          borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-          background: theme.core,
-          filter: 'blur(2px)',
+          width: config.size * 0.32,
+          height: config.size * 0.5,
         }}
         animate={{
-          scaleY: [1, 1.1, 0.95, 1],
-          opacity: [0.7, 1, 0.7],
+          scaleY: [1, 1.08, 0.96, 1],
+          opacity: [0.9, 1, 0.9],
         }}
         transition={{ duration: config.speed * 0.7, repeat: Infinity, ease: 'easeInOut' }}
-      />
+      >
+        <svg viewBox="0 0 100 100" preserveAspectRatio="none" width="100%" height="100%">
+          <defs>
+            <linearGradient id={`core-${streak}`} x1="0.5" y1="1" x2="0.5" y2="0">
+              <stop offset="0%" stopColor={theme.coreBottom} />
+              <stop offset="40%" stopColor={theme.coreMid} stopOpacity="0.8" />
+              <stop offset="100%" stopColor={theme.coreTop} stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path d={FLAME_PATH} fill={`url(#core-${streak})`} />
+        </svg>
+      </motion.div>
 
       {/* 스파크 파티클 */}
       {sparkData.map((s) => (
@@ -329,23 +369,22 @@ export function MyStatsPage() {
         : { text: '도전', badge: 'bg-white/20' }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-6 sm:py-8">
-      <div className="container mx-auto max-w-6xl px-4 space-y-6">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6">
+      <div className="container mx-auto max-w-5xl px-4 space-y-4">
         {/* 헤더 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <div className="flex items-center gap-3 mb-1">
-            <span className="text-3xl">📊</span>
-            <h1 className="text-3xl font-bold text-gray-900">내 학습 통계</h1>
+          <div className="flex items-center gap-2">
+            <span className="text-xl">📊</span>
+            <h1 className="text-xl font-bold text-gray-900">내 학습 통계</h1>
             {gradeLabel && (
-              <span className="rounded-full bg-primary-100 px-3 py-1 text-sm font-semibold text-primary-700">
+              <span className="rounded-full bg-primary-100 px-2.5 py-0.5 text-xs font-semibold text-primary-700">
                 {gradeLabel}
               </span>
             )}
           </div>
-          <p className="text-gray-500 ml-12">나의 학습 현황을 확인하고 성장해보세요</p>
         </motion.div>
 
         {/* 레벨 & 스트릭 */}
@@ -353,50 +392,44 @@ export function MyStatsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid gap-4 md:grid-cols-2"
+          className="grid gap-3 grid-cols-2"
         >
           {/* 레벨 카드 */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 p-6 text-white shadow-lg">
-            {/* 레벨 아이콘 배경 */}
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-500 via-purple-600 to-purple-700 p-4 text-white shadow-md">
             <motion.div
-              className="pointer-events-none absolute -right-4 -top-4 select-none opacity-15"
+              className="pointer-events-none absolute -right-2 -top-2 select-none opacity-15"
               animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              style={{ fontSize: 100 }}
+              style={{ fontSize: 64 }}
             >
               {getLevelMeta(stats.level).icon}
             </motion.div>
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium opacity-75">현재 레벨</span>
-                  <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs font-bold">
-                    {getLevelMeta(stats.level).icon} {getLevelMeta(stats.level).title}
-                  </span>
-                </div>
-                <p className="font-math text-5xl font-black mt-1">Lv.{stats.level}</p>
-              </div>
-              <div className="text-right">
-                <span className="text-xs opacity-75">총 획득 XP</span>
-                <p className="font-math text-2xl font-bold">{stats.total_xp.toLocaleString()}</p>
-              </div>
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="text-xs font-medium opacity-75">현재 레벨</span>
+              <span className="rounded-full bg-white/20 px-1.5 py-0.5 text-[10px] font-bold">
+                {getLevelMeta(stats.level).icon} {getLevelMeta(stats.level).title}
+              </span>
+            </div>
+            <div className="flex items-end justify-between mb-2">
+              <p className="font-math text-3xl font-black leading-none">Lv.{stats.level}</p>
+              <p className="font-math text-sm font-bold opacity-80">{stats.total_xp.toLocaleString()} XP</p>
             </div>
             <XpBar level={stats.level} totalXp={stats.total_xp} showLabel={false} />
           </div>
 
           {/* 스트릭 카드 */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 p-6 text-white shadow-lg">
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-sm font-medium opacity-75">연속 학습 스트릭</span>
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-400 via-orange-500 to-red-500 p-4 text-white shadow-md">
+            <div className="flex items-start justify-between">
+              <div>
+                <span className="text-xs font-medium opacity-75">연속 학습</span>
+                <p className="font-math text-3xl font-black leading-none mt-1">{stats.current_streak}</p>
+                <p className="text-xs opacity-90 mt-0.5">일 연속!</p>
+              </div>
               <StreakFire streak={stats.current_streak} />
             </div>
-            <div className="mb-4">
-              <p className="font-math text-5xl font-black">{stats.current_streak}</p>
-              <p className="text-sm opacity-90 mt-1">일 연속 학습 중!</p>
-            </div>
-            <div className="flex items-center justify-between border-t border-white/20 pt-3 text-sm">
+            <div className="flex items-center justify-between border-t border-white/20 pt-2 mt-2 text-xs">
               <span className="opacity-75">최대 기록</span>
-              <span className="font-math text-lg font-bold">{stats.max_streak}일</span>
+              <span className="font-math text-sm font-bold">{stats.max_streak}일</span>
             </div>
           </div>
         </motion.div>
@@ -407,14 +440,13 @@ export function MyStatsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <h2 className="mb-4 text-lg font-semibold text-gray-900">학습 현황</h2>
-          <div className="grid gap-4 grid-cols-2 lg:grid-cols-3">
+          <h2 className="mb-2 text-sm font-semibold text-gray-900">학습 현황</h2>
+          <div className="grid gap-2.5 grid-cols-3 lg:grid-cols-5">
             {/* 정답률 카드 - 강조 */}
-            <div className="col-span-2 lg:col-span-1 lg:row-span-2 flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-primary-400 to-primary-600 p-8 text-white shadow-lg text-center">
-              <div className="text-5xl mb-3">🎯</div>
-              <p className="text-sm font-medium opacity-75 mb-2">정답률</p>
-              <p className="font-math text-6xl font-black mb-3">{stats.accuracy_rate}%</p>
-              <span className={`inline-block px-4 py-1.5 ${accuracyLabel.badge} rounded-full text-sm font-medium`}>
+            <div className="flex flex-col items-center justify-center rounded-xl bg-gradient-to-br from-primary-400 to-primary-600 p-3 text-white shadow-md text-center">
+              <p className="text-[10px] font-medium opacity-75">정답률</p>
+              <p className="font-math text-2xl font-black mt-0.5">{stats.accuracy_rate}%</p>
+              <span className={`inline-block px-2 py-0.5 ${accuracyLabel.badge} rounded-full text-[10px] font-medium mt-1`}>
                 {accuracyLabel.text}
               </span>
             </div>
@@ -424,7 +456,7 @@ export function MyStatsPage() {
             <StatCard icon="✅" label="정답 수" value={stats.correct_answers} suffix="개" />
             <StatCard
               icon="⏱️"
-              label="평균 풀이 시간"
+              label="평균 풀이"
               value={stats.average_time_per_question}
               suffix="초"
             />
@@ -438,8 +470,8 @@ export function MyStatsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
           >
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">트랙별 성적</h2>
-            <div className="grid gap-4 grid-cols-2">
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">트랙별 성적</h2>
+            <div className="grid gap-2.5 grid-cols-2">
               {stats.computation_stats && (
                 <TrackCard
                   icon="🧮"
@@ -467,8 +499,8 @@ export function MyStatsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.28 }}
           >
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">단원 진행 상황</h2>
-            <div className="space-y-3">
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">단원 진행 상황</h2>
+            <div className="space-y-2">
               {chapters.map((ch) => (
                 <ChapterRow key={ch.chapter_id} chapter={ch} />
               ))}
@@ -483,10 +515,10 @@ export function MyStatsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">
               📚 더 연습이 필요한 개념
             </h2>
-            <div className="space-y-3">
+            <div className="space-y-1.5">
               {stats.weak_concepts.map((concept) => (
                 <ConceptBar
                   key={concept.concept_id}
@@ -506,8 +538,8 @@ export function MyStatsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">⭐ 잘하는 개념</h2>
-            <div className="space-y-3">
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">⭐ 잘하는 개념</h2>
+            <div className="space-y-1.5">
               {stats.strong_concepts.map((concept) => (
                 <ConceptBar
                   key={concept.concept_id}
@@ -534,12 +566,12 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, suffix }: StatCardProps) {
   return (
-    <div className="rounded-2xl bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
-      <div className="mb-3 text-3xl">{icon}</div>
-      <p className="mb-1 text-sm text-gray-600">{label}</p>
-      <p className="font-math text-3xl font-bold tabular-nums text-gray-900">
+    <div className="rounded-xl bg-white p-3 shadow-sm hover:shadow-md transition-shadow">
+      <div className="text-lg mb-0.5">{icon}</div>
+      <p className="text-[10px] text-gray-500 leading-tight">{label}</p>
+      <p className="font-math text-lg font-bold tabular-nums text-gray-900 mt-0.5">
         {value}
-        <span className="ml-1 text-sm font-normal text-gray-500">{suffix}</span>
+        <span className="ml-0.5 text-[10px] font-normal text-gray-400">{suffix}</span>
       </p>
     </div>
   )
@@ -575,18 +607,20 @@ function TrackCard({ icon, label, stats: trackStats, color }: TrackCardProps) {
   }
 
   return (
-    <div className={`rounded-2xl ${bgColors[color]} p-5 shadow-sm hover:shadow-md transition-shadow`}>
-      <div className="flex items-center gap-2 mb-3">
-        <span className="text-2xl">{icon}</span>
-        <span className={`font-semibold ${textColors[color]}`}>{label}</span>
+    <div className={`rounded-xl ${bgColors[color]} p-3 shadow-sm hover:shadow-md transition-shadow`}>
+      <div className="flex items-center gap-1.5 mb-1.5">
+        <span className="text-base">{icon}</span>
+        <span className={`text-sm font-semibold ${textColors[color]}`}>{label}</span>
       </div>
-      <p className={`font-math text-4xl font-black ${textColors[color]} mb-2`}>
-        {trackStats.accuracy_rate}%
-      </p>
-      <p className="text-sm text-gray-500 mb-3">
-        {trackStats.correct_answers}/{trackStats.total_questions} 정답
-      </p>
-      <div className="h-2.5 overflow-hidden rounded-full bg-white/70 shadow-inner">
+      <div className="flex items-end gap-2 mb-1.5">
+        <p className={`font-math text-2xl font-black ${textColors[color]}`}>
+          {trackStats.accuracy_rate}%
+        </p>
+        <p className="text-xs text-gray-500 mb-0.5">
+          {trackStats.correct_answers}/{trackStats.total_questions}
+        </p>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-white/70 shadow-inner">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${trackStats.accuracy_rate}%` }}
@@ -607,12 +641,12 @@ function ConceptBar({ name, accuracy, color }: ConceptBarProps) {
   const textColor = color === 'red' ? 'text-red-600' : 'text-green-600'
 
   return (
-    <div className={`rounded-xl ${bgColor} p-5 shadow-sm hover:shadow-md transition-shadow`}>
-      <div className="mb-3 flex items-center justify-between">
-        <span className="font-semibold text-gray-900">{name}</span>
-        <span className={`font-math text-xl font-bold ${textColor}`}>{accuracy}%</span>
+    <div className={`rounded-lg ${bgColor} px-3 py-2.5 shadow-sm`}>
+      <div className="mb-1.5 flex items-center justify-between">
+        <span className="text-sm font-medium text-gray-900">{name}</span>
+        <span className={`font-math text-sm font-bold ${textColor}`}>{accuracy}%</span>
       </div>
-      <div className="h-3 overflow-hidden rounded-full bg-white/70 shadow-inner">
+      <div className="h-2 overflow-hidden rounded-full bg-white/70 shadow-inner">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${accuracy}%` }}
@@ -632,37 +666,37 @@ function ChapterRow({ chapter: ch }: { chapter: ChapterProgressItem }) {
   return (
     <div
       className={clsx(
-        'rounded-xl p-4 shadow-sm transition-shadow hover:shadow-md',
+        'rounded-lg px-3 py-2.5 shadow-sm transition-shadow hover:shadow-md',
         isLocked ? 'bg-gray-100 opacity-60' : ch.is_completed ? 'bg-green-50' : 'bg-white'
       )}
     >
-      <div className="mb-2 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <span className="text-lg">
+      <div className="mb-1.5 flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm">
             {isLocked ? '🔒' : ch.is_completed ? '✅' : '📖'}
           </span>
-          <span className={clsx('font-semibold', isLocked ? 'text-gray-400' : 'text-gray-900')}>
+          <span className={clsx('text-sm font-medium', isLocked ? 'text-gray-400' : 'text-gray-900')}>
             {ch.name}
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {ch.is_completed && ch.final_test_score != null && (
-            <span className="text-xs font-medium text-green-600">
+            <span className="text-[10px] font-medium text-green-600">
               최종 {ch.final_test_score}점
             </span>
           )}
           {ch.teacher_approved && (
-            <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-700">
+            <span className="rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-medium text-green-700">
               승인됨
             </span>
           )}
           {!isLocked && !ch.is_completed && (
-            <span className="font-math text-sm font-bold text-primary-600">{progress}%</span>
+            <span className="font-math text-xs font-bold text-primary-600">{progress}%</span>
           )}
         </div>
       </div>
       {!isLocked && (
-        <div className="h-2.5 overflow-hidden rounded-full bg-gray-200">
+        <div className="h-2 overflow-hidden rounded-full bg-gray-200">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}

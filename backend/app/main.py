@@ -1,6 +1,6 @@
 import logging
 from contextlib import asynccontextmanager
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -1239,7 +1239,7 @@ def init_db():
                     grade="middle_1",
                     chapter_number=1,
                     description="소수, 합성수, 소인수분해, 최대공약수, 최소공배수",
-                    concept_ids=["M1-NUM-01", "M1-NUM-02"],
+                    concept_ids=["concept-m1-prime"],
                     mastery_threshold=90,
                     final_test_pass_score=90,
                     require_teacher_approval=False,
@@ -1251,7 +1251,7 @@ def init_db():
                     grade="middle_1",
                     chapter_number=2,
                     description="양수·음수, 절댓값, 정수·유리수 사칙연산, 혼합 계산",
-                    concept_ids=["M1-NUM-03", "M1-NUM-04"],
+                    concept_ids=["concept-m1-integer", "concept-002"],
                     mastery_threshold=90,
                     final_test_pass_score=90,
                     require_teacher_approval=False,
@@ -1263,7 +1263,7 @@ def init_db():
                     grade="middle_1",
                     chapter_number=3,
                     description="문자 사용, 식의 값, 일차식 계산, 등식의 성질, 일차방정식 풀이",
-                    concept_ids=["M1-ALG-01", "M1-ALG-02", "concept-001"],
+                    concept_ids=["concept-m1-expression", "concept-m1-equation", "concept-001", "concept-003"],
                     final_test_id="test-001",
                     mastery_threshold=90,
                     final_test_pass_score=90,
@@ -1276,7 +1276,7 @@ def init_db():
                     grade="middle_1",
                     chapter_number=4,
                     description="순서쌍, 좌표평면, 사분면, 정비례·반비례 그래프",
-                    concept_ids=["M1-FUNC-01"],
+                    concept_ids=["concept-m1-coord", "concept-m1-proportion", "concept-004"],
                     mastery_threshold=90,
                     final_test_pass_score=90,
                     require_teacher_approval=False,
@@ -1288,7 +1288,7 @@ def init_db():
                     grade="middle_1",
                     chapter_number=5,
                     description="점·선·면·각, 작도, 삼각형 합동조건, 다각형 내각·외각",
-                    concept_ids=["M1-GEO-01", "M1-GEO-02", "M1-GEO-03"],
+                    concept_ids=["concept-m1-basic-geo", "concept-m1-plane-fig", "concept-m1-solid-fig"],
                     mastery_threshold=90,
                     final_test_pass_score=90,
                     require_teacher_approval=False,
@@ -1300,7 +1300,7 @@ def init_db():
                     grade="middle_1",
                     chapter_number=6,
                     description="줄기와 잎 그림, 도수분포표, 히스토그램, 상대도수",
-                    concept_ids=["M1-STA-01"],
+                    concept_ids=["concept-m1-frequency", "concept-m1-representative", "concept-m1-scatter", "concept-005"],
                     mastery_threshold=90,
                     final_test_pass_score=90,
                     require_teacher_approval=False,
@@ -1426,12 +1426,74 @@ def load_seed_data():
         db.close()
 
 
+def update_chapter_concept_ids():
+    """서버 시작 시 챕터 concept_ids를 최신 매핑으로 갱신."""
+    from app.models.chapter import Chapter
+
+    CHAPTER_CONCEPT_MAP = {
+        "chapter-m1-01": ["concept-m1-prime"],
+        "chapter-m1-02": ["concept-m1-integer", "concept-002"],
+        "chapter-m1-03": ["concept-m1-expression", "concept-m1-equation", "concept-001", "concept-003"],
+        "chapter-m1-04": ["concept-m1-coord", "concept-m1-proportion", "concept-004"],
+        "chapter-m1-05": ["concept-m1-basic-geo", "concept-m1-plane-fig", "concept-m1-solid-fig"],
+        "chapter-m1-06": ["concept-m1-frequency", "concept-m1-representative", "concept-m1-scatter", "concept-005"],
+    }
+
+    db = SyncSessionLocal()
+    try:
+        updated = 0
+        for chapter_id, concept_ids in CHAPTER_CONCEPT_MAP.items():
+            ch = db.query(Chapter).filter(Chapter.id == chapter_id).first()
+            if ch and ch.concept_ids != concept_ids:
+                ch.concept_ids = concept_ids
+                updated += 1
+        if updated:
+            # 챕터 매핑이 변경되면 오늘의 일일 테스트를 삭제하여 재생성 유도
+            _cleanup_today_daily_tests(db)
+            db.commit()
+            logger.info(f"Updated concept_ids for {updated} chapters, cleaned up today's daily tests")
+        else:
+            db.commit()
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to update chapter concept_ids: {e}")
+    finally:
+        db.close()
+
+
+def _cleanup_today_daily_tests(db):
+    """오늘의 일일 테스트 레코드 및 관련 테스트/시도 삭제."""
+    from app.models.daily_test_record import DailyTestRecord
+    from app.models.test import Test
+    from app.models.test_attempt import TestAttempt
+    from app.models.answer_log import AnswerLog
+
+    KST = timezone(timedelta(hours=9))
+    today = datetime.now(KST).date().isoformat()
+    records = db.query(DailyTestRecord).filter(DailyTestRecord.date == today).all()
+    if not records:
+        return
+
+    for record in records:
+        # 연결된 attempt와 answer_log 삭제
+        if record.attempt_id:
+            db.query(AnswerLog).filter(AnswerLog.attempt_id == record.attempt_id).delete()
+            db.query(TestAttempt).filter(TestAttempt.id == record.attempt_id).delete()
+        # 일일 테스트 Test 레코드 삭제
+        if record.test_id:
+            db.query(Test).filter(Test.id == record.test_id).delete()
+        db.delete(record)
+
+    logger.info(f"Cleaned up {len(records)} daily test records for today ({today})")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
     # Startup
     init_db()
     load_seed_data()
+    update_chapter_concept_ids()
     yield
     # Shutdown
 

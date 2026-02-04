@@ -88,44 +88,44 @@ export function TestListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6">
+      <div className="container mx-auto max-w-5xl px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
+          className="mb-3"
         >
-          <h1 className="text-2xl font-bold text-gray-900">오늘의 테스트</h1>
-          <p className="text-gray-600">풀 수 있는 테스트를 선택하세요</p>
+          <h1 className="text-xl font-bold text-gray-900">테스트</h1>
+          <p className="text-sm text-gray-500">풀 수 있는 테스트를 선택하세요</p>
         </motion.div>
 
         {/* 카테고리 필터 탭 */}
-        <div className="mb-6 flex gap-2">
+        <div className="mb-3 flex gap-1.5">
           {CATEGORY_TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => handleCategoryChange(tab.key)}
               className={clsx(
-                'flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all',
+                'flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-medium transition-all',
                 activeCategory === tab.key
                   ? 'bg-primary-500 text-white shadow-sm'
                   : 'bg-white text-gray-600 hover:bg-gray-100'
               )}
             >
-              <span>{tab.icon}</span>
+              <span className="text-sm">{tab.icon}</span>
               <span>{tab.label}</span>
             </button>
           ))}
         </div>
 
         {filteredTests.length === 0 ? (
-          <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
-            <div className="mb-4 text-5xl">📚</div>
-            <h2 className="mb-2 text-xl font-semibold text-gray-900">테스트가 없습니다</h2>
-            <p className="text-gray-600">현재 풀 수 있는 테스트가 없습니다.</p>
+          <div className="rounded-xl bg-white p-6 text-center shadow-sm">
+            <div className="mb-2 text-3xl">📚</div>
+            <h2 className="mb-1 text-base font-semibold text-gray-900">테스트가 없습니다</h2>
+            <p className="text-sm text-gray-500">현재 풀 수 있는 테스트가 없습니다.</p>
           </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
             {filteredTests.map((test, index) => (
               <TestCard
                 key={test.id}
@@ -176,13 +176,13 @@ function TestCard({ test, index, onStart }: TestCardProps) {
       transition={{ delay: index * 0.1 }}
       className={clsx('card overflow-hidden', getCardStyle())}
     >
-      <div className="p-6">
-        <div className="mb-4 flex items-start justify-between">
+      <div className="p-3">
+        <div className="mb-2 flex items-start justify-between">
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-lg font-semibold text-gray-900">{test.title}</h3>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <h3 className="text-sm font-semibold text-gray-900">{test.title}</h3>
               <span className={clsx(
-                'rounded-full px-2 py-0.5 text-xs font-medium',
+                'rounded-full px-1.5 py-0.5 text-[10px] font-medium',
                 test.category === 'computation'
                   ? 'bg-rose-100 text-rose-700'
                   : test.category === 'concept'
@@ -192,48 +192,48 @@ function TestCard({ test, index, onStart }: TestCardProps) {
                 {test.category === 'computation' ? '연산' : test.category === 'concept' ? '개념' : '종합'}
               </span>
               {test.is_adaptive && (
-                <span className="rounded-full bg-indigo-100 px-2 py-1 text-xs font-medium text-indigo-700">
+                <span className="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700">
                   적응형
                 </span>
               )}
+              {test.is_completed && (
+                <span className="rounded-full bg-primary-100 px-1.5 py-0.5 text-[10px] font-medium text-primary-700">
+                  완료
+                </span>
+              )}
             </div>
-            <p className="mt-1 text-sm text-gray-600">{test.description}</p>
+            <p className="mt-0.5 text-xs text-gray-500 line-clamp-1">{test.description}</p>
           </div>
-          {test.is_completed && (
-            <span className="rounded-full bg-primary-100 px-2 py-1 text-xs font-medium text-primary-700">
-              완료
-            </span>
-          )}
         </div>
 
-        <div className="mb-4 flex flex-wrap gap-2">
-          <span className={clsx('rounded-full px-2.5 py-1 text-xs font-bold', getLevelColor(level))}>
+        <div className="mb-2 flex flex-wrap gap-1">
+          <span className={clsx('rounded-full px-2 py-0.5 text-[10px] font-bold', getLevelColor(level))}>
             Lv.{level}
           </span>
-          <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+          <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600">
             {test.question_count}문제
           </span>
           {test.time_limit_minutes && (
-            <span className="rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700">
+            <span className="rounded-full bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600">
               {test.time_limit_minutes}분
             </span>
           )}
           {test.best_score !== undefined && test.best_score !== null && (
-            <span className="rounded-full bg-purple-100 px-2 py-1 text-xs font-medium text-purple-700">
+            <span className="rounded-full bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700">
               최고 {test.best_score}점
             </span>
           )}
         </div>
 
         <div className="flex items-center justify-between">
-          <span className="text-sm text-gray-500">
+          <span className="text-xs text-gray-400">
             {test.attempt_count > 0 ? `${test.attempt_count}회 도전` : '첫 도전!'}
           </span>
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={onStart}
-            className="btn-primary px-4 py-2 text-sm"
+            className="btn-primary px-3 py-1.5 text-xs"
           >
             {test.is_completed ? '다시 풀기' : '시작하기'}
           </motion.button>

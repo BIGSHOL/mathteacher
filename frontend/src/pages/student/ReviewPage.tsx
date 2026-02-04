@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import api from '../../lib/api'
+import { MathText } from '../../components/common/MathText'
 import type { QuestionOption } from '../../types'
 
 interface WrongQuestion {
@@ -159,7 +160,7 @@ export function ReviewPage() {
                   {/* 문제 내용 */}
                   <div className="px-6 py-4">
                     <p className="mb-4 text-lg font-medium text-gray-900">
-                      {item.question.content}
+                      <MathText text={item.question.content} />
                     </p>
 
                     {/* 선택지 */}
@@ -194,7 +195,7 @@ export function ReviewPage() {
                               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600">
                                 {opt.label}
                               </span>
-                              <span className="text-gray-800">{opt.text}</span>
+                              <span className="text-gray-800"><MathText text={opt.text} /></span>
                               {isRevealed && isThisCorrect && (
                                 <span className="ml-auto text-green-600 font-medium text-sm">정답</span>
                               )}
@@ -233,7 +234,7 @@ export function ReviewPage() {
                               {isCorrect ? '🎉 정답!' : '❌ 오답'}
                             </p>
                             <p className="mt-2 text-sm text-gray-700">
-                              <span className="font-medium">해설:</span> {item.question.explanation}
+                              <span className="font-medium">해설:</span> <MathText text={item.question.explanation} />
                             </p>
                           </div>
                         </motion.div>

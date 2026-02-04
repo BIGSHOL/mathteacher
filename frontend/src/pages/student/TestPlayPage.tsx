@@ -26,6 +26,16 @@ interface DifficultyChange {
   direction: 'up' | 'down'
 }
 
+interface AnswerLog {
+  id: string
+  attempt_id: string
+  question_id: string
+  selected_answer: string
+  is_correct: boolean
+  time_spent_seconds: number
+  combo_count: number
+}
+
 interface AttemptDetail {
   attempt: {
     id: string
@@ -45,7 +55,7 @@ interface AttemptDetail {
     is_adaptive: boolean
     questions: Question[]
   }
-  answers: unknown[]
+  answers: AnswerLog[]
 }
 
 /** 난이도 숫자를 한글 라벨로 변환 */
@@ -166,6 +176,9 @@ export function TestPlayPage() {
   const [timerKey, setTimerKey] = useState(0)
   const [isTimeUp, setIsTimeUp] = useState(false)
 
+  // 빈칸 채우기 상태
+  const [blankValues, setBlankValues] = useState<Record<string, string>>({})
+
   const isAdaptive = attemptDetail?.attempt.is_adaptive ?? false
   const totalQuestions = attemptDetail?.attempt.total_count ?? 0
   const currentQuestion: Question | undefined = attemptDetail?.test.questions[currentIndex]
@@ -197,6 +210,28 @@ export function TestPlayPage() {
       if (data.attempt.is_adaptive && data.attempt.current_difficulty) {
         setCurrentDifficulty(data.attempt.current_difficulty)
       }
+
+      // 이어풀기: 이미 답한 문제가 있으면 진행 위치 복원
+      const answeredCount = data.answers?.length ?? 0
+      if (answeredCount > 0) {
+        setScore(data.attempt.score)
+
+        if (data.attempt.is_adaptive) {
+          setQuestionsAnswered(answeredCount)
+        } else {
+          // 고정형: 이미 답한 문제 건너뛰기
+          const answeredIds = new Set(data.answers.map((a) => a.question_id))
+          const firstUnanswered = data.test.questions.findIndex(
+            (q) => !answeredIds.has(q.id)
+          )
+          if (firstUnanswered === -1) {
+            // 모든 문제를 답했지만 완료되지 않은 경우
+            setCurrentIndex(data.test.questions.length - 1)
+          } else {
+            setCurrentIndex(firstUnanswered)
+          }
+        }
+      }
     } catch {
       setError('테스트 정보를 불러오는데 실패했습니다.')
     } finally {
@@ -208,6 +243,21 @@ export function TestPlayPage() {
     if (!showFeedback) {
       setSelectedAnswer(answer)
     }
+  }
+
+  const handleBlankChange = (blankId: string, value: string) => {
+    if (showFeedback) return
+    setBlankValues((prev) => {
+      const next = { ...prev, [blankId]: value }
+      // 빈칸 값들을 | 로 연결하여 selectedAnswer에 반영
+      const blankConfig = currentQuestion?.blank_config
+      if (blankConfig?.blank_answers) {
+        const blankIds = Object.keys(blankConfig.blank_answers).sort()
+        const combined = blankIds.map((id) => (next[id] ?? '').trim()).join('|')
+        setSelectedAnswer(combined)
+      }
+      return next
+    })
   }
 
   /** 답안 제출 (시간초과 시 빈 답 전송) */
@@ -358,6 +408,7 @@ export function TestPlayPage() {
         })
         setCurrentIndex((prev) => prev + 1)
         setSelectedAnswer(null)
+        setBlankValues({})
         setFeedbackData(null)
         setShowFeedback(false)
         setIsTimeUp(false)
@@ -377,6 +428,7 @@ export function TestPlayPage() {
       } else {
         setCurrentIndex((prev) => prev + 1)
         setSelectedAnswer(null)
+        setBlankValues({})
         setFeedbackData(null)
         setShowFeedback(false)
         setIsTimeUp(false)
@@ -506,6 +558,8 @@ export function TestPlayPage() {
                   selectedAnswer={selectedAnswer}
                   onSelectAnswer={handleSelectAnswer}
                   disabled={showFeedback}
+                  blankValues={blankValues}
+                  onBlankChange={handleBlankChange}
                 />
               )}
             </motion.div>

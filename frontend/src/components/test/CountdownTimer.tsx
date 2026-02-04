@@ -38,15 +38,28 @@ export function CountdownTimer({
   const onTimeUpRef = useRef(onTimeUp)
   onTimeUpRef.current = onTimeUp
   const soundPlayingRef = useRef(false)
+  const timeUpFiredRef = useRef(false)
 
   // totalSeconds 변경 시 리셋
   useEffect(() => {
     setRemaining(totalSeconds)
+    timeUpFiredRef.current = false
     // 타이머 리셋 시 사운드도 정지
     timerSound.pause()
     timerSound.currentTime = 0
     soundPlayingRef.current = false
   }, [totalSeconds])
+
+  // remaining이 0이 되면 별도 effect에서 onTimeUp 호출 (setState 충돌 방지)
+  useEffect(() => {
+    if (remaining <= 0 && isRunning && !timeUpFiredRef.current) {
+      timeUpFiredRef.current = true
+      timerSound.pause()
+      timerSound.currentTime = 0
+      soundPlayingRef.current = false
+      onTimeUpRef.current()
+    }
+  }, [remaining, isRunning])
 
   useEffect(() => {
     if (!isRunning) {
@@ -63,10 +76,6 @@ export function CountdownTimer({
         const next = prev - 1
         if (next <= 0) {
           if (intervalRef.current) clearInterval(intervalRef.current)
-          timerSound.pause()
-          timerSound.currentTime = 0
-          soundPlayingRef.current = false
-          onTimeUpRef.current()
           return 0
         }
         return next

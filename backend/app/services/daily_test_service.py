@@ -20,6 +20,7 @@ from app.schemas.common import QuestionCategory, QuestionType
 from app.services.test_service import TestService
 
 QUESTIONS_PER_DAILY_TEST = 10
+MIN_QUESTIONS_PER_DAILY_TEST = 3
 CATEGORY_LABELS = {
     "concept": "개념",
     "computation": "연산",
@@ -102,7 +103,20 @@ class DailyTestService:
 
         # 이미 시작한 경우 기존 attempt 반환
         if record.attempt_id:
-            return await self.db.get(TestAttempt, record.attempt_id)
+            attempt = await self.db.get(TestAttempt, record.attempt_id)
+            if attempt:
+                return attempt
+            # attempt가 삭제된 경우 → 재생성
+            record.attempt_id = None
+            record.status = "pending"
+
+        # 테스트가 삭제된 경우 → 재생성
+        test = await self.db.get(Test, record.test_id)
+        if not test:
+            today = self.get_today_str()
+            test = await self._generate_test(student_id, record.category, today)
+            record.test_id = test.id
+            record.total_count = test.question_count
 
         # TestService로 시도 생성
         test_service = TestService(self.db)
@@ -235,17 +249,21 @@ class DailyTestService:
         )
 
         # 카테고리 필터
+        # fill_in_blank: question_type 기준 (빈칸채우기 전용)
+        # concept/computation: category 기준 + fill_in_blank 제외 (중복 방지)
         if category == "fill_in_blank":
             base_query = base_query.where(
                 Question.question_type == QuestionType.FILL_IN_BLANK
             )
         elif category == "concept":
             base_query = base_query.where(
-                Question.category == QuestionCategory.CONCEPT
+                Question.category == QuestionCategory.CONCEPT,
+                Question.question_type != QuestionType.FILL_IN_BLANK,
             )
         elif category == "computation":
             base_query = base_query.where(
-                Question.category == QuestionCategory.COMPUTATION
+                Question.category == QuestionCategory.COMPUTATION,
+                Question.question_type != QuestionType.FILL_IN_BLANK,
             )
 
         # 학년 필터: 해금된 단원의 개념에 속하는 문제만 출제
@@ -305,6 +323,22 @@ class DailyTestService:
         random.shuffle(selected)
         return selected
 
+    def _build_category_filter(self, query, category: str):
+        """카테고리 필터 적용 (fill_in_blank 중복 방지 포함)."""
+        if category == "fill_in_blank":
+            return query.where(Question.question_type == QuestionType.FILL_IN_BLANK)
+        elif category == "concept":
+            return query.where(
+                Question.category == QuestionCategory.CONCEPT,
+                Question.question_type != QuestionType.FILL_IN_BLANK,
+            )
+        elif category == "computation":
+            return query.where(
+                Question.category == QuestionCategory.COMPUTATION,
+                Question.question_type != QuestionType.FILL_IN_BLANK,
+            )
+        return query
+
     async def _select_questions_fallback(
         self,
         student_id: str,
@@ -313,54 +347,52 @@ class DailyTestService:
         count: int,
         recently_used: list[str],
     ) -> list[str]:
-        """난이도 제한 없이 문제 선택 (폴백)."""
-        base_query = select(Question.id).where(
-            Question.is_active == True,  # noqa: E712
+        """난이도 제한 없이 문제 선택 (폴백).
+
+        단계적 제한 완화로 최소 문제 수(MIN_QUESTIONS_PER_DAILY_TEST) 보장:
+        1) 해금 개념 + 중복 제외
+        2) 해금 개념 + 중복 허용
+        3) 같은 학년 전체 개념 + 중복 허용
+        """
+        min_count = min(MIN_QUESTIONS_PER_DAILY_TEST, count)
+
+        # 1단계: 해금 개념, 중복 제외
+        q1 = self._build_category_filter(
+            select(Question.id).where(Question.is_active == True), category  # noqa: E712
         )
-
-        if category == "fill_in_blank":
-            base_query = base_query.where(
-                Question.question_type == QuestionType.FILL_IN_BLANK
-            )
-        elif category == "concept":
-            base_query = base_query.where(
-                Question.category == QuestionCategory.CONCEPT
-            )
-        elif category == "computation":
-            base_query = base_query.where(
-                Question.category == QuestionCategory.COMPUTATION
-            )
-
         if grade:
             available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
             if available_concept_ids:
-                base_query = base_query.where(
-                    Question.concept_id.in_(available_concept_ids)
-                )
-
+                q1 = q1.where(Question.concept_id.in_(available_concept_ids))
         if recently_used:
-            base_query = base_query.where(~Question.id.in_(recently_used))
+            q1 = q1.where(~Question.id.in_(recently_used))
 
-        all_ids = list((await self.db.scalars(base_query)).all())
-        if not all_ids:
-            # 중복 허용
-            base_query_no_exclude = select(Question.id).where(
-                Question.is_active == True,  # noqa: E712
-            )
-            if category == "fill_in_blank":
-                base_query_no_exclude = base_query_no_exclude.where(
-                    Question.question_type == QuestionType.FILL_IN_BLANK
-                )
-            elif category == "concept":
-                base_query_no_exclude = base_query_no_exclude.where(
-                    Question.category == QuestionCategory.CONCEPT
-                )
-            elif category == "computation":
-                base_query_no_exclude = base_query_no_exclude.where(
-                    Question.category == QuestionCategory.COMPUTATION
-                )
-            all_ids = list((await self.db.scalars(base_query_no_exclude)).all())
+        all_ids = list((await self.db.scalars(q1)).all())
+        if len(all_ids) >= min_count:
+            return random.sample(all_ids, min(count, len(all_ids)))
 
+        # 2단계: 해금 개념, 중복 허용
+        q2 = self._build_category_filter(
+            select(Question.id).where(Question.is_active == True), category  # noqa: E712
+        )
+        if grade and available_concept_ids:
+            q2 = q2.where(Question.concept_id.in_(available_concept_ids))
+
+        all_ids = list((await self.db.scalars(q2)).all())
+        if len(all_ids) >= min_count:
+            return random.sample(all_ids, min(count, len(all_ids)))
+
+        # 3단계: 같은 학년 전체 개념, 중복 허용
+        q3 = self._build_category_filter(
+            select(Question.id).where(Question.is_active == True), category  # noqa: E712
+        )
+        if grade:
+            all_grade_concepts = select(Concept.id).where(Concept.grade == grade)
+            grade_concept_ids = list((await self.db.scalars(all_grade_concepts)).all())
+            if grade_concept_ids:
+                q3 = q3.where(Question.concept_id.in_(grade_concept_ids))
+
+        all_ids = list((await self.db.scalars(q3)).all())
         return random.sample(all_ids, min(count, len(all_ids)))
 
     # ------------------------------------------------------------------

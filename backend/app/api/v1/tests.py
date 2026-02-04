@@ -28,7 +28,7 @@ from app.schemas import (
     AnswerLogResponse,
     WrongQuestionItem,
 )
-from app.schemas.common import UserRole
+from app.schemas.common import QuestionType, UserRole
 from app.services.test_service import TestService
 from app.services.grading_service import GradingService
 from app.services.gamification_service import GamificationService
@@ -404,6 +404,7 @@ async def start_test(
             options=q["options"],
             explanation=q.get("explanation", ""),
             points=q["points"],
+            blank_config=q.get("blank_config"),
         )
         for q in shuffled_questions
     ]
@@ -898,6 +899,7 @@ async def get_attempt(
                     options=q["options"],
                     explanation="" if not attempt.completed_at else q.get("explanation", ""),
                     points=q["points"],
+                    blank_config=q.get("blank_config"),
                 )
                 for q in shuffled_questions
             ]
@@ -926,22 +928,48 @@ async def get_attempt(
         test_with_questions = await test_service.get_test_with_questions(test.id)
         questions = test_with_questions["questions"] if test_with_questions else []
 
-    question_responses = [
-        QuestionResponse(
-            id=q.id,
-            concept_id=q.concept_id,
-            concept_name=q.concept.name if q.concept else "",
-            category=q.category,
-            part=q.part,
-            question_type=q.question_type,
-            difficulty=q.difficulty,
-            content=q.content,
-            options=q.options,
-            explanation="" if not attempt.completed_at else q.explanation,
-            points=q.points,
+    question_responses = []
+    for q in questions:
+        blank_cfg = None
+        if q.question_type == QuestionType.FILL_IN_BLANK:
+            if "[answer]" in (q.content or ""):
+                display_content = q.content.replace("[answer]", "___")
+                answers = (q.correct_answer or "").split("|")
+                blank_answers = {}
+                for i, ans in enumerate(answers):
+                    blank_answers[f"blank_{i}"] = {"answer": ans.strip(), "position": i}
+                blank_cfg = {
+                    "display_content": display_content,
+                    "blank_answers": blank_answers,
+                    "original_content": q.content,
+                }
+            elif q.blank_config and q.blank_config.get("accept_formats"):
+                content_text = q.content or ""
+                if content_text.endswith("?"):
+                    display_content = content_text[:-1].rstrip() + " ___"
+                else:
+                    display_content = content_text + " ___"
+                blank_cfg = {
+                    "display_content": display_content,
+                    "blank_answers": {"blank_0": {"answer": (q.correct_answer or "").strip(), "position": 0}},
+                    "original_content": q.content,
+                }
+        question_responses.append(
+            QuestionResponse(
+                id=q.id,
+                concept_id=q.concept_id,
+                concept_name=q.concept.name if q.concept else "",
+                category=q.category,
+                part=q.part,
+                question_type=q.question_type,
+                difficulty=q.difficulty,
+                content=q.content,
+                options=q.options,
+                explanation="" if not attempt.completed_at else q.explanation,
+                points=q.points,
+                blank_config=blank_cfg,
+            )
         )
-        for q in questions
-    ]
 
     return ApiResponse(
         data=GetAttemptResponse(

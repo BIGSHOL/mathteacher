@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { MathText } from '../common/MathText'
 
 const correctSound = new Audio('/sounds/correct.mp3')
 const wrongSound = new Audio('/sounds/wrong.mp3')
@@ -166,7 +167,7 @@ export function FeedbackModal({
               {!isCorrect && (
                 <div className="mb-4 rounded-xl bg-gray-100 p-4">
                   <div className="text-sm text-gray-500">정답</div>
-                  <div className="text-lg font-bold text-gray-900">{correctAnswer}</div>
+                  <div className="text-lg font-bold text-gray-900"><MathText text={correctAnswer} /></div>
                 </div>
               )}
 
@@ -191,7 +192,7 @@ export function FeedbackModal({
               {explanation && (
                 <div className="mb-6">
                   <div className="mb-2 text-sm font-medium text-gray-500">해설</div>
-                  <p className="text-gray-700">{explanation}</p>
+                  <p className="text-gray-700"><MathText text={explanation} /></p>
                 </div>
               )}
 
@@ -274,8 +275,8 @@ export function IncorrectFeedback({
           </svg>
           정답
         </div>
-        <div className="text-lg font-bold text-gray-900 font-math">{correctAnswer}</div>
-        {explanation && <p className="mt-2 text-gray-700">{explanation}</p>}
+        <div className="text-lg font-bold text-gray-900 font-math"><MathText text={correctAnswer} /></div>
+        {explanation && <p className="mt-2 text-gray-700"><MathText text={explanation} /></p>}
       </div>
     </motion.div>
   )

@@ -123,10 +123,7 @@ export function DailyLabPage() {
       navigate(`/test/result/${record.attempt_id}`)
       return
     }
-    if (record.status === 'in_progress' && record.attempt_id) {
-      navigate(`/test/play/${record.attempt_id}`)
-      return
-    }
+    // 항상 start API를 거쳐서 유효한 attempt_id 확보
     setStarting(record.id)
     try {
       const res = await api.post<{ success: boolean; data: { attempt_id: string } }>(

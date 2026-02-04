@@ -138,12 +138,12 @@ async def update_chapter_data(
     from app.models.chapter import Chapter
 
     CHAPTER_CONCEPT_MAP = {
-        "chapter-m1-01": ["M1-NUM-01", "M1-NUM-02"],
-        "chapter-m1-02": ["M1-NUM-03", "M1-NUM-04"],
-        "chapter-m1-03": ["M1-ALG-01", "M1-ALG-02", "concept-001"],
-        "chapter-m1-04": ["M1-FUNC-01"],
-        "chapter-m1-05": ["M1-GEO-01", "M1-GEO-02", "M1-GEO-03"],
-        "chapter-m1-06": ["M1-STA-01"],
+        "chapter-m1-01": ["concept-m1-prime"],
+        "chapter-m1-02": ["concept-m1-integer", "concept-002"],
+        "chapter-m1-03": ["concept-m1-expression", "concept-m1-equation", "concept-001", "concept-003"],
+        "chapter-m1-04": ["concept-m1-coord", "concept-m1-proportion", "concept-004"],
+        "chapter-m1-05": ["concept-m1-basic-geo", "concept-m1-plane-fig", "concept-m1-solid-fig"],
+        "chapter-m1-06": ["concept-m1-frequency", "concept-m1-representative", "concept-m1-scatter", "concept-005"],
     }
 
     stmt = select(Chapter).where(Chapter.grade == "middle_1")

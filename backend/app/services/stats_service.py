@@ -141,8 +141,12 @@ class StatsService:
             select(AnswerLog, Question.concept_id, Question.category)
             .join(Question, AnswerLog.question_id == Question.id)
             .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
+            .join(Concept, Question.concept_id == Concept.id)
             .where(TestAttempt.student_id == student_id)
         )
+        # 학생 학년에 해당하는 개념만 필터링
+        if student and student.grade:
+            all_logs_stmt = all_logs_stmt.where(Concept.grade == student.grade)
         all_logs = list((await self.db.execute(all_logs_stmt)).all())
 
         # 개념별 집계

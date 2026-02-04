@@ -10,6 +10,9 @@ from app.models.test import Test
 from app.models.test_attempt import TestAttempt
 from app.models.answer_log import AnswerLog
 from app.models.question import Question
+from app.models.chapter import Chapter
+from app.models.chapter_progress import ChapterProgress
+from app.models.concept import Concept
 from app.schemas.common import Grade, QuestionType
 from app.services.blank_service import BlankService
 
@@ -67,6 +70,42 @@ class TestService:
     def __init__(self, db: AsyncSession):
         self.db = db
 
+    async def _get_student_available_concept_ids(self, student_id: str, grade: Grade) -> list[str]:
+        """학생이 해금한 단원에 속하는 개념 ID만 반환."""
+        unlocked_stmt = (
+            select(ChapterProgress.chapter_id)
+            .where(
+                ChapterProgress.student_id == student_id,
+                ChapterProgress.is_unlocked == True,  # noqa: E712
+            )
+        )
+        unlocked_chapter_ids = list((await self.db.scalars(unlocked_stmt)).all())
+
+        if unlocked_chapter_ids:
+            chapter_stmt = select(Chapter.concept_ids).where(
+                Chapter.id.in_(unlocked_chapter_ids)
+            )
+            concept_id_lists = list((await self.db.scalars(chapter_stmt)).all())
+            available = []
+            for cids in concept_id_lists:
+                if cids:
+                    available.extend(cids)
+            if available:
+                return list(set(available))
+
+        # 폴백: 해금된 챕터가 없으면 해당 학년 1단원 개념만
+        first_chapter_stmt = (
+            select(Chapter.concept_ids)
+            .where(Chapter.grade == grade, Chapter.chapter_number == 1)
+        )
+        first_concepts = await self.db.scalar(first_chapter_stmt)
+        if first_concepts:
+            return first_concepts
+
+        # 최종 폴백: 챕터 데이터가 없는 학년 → 전체 개념
+        stmt = select(Concept.id).where(Concept.grade == grade)
+        return list((await self.db.scalars(stmt)).all())
+
     async def get_available_tests(
         self,
         student_id: str,
@@ -80,14 +119,40 @@ class TestService:
         if grade:
             stmt = stmt.where(Test.grade == grade)
 
-        # 총 개수
-        count_stmt = select(func.count()).select_from(stmt.subquery())
-        total = await self.db.scalar(count_stmt) or 0
+        # 해금된 챕터의 concept_ids로 테스트 필터링
+        available_concept_ids: list[str] = []
+        if grade:
+            available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
+
+        # 페이지네이션 전에 전체 목록을 가져와서 concept 필터링
+        stmt = stmt.order_by(Test.created_at.desc())
+        all_tests = list((await self.db.scalars(stmt)).all())
+
+        # 테스트의 concept_ids가 해금된 concept에 포함되는 것만 필터링
+        if available_concept_ids:
+            filtered_tests = []
+            for t in all_tests:
+                # 일일 테스트는 이미 생성 시 챕터 필터링 적용됨 → 항상 표시
+                if t.id.startswith("daily-"):
+                    filtered_tests.append(t)
+                    continue
+                # 진단 평가는 항상 표시
+                if getattr(t, "is_placement", False):
+                    filtered_tests.append(t)
+                    continue
+                if not t.concept_ids:
+                    filtered_tests.append(t)
+                    continue
+                # 테스트의 concept_ids 중 하나라도 해금된 concept에 포함되면 표시
+                if any(cid in available_concept_ids for cid in t.concept_ids):
+                    filtered_tests.append(t)
+            all_tests = filtered_tests
+
+        total = len(all_tests)
 
         # 페이지네이션
-        stmt = stmt.order_by(Test.created_at.desc())
-        stmt = stmt.offset((page - 1) * page_size).limit(page_size)
-        tests = list((await self.db.scalars(stmt)).all())
+        start = (page - 1) * page_size
+        tests = all_tests[start:start + page_size]
 
         # 한 번의 쿼리로 모든 테스트의 시도 통계 조회
         test_ids = [t.id for t in tests]
@@ -202,15 +267,54 @@ class TestService:
         blank_service = BlankService(self.db)
 
         for q in ordered_questions:
-            if q.question_type == QuestionType.FILL_IN_BLANK and q.blank_config:
-                # 임시 attempt_id 생성 (실제 attempt는 아직 생성 전)
-                temp_attempt_id = f"temp_{test_id}_{student_id}_{attempt_count}"
-                blank_data = blank_service.generate_blanks_for_attempt(
-                    question=q,
-                    attempt_count=attempt_count,
-                    student_id=student_id,
-                    attempt_id=temp_attempt_id
-                )
+            if q.question_type == QuestionType.FILL_IN_BLANK:
+                blank_data = None
+
+                # 1) 새로운 형식: blank_positions + round_rules → BlankService
+                if q.blank_config and q.blank_config.get("blank_positions"):
+                    temp_attempt_id = f"temp_{test_id}_{student_id}_{attempt_count}"
+                    blank_data = blank_service.generate_blanks_for_attempt(
+                        question=q,
+                        attempt_count=attempt_count,
+                        student_id=student_id,
+                        attempt_id=temp_attempt_id
+                    )
+
+                # 2) 이전 형식: content에 [answer] 마커가 있는 문제
+                elif "[answer]" in (q.content or ""):
+                    display_content = q.content.replace("[answer]", "___")
+                    answers = (q.correct_answer or "").split("|")
+                    blank_answers = {}
+                    for i, ans in enumerate(answers):
+                        blank_answers[f"blank_{i}"] = {
+                            "answer": ans.strip(),
+                            "position": i,
+                        }
+                    blank_data = {
+                        "display_content": display_content,
+                        "blank_answers": blank_answers,
+                        "original_content": q.content,
+                    }
+
+                # 3) fb() 스타일: blank_config에 accept_formats가 있지만 [answer] 없는 문제
+                elif q.blank_config and q.blank_config.get("accept_formats"):
+                    content_text = q.content or ""
+                    # "~의 값은?" 형태를 "~의 값은 ___" 로 변환
+                    if content_text.endswith("?"):
+                        display_content = content_text[:-1].rstrip() + " ___"
+                    else:
+                        display_content = content_text + " ___"
+                    blank_answers = {
+                        "blank_0": {
+                            "answer": (q.correct_answer or "").strip(),
+                            "position": 0,
+                        }
+                    }
+                    blank_data = {
+                        "display_content": display_content,
+                        "blank_answers": blank_answers,
+                        "original_content": q.content,
+                    }
 
                 if blank_data:
                     if q.id not in question_shuffle_config:
@@ -283,6 +387,7 @@ class TestService:
                 "difficulty": q.difficulty,
                 "points": q.points,
                 "explanation": q.explanation,
+                "options": q.options,
             }
 
             # 셔플된 보기와 정답 사용
@@ -293,8 +398,6 @@ class TestService:
                     # 정답은 응답에 포함하지 않음 (채점 시에만 사용)
                 if "blank_config" in config:
                     q_data["blank_config"] = config["blank_config"]
-            else:
-                q_data["options"] = q.options
 
             result.append(q_data)
 

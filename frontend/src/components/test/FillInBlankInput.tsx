@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { clsx } from 'clsx'
+import { MathText } from '../common/MathText'
 
 interface FillInBlankInputProps {
   displayContent: string
@@ -76,7 +77,7 @@ export function FillInBlankInput({
           const blankId = blankIds[index]
           return (
             <span key={index}>
-              <span className="whitespace-pre-wrap">{part}</span>
+              <span className="whitespace-pre-wrap"><MathText text={part} /></span>
               {index < blankIds.length && blankId && (
                 <span className="inline-flex items-baseline mx-1">
                   <input

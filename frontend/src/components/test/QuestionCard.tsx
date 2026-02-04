@@ -45,15 +45,8 @@ export function QuestionCard({
         <DifficultyBadge difficulty={question.difficulty} />
       </div>
 
-      {/* 문제 내용 */}
-      <div className="mb-6">
-        <p className="text-lg font-medium text-gray-900">
-          <MathText text={question.content} />
-        </p>
-      </div>
-
-      {/* 빈칸 채우기 (blank_config가 있으면 전용 UI, 없으면 단답형 입력) */}
-      {question.question_type === 'fill_in_blank' && question.blank_config && (
+      {/* 문제 내용 (blank_config 있으면 FillInBlankInput이 텍스트를 대체 표시) */}
+      {question.question_type === 'fill_in_blank' && question.blank_config ? (
         <div className="mb-6">
           <FillInBlankInput
             displayContent={question.blank_config.display_content}
@@ -62,6 +55,12 @@ export function QuestionCard({
             onChange={onBlankChange}
             disabled={disabled}
           />
+        </div>
+      ) : (
+        <div className="mb-6">
+          <p className="text-lg font-medium text-gray-900">
+            <MathText text={question.content} />
+          </p>
         </div>
       )}
 

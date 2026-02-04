@@ -88,6 +88,7 @@ class QuestionResponse(QuestionBase):
     concept_name: str = ""
     options: list[QuestionOption] | None = None
     prerequisite_concept_ids: list[str] | None = None
+    blank_config: dict | None = None
 
     model_config = {"from_attributes": True}
 
