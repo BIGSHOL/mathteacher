@@ -26,12 +26,10 @@ export function DashboardPage() {
   const user = useAuthStore((state) => state.user)
   const [stats, setStats] = useState<StudentStats | null>(null)
 
-  const [statsError, setStatsError] = useState(false)
-
   useEffect(() => {
     api.get<{ success: boolean; data: StudentStats }>('/api/v1/stats/me', { timeout: 10000 })
       .then((res) => setStats(res.data.data))
-      .catch(() => setStatsError(true))
+      .catch(() => {})
   }, [])
 
   return (
