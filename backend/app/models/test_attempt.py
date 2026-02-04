@@ -62,7 +62,7 @@ class TestAttempt(Base):
     test: Mapped["Test"] = relationship("Test", back_populates="attempts", lazy="selectin")
     student: Mapped["User"] = relationship("User", lazy="selectin")
     answer_logs: Mapped[list["AnswerLog"]] = relationship(
-        "AnswerLog", back_populates="attempt", cascade="all, delete-orphan", lazy="selectin"
+        "AnswerLog", back_populates="attempt", cascade="all, delete-orphan", lazy="raise"
     )
 
     def __repr__(self) -> str:

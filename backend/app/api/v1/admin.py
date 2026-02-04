@@ -1,9 +1,12 @@
-"""관리자 전용 API (DB 초기화, 사용자 목록 등)."""
+"""관리자 전용 API (DB 초기화, 사용자 목록, AI 문제 생성 등)."""
 
+import asyncio
 import logging
 from typing import Optional
+from uuid import uuid4
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from pydantic import BaseModel, Field
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text, select, func
 
@@ -12,10 +15,33 @@ from app.api.v1.auth import require_role
 from app.schemas.common import ApiResponse, PaginatedResponse, UserRole
 from app.schemas.auth import UserResponse
 from app.models.user import User
+from app.models.question import Question
+from app.models.concept import Concept
+from app.services.ai_service import AIService
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+_ai_service = AIService()
+
+
+# ─────────────────────────────────────────────
+# AI 문제 생성 스키마
+# ─────────────────────────────────────────────
+class AIGenerateRequest(BaseModel):
+    concept_id: str = Field(..., description="개념 ID")
+    count: int = Field(default=10, ge=1, le=50, description="생성할 문제 수")
+    question_type: str = Field(
+        default="multiple_choice",
+        description="multiple_choice 또는 fill_in_blank",
+    )
+    difficulty_min: int = Field(default=1, ge=1, le=10)
+    difficulty_max: int = Field(default=10, ge=1, le=10)
+
+
+class AISaveRequest(BaseModel):
+    questions: list[dict] = Field(..., description="저장할 문제 목록")
 
 
 @router.get("/users", response_model=ApiResponse[PaginatedResponse[dict]])
@@ -224,4 +250,238 @@ async def update_chapter_data(
         success=True,
         data={"updated_chapters": updated, "total_chapters": len(chapters)},
         message=f"{updated}개 챕터의 concept_ids가 업데이트되었습니다.",
+    )
+
+
+# ─────────────────────────────────────────────
+# AI 문제 대량 생성
+# ─────────────────────────────────────────────
+@router.post("/generate-questions", response_model=ApiResponse[dict])
+async def admin_generate_questions(
+    request: AIGenerateRequest,
+    current_user: UserResponse = Depends(require_role(UserRole.MASTER)),
+    db: AsyncSession = Depends(get_db),
+):
+    """AI로 문제를 생성하여 프리뷰로 반환합니다 (저장 안 함, 마스터 전용).
+
+    개념을 선택하고 수량/난이도를 지정하면 Gemini가 문제를 생성합니다.
+    반환된 문제를 검토 후 save-generated-questions로 저장하세요.
+    """
+    from app.core.config import settings
+
+    if not settings.GEMINI_API_KEY:
+        raise HTTPException(
+            status_code=503,
+            detail="GEMINI_API_KEY가 설정되지 않았습니다.",
+        )
+
+    # 개념 조회
+    concept = await db.get(Concept, request.concept_id)
+    if not concept:
+        raise HTTPException(status_code=404, detail="개념을 찾을 수 없습니다.")
+
+    concept_name = concept.name
+    grade = concept.grade.value if hasattr(concept.grade, "value") else str(concept.grade)
+    category = concept.category.value if hasattr(concept.category, "value") else str(concept.category)
+    part = concept.part.value if hasattr(concept.part, "value") else str(concept.part)
+
+    # 기존 문제 content 조회 (중복 방지)
+    existing_stmt = (
+        select(Question.content)
+        .where(Question.concept_id == request.concept_id, Question.is_active.is_(True))
+    )
+    existing_result = await db.execute(existing_stmt)
+    existing_contents = [row[0] for row in existing_result.all()]
+
+    # 배치 생성 (10개씩 끊어서 호출)
+    BATCH_SIZE = 10
+    all_generated: list[dict] = []
+
+    for i in range(0, request.count, BATCH_SIZE):
+        batch_count = min(BATCH_SIZE, request.count - i)
+        batch = await _ai_service.generate_questions(
+            concept_name=concept_name,
+            concept_id=request.concept_id,
+            grade=grade,
+            category=category,
+            part=part,
+            question_type=request.question_type,
+            count=batch_count,
+            difficulty_min=request.difficulty_min,
+            difficulty_max=request.difficulty_max,
+            existing_contents=existing_contents + [q["content"] for q in all_generated],
+            id_prefix=f"ai-{request.concept_id.replace('concept-', '')}",
+            start_seq=len(all_generated) + 1,
+        )
+        if batch:
+            all_generated.extend(batch)
+
+        # Rate limit 배려
+        if i + BATCH_SIZE < request.count:
+            await asyncio.sleep(1)
+
+    if not all_generated:
+        raise HTTPException(
+            status_code=500,
+            detail="AI 문제 생성에 실패했습니다. 잠시 후 다시 시도하세요.",
+        )
+
+    logger.info(
+        "AI generated %d questions for concept %s by user %s",
+        len(all_generated), request.concept_id, current_user.id,
+    )
+
+    return ApiResponse(
+        success=True,
+        data={"generated": all_generated, "count": len(all_generated)},
+        message=f"{len(all_generated)}개 문제가 생성되었습니다. 검토 후 저장하세요.",
+    )
+
+
+@router.post("/save-generated-questions", response_model=ApiResponse[dict])
+async def admin_save_generated_questions(
+    request: AISaveRequest,
+    current_user: UserResponse = Depends(require_role(UserRole.MASTER)),
+    db: AsyncSession = Depends(get_db),
+):
+    """생성된 문제를 DB에 저장합니다 (마스터 전용).
+
+    generate-questions 또는 derive-fill-blank에서 반환된 문제 목록을
+    검토/편집 후 이 엔드포인트로 저장합니다.
+    """
+    if not request.questions:
+        raise HTTPException(status_code=400, detail="저장할 문제가 없습니다.")
+    if len(request.questions) > 200:
+        raise HTTPException(status_code=400, detail="한 번에 최대 200개까지 저장 가능합니다.")
+
+    # 개념 ID 유효성 검증
+    concept_ids = {q.get("concept_id") for q in request.questions if q.get("concept_id")}
+    existing_concepts_stmt = select(Concept.id).where(Concept.id.in_(concept_ids))
+    existing_result = await db.execute(existing_concepts_stmt)
+    existing_concept_ids = {row[0] for row in existing_result.all()}
+    missing = concept_ids - existing_concept_ids
+    if missing:
+        raise HTTPException(
+            status_code=400,
+            detail=f"존재하지 않는 개념: {', '.join(missing)}",
+        )
+
+    saved = 0
+    for q_data in request.questions:
+        # ID가 없으면 자동 생성
+        qid = q_data.get("id") or f"ai-{uuid4().hex[:12]}"
+        # 이미 존재하는 ID는 건너뛰기
+        existing = await db.get(Question, qid)
+        if existing:
+            continue
+
+        q = Question(
+            id=qid,
+            concept_id=q_data["concept_id"],
+            category=q_data.get("category", "concept"),
+            part=q_data.get("part", "calc"),
+            question_type=q_data.get("question_type", "multiple_choice"),
+            difficulty=max(1, min(10, int(q_data.get("difficulty", 5)))),
+            content=q_data.get("content", ""),
+            options=q_data.get("options"),
+            correct_answer=q_data.get("correct_answer", ""),
+            explanation=q_data.get("explanation", ""),
+            points=q_data.get("points", 10),
+            blank_config=q_data.get("blank_config"),
+            is_active=True,
+        )
+        db.add(q)
+        saved += 1
+
+    await db.commit()
+
+    logger.info(
+        "Saved %d generated questions by user %s",
+        saved, current_user.id,
+    )
+
+    return ApiResponse(
+        success=True,
+        data={"saved_count": saved},
+        message=f"{saved}개 문제가 저장되었습니다.",
+    )
+
+
+# ─────────────────────────────────────────────
+# FB 빈칸 문제 자동 파생
+# ─────────────────────────────────────────────
+class FBDeriveRequest(BaseModel):
+    concept_id: str = Field(..., description="개념 ID")
+    max_per_mc: int = Field(default=3, ge=1, le=5, description="MC 1문제당 최대 파생 수")
+
+
+@router.post("/derive-fill-blank", response_model=ApiResponse[dict])
+async def admin_derive_fill_blank(
+    request: FBDeriveRequest,
+    current_user: UserResponse = Depends(require_role(UserRole.MASTER)),
+    db: AsyncSession = Depends(get_db),
+):
+    """MC 문제에서 빈칸 채우기 문제를 자동 파생합니다 (마스터 전용).
+
+    선택한 개념의 MC 문제들에서 핵심 용어를 추출하여
+    빈칸 채우기 변형 문제를 생성합니다.
+    """
+    from app.services.fb_derivation_service import FBDerivationService
+
+    # 개념 존재 확인
+    concept = await db.get(Concept, request.concept_id)
+    if not concept:
+        raise HTTPException(status_code=404, detail="개념을 찾을 수 없습니다.")
+
+    # MC 문제 조회
+    mc_stmt = (
+        select(Question)
+        .where(
+            Question.concept_id == request.concept_id,
+            Question.question_type == "multiple_choice",
+            Question.is_active.is_(True),
+        )
+    )
+    mc_result = await db.execute(mc_stmt)
+    mc_questions = mc_result.scalars().all()
+
+    if not mc_questions:
+        raise HTTPException(
+            status_code=404,
+            detail="해당 개념에 MC 문제가 없습니다.",
+        )
+
+    # 파생 서비스 호출
+    service = FBDerivationService()
+    all_derived: list[dict] = []
+
+    for mc_q in mc_questions:
+        mc_dict = {
+            "id": mc_q.id,
+            "concept_id": mc_q.concept_id,
+            "category": mc_q.category.value if hasattr(mc_q.category, "value") else str(mc_q.category),
+            "part": mc_q.part.value if hasattr(mc_q.part, "value") else str(mc_q.part),
+            "difficulty": mc_q.difficulty,
+            "content": mc_q.content,
+            "options": mc_q.options,
+            "correct_answer": mc_q.correct_answer,
+            "explanation": mc_q.explanation,
+            "points": mc_q.points,
+        }
+        derived = service.derive_from_mc(mc_dict, max_variants=request.max_per_mc)
+        all_derived.extend(derived)
+
+    logger.info(
+        "Derived %d FB questions from %d MC questions for concept %s",
+        len(all_derived), len(mc_questions), request.concept_id,
+    )
+
+    return ApiResponse(
+        success=True,
+        data={
+            "source_mc_count": len(mc_questions),
+            "derived_fb_count": len(all_derived),
+            "derived_questions": all_derived,
+        },
+        message=f"MC {len(mc_questions)}개에서 FB {len(all_derived)}개 파생. 검토 후 저장하세요.",
     )

@@ -51,7 +51,7 @@ class AnswerLog(Base):
 
     # 관계
     attempt: Mapped["TestAttempt"] = relationship(
-        "TestAttempt", back_populates="answer_logs", lazy="selectin"
+        "TestAttempt", back_populates="answer_logs", lazy="raise"
     )
     question: Mapped["Question"] = relationship("Question", lazy="selectin")
 

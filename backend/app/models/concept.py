@@ -57,10 +57,10 @@ class Concept(Base):
 
     # 관계
     parent: Mapped["Concept | None"] = relationship(
-        "Concept", remote_side=[id], backref="children", lazy="selectin"
+        "Concept", remote_side=[id], backref="children", lazy="raise"
     )
     questions: Mapped[list["Question"]] = relationship(
-        "Question", back_populates="concept", lazy="selectin"
+        "Question", back_populates="concept", lazy="raise"
     )
 
     # 계통수학: 선수 개념 관계 (이 개념을 배우려면 먼저 알아야 하는 개념들)
@@ -70,7 +70,7 @@ class Concept(Base):
         primaryjoin=id == concept_prerequisites.c.concept_id,
         secondaryjoin=id == concept_prerequisites.c.prerequisite_id,
         backref="dependents",
-        lazy="selectin",
+        lazy="raise",
     )
 
     def __repr__(self) -> str:

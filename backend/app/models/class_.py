@@ -50,7 +50,7 @@ class Class(Base):
         "User", foreign_keys=[teacher_id], backref="taught_classes", lazy="selectin"
     )
     students: Mapped[list["User"]] = relationship(
-        "User", back_populates="class_", foreign_keys="User.class_id", lazy="selectin"
+        "User", back_populates="class_", foreign_keys="User.class_id", lazy="raise"
     )
 
     def __repr__(self) -> str:

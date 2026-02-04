@@ -139,3 +139,51 @@ export async function getQuestionStats(): Promise<{
   )
   return data.data
 }
+
+// ─────────────────────────────────────────────
+// AI 문제 대량 생성 (마스터 전용)
+// ─────────────────────────────────────────────
+
+/** AI 문제 생성 요청 */
+export async function generateQuestionsAI(params: {
+  concept_id: string
+  count: number
+  question_type: string
+  difficulty_min: number
+  difficulty_max: number
+}): Promise<{ generated: Record<string, unknown>[]; count: number }> {
+  const { data } = await api.post<
+    ApiResponse<{ generated: Record<string, unknown>[]; count: number }>
+  >('/api/v1/admin/generate-questions', params)
+  return data.data
+}
+
+/** 생성된 문제 저장 */
+export async function saveGeneratedQuestions(
+  questions: Record<string, unknown>[],
+): Promise<{ saved_count: number }> {
+  const { data } = await api.post<ApiResponse<{ saved_count: number }>>(
+    '/api/v1/admin/save-generated-questions',
+    { questions },
+  )
+  return data.data
+}
+
+/** MC에서 FB 빈칸 문제 파생 */
+export async function deriveFillBlank(params: {
+  concept_id: string
+  max_per_mc: number
+}): Promise<{
+  source_mc_count: number
+  derived_fb_count: number
+  derived_questions: Record<string, unknown>[]
+}> {
+  const { data } = await api.post<
+    ApiResponse<{
+      source_mc_count: number
+      derived_fb_count: number
+      derived_questions: Record<string, unknown>[]
+    }>
+  >('/api/v1/admin/derive-fill-blank', params)
+  return data.data
+}

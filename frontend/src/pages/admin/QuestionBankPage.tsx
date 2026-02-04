@@ -9,6 +9,8 @@ interface QuestionItem {
   id: string
   concept_id: string
   concept_name: string
+  grade?: string
+  chapter_name?: string
   category: QuestionCategory
   part: ProblemPart
   question_type: QuestionType
@@ -97,6 +99,13 @@ const TYPE_LABEL: Record<string, string> = {
 const CATEGORY_LABEL: Record<string, string> = {
   computation: '연산',
   concept: '개념',
+}
+
+const GRADE_LABEL: Record<string, string> = {
+  elementary_1: '초1', elementary_2: '초2', elementary_3: '초3',
+  elementary_4: '초4', elementary_5: '초5', elementary_6: '초6',
+  middle_1: '중1', middle_2: '중2', middle_3: '중3',
+  high_1: '공통수학1', high_2: '공통수학2',
 }
 
 export function QuestionBankPage() {
@@ -343,7 +352,9 @@ export function QuestionBankPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b bg-gray-50 text-left">
-                    <th className="px-4 py-3 font-medium text-gray-600 w-[45%]">내용</th>
+                    <th className="px-3 py-3 font-medium text-gray-600">학년</th>
+                    <th className="px-3 py-3 font-medium text-gray-600">단원</th>
+                    <th className="px-4 py-3 font-medium text-gray-600 w-[30%]">내용</th>
                     <th className="px-3 py-3 font-medium text-gray-600">개념</th>
                     <th className="px-3 py-3 font-medium text-gray-600">카테고리</th>
                     <th className="px-3 py-3 font-medium text-gray-600">유형</th>
@@ -360,6 +371,20 @@ export function QuestionBankPage() {
                         i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
                       }`}
                     >
+                      <td className="px-3 py-3">
+                        {q.grade ? (
+                          <span className="inline-block whitespace-nowrap rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-medium text-indigo-700">
+                            {GRADE_LABEL[q.grade] || q.grade}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-gray-400">-</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className="text-xs text-gray-600 line-clamp-1" title={q.chapter_name || ''}>
+                          {q.chapter_name || '-'}
+                        </span>
+                      </td>
                       <td className="px-4 py-3">
                         <p className="line-clamp-2 text-gray-900">{q.content}</p>
                       </td>
@@ -536,6 +561,21 @@ function QuestionDetailModal({
             X
           </button>
         </div>
+
+        {/* 학년 / 단원 */}
+        {q.grade && (
+          <div className="mb-2 flex items-center gap-2 text-xs text-gray-500">
+            <span className="rounded bg-indigo-50 px-2 py-0.5 font-medium text-indigo-700">
+              {GRADE_LABEL[q.grade] || q.grade}
+            </span>
+            {q.chapter_name && (
+              <>
+                <span className="text-gray-300">/</span>
+                <span className="font-medium text-gray-700">{q.chapter_name}</span>
+              </>
+            )}
+          </div>
+        )}
 
         {/* 개념 */}
         {q.concept_name && (

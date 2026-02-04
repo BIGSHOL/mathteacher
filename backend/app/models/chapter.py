@@ -74,7 +74,7 @@ class Chapter(Base):
         primaryjoin=id == chapter_prerequisites.c.chapter_id,
         secondaryjoin=id == chapter_prerequisites.c.prerequisite_id,
         backref="dependents",
-        lazy="selectin",
+        lazy="raise",
     )
 
     def __repr__(self) -> str:

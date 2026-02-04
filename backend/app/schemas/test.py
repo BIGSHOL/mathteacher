@@ -86,6 +86,8 @@ class QuestionResponse(QuestionBase):
     id: str
     concept_id: str
     concept_name: str = ""
+    grade: str | None = None
+    chapter_name: str | None = None
     options: list[QuestionOption] | None = None
     prerequisite_concept_ids: list[str] | None = None
     blank_config: dict | None = None

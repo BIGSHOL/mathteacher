@@ -183,9 +183,16 @@ async def list_questions(
     stmt = stmt.order_by(Question.created_at.desc()).offset((page - 1) * page_size).limit(page_size)
     questions = (await db.scalars(stmt)).all()
 
+    # concept_id → chapter.name 매핑
+    chapters = (await db.scalars(select(Chapter))).all()
+    concept_chapter_map: dict[str, str] = {}
+    for ch in chapters:
+        for cid in ch.concept_ids or []:
+            concept_chapter_map[cid] = ch.name
+
     return ApiResponse(
         data=PaginatedResponse(
-            items=[_to_question_with_answer(q) for q in questions],
+            items=[_to_question_with_answer(q, concept_chapter_map) for q in questions],
             total=total,
             page=page,
             page_size=page_size,
@@ -269,7 +276,14 @@ async def get_questions_by_concept(
     )
     questions = (await db.scalars(stmt)).all()
 
-    return ApiResponse(data=[_to_question_with_answer(q) for q in questions])
+    # concept_id → chapter.name 매핑
+    chapters = (await db.scalars(select(Chapter))).all()
+    concept_chapter_map: dict[str, str] = {}
+    for ch in chapters:
+        for cid in ch.concept_ids or []:
+            concept_chapter_map[cid] = ch.name
+
+    return ApiResponse(data=[_to_question_with_answer(q, concept_chapter_map) for q in questions])
 
 
 @router.get("/stats", response_model=ApiResponse[dict])
@@ -302,11 +316,17 @@ async def get_question_stats(
 # ===========================
 
 
-def _to_question_with_answer(q: Question) -> QuestionWithAnswer:
+def _to_question_with_answer(
+    q: Question,
+    concept_chapter_map: dict[str, str] | None = None,
+) -> QuestionWithAnswer:
     """Question ORM → QuestionWithAnswer schema."""
     return QuestionWithAnswer(
         id=q.id,
         concept_id=q.concept_id,
+        concept_name=q.concept.name if q.concept else "",
+        grade=q.concept.grade.value if q.concept and q.concept.grade else None,
+        chapter_name=(concept_chapter_map or {}).get(q.concept_id),
         category=q.category,
         part=q.part,
         question_type=q.question_type,

@@ -4,7 +4,7 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, UniqueConstraint, func
+from sqlalchemy import DateTime, ForeignKey, Index, Integer, String, UniqueConstraint, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
@@ -24,6 +24,7 @@ class DailyTestRecord(Base):
             "student_id", "date", "category",
             name="uix_student_date_category",
         ),
+        Index("ix_daily_test_student_date", "student_id", "date"),
     )
 
     id: Mapped[str] = mapped_column(
@@ -65,9 +66,9 @@ class DailyTestRecord(Base):
     )
 
     # 관계
-    test: Mapped["Test"] = relationship("Test", lazy="selectin")
-    attempt: Mapped["TestAttempt | None"] = relationship("TestAttempt", lazy="selectin")
-    student: Mapped["User"] = relationship("User", lazy="selectin")
+    test: Mapped["Test"] = relationship("Test", lazy="raise")
+    attempt: Mapped["TestAttempt | None"] = relationship("TestAttempt", lazy="raise")
+    student: Mapped["User"] = relationship("User", lazy="raise")
 
     def __repr__(self) -> str:
         return f"<DailyTestRecord {self.date} {self.category} {self.status}>"

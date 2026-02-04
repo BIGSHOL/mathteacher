@@ -55,7 +55,7 @@ class Test(Base):
 
     # 관계
     attempts: Mapped[list["TestAttempt"]] = relationship(
-        "TestAttempt", back_populates="test", lazy="selectin"
+        "TestAttempt", back_populates="test", lazy="raise"
     )
 
     def __repr__(self) -> str:
