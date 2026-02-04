@@ -28,16 +28,64 @@ function getLevelMeta(level: number): { icon: string; title: string } {
 }
 
 /**
+ * 스트릭 불꽃 색상 테마
+ * 기본(1~29일): 붉은 불꽃 (주황~빨강)
+ * 히든 30일+: 파란 불꽃
+ * 히든 100일+: 흰색 불꽃
+ * 히든 300일+: 검은 불꽃
+ */
+function getFlameTheme(streak: number) {
+  if (streak >= 300) return {
+    hueBase: 270,       // 보라-검정 기조
+    gradient: (hue: number) =>
+      `linear-gradient(to top, hsl(${hue},30%,15%) 0%, hsl(${hue},40%,20%) 30%, hsl(280,50%,25%) 60%, rgba(40,0,60,0.3) 85%, transparent 100%)`,
+    core: 'linear-gradient(to top, rgba(180,140,255,0.5) 0%, rgba(100,50,180,0.3) 40%, transparent 100%)',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(80,0,120,${g}) 0%, rgba(40,0,80,${g * 0.5}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #c4b5fd, #7c3aed)',
+    sparkShadow: '0 0 3px 1px rgba(124,58,237,0.6)',
+    label: '암흑',
+  }
+  if (streak >= 100) return {
+    hueBase: 210,
+    gradient: (hue: number) =>
+      `linear-gradient(to top, hsl(${hue},10%,90%) 0%, hsl(${hue},15%,85%) 30%, hsl(220,20%,80%) 60%, rgba(220,220,240,0.3) 85%, transparent 100%)`,
+    core: 'linear-gradient(to top, rgba(255,255,255,0.8) 0%, rgba(200,210,255,0.5) 40%, transparent 100%)',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(200,210,255,${g}) 0%, rgba(180,190,240,${g * 0.5}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #ffffff, #c7d2fe)',
+    sparkShadow: '0 0 4px 2px rgba(200,210,255,0.8)',
+    label: '백염',
+  }
+  if (streak >= 30) return {
+    hueBase: 210,
+    gradient: (hue: number) =>
+      `linear-gradient(to top, hsl(${hue},100%,55%) 0%, hsl(${hue + 10},95%,50%) 30%, hsl(${hue + 20},90%,45%) 60%, rgba(0,100,255,0.3) 85%, transparent 100%)`,
+    core: 'linear-gradient(to top, rgba(180,220,255,0.6) 0%, rgba(100,180,255,0.4) 40%, transparent 100%)',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(60,130,255,${g}) 0%, rgba(30,80,200,${g * 0.5}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #93c5fd, #3b82f6)',
+    sparkShadow: '0 0 3px 1px rgba(59,130,246,0.6)',
+    label: '청염',
+  }
+  return {
+    hueBase: 20,
+    gradient: (hue: number) =>
+      `linear-gradient(to top, hsl(${hue},100%,55%) 0%, hsl(${hue + 15},100%,50%) 30%, hsl(${hue + 30},95%,45%) 60%, rgba(255,80,0,0.3) 85%, transparent 100%)`,
+    core: 'linear-gradient(to top, #fff8 0%, #ffd54f88 40%, transparent 100%)',
+    glowColor: (g: number) => `radial-gradient(ellipse, rgba(255,120,0,${g}) 0%, rgba(255,60,0,${g * 0.5}) 40%, transparent 70%)`,
+    sparkBg: 'radial-gradient(circle, #ffe082, #ff9800)',
+    sparkShadow: '0 0 3px 1px rgba(255,150,0,0.6)',
+    label: null,
+  }
+}
+
+/**
  * 스트릭 불꽃 애니메이션 컴포넌트
- * streak 1~2: 약한 불씨 (작은 불꽃 1개, 느린 흔들림)
- * streak 3~5: 커지는 불꽃 (불꽃 2~3개, 중간 흔들림)
- * streak 6~10: 타오르는 불꽃 (불꽃 여러개, 빠른 흔들림 + 파티클)
- * streak 11+: 활활 타오르는 대형 불꽃 (최대 강도 + 글로우 + 파티클 다수)
+ * streak 1~2: 약한 불씨 / 3~5: 중간 / 6~10: 강함 / 11+: 최대
+ * 30일+: 파란 불꽃 / 100일+: 흰 불꽃 / 300일+: 검은 불꽃
  */
 function StreakFire({ streak }: { streak: number }) {
   const intensity = streak <= 0 ? 0 : streak <= 2 ? 1 : streak <= 5 ? 2 : streak <= 10 ? 3 : 4
+  const theme = getFlameTheme(streak)
 
-  // 강도별 설정
   const config = useMemo(() => {
     switch (intensity) {
       case 0: return { flames: 0, size: 0, speed: 0, sparks: 0, glow: 0 }
@@ -49,19 +97,17 @@ function StreakFire({ streak }: { streak: number }) {
     }
   }, [intensity])
 
-  // 불꽃 파티클 데이터
   const flameData = useMemo(() =>
     Array.from({ length: config.flames }, (_, i) => ({
       id: i,
       xOff: (i - (config.flames - 1) / 2) * (intensity <= 1 ? 0 : intensity <= 2 ? 6 : 5),
       heightRatio: i === Math.floor(config.flames / 2) ? 1 : 0.6 + Math.random() * 0.3,
       delay: i * 0.12,
-      hue: 20 + (i % 3) * 15, // 주황 ~ 빨강 변화
+      hue: theme.hueBase + (i % 3) * 10,
     })),
-    [config.flames, intensity]
+    [config.flames, intensity, theme.hueBase]
   )
 
-  // 불씨 (스파크) 파티클
   const sparkData = useMemo(() =>
     Array.from({ length: config.sparks }, (_, i) => ({
       id: i,
@@ -85,14 +131,25 @@ function StreakFire({ streak }: { streak: number }) {
 
   return (
     <div className="relative flex items-end justify-center" style={{ width: 60, height: containerH }}>
-      {/* 글로우 이펙트 (바닥) */}
+      {/* 히든 불꽃 라벨 */}
+      {theme.label && (
+        <motion.div
+          className="absolute -top-1 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-white/20 px-1.5 py-0.5 text-[9px] font-bold backdrop-blur-sm"
+          initial={{ opacity: 0, y: 5 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          {theme.label}
+        </motion.div>
+      )}
+
+      {/* 글로우 이펙트 */}
       {config.glow > 0 && (
         <motion.div
           className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-full"
           style={{
             width: config.size * 1.5,
             height: config.size * 0.5,
-            background: `radial-gradient(ellipse, rgba(255,120,0,${config.glow}) 0%, rgba(255,60,0,${config.glow * 0.5}) 40%, transparent 70%)`,
+            background: theme.glowColor(config.glow),
             filter: `blur(${2 + intensity * 2}px)`,
           }}
           animate={{ opacity: [0.6, 1, 0.6], scaleX: [0.9, 1.1, 0.9] }}
@@ -114,12 +171,7 @@ function StreakFire({ streak }: { streak: number }) {
               height: h,
               transform: 'translateX(-50%)',
               borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-              background: `linear-gradient(to top,
-                hsl(${f.hue}, 100%, 55%) 0%,
-                hsl(${f.hue + 15}, 100%, 50%) 30%,
-                hsl(${f.hue + 30}, 95%, 45%) 60%,
-                rgba(255,80,0,0.3) 85%,
-                transparent 100%)`,
+              background: theme.gradient(f.hue),
               filter: `blur(${intensity <= 1 ? 1.5 : 1}px)`,
             }}
             animate={{
@@ -145,7 +197,7 @@ function StreakFire({ streak }: { streak: number }) {
           width: config.size * 0.3,
           height: config.size * 0.45,
           borderRadius: '50% 50% 50% 50% / 60% 60% 40% 40%',
-          background: 'linear-gradient(to top, #fff8 0%, #ffd54f88 40%, transparent 100%)',
+          background: theme.core,
           filter: 'blur(2px)',
         }}
         animate={{
@@ -155,7 +207,7 @@ function StreakFire({ streak }: { streak: number }) {
         transition={{ duration: config.speed * 0.7, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* 스파크(불씨) 파티클 - intensity 2+ */}
+      {/* 스파크 파티클 */}
       {sparkData.map((s) => (
         <motion.div
           key={`spark-${s.id}`}
@@ -165,8 +217,8 @@ function StreakFire({ streak }: { streak: number }) {
             height: s.size,
             left: `calc(50% + ${s.x}px)`,
             bottom: config.size * 0.4,
-            background: 'radial-gradient(circle, #ffe082, #ff9800)',
-            boxShadow: '0 0 3px 1px rgba(255,150,0,0.6)',
+            background: theme.sparkBg,
+            boxShadow: theme.sparkShadow,
           }}
           animate={{
             y: [0, -(20 + intensity * 10), -(35 + intensity * 15)],
