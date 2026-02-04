@@ -205,6 +205,8 @@ class AIService:
         difficulty_min: int = 1,
         difficulty_max: int = 10,
         existing_contents: list[str] | None = None,
+        id_prefix: str = "",
+        start_seq: int = 1,
     ) -> list[dict] | None:
         """Gemini로 문제를 동적 생성. 실패 시 None.
 
@@ -219,6 +221,8 @@ class AIService:
             difficulty_min: 최소 난이도
             difficulty_max: 최대 난이도
             existing_contents: 기존 문제 content 목록 (중복 방지)
+            id_prefix: ID 접두사 (예: "ai-m1-fb") - 비어있으면 자동 생성
+            start_seq: 시작 시퀀스 번호
 
         Returns:
             Question 모델에 바로 넣을 수 있는 dict 리스트
@@ -313,8 +317,13 @@ class AIService:
 
             # Question 모델에 맞게 변환
             result = []
+            seq = start_seq
             for q in questions_raw[:count]:
-                qid = f"ai-{uuid4().hex[:12]}"
+                if id_prefix:
+                    qid = f"{id_prefix}-{seq:03d}"
+                else:
+                    qid = f"ai-{uuid4().hex[:12]}"
+                seq += 1
                 diff = int(q.get("difficulty", 5))
                 diff = max(1, min(10, diff))
 

@@ -497,6 +497,61 @@ class DailyTestService:
         )
         return set((await self.db.scalars(stmt)).all())
 
+    # 학년 → ID 접두사 매핑
+    GRADE_PREFIX_MAP = {
+        "elementary_3": "e3", "elementary_4": "e4",
+        "elementary_5": "e5", "elementary_6": "e6",
+        "middle_1": "m1", "middle_2": "m2", "middle_3": "m3",
+        "high_1": "h1", "high_2": "h2",
+    }
+
+    # 카테고리 → ID 접두사 매핑
+    CATEGORY_PREFIX_MAP = {
+        "concept": "conc",
+        "computation": "comp",
+        "fill_in_blank": "fb",
+    }
+
+    async def _get_next_ai_seq(self, grade_prefix: str, cat_prefix: str) -> int:
+        """AI 문제의 다음 시퀀스 번호를 조회.
+
+        기존 시드(m1-comp-001~) + AI(ai-m1-comp-001~) 모두 확인하여
+        가장 큰 번호 + 1을 반환.
+        """
+        ai_pattern = f"ai-{grade_prefix}-{cat_prefix}-%"
+        seed_pattern = f"{grade_prefix}-{cat_prefix}-%"
+
+        # AI 문제 최대 시퀀스
+        ai_stmt = (
+            select(Question.id)
+            .where(Question.id.like(ai_pattern))
+            .order_by(Question.id.desc())
+            .limit(1)
+        )
+        last_ai_id = await self.db.scalar(ai_stmt)
+
+        # 시드 문제 최대 시퀀스
+        seed_stmt = (
+            select(Question.id)
+            .where(Question.id.like(seed_pattern))
+            .order_by(Question.id.desc())
+            .limit(1)
+        )
+        last_seed_id = await self.db.scalar(seed_stmt)
+
+        max_seq = 0
+        for qid in [last_ai_id, last_seed_id]:
+            if qid:
+                # "ai-m1-comp-042" → "042" → 42
+                # "m1-comp-012" → "012" → 12
+                try:
+                    seq_str = qid.rsplit("-", 1)[-1]
+                    max_seq = max(max_seq, int(seq_str))
+                except (ValueError, IndexError):
+                    pass
+
+        return max_seq + 1
+
     async def _generate_ai_questions(
         self,
         student_id: str,
@@ -507,9 +562,19 @@ class DailyTestService:
         """AI로 문제를 생성하여 DB에 저장하고 ID 목록을 반환.
 
         생성된 문제는 DB에 영구 저장되어 다음에 시드 문제처럼 재활용됩니다.
+        문항 ID: ai-{grade}-{category}-{seq} (예: ai-m1-fb-025, ai-m1-conc-037)
         기존 문제 content를 AI에게 전달하여 중복 생성을 방지합니다.
         """
-        # 해금된 개념 중 하나를 선택
+        # 학년/카테고리 접두사 계산
+        grade_str = grade.value if hasattr(grade, "value") else str(grade)
+        grade_prefix = self.GRADE_PREFIX_MAP.get(grade_str, "xx")
+        cat_prefix = self.CATEGORY_PREFIX_MAP.get(category, category[:4])
+        id_prefix = f"ai-{grade_prefix}-{cat_prefix}"
+
+        # 다음 시퀀스 번호 조회
+        next_seq = await self._get_next_ai_seq(grade_prefix, cat_prefix)
+
+        # 해금된 개념 조회
         available_concept_ids = await self._get_student_available_concept_ids(
             student_id, grade
         )
@@ -542,6 +607,7 @@ class DailyTestService:
         ai_service = AIService()
         generated_ids: list[str] = []
         remaining = count
+        current_seq = next_seq
 
         random.shuffle(concepts)
         for concept in concepts:
@@ -551,16 +617,18 @@ class DailyTestService:
             # 이 개념에 대해 생성할 수 (중복 제거 마진을 위해 +2)
             batch = min(remaining + 2, max(3, count // len(concepts) + 2))
 
-            # AI 문제 생성 (기존 문제 전달하여 중복 방지)
+            # AI 문제 생성 (기존 문제 전달 + 시드 패턴 ID)
             result = await ai_service.generate_questions(
                 concept_name=concept.name,
                 concept_id=concept.id,
-                grade=grade.value if hasattr(grade, "value") else str(grade),
+                grade=grade_str,
                 category=category if category != "fill_in_blank" else concept.category.value,
                 part=concept.part.value if hasattr(concept.part, "value") else str(concept.part),
                 question_type=q_type,
                 count=batch,
-                existing_contents=list(existing_set)[:20],  # 최대 20개 전달
+                existing_contents=list(existing_set)[:20],
+                id_prefix=id_prefix,
+                start_seq=current_seq,
             )
 
             if not result:
@@ -575,6 +643,7 @@ class DailyTestService:
                 content = q_dict.get("content", "").strip()
                 if content in existing_set:
                     logger.debug("Skipping duplicate AI question: %s", content[:50])
+                    current_seq += 1
                     continue
 
                 try:
@@ -595,18 +664,21 @@ class DailyTestService:
                     )
                     self.db.add(q)
                     generated_ids.append(q.id)
-                    existing_set.add(content)  # 이번 배치 내 중복도 방지
+                    existing_set.add(content)
                     remaining -= 1
+                    current_seq += 1
                 except Exception:
                     logger.warning("Failed to save AI question: %s", q_dict.get("id"))
+                    current_seq += 1
                     continue
 
         if generated_ids:
             await self.db.flush()
             self._ai_generated_count += len(generated_ids)
             logger.info(
-                "AI generated %d questions for student %s category %s (saved to DB)",
-                len(generated_ids), student_id[:8], category,
+                "AI generated %d questions [%s-%03d~%03d] for student %s (saved to DB)",
+                len(generated_ids), id_prefix, next_seq, current_seq - 1,
+                student_id[:8],
             )
 
         return generated_ids
