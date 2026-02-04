@@ -474,7 +474,107 @@ def get_concept_data() -> dict:
         ),
     ]
 
-    questions = quad_eq_questions + quad_func_questions + trig_questions + circle_questions + stat_questions
+    # ============================================================
+    # 1~2단원 개념 문제 (실수와 그 연산, 인수분해)
+    # ============================================================
+    ch1_concept_questions = [
+        # 실수와 그 연산 (3문제)
+        mc(
+            id="m3-conc-031",
+            concept_id="concept-m3-real-num",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="'25의 제곱근'과 '√25'의 차이점으로 옳은 것은?",
+            options=[
+                "25의 제곱근은 ±5이고, √25 = 5이다",
+                "둘 다 ±5이다",
+                "둘 다 5이다",
+                "25의 제곱근은 5이고, √25 = ±5이다",
+            ],
+            correct="A",
+            explanation="'25의 제곱근'은 x² = 25를 만족하는 모든 x, 즉 ±5입니다. 반면 √25는 양의 제곱근만 나타내므로 5입니다. √ 기호는 항상 0 이상의 값을 의미합니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-032",
+            concept_id="concept-m3-real-num",
+            category="concept",
+            part="calc",
+            difficulty=5,
+            content="다음 중 무리수인 것은?",
+            options=["√2", "√4", "0.333...", "1/7"],
+            correct="A",
+            explanation="√2 = 1.41421356...으로 순환하지 않는 무한소수이므로 무리수입니다. √4 = 2(유리수), 0.333... = 1/3(순환소수=유리수), 1/7도 유리수입니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-033",
+            concept_id="concept-m3-real-num",
+            category="concept",
+            part="calc",
+            difficulty=7,
+            content="실수의 분류에 대한 설명으로 옳은 것은?",
+            options=[
+                "실수 = 유리수 + 무리수",
+                "실수 = 정수 + 소수",
+                "유리수와 무리수는 겹치는 부분이 있다",
+                "무리수는 수직선 위에 나타낼 수 없다",
+            ],
+            correct="A",
+            explanation="실수는 유리수와 무리수로 분류되며, 이 둘은 겹치지 않습니다. 모든 실수는 수직선 위의 한 점에 대응합니다. 무리수도 수직선 위에 나타낼 수 있습니다.",
+            points=15,
+        ),
+        # 다항식의 곱셈과 인수분해 (3문제)
+        mc(
+            id="m3-conc-034",
+            concept_id="concept-m3-factoring",
+            category="concept",
+            part="algebra",
+            difficulty=3,
+            content="인수분해란 무엇인가?",
+            options=[
+                "하나의 다항식을 두 개 이상의 인수의 곱으로 나타내는 것",
+                "괄호를 풀어서 전개하는 것",
+                "다항식의 차수를 높이는 것",
+                "방정식의 해를 구하는 것",
+            ],
+            correct="A",
+            explanation="인수분해는 다항식을 곱의 형태로 바꾸는 것이고, 전개는 곱을 풀어 다항식으로 바꾸는 것입니다. 예: x² - 4 = (x + 2)(x - 2)",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-035",
+            concept_id="concept-m3-factoring",
+            category="concept",
+            part="algebra",
+            difficulty=5,
+            content="다음 중 완전제곱식인 것은?",
+            options=["x² + 6x + 9", "x² + 6x + 8", "x² + 5x + 6", "x² + 4x + 5"],
+            correct="A",
+            explanation="x² + 6x + 9 = x² + 2(3)(x) + 3² = (x + 3)²으로 완전제곱식입니다. 완전제곱식은 a² + 2ab + b² = (a + b)² 형태입니다. 나머지는 이 형태를 만족하지 않습니다.",
+            points=10,
+        ),
+        mc(
+            id="m3-conc-036",
+            concept_id="concept-m3-factoring",
+            category="concept",
+            part="algebra",
+            difficulty=7,
+            content="'전개'와 '인수분해'의 관계는?",
+            options=[
+                "서로 역과정이다",
+                "같은 과정이다",
+                "전개가 인수분해보다 항상 먼저이다",
+                "관계가 없다",
+            ],
+            correct="A",
+            explanation="전개(곱 → 합)와 인수분해(합 → 곱)는 서로 역과정입니다. 예: (x + 2)(x + 3) → 전개 → x² + 5x + 6, x² + 5x + 6 → 인수분해 → (x + 2)(x + 3)",
+            points=15,
+        ),
+    ]
+
+    questions = quad_eq_questions + quad_func_questions + trig_questions + circle_questions + stat_questions + ch1_concept_questions
 
     # ============================================================
     # 테스트 2개
@@ -497,6 +597,17 @@ def get_concept_data() -> dict:
             concept_ids=["concept-m3-trig", "concept-m3-circle", "concept-m3-statistics"],
             question_ids=[q["id"] for q in trig_questions + circle_questions + stat_questions],
             time_limit_minutes=40,
+        ),
+        test(
+            id="test-m3-ch1-concept",
+            title="중3 실수·인수분해 개념",
+            description="제곱근과 실수, 다항식의 곱셈과 인수분해의 개념 이해",
+            grade="middle_3",
+            concept_ids=["concept-m3-real-num", "concept-m3-factoring"],
+            question_ids=[q["id"] for q in ch1_concept_questions],
+            time_limit_minutes=10,
+            use_question_pool=True,
+            questions_per_attempt=5,
         ),
     ]
 

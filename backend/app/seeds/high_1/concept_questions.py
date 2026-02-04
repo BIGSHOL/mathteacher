@@ -207,11 +207,108 @@ def _get_questions():
             explanation="AB = [[0×1+1×3, 0×2+1×4], [0×1+0×3, 0×2+0×4]] = [[3, 4], [0, 0]]\nAC = [[0×5+1×3, 0×6+1×4], [0×5+0×3, 0×6+0×4]] = [[3, 4], [0, 0]]\n∴ AB = AC이지만 B ≠ C\n\n[오개념 교정] ★★★ 행렬에서는 AB = AC라도 B = C가 아닐 수 있습니다! (약분 불가)",
             points=10,
         ),
+
+        # ========== 1~2단원 개념 문제 (다항식, 방정식과 부등식) ==========
+
+        # 다항식 (3문제)
+        mc(
+            id="h1-conc-013",
+            concept_id="concept-h1-polynomial",
+            category="concept",
+            part="algebra",
+            difficulty=3,
+            content="다음 중 항등식의 정의로 올바른 것은?",
+            options=[
+                "미지수에 어떤 값을 대입해도 항상 성립하는 등식",
+                "미지수의 특정 값에서만 성립하는 등식",
+                "좌변과 우변이 다른 등식",
+                "해가 없는 등식",
+            ],
+            correct="A",
+            explanation="항등식은 미지수에 어떤 값을 넣어도 항상 참인 등식입니다. 예: (x + 1)² = x² + 2x + 1. 반면 방정식은 특정 값에서만 성립합니다.",
+            points=10,
+        ),
+        mc(
+            id="h1-conc-014",
+            concept_id="concept-h1-polynomial",
+            category="concept",
+            part="algebra",
+            difficulty=5,
+            content="나머지정리에 의하면, 다항식 f(x)를 (x - a)로 나눈 나머지는?",
+            options=["f(a)", "f(-a)", "f(0)", "a"],
+            correct="A",
+            explanation="나머지정리: f(x)를 (x - a)로 나눌 때 나머지는 f(a)입니다. f(x) = (x - a)Q(x) + R에서 x = a를 대입하면 R = f(a)입니다.",
+            points=10,
+        ),
+        mc(
+            id="h1-conc-015",
+            concept_id="concept-h1-polynomial",
+            category="concept",
+            part="algebra",
+            difficulty=7,
+            content="인수정리에 의하면, f(a) = 0일 때 다항식 f(x)는 무엇을 인수로 가지는가?",
+            options=["(x - a)", "(x + a)", "x", "a"],
+            correct="A",
+            explanation="인수정리: f(a) = 0이면 f(x)는 (x - a)를 인수로 가집니다. 이는 나머지정리에서 나머지 = f(a) = 0이므로 (x - a)로 나누어떨어지기 때문입니다.",
+            points=15,
+        ),
+        # 방정식과 부등식 (3문제)
+        mc(
+            id="h1-conc-016",
+            concept_id="concept-h1-equation",
+            category="concept",
+            part="algebra",
+            difficulty=4,
+            content="허수 단위 i를 도입한 이유는?",
+            options=[
+                "실수 범위에서 x² + 1 = 0의 해가 존재하지 않기 때문",
+                "계산을 간단히 하기 위해",
+                "모든 방정식의 해가 양수이기 때문",
+                "소수를 확장하기 위해",
+            ],
+            correct="A",
+            explanation="x² = -1을 만족하는 실수는 없습니다. 이 방정식의 해를 나타내기 위해 i² = -1을 만족하는 허수 단위 i를 도입했습니다.",
+            points=10,
+        ),
+        mc(
+            id="h1-conc-017",
+            concept_id="concept-h1-equation",
+            category="concept",
+            part="algebra",
+            difficulty=6,
+            content="이차방정식의 판별식 D = b² - 4ac의 값에 따른 근의 개수로 옳은 것은?",
+            options=[
+                "D > 0: 서로 다른 두 실근, D = 0: 중근, D < 0: 실근 없음",
+                "D > 0: 근 없음, D = 0: 한 근, D < 0: 두 근",
+                "D의 값과 근의 개수는 무관하다",
+                "D > 0: 중근, D = 0: 서로 다른 두 근",
+            ],
+            correct="A",
+            explanation="판별식 D의 부호가 근의 개수를 결정합니다. D > 0이면 서로 다른 두 실근, D = 0이면 중근, D < 0이면 실근이 없고 허근을 가집니다.",
+            points=10,
+        ),
+        mc(
+            id="h1-conc-018",
+            concept_id="concept-h1-equation",
+            category="concept",
+            part="algebra",
+            difficulty=8,
+            content="이차부등식 (x - 1)(x - 3) > 0의 해가 x < 1 또는 x > 3인 이유는?",
+            options=[
+                "y = (x - 1)(x - 3)의 그래프에서 y > 0인 구간이 두 근의 바깥이기 때문",
+                "부등식의 부등호 방향과 무관하다",
+                "모든 이차부등식의 해는 두 근 사이이다",
+                "두 근의 합이 양수이기 때문",
+            ],
+            correct="A",
+            explanation="위로 볼록(a > 0)인 이차함수 그래프에서 y > 0인 구간은 두 근의 바깥 영역입니다. y < 0인 구간은 두 근 사이입니다.",
+            points=15,
+        ),
     ]
 
 
 def _get_tests():
-    """개념 카테고리 테스트 (2개)."""
+    """개념 카테고리 테스트 (3개)."""
     return [
         test(
             id="test-h1-counting",
@@ -232,6 +329,17 @@ def _get_tests():
             concept_ids=["concept-h1-matrix"],
             question_ids=[f"h1-conc-{i:03d}" for i in range(7, 13)],
             time_limit_minutes=20,
+            use_question_pool=True,
+            questions_per_attempt=5,
+        ),
+        test(
+            id="test-h1-ch1-concept",
+            title="고1 다항식·방정식 개념",
+            description="항등식, 나머지정리, 인수분해, 복소수, 판별식, 이차부등식의 개념 이해",
+            grade="high_1",
+            concept_ids=["concept-h1-polynomial", "concept-h1-equation"],
+            question_ids=[f"h1-conc-{i:03d}" for i in range(13, 19)],
+            time_limit_minutes=10,
             use_question_pool=True,
             questions_per_attempt=5,
         ),

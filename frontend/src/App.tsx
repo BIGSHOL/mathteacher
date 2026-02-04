@@ -4,7 +4,7 @@ import { LoginPage } from './pages/LoginPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { DailyLabPage, TestListPage, TestStartPage, TestPlayPage, TestResultPage, MyStatsPage, ReviewPage, QuickPracticeSetupPage, HelpPage } from './pages/student'
 import { TeacherDashboardPage, TeacherStudentsListPage, TeacherStudentDetailPage } from './pages/teacher'
-import { UserManagementPage } from './pages/admin'
+import { UserManagementPage, QuestionBankPage } from './pages/admin'
 import { MainLayout } from './components/layout'
 import { ProtectedRoute, PublicRoute } from './components/auth'
 
@@ -130,6 +130,14 @@ function App() {
           />
 
           {/* 관리자용 라우트 */}
+          <Route
+            path="/admin/questions"
+            element={
+              <ProtectedRoute allowedRoles={['admin', 'master']}>
+                <QuestionBankPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/admin/users"
             element={

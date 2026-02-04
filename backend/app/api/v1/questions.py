@@ -5,6 +5,7 @@ from sqlalchemy import func as sa_func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
+from app.models.chapter import Chapter
 from app.models.concept import Concept
 from app.models.question import Question
 from app.schemas import (
@@ -15,7 +16,7 @@ from app.schemas import (
     QuestionWithAnswer,
     UserResponse,
 )
-from app.schemas.common import Grade, ProblemPart, QuestionCategory
+from app.schemas.common import Grade, ProblemPart, QuestionCategory, QuestionType
 from app.api.v1.auth import get_current_user, require_role
 
 router = APIRouter(prefix="/questions", tags=["questions"])
@@ -144,6 +145,9 @@ async def list_questions(
     category: QuestionCategory | None = Query(None),
     part: ProblemPart | None = Query(None),
     difficulty: int | None = Query(None, ge=1, le=10),
+    question_type: QuestionType | None = Query(None, description="문제 유형 필터"),
+    chapter_id: str | None = Query(None, description="단원 ID로 필터링"),
+    search: str | None = Query(None, description="문제 내용 검색"),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
@@ -162,6 +166,14 @@ async def list_questions(
         stmt = stmt.where(Question.part == part)
     if difficulty:
         stmt = stmt.where(Question.difficulty == difficulty)
+    if question_type:
+        stmt = stmt.where(Question.question_type == question_type)
+    if chapter_id:
+        chapter = await db.get(Chapter, chapter_id)
+        if chapter and chapter.concept_ids:
+            stmt = stmt.where(Question.concept_id.in_(chapter.concept_ids))
+    if search:
+        stmt = stmt.where(Question.content.ilike(f"%{search}%"))
 
     # 총 개수 계산
     count_stmt = select(sa_func.count()).select_from(stmt.subquery())
@@ -179,6 +191,57 @@ async def list_questions(
             page_size=page_size,
             total_pages=(total + page_size - 1) // page_size,
         )
+    )
+
+
+@router.get("/chapters-list", response_model=ApiResponse[list[dict]])
+async def list_chapters_for_filter(
+    grade: Grade | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(get_current_user),
+):
+    """필터용 단원 목록 조회."""
+    stmt = select(Chapter).where(Chapter.is_active.is_(True))
+    if grade:
+        stmt = stmt.where(Chapter.grade == grade)
+    stmt = stmt.order_by(Chapter.grade, Chapter.chapter_number)
+    chapters = (await db.scalars(stmt)).all()
+    return ApiResponse(
+        data=[
+            {
+                "id": ch.id,
+                "name": ch.name,
+                "grade": ch.grade.value if hasattr(ch.grade, "value") else ch.grade,
+                "chapter_number": ch.chapter_number,
+                "concept_ids": ch.concept_ids or [],
+            }
+            for ch in chapters
+        ]
+    )
+
+
+@router.get("/concepts-list", response_model=ApiResponse[list[dict]])
+async def list_concepts_for_filter(
+    grade: Grade | None = Query(None),
+    chapter_id: str | None = Query(None),
+    db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(get_current_user),
+):
+    """필터용 개념 목록 조회."""
+    if chapter_id:
+        chapter = await db.get(Chapter, chapter_id)
+        if chapter and chapter.concept_ids:
+            stmt = select(Concept).where(Concept.id.in_(chapter.concept_ids))
+        else:
+            return ApiResponse(data=[])
+    elif grade:
+        stmt = select(Concept).where(Concept.grade == grade)
+    else:
+        stmt = select(Concept)
+    stmt = stmt.order_by(Concept.name)
+    concepts = (await db.scalars(stmt)).all()
+    return ApiResponse(
+        data=[{"id": c.id, "name": c.name, "grade": c.grade.value if hasattr(c.grade, "value") else c.grade} for c in concepts]
     )
 
 

@@ -1,0 +1,602 @@
+// 문제 은행 페이지 (admin/master 전용)
+
+import { useEffect, useState, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import api from '../../lib/api'
+import type { Grade, QuestionCategory, QuestionType, ProblemPart, PaginatedResponse } from '../../types'
+
+interface QuestionItem {
+  id: string
+  concept_id: string
+  concept_name: string
+  category: QuestionCategory
+  part: ProblemPart
+  question_type: QuestionType
+  difficulty: number
+  content: string
+  options?: { id: string; label: string; text: string }[]
+  correct_answer: string
+  explanation: string
+  points: number
+  blank_config?: Record<string, unknown>
+}
+
+interface ChapterItem {
+  id: string
+  name: string
+  grade: string
+  chapter_number: number
+  concept_ids: string[]
+}
+
+interface ConceptItem {
+  id: string
+  name: string
+  grade: string
+}
+
+const GRADE_OPTIONS: { value: Grade; label: string }[] = [
+  { value: 'elementary_1', label: '초1' },
+  { value: 'elementary_2', label: '초2' },
+  { value: 'elementary_3', label: '초3' },
+  { value: 'elementary_4', label: '초4' },
+  { value: 'elementary_5', label: '초5' },
+  { value: 'elementary_6', label: '초6' },
+  { value: 'middle_1', label: '중1' },
+  { value: 'middle_2', label: '중2' },
+  { value: 'middle_3', label: '중3' },
+  { value: 'high_1', label: '고1' },
+  { value: 'high_2', label: '고2' },
+]
+
+const CATEGORY_OPTIONS = [
+  { value: 'computation', label: '연산' },
+  { value: 'concept', label: '개념' },
+]
+
+const TYPE_OPTIONS = [
+  { value: 'multiple_choice', label: '객관식' },
+  { value: 'true_false', label: 'O/X' },
+  { value: 'short_answer', label: '단답형' },
+  { value: 'fill_in_blank', label: '빈칸채우기' },
+]
+
+const PART_OPTIONS = [
+  { value: 'calc', label: '수와 연산' },
+  { value: 'algebra', label: '문자와 식' },
+  { value: 'func', label: '함수' },
+  { value: 'geo', label: '도형' },
+  { value: 'data', label: '자료와 확률' },
+  { value: 'word', label: '서술형' },
+]
+
+const DIFFICULTY_OPTIONS = Array.from({ length: 10 }, (_, i) => ({
+  value: i + 1,
+  label: `Lv.${i + 1}`,
+}))
+
+const CATEGORY_BADGE: Record<string, string> = {
+  computation: 'bg-blue-100 text-blue-700',
+  concept: 'bg-emerald-100 text-emerald-700',
+}
+
+const TYPE_BADGE: Record<string, string> = {
+  multiple_choice: 'bg-purple-100 text-purple-700',
+  true_false: 'bg-amber-100 text-amber-700',
+  short_answer: 'bg-pink-100 text-pink-700',
+  fill_in_blank: 'bg-cyan-100 text-cyan-700',
+}
+
+const TYPE_LABEL: Record<string, string> = {
+  multiple_choice: '객관식',
+  true_false: 'O/X',
+  short_answer: '단답형',
+  fill_in_blank: '빈칸',
+}
+
+const CATEGORY_LABEL: Record<string, string> = {
+  computation: '연산',
+  concept: '개념',
+}
+
+export function QuestionBankPage() {
+  const [questions, setQuestions] = useState<QuestionItem[]>([])
+  const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
+  const [page, setPage] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  // 필터
+  const [gradeFilter, setGradeFilter] = useState<Grade | ''>('')
+  const [categoryFilter, setCategoryFilter] = useState<QuestionCategory | ''>('')
+  const [typeFilter, setTypeFilter] = useState<QuestionType | ''>('')
+  const [partFilter, setPartFilter] = useState<ProblemPart | ''>('')
+  const [difficultyFilter, setDifficultyFilter] = useState<number | ''>('')
+  const [chapterFilter, setChapterFilter] = useState('')
+  const [conceptFilter, setConceptFilter] = useState('')
+  const [searchQuery, setSearchQuery] = useState('')
+
+  // 동적 드롭다운 데이터
+  const [chapters, setChapters] = useState<ChapterItem[]>([])
+  const [concepts, setConcepts] = useState<ConceptItem[]>([])
+
+  // 상세 모달
+  const [selectedQuestion, setSelectedQuestion] = useState<QuestionItem | null>(null)
+
+  // 학년 변경 시 단원 로드
+  useEffect(() => {
+    setChapterFilter('')
+    setConceptFilter('')
+    if (gradeFilter) {
+      api
+        .get<{ success: boolean; data: ChapterItem[] }>(
+          `/api/v1/questions/chapters-list?grade=${gradeFilter}`
+        )
+        .then((res) => setChapters(res.data.data))
+        .catch(() => setChapters([]))
+    } else {
+      setChapters([])
+    }
+  }, [gradeFilter])
+
+  // 단원 변경 시 개념 로드
+  useEffect(() => {
+    setConceptFilter('')
+    if (chapterFilter) {
+      api
+        .get<{ success: boolean; data: ConceptItem[] }>(
+          `/api/v1/questions/concepts-list?chapter_id=${chapterFilter}`
+        )
+        .then((res) => setConcepts(res.data.data))
+        .catch(() => setConcepts([]))
+    } else if (gradeFilter) {
+      api
+        .get<{ success: boolean; data: ConceptItem[] }>(
+          `/api/v1/questions/concepts-list?grade=${gradeFilter}`
+        )
+        .then((res) => setConcepts(res.data.data))
+        .catch(() => setConcepts([]))
+    } else {
+      setConcepts([])
+    }
+  }, [chapterFilter, gradeFilter])
+
+  const fetchQuestions = useCallback(async () => {
+    try {
+      setIsLoading(true)
+      setError('')
+      const params = new URLSearchParams({ page: page.toString(), page_size: '30' })
+      if (gradeFilter) params.append('grade', gradeFilter)
+      if (categoryFilter) params.append('category', categoryFilter)
+      if (typeFilter) params.append('question_type', typeFilter)
+      if (partFilter) params.append('part', partFilter)
+      if (difficultyFilter) params.append('difficulty', difficultyFilter.toString())
+      if (chapterFilter) params.append('chapter_id', chapterFilter)
+      if (conceptFilter) params.append('concept_id', conceptFilter)
+      if (searchQuery.trim()) params.append('search', searchQuery.trim())
+
+      const res = await api.get<{
+        success: boolean
+        data: PaginatedResponse<QuestionItem>
+      }>(`/api/v1/questions?${params}`)
+
+      setQuestions(res.data.data.items)
+      setTotal(res.data.data.total)
+      setTotalPages(res.data.data.total_pages)
+    } catch {
+      setError('문제 목록을 불러오는데 실패했습니다.')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [page, gradeFilter, categoryFilter, typeFilter, partFilter, difficultyFilter, chapterFilter, conceptFilter, searchQuery])
+
+  useEffect(() => {
+    fetchQuestions()
+  }, [fetchQuestions])
+
+  // 필터 변경 시 페이지 리셋
+  useEffect(() => {
+    setPage(1)
+  }, [gradeFilter, categoryFilter, typeFilter, partFilter, difficultyFilter, chapterFilter, conceptFilter, searchQuery])
+
+  const resetFilters = () => {
+    setGradeFilter('')
+    setCategoryFilter('')
+    setTypeFilter('')
+    setPartFilter('')
+    setDifficultyFilter('')
+    setChapterFilter('')
+    setConceptFilter('')
+    setSearchQuery('')
+    setPage(1)
+  }
+
+  const hasActiveFilters =
+    gradeFilter || categoryFilter || typeFilter || partFilter || difficultyFilter || chapterFilter || conceptFilter || searchQuery
+
+  return (
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6">
+      <div className="container mx-auto max-w-7xl px-4 space-y-4">
+        {/* 헤더 */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xl">📦</span>
+                <h1 className="text-xl font-bold text-gray-900">문제 은행</h1>
+                <span className="rounded-full bg-gray-200 px-2 py-0.5 text-xs font-medium text-gray-600">
+                  {total}문제
+                </span>
+              </div>
+              <p className="text-xs text-gray-500 mt-0.5 ml-8">시드 데이터의 모든 문제를 조회합니다</p>
+            </div>
+            {hasActiveFilters && (
+              <button
+                onClick={resetFilters}
+                className="rounded-lg bg-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 hover:bg-gray-300 transition-colors"
+              >
+                필터 초기화
+              </button>
+            )}
+          </div>
+        </motion.div>
+
+        {/* 필터 패널 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="rounded-xl bg-white p-4 shadow-sm"
+        >
+          <div className="grid gap-2.5 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {/* 학년 */}
+            <FilterSelect
+              label="학년"
+              value={gradeFilter}
+              onChange={(v) => setGradeFilter(v as Grade | '')}
+              options={GRADE_OPTIONS}
+            />
+            {/* 단원 */}
+            <FilterSelect
+              label="단원"
+              value={chapterFilter}
+              onChange={setChapterFilter}
+              options={chapters.map((ch) => ({
+                value: ch.id,
+                label: `${ch.chapter_number}. ${ch.name}`,
+              }))}
+              disabled={!gradeFilter}
+            />
+            {/* 개념 */}
+            <FilterSelect
+              label="개념"
+              value={conceptFilter}
+              onChange={setConceptFilter}
+              options={concepts.map((c) => ({ value: c.id, label: c.name }))}
+              disabled={!gradeFilter}
+            />
+            {/* 카테고리 */}
+            <FilterSelect
+              label="카테고리"
+              value={categoryFilter}
+              onChange={(v) => setCategoryFilter(v as QuestionCategory | '')}
+              options={CATEGORY_OPTIONS}
+            />
+            {/* 유형 */}
+            <FilterSelect
+              label="문제 유형"
+              value={typeFilter}
+              onChange={(v) => setTypeFilter(v as QuestionType | '')}
+              options={TYPE_OPTIONS}
+            />
+            {/* 파트 */}
+            <FilterSelect
+              label="파트"
+              value={partFilter}
+              onChange={(v) => setPartFilter(v as ProblemPart | '')}
+              options={PART_OPTIONS}
+            />
+            {/* 난이도 */}
+            <FilterSelect
+              label="난이도"
+              value={difficultyFilter}
+              onChange={(v) => setDifficultyFilter(v ? Number(v) : '')}
+              options={DIFFICULTY_OPTIONS}
+            />
+            {/* 검색 */}
+            <div className="col-span-2 sm:col-span-1 lg:col-span-2">
+              <label className="mb-1 block text-[10px] font-medium text-gray-500">내용 검색</label>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="문제 내용으로 검색..."
+                className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-400"
+              />
+            </div>
+          </div>
+        </motion.div>
+
+        {/* 에러 */}
+        {error && (
+          <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
+        )}
+
+        {/* 테이블 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="overflow-hidden rounded-xl bg-white shadow-sm"
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <div className="h-8 w-8 animate-spin rounded-full border-3 border-primary-500 border-t-transparent" />
+            </div>
+          ) : questions.length === 0 ? (
+            <div className="py-20 text-center text-sm text-gray-400">
+              {hasActiveFilters ? '조건에 맞는 문제가 없습니다.' : '문제가 없습니다.'}
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-gray-50 text-left">
+                    <th className="px-4 py-3 font-medium text-gray-600 w-[45%]">내용</th>
+                    <th className="px-3 py-3 font-medium text-gray-600">개념</th>
+                    <th className="px-3 py-3 font-medium text-gray-600">카테고리</th>
+                    <th className="px-3 py-3 font-medium text-gray-600">유형</th>
+                    <th className="px-3 py-3 font-medium text-gray-600 text-center">난이도</th>
+                    <th className="px-3 py-3 font-medium text-gray-600">정답</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {questions.map((q, i) => (
+                    <tr
+                      key={q.id}
+                      onClick={() => setSelectedQuestion(q)}
+                      className={`cursor-pointer border-b transition-colors hover:bg-primary-50 ${
+                        i % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
+                      }`}
+                    >
+                      <td className="px-4 py-3">
+                        <p className="line-clamp-2 text-gray-900">{q.content}</p>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className="text-xs text-gray-600">{q.concept_name || '-'}</span>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${CATEGORY_BADGE[q.category] || 'bg-gray-100 text-gray-600'}`}>
+                          {CATEGORY_LABEL[q.category] || q.category}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-medium ${TYPE_BADGE[q.question_type] || 'bg-gray-100 text-gray-600'}`}>
+                          {TYPE_LABEL[q.question_type] || q.question_type}
+                        </span>
+                      </td>
+                      <td className="px-3 py-3 text-center">
+                        <span className="font-math text-xs font-bold text-gray-700">Lv.{q.difficulty}</span>
+                      </td>
+                      <td className="px-3 py-3">
+                        <span className="text-xs font-medium text-green-700 bg-green-50 rounded px-1.5 py-0.5 max-w-[120px] truncate inline-block">
+                          {q.correct_answer}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* 페이지네이션 */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t px-4 py-3">
+              <span className="text-xs text-gray-500">
+                {total}개 중 {(page - 1) * 30 + 1}-{Math.min(page * 30, total)}
+              </span>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="rounded-lg border px-3 py-1 text-xs disabled:opacity-40 hover:bg-gray-50"
+                >
+                  이전
+                </button>
+                {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                  let p: number
+                  if (totalPages <= 7) {
+                    p = i + 1
+                  } else if (page <= 4) {
+                    p = i + 1
+                  } else if (page >= totalPages - 3) {
+                    p = totalPages - 6 + i
+                  } else {
+                    p = page - 3 + i
+                  }
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={`rounded-lg px-3 py-1 text-xs font-medium ${
+                        p === page
+                          ? 'bg-primary-500 text-white'
+                          : 'border hover:bg-gray-50'
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                })}
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page >= totalPages}
+                  className="rounded-lg border px-3 py-1 text-xs disabled:opacity-40 hover:bg-gray-50"
+                >
+                  다음
+                </button>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </div>
+
+      {/* 상세 모달 */}
+      <AnimatePresence>
+        {selectedQuestion && (
+          <QuestionDetailModal
+            question={selectedQuestion}
+            onClose={() => setSelectedQuestion(null)}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  )
+}
+
+// 필터 셀렉트 컴포넌트
+function FilterSelect({
+  label,
+  value,
+  onChange,
+  options,
+  disabled,
+}: {
+  label: string
+  value: string | number
+  onChange: (v: string) => void
+  options: { value: string | number; label: string }[]
+  disabled?: boolean
+}) {
+  return (
+    <div>
+      <label className="mb-1 block text-[10px] font-medium text-gray-500">{label}</label>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        disabled={disabled}
+        className="w-full rounded-lg border border-gray-200 px-2.5 py-1.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-400 disabled:bg-gray-100 disabled:text-gray-400"
+      >
+        <option value="">전체</option>
+        {options.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
+// 문제 상세 모달
+function QuestionDetailModal({
+  question: q,
+  onClose,
+}: {
+  question: QuestionItem
+  onClose: () => void
+}) {
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 bg-black/50"
+        onClick={onClose}
+      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="fixed left-1/2 top-1/2 z-50 w-[92%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
+      >
+        {/* 헤더 */}
+        <div className="mb-4 flex items-start justify-between">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${CATEGORY_BADGE[q.category]}`}>
+              {CATEGORY_LABEL[q.category]}
+            </span>
+            <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${TYPE_BADGE[q.question_type]}`}>
+              {TYPE_LABEL[q.question_type]}
+            </span>
+            <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              Lv.{q.difficulty}
+            </span>
+            <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              {q.points}점
+            </span>
+          </div>
+          <button
+            onClick={onClose}
+            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+          >
+            X
+          </button>
+        </div>
+
+        {/* 개념 */}
+        {q.concept_name && (
+          <div className="mb-3 text-xs text-gray-500">
+            개념: <span className="font-medium text-gray-700">{q.concept_name}</span>
+          </div>
+        )}
+
+        {/* 문제 내용 */}
+        <div className="mb-4 rounded-lg bg-gray-50 p-4">
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-900">{q.content}</p>
+        </div>
+
+        {/* 선택지 */}
+        {q.options && q.options.length > 0 && (
+          <div className="mb-4 space-y-2">
+            <p className="text-xs font-medium text-gray-500">선택지</p>
+            {q.options.map((opt) => (
+              <div
+                key={opt.id}
+                className={`rounded-lg border px-3 py-2 text-sm ${
+                  opt.id === q.correct_answer
+                    ? 'border-green-300 bg-green-50 font-medium text-green-800'
+                    : 'border-gray-200 text-gray-700'
+                }`}
+              >
+                <span className="mr-2 font-bold">{opt.label}.</span>
+                {opt.text}
+                {opt.id === q.correct_answer && (
+                  <span className="ml-2 text-xs text-green-600">&#10003; 정답</span>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* 정답 (객관식 아닌 경우) */}
+        {(!q.options || q.options.length === 0) && (
+          <div className="mb-4">
+            <p className="text-xs font-medium text-gray-500 mb-1">정답</p>
+            <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm font-medium text-green-800">
+              {q.correct_answer}
+            </div>
+          </div>
+        )}
+
+        {/* 해설 */}
+        {q.explanation && (
+          <div className="mb-4">
+            <p className="text-xs font-medium text-gray-500 mb-1">해설</p>
+            <div className="rounded-lg bg-blue-50 px-3 py-2 text-sm text-gray-700 whitespace-pre-wrap">
+              {q.explanation}
+            </div>
+          </div>
+        )}
+
+        {/* 메타 정보 */}
+        <div className="border-t pt-3 text-[10px] text-gray-400">
+          ID: {q.id} | concept_id: {q.concept_id}
+        </div>
+      </motion.div>
+    </>
+  )
+}
