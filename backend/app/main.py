@@ -31,15 +31,7 @@ def init_db():
     from app.models.user import RefreshToken
     from app.services.auth_service import AuthService
 
-    # [개발 전용] 스키마 재생성 - 프로덕션에서는 실행하지 않음
-    if settings.ENV == "development":
-        if settings.DATABASE_URL.startswith("sqlite"):
-            Base.metadata.drop_all(bind=sync_engine)
-        else:
-            with sync_engine.connect() as conn:
-                conn.execute(sa_text("DROP SCHEMA public CASCADE"))
-                conn.execute(sa_text("CREATE SCHEMA public"))
-                conn.commit()
+    # 테이블 생성 (없는 테이블만 생성, 기존 데이터 보존)
     Base.metadata.create_all(bind=sync_engine)
 
     # Seed initial data if database is empty (using sync session)
