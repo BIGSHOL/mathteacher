@@ -24,7 +24,7 @@ def mc(
         "difficulty": difficulty,
         "content": content,
         "options": [
-            {"id": str(i + 1), "label": labels[i], "text": t}
+            {"id": str(i + 1), "label": labels[i], "text": t[0] if isinstance(t, (tuple, list)) else t}
             for i, t in enumerate(options)
         ],
         "correct_answer": correct,

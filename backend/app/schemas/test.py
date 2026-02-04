@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from .common import Difficulty, Grade, ProblemPart, QuestionCategory, QuestionType
 
@@ -49,6 +49,14 @@ class QuestionOption(BaseModel):
     id: str
     label: str  # A, B, C, D
     text: str
+
+    @field_validator("text", mode="before")
+    @classmethod
+    def coerce_text(cls, v):
+        """시드 데이터에서 tuple/list로 저장된 text를 문자열로 변환."""
+        if isinstance(v, (list, tuple)):
+            return v[0] if v else ""
+        return v
 
 
 class QuestionBase(BaseModel):
