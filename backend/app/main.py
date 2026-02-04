@@ -9,10 +9,9 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from sqlalchemy import text as sa_text
-from sqlalchemy.orm import sessionmaker as sync_sessionmaker
 
 from app.core.config import settings
-from app.core.database import Base, sync_engine, AsyncSessionLocal
+from app.core.database import Base, sync_engine, AsyncSessionLocal, SyncSessionLocal
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -20,9 +19,6 @@ logger = logging.getLogger(__name__)
 
 # Rate Limiter 설정
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
-
-# Sync session factory (for init_db and load_seed_data)
-SyncSessionLocal = sync_sessionmaker(bind=sync_engine, autocommit=False, autoflush=False)
 
 
 def init_db():

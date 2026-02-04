@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import DeclarativeBase, sessionmaker as sync_sessionmaker
 
 from app.core.config import settings
 
@@ -39,6 +39,9 @@ if settings.DATABASE_URL.startswith("sqlite"):
     )
 else:
     sync_engine = create_engine(settings.DATABASE_URL)
+
+# Sync session factory (for init_db, admin operations)
+SyncSessionLocal = sync_sessionmaker(bind=sync_engine, autocommit=False, autoflush=False)
 
 
 class Base(DeclarativeBase):

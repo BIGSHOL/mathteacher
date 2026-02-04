@@ -1,19 +1,76 @@
-"""관리자 전용 API (DB 초기화 등)."""
+"""관리자 전용 API (DB 초기화, 사용자 목록 등)."""
 
 import logging
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import text, select
+from sqlalchemy import text, select, func
 
-from app.core.database import get_db
+from app.core.database import get_db, sync_engine
 from app.api.v1.auth import require_role
-from app.schemas.common import ApiResponse
-from app.schemas.auth import UserResponse, UserRole
+from app.schemas.common import ApiResponse, PaginatedResponse, UserRole
+from app.schemas.auth import UserResponse
+from app.models.user import User
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+@router.get("/users", response_model=ApiResponse[PaginatedResponse[dict]])
+async def list_users(
+    role: Optional[str] = Query(None, description="역할 필터 (student, teacher, admin, master)"),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(100, ge=1, le=500),
+    current_user: UserResponse = Depends(
+        require_role(UserRole.MASTER, UserRole.ADMIN)
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    """사용자 목록 조회 (관리자/마스터 전용)."""
+    stmt = select(User)
+    count_stmt = select(func.count(User.id))
+
+    if role:
+        stmt = stmt.where(User.role == role)
+        count_stmt = count_stmt.where(User.role == role)
+
+    # Total count
+    total_result = await db.execute(count_stmt)
+    total = total_result.scalar() or 0
+
+    # Paginated query
+    offset = (page - 1) * page_size
+    stmt = stmt.order_by(User.created_at.desc()).offset(offset).limit(page_size)
+    result = await db.execute(stmt)
+    users = result.scalars().all()
+
+    items = [
+        {
+            "id": u.id,
+            "login_id": u.login_id,
+            "name": u.name,
+            "role": u.role.value if hasattr(u.role, 'value') else u.role,
+            "grade": (u.grade.value if hasattr(u.grade, 'value') else u.grade) if u.grade else None,
+            "class_id": u.class_id,
+            "created_at": u.created_at.isoformat() if u.created_at else None,
+        }
+        for u in users
+    ]
+
+    total_pages = (total + page_size - 1) // page_size if total > 0 else 1
+
+    return ApiResponse(
+        success=True,
+        data=PaginatedResponse(
+            items=items,
+            total=total,
+            page=page,
+            page_size=page_size,
+            total_pages=total_pages,
+        ),
+    )
 
 
 @router.post("/reset-db", response_model=ApiResponse[dict])
@@ -28,7 +85,6 @@ async def reset_database(
     모든 테이블을 드롭하고 재생성 + 시드 데이터 로드.
     기존 모든 사용자/테스트 기록이 삭제됩니다.
     """
-    from app.core.database import sync_engine, SyncSessionLocal
     from app.models import Base
 
     logger.warning(f"DB reset requested by user {current_user.id} ({current_user.name})")
@@ -43,11 +99,13 @@ async def reset_database(
         # 2) Recreate tables
         Base.metadata.create_all(bind=sync_engine)
 
-        # 3) Re-run init_db logic inline (avoid circular import)
-        _run_init_db(sync_engine, SyncSessionLocal, Base)
+        # 3) Re-run init_db (seeds users)
+        import importlib
+        main_module = importlib.import_module("app.main")
+        main_module.init_db()
 
-        # 4) Re-run load_seed_data
-        _run_load_seed_data(SyncSessionLocal)
+        # 4) Re-run load_seed_data (seeds concepts/questions)
+        main_module.load_seed_data()
 
         logger.info("DB reset completed successfully")
         return ApiResponse(
@@ -101,43 +159,3 @@ async def update_chapter_data(
         data={"updated_chapters": updated, "total_chapters": len(chapters)},
         message=f"{updated}개 챕터의 concept_ids가 업데이트되었습니다.",
     )
-
-
-def _run_init_db(sync_engine, SyncSessionLocal, Base):
-    """init_db 로직 재실행 (main.py에서 분리)."""
-    from app.models.user import User, RefreshToken
-    from app.models.concept import Concept
-    from app.models.question import Question
-    from app.models.test import Test
-    from app.models.chapter import Chapter
-    from app.models.chapter_progress import ChapterProgress
-    from app.models.concept_mastery import ConceptMastery
-    from app.services.auth_service import AuthService
-    from datetime import datetime, timezone
-
-    db = SyncSessionLocal()
-    try:
-        if not db.query(User).first():
-            # main.py의 init_db()를 호출 (lazy import로 순환 방지)
-            import importlib
-            main_module = importlib.import_module("app.main")
-            # init_db는 이미 테이블이 생성된 상태이므로 시드만 실행
-            main_module.init_db()
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        logger.error(f"init_db re-run failed: {e}")
-        raise
-    finally:
-        db.close()
-
-
-def _run_load_seed_data(SyncSessionLocal):
-    """load_seed_data 재실행."""
-    try:
-        import importlib
-        main_module = importlib.import_module("app.main")
-        main_module.load_seed_data()
-    except Exception as e:
-        logger.error(f"load_seed_data re-run failed: {e}")
-        raise
