@@ -208,7 +208,7 @@ async def get_test_detail(
     test_service: TestService = Depends(get_test_service),
 ):
     """테스트 상세 조회 (문제 포함, 정답 제외)."""
-    result = await test_service.get_test_with_questions(test_id)
+    result = await test_service.get_test_with_questions(test_id, current_user.id)
     if not result:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -925,7 +925,7 @@ async def get_attempt(
             )
 
         # 셔플 데이터가 없으면 원본 사용
-        test_with_questions = await test_service.get_test_with_questions(test.id)
+        test_with_questions = await test_service.get_test_with_questions(test.id, current_user.id)
         questions = test_with_questions["questions"] if test_with_questions else []
 
     question_responses = []

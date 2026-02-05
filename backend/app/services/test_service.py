@@ -106,6 +106,117 @@ class TestService:
         stmt = select(Concept.id).where(Concept.grade == grade)
         return list((await self.db.scalars(stmt)).all())
 
+    async def generate_comprehensive_test(
+        self,
+        student_id: str,
+        grade: Grade,
+        test_type: str,
+        semester: int | None = None,
+    ) -> dict | None:
+        """종합시험 자동 생성.
+
+        Args:
+            test_type: "cumulative", "semester_final", "grade_final"
+            semester: 학기 종합시험의 경우 학기 번호
+        """
+        from app.services.chapter_service import ChapterService
+
+        # 개념 조회
+        available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
+
+        if not available_concept_ids:
+            return None
+
+        # 테스트 유형별 필터링
+        if test_type == "semester_final":
+            # 학기 종합시험: 해당 학기의 개념만
+            chapter_service = ChapterService(self.db)
+            stmt = select(Chapter).where(
+                Chapter.is_active == True,  # noqa: E712
+                Chapter.grade == grade,
+                Chapter.semester == semester,
+            )
+            semester_chapters = list((await self.db.scalars(stmt)).all())
+            semester_concept_ids = []
+            for ch in semester_chapters:
+                semester_concept_ids.extend(ch.concept_ids or [])
+            available_concept_ids = [cid for cid in available_concept_ids if cid in semester_concept_ids]
+
+        if not available_concept_ids:
+            return None
+
+        # 해당 개념의 문제 조회 (난이도 분포 고려)
+        stmt = select(Question).where(
+            Question.concept_id.in_(available_concept_ids)
+        )
+        all_questions = list((await self.db.scalars(stmt)).all())
+
+        if len(all_questions) < 10:
+            return None
+
+        # 난이도별 분포 (쉬움 30%, 중간 40%, 어려움 30%)
+        easy = [q for q in all_questions if q.difficulty <= 4]
+        medium = [q for q in all_questions if 5 <= q.difficulty <= 7]
+        hard = [q for q in all_questions if q.difficulty >= 8]
+
+        selected = []
+        target_count = min(20, len(all_questions))
+
+        # 난이도 분포에 맞게 선택
+        easy_count = int(target_count * 0.3)
+        medium_count = int(target_count * 0.4)
+        hard_count = target_count - easy_count - medium_count
+
+        if easy:
+            selected.extend(random.sample(easy, min(easy_count, len(easy))))
+        if medium:
+            selected.extend(random.sample(medium, min(medium_count, len(medium))))
+        if hard:
+            selected.extend(random.sample(hard, min(hard_count, len(hard))))
+
+        # 부족하면 나머지에서 랜덤 선택
+        if len(selected) < target_count:
+            remaining = [q for q in all_questions if q not in selected]
+            selected.extend(random.sample(remaining, min(target_count - len(selected), len(remaining))))
+
+        random.shuffle(selected)
+        question_ids = [q.id for q in selected]
+
+        # 테스트 제목 생성
+        grade_labels = {
+            "elementary_3": "초3", "elementary_4": "초4", "elementary_5": "초5", "elementary_6": "초6",
+            "middle_1": "중1", "middle_2": "중2", "middle_3": "중3",
+            "high_1": "고1", "high_2": "고2",
+        }
+        grade_label = grade_labels.get(grade, str(grade))
+
+        if test_type == "cumulative":
+            title = f"{grade_label} 누적 종합 평가"
+            description = f"지금까지 학습한 {len(available_concept_ids)}개 개념을 종합적으로 평가합니다."
+        elif test_type == "semester_final":
+            title = f"{grade_label} {semester}학기 기말고사"
+            description = f"{semester}학기에 배운 모든 내용을 종합적으로 평가합니다."
+        else:  # grade_final
+            title = f"{grade_label} 학년 종합 평가"
+            description = f"{grade_label} 전체 과정을 종합적으로 평가합니다."
+
+        # 가상 테스트 객체 생성 (DB에 저장하지 않음)
+        return {
+            "id": f"auto-{test_type}-{grade}-{semester or ''}",
+            "title": title,
+            "description": description,
+            "grade": grade,
+            "test_type": test_type,
+            "semester": semester,
+            "concept_ids": available_concept_ids,
+            "question_ids": question_ids,
+            "question_count": len(question_ids),
+            "time_limit_minutes": max(30, len(question_ids) * 2),
+            "is_active": True,
+            "is_adaptive": False,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        }
+
     async def get_available_tests(
         self,
         student_id: str,
@@ -174,6 +285,30 @@ class TestService:
                         filtered_tests.append(t)
             all_tests = filtered_tests
 
+            # 자동 생성 종합시험 추가
+            auto_tests = []
+
+            # 1. 누적 종합시험 (항상 표시)
+            cumulative = await self.generate_comprehensive_test(student_id, grade, "cumulative")
+            if cumulative:
+                auto_tests.append(cumulative)
+
+            # 2. 학기 기말시험 (학기 완료 시 표시)
+            for sem, status in semester_status.items():
+                if status.get("is_completed"):
+                    sem_final = await self.generate_comprehensive_test(student_id, grade, "semester_final", sem)
+                    if sem_final:
+                        auto_tests.append(sem_final)
+
+            # 3. 학년 기말시험 (학년 완료 시 표시)
+            if grade_status.get("is_completed"):
+                grade_final = await self.generate_comprehensive_test(student_id, grade, "grade_final")
+                if grade_final:
+                    auto_tests.append(grade_final)
+
+            # 자동 생성 테스트를 앞에 추가
+            all_tests = auto_tests + all_tests
+
         total = len(all_tests)
 
         # 페이지네이션
@@ -181,7 +316,7 @@ class TestService:
         tests = all_tests[start:start + page_size]
 
         # 한 번의 쿼리로 모든 테스트의 시도 통계 조회
-        test_ids = [t.id for t in tests]
+        test_ids = [t.id if hasattr(t, 'id') else t['id'] for t in tests]
         if test_ids:
             stats_stmt = select(
                 TestAttempt.test_id,
@@ -205,7 +340,8 @@ class TestService:
         # 각 테스트의 문제 평균 난이도 조회
         all_question_ids = []
         for t in tests:
-            all_question_ids.extend(t.question_ids or [])
+            qids = t.question_ids if hasattr(t, 'question_ids') else t.get('question_ids', [])
+            all_question_ids.extend(qids or [])
         diff_map: dict[str, int] = {}
         if all_question_ids:
             diff_stmt = select(Question.id, Question.difficulty).where(
@@ -213,40 +349,59 @@ class TestService:
             )
             q_diff = {row[0]: row[1] for row in (await self.db.execute(diff_stmt)).all()}
             for t in tests:
-                diffs = [q_diff[qid] for qid in (t.question_ids or []) if qid in q_diff]
-                diff_map[t.id] = round(sum(diffs) / len(diffs)) if diffs else 5
+                tid = t.id if hasattr(t, 'id') else t['id']
+                qids = t.question_ids if hasattr(t, 'question_ids') else t.get('question_ids', [])
+                diffs = [q_diff[qid] for qid in (qids or []) if qid in q_diff]
+                diff_map[tid] = round(sum(diffs) / len(diffs)) if diffs else 5
 
         # 각 테스트에 대한 학생의 시도 정보 추가
         result = []
         for test in tests:
-            stats = stats_map.get(test.id, {"attempt_count": 0, "best_score": None})
+            tid = test.id if hasattr(test, 'id') else test['id']
+            stats = stats_map.get(tid, {"attempt_count": 0, "best_score": None})
             result.append({
                 "test": test,
                 "is_completed": stats["attempt_count"] > 0,
                 "best_score": stats["best_score"],
                 "attempt_count": stats["attempt_count"],
-                "difficulty": diff_map.get(test.id, 5),
+                "difficulty": diff_map.get(tid, 5),
             })
 
         return result, total
 
-    async def get_test_by_id(self, test_id: str) -> Test | None:
-        """테스트 조회."""
+    async def get_test_by_id(self, test_id: str, student_id: str | None = None) -> Test | dict | None:
+        """테스트 조회 (auto-generated 테스트 포함)."""
+        # 자동 생성 테스트 처리
+        if test_id.startswith("auto-") and student_id:
+            # auto-cumulative-middle_1- 형식 파싱
+            parts = test_id.split("-")
+            if len(parts) >= 3:
+                test_type = parts[1]  # cumulative, semester_final, grade_final
+                grade = parts[2]
+                semester = int(parts[3]) if len(parts) > 3 and parts[3].isdigit() else None
+                return await self.generate_comprehensive_test(student_id, grade, test_type, semester)
+
         return await self.db.get(Test, test_id)
 
-    async def get_test_with_questions(self, test_id: str) -> dict | None:
+    async def get_test_with_questions(self, test_id: str, student_id: str | None = None) -> dict | None:
         """테스트와 문제 목록 조회."""
-        test = await self.get_test_by_id(test_id)
+        test = await self.get_test_by_id(test_id, student_id)
         if not test:
             return None
 
+        # test가 dict인 경우 (auto-generated)
+        if isinstance(test, dict):
+            question_ids = test['question_ids']
+        else:
+            question_ids = test.question_ids
+
         # 문제 조회
-        stmt = select(Question).where(Question.id.in_(test.question_ids))
+        stmt = select(Question).where(Question.id.in_(question_ids))
         questions = list((await self.db.scalars(stmt)).all())
 
         # 문제 순서 정렬 (question_ids 순서대로)
         question_map = {q.id: q for q in questions}
-        ordered_questions = [question_map[qid] for qid in test.question_ids if qid in question_map]
+        ordered_questions = [question_map[qid] for qid in question_ids if qid in question_map]
 
         return {
             "test": test,
@@ -255,16 +410,28 @@ class TestService:
 
     async def start_test(self, test_id: str, student_id: str) -> TestAttempt | None:
         """테스트 시작."""
-        test = await self.get_test_by_id(test_id)
+        test = await self.get_test_by_id(test_id, student_id)
         if not test:
             return None
 
+        # test가 dict인 경우 (auto-generated) 처리
+        is_auto = isinstance(test, dict)
+        if is_auto:
+            all_question_ids = test.get('question_ids', [])
+            use_pool = False
+            questions_per_attempt = None
+            shuffle_options = True
+        else:
+            all_question_ids = test.question_ids or []
+            use_pool = test.use_question_pool
+            questions_per_attempt = test.questions_per_attempt
+            shuffle_options = test.shuffle_options
+
         # 문제 선택
-        all_question_ids = test.question_ids or []
         selected_question_ids = all_question_ids
 
         # 문제 풀 방식: 랜덤하게 N개 선택
-        if test.use_question_pool and test.questions_per_attempt:
+        if use_pool and questions_per_attempt:
             pool_size = len(all_question_ids)
             select_count = min(test.questions_per_attempt, pool_size)
             selected_question_ids = random.sample(all_question_ids, select_count)
@@ -277,7 +444,7 @@ class TestService:
 
         # 보기 셔플 설정 생성
         question_shuffle_config = {}
-        if test.shuffle_options:
+        if shuffle_options:
             for q in ordered_questions:
                 if q.options:
                     shuffled_options, new_correct = shuffle_question_options(
@@ -356,7 +523,7 @@ class TestService:
             student_id=student_id,
             max_score=max_score,
             total_count=len(ordered_questions),
-            selected_question_ids=selected_question_ids if test.use_question_pool else None,
+            selected_question_ids=selected_question_ids if use_pool else None,
             question_shuffle_config=question_shuffle_config if question_shuffle_config else None,
         )
         self.db.add(attempt)
