@@ -47,10 +47,17 @@ function parseSuperscripts(text: string, keyOffset: number): (string | JSX.Eleme
 /** 분수를 세로로 표시하는 인라인 컴포넌트 */
 function InlineFraction({ numerator, denominator }: { numerator: string; denominator: string }) {
   return (
-    <span className="inline-flex flex-col items-center mx-0.5 align-middle" style={{ verticalAlign: '-0.5em' }}>
-      <span className="text-[0.75em] leading-tight px-0.5">{numerator}</span>
-      <span className="w-full border-t border-current" />
-      <span className="text-[0.75em] leading-tight px-0.5">{denominator}</span>
+    <span
+      className="inline-flex flex-col items-center mx-0.5 relative"
+      style={{
+        verticalAlign: 'middle',
+        transform: 'translateY(0.1em)',
+        display: 'inline-flex'
+      }}
+    >
+      <span className="text-[0.7em] leading-none px-0.5">{numerator}</span>
+      <span className="w-full border-t border-current my-[1px]" />
+      <span className="text-[0.7em] leading-none px-0.5">{denominator}</span>
     </span>
   )
 }
