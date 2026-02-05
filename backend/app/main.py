@@ -47,7 +47,7 @@ def init_db():
                 id="master-001",
                 login_id="master01",
                 name="마스터 관리자",
-                role="MASTER",
+                role="master",
                 hashed_password=auth_service.hash_password("password123"),
                 is_active=True,
             )
@@ -59,7 +59,7 @@ def init_db():
                 id="admin-001",
                 login_id="admin01",
                 name="테스트 관리자",
-                role="ADMIN",
+                role="admin",
                 hashed_password=auth_service.hash_password("password123"),
                 is_active=True,
             )
@@ -71,7 +71,7 @@ def init_db():
                 id="teacher-001",
                 login_id="teacher01",
                 name="테스트 강사",
-                role="TEACHER",
+                role="teacher",
                 hashed_password=auth_service.hash_password("password123"),
                 is_active=True,
             )
@@ -83,19 +83,19 @@ def init_db():
                 id="class-001",
                 name="중1 테스트반",
                 teacher_id="teacher-001",
-                grade="MIDDLE_1",
+                grade="middle_1",
             )
             test_class_e3 = Class(
                 id="class-002",
                 name="초3 테스트반",
                 teacher_id="teacher-001",
-                grade="ELEMENTARY_3",
+                grade="elementary_3",
             )
             test_class_h1 = Class(
                 id="class-003",
                 name="고1 테스트반",
                 teacher_id="teacher-001",
-                grade="HIGH_1",
+                grade="high_1",
             )
             db.add_all([test_class_m1, test_class_e3, test_class_h1])
             db.flush()
@@ -105,8 +105,8 @@ def init_db():
                 id="student-001",
                 login_id="student01",
                 name="테스트 학생(중1)",
-                role="STUDENT",
-                grade="MIDDLE_1",
+                role="student",
+                grade="middle_1",
                 class_id="class-001",
                 hashed_password=auth_service.hash_password("password123"),
                 is_active=True,
@@ -119,8 +119,8 @@ def init_db():
                 id="student-002",
                 login_id="student02",
                 name="테스트 학생(초3)",
-                role="STUDENT",
-                grade="ELEMENTARY_3",
+                role="student",
+                grade="elementary_3",
                 class_id="class-002",
                 hashed_password=auth_service.hash_password("password123"),
                 is_active=True,
@@ -133,8 +133,8 @@ def init_db():
                 id="student-003",
                 login_id="student03",
                 name="테스트 학생(고1)",
-                role="STUDENT",
-                grade="HIGH_1",
+                role="student",
+                grade="high_1",
                 class_id="class-003",
                 hashed_password=auth_service.hash_password("password123"),
                 is_active=True,
@@ -149,7 +149,7 @@ def init_db():
             concept = Concept(
                 id="concept-001",
                 name="일차방정식",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 category="concept",
                 part="algebra",
                 description="일차방정식의 풀이",
@@ -433,7 +433,7 @@ def init_db():
                 id="test-001",
                 title="일차방정식 종합 테스트",
                 description="일차방정식의 기본부터 응용까지 총 12문제",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-001"],
                 question_ids=[
                     # 기본 개념 (4문제 - 40점)
@@ -463,7 +463,7 @@ def init_db():
                 id="test-adaptive-001",
                 title="적응형 일차방정식",
                 description="실력에 맞게 난이도가 자동 조절됩니다",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-001"],
                 question_ids=[],  # 적응형은 비워둠
                 question_count=8,
@@ -479,7 +479,7 @@ def init_db():
                 id="test-pool-001",
                 title="일차방정식 연습 (랜덤)",
                 description="11개 문제 중 5개가 랜덤으로 출제되고, 보기 순서도 매번 바뀝니다. 정답 외우기 방지!",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-001"],
                 question_ids=[
                     "question-a-001",
@@ -509,7 +509,7 @@ def init_db():
                 id="test-placement-001",
                 title="실력 진단 평가",
                 description="5-10분 테스트로 당신에게 딱 맞는 학습 경로를 찾아드립니다",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=[
                     "concept-001",  # 일차방정식
                     "concept-002",  # 사칙연산
@@ -547,7 +547,7 @@ def init_db():
             op_concept = Concept(
                 id="concept-002",
                 name="사칙연산",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 category="computation",
                 part="calc",
                 description="덧셈, 뺄셈, 곱셈, 나눗셈 연산 연습",
@@ -655,7 +655,7 @@ def init_db():
                 id="test-002",
                 title="연산 연습",
                 description="반복 연습으로 연산 속도를 높여보세요",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-002"],
                 question_ids=[
                     "question-op-001",
@@ -674,7 +674,7 @@ def init_db():
             ineq_concept = Concept(
                 id="concept-003",
                 name="일차부등식",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 category="concept",
                 part="algebra",
                 description="일차부등식의 풀이와 수직선 표현",
@@ -762,7 +762,7 @@ def init_db():
                 id="test-003",
                 title="일차부등식 테스트",
                 description="부등식의 성질을 이용한 문제 풀이",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-003"],
                 question_ids=["question-ineq-001", "question-ineq-002", "question-ineq-003", "question-ineq-004"],
                 question_count=4,
@@ -775,7 +775,7 @@ def init_db():
             coord_concept = Concept(
                 id="concept-004",
                 name="좌표와 그래프",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 category="concept",
                 part="func",
                 description="좌표평면과 정비례·반비례 그래프",
@@ -863,7 +863,7 @@ def init_db():
                 id="test-004",
                 title="좌표와 그래프",
                 description="좌표평면 위의 점과 그래프 읽기",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-004"],
                 question_ids=["question-coord-001", "question-coord-002", "question-coord-003", "question-coord-004"],
                 question_count=4,
@@ -876,7 +876,7 @@ def init_db():
             stat_concept = Concept(
                 id="concept-005",
                 name="통계",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 category="concept",
                 part="data",
                 description="도수분포와 평균, 중앙값",
@@ -946,7 +946,7 @@ def init_db():
                 id="test-005",
                 title="통계 기초",
                 description="평균, 중앙값, 최빈값 구하기",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-005"],
                 question_ids=["question-stat-001", "question-stat-002", "question-stat-003"],
                 question_count=3,
@@ -1249,7 +1249,7 @@ def init_db():
                 id="test-006",
                 title="빈칸 채우기 연습",
                 description="답을 직접 입력하는 빈칸 채우기 문제",
-                grade="MIDDLE_1",
+                grade="middle_1",
                 concept_ids=["concept-001", "concept-002"],
                 question_ids=[
                     "question-fb-001", "question-fb-002", "question-fb-003",
@@ -1287,7 +1287,7 @@ def init_db():
                 Chapter(
                     id="chapter-m1-01",
                     name="1. 소인수분해",
-                    grade="MIDDLE_1",
+                    grade="middle_1",
                     chapter_number=1,
                     description="소수, 합성수, 소인수분해, 최대공약수, 최소공배수",
                     concept_ids=["concept-m1-prime"],
@@ -1299,7 +1299,7 @@ def init_db():
                 Chapter(
                     id="chapter-m1-02",
                     name="2. 정수와 유리수",
-                    grade="MIDDLE_1",
+                    grade="middle_1",
                     chapter_number=2,
                     description="양수·음수, 절댓값, 정수·유리수 사칙연산, 혼합 계산",
                     concept_ids=["concept-m1-integer", "concept-002"],
@@ -1311,7 +1311,7 @@ def init_db():
                 Chapter(
                     id="chapter-m1-03",
                     name="3. 문자와 식 / 일차방정식",
-                    grade="MIDDLE_1",
+                    grade="middle_1",
                     chapter_number=3,
                     description="문자 사용, 식의 값, 일차식 계산, 등식의 성질, 일차방정식 풀이",
                     concept_ids=["concept-m1-expression", "concept-m1-equation", "concept-001", "concept-003"],
@@ -1324,7 +1324,7 @@ def init_db():
                 Chapter(
                     id="chapter-m1-04",
                     name="4. 좌표평면과 그래프",
-                    grade="MIDDLE_1",
+                    grade="middle_1",
                     chapter_number=4,
                     description="순서쌍, 좌표평면, 사분면, 정비례·반비례 그래프",
                     concept_ids=["concept-m1-coord", "concept-m1-proportion", "concept-004"],
@@ -1336,7 +1336,7 @@ def init_db():
                 Chapter(
                     id="chapter-m1-05",
                     name="5. 기본 도형과 작도",
-                    grade="MIDDLE_1",
+                    grade="middle_1",
                     chapter_number=5,
                     description="점·선·면·각, 작도, 삼각형 합동조건, 다각형 내각·외각",
                     concept_ids=["concept-m1-basic-geo", "concept-m1-plane-fig", "concept-m1-solid-fig"],
@@ -1348,7 +1348,7 @@ def init_db():
                 Chapter(
                     id="chapter-m1-06",
                     name="6. 자료의 정리와 해석",
-                    grade="MIDDLE_1",
+                    grade="middle_1",
                     chapter_number=6,
                     description="줄기와 잎 그림, 도수분포표, 히스토그램, 상대도수",
                     concept_ids=["concept-m1-frequency", "concept-m1-representative", "concept-m1-scatter", "concept-005"],
@@ -1381,7 +1381,7 @@ def init_db():
             _chapter_defs = {
                 # --- 초등학교 3학년 (12단원) - 개념 데이터 미구축 ---
                 # 형식: (name, description, concept_ids, semester)
-                "e3": ("ELEMENTARY_3", [
+                "e3": ("elementary_3", [
                     ("1. 덧셈과 뺄셈", "세 자리 수의 덧셈과 뺄셈, 받아올림과 받아내림", [], 1),
                     ("2. 평면도형", "선분, 반직선, 직선, 각, 직각", [], 1),
                     ("3. 나눗셈", "등분제, 포함제, 곱셈과 나눗셈의 관계", [], 1),
@@ -1396,7 +1396,7 @@ def init_db():
                     ("12. 자료의 정리", "그림그래프, 자료의 분류와 정리", [], 2),
                 ]),
                 # --- 초등학교 4학년 (12단원) ---
-                "e4": ("ELEMENTARY_4", [
+                "e4": ("elementary_4", [
                     ("1. 큰 수", "만, 억, 조, 수의 크기 비교, 자릿값", ["E4-NUM-01", "E4-NUM-02", "E4-NUM-03", "E4-NUM-04"], 1),
                     ("2. 각도", "각의 크기, 예각·직각·둔각, 삼각형 내각의 합", ["E4-GEO-01", "E4-GEO-02", "E4-GEO-03"], 1),
                     ("3. 곱셈과 나눗셈", "(세 자리 수)×(두 자리 수), (세 자리 수)÷(두 자리 수)", ["E4-NUM-05", "E4-NUM-06"], 1),
@@ -1411,7 +1411,7 @@ def init_db():
                     ("12. 다각형", "정다각형, 대각선, 다각형의 내각의 합", ["E4-GEO-07"], 2),
                 ]),
                 # --- 초등학교 5학년 (12단원) ---
-                "e5": ("ELEMENTARY_5", [
+                "e5": ("elementary_5", [
                     ("1. 자연수의 혼합 계산", "연산의 우선순위, 괄호가 있는 식, 문장제 모델링", ["E5-NUM-07"], 1),
                     ("2. 약수와 배수", "약수, 배수, 최대공약수, 최소공배수", ["E5-NUM-01", "E5-NUM-02", "E5-NUM-03", "E5-NUM-04"], 1),
                     ("3. 규칙과 대응", "두 양 사이의 관계, 대응 관계를 식으로 표현", ["E5-ALG-01"], 1),
@@ -1426,7 +1426,7 @@ def init_db():
                     ("12. 평균과 가능성", "평균 구하기, 가능성의 표현, 경우의 수", ["E5-NUM-15", "E5-NUM-16"], 2),
                 ]),
                 # --- 초등학교 6학년 (12단원) ---
-                "e6": ("ELEMENTARY_6", [
+                "e6": ("elementary_6", [
                     ("1. 분수의 나눗셈", "(자연수)÷(자연수)의 몫을 분수로, (분수)÷(자연수)", ["E6-NUM-01", "E6-NUM-02"], 1),
                     ("2. 각기둥과 각뿔", "각기둥과 각뿔의 구성 요소, 전개도", ["E6-GEO-01"], 1),
                     ("3. 소수의 나눗셈", "(소수)÷(자연수), 몫의 소수점 위치", ["E6-NUM-04"], 1),
@@ -1441,7 +1441,7 @@ def init_db():
                     ("12. 원기둥, 원뿔, 구", "원기둥의 전개도와 겉넓이, 원뿔, 구의 특징", ["E6-GEO-05"], 2),
                 ]),
                 # --- 중학교 1학년 (6단원) ---
-                "m1": ("MIDDLE_1", [
+                "m1": ("middle_1", [
                     ("1. 소인수분해", "소수, 합성수, 소인수분해, 약수의 개수", ["M1-NUM-01", "M1-NUM-02"], 1),
                     ("2. 정수와 유리수", "양수·음수·0, 절댓값, 정수·유리수 사칙연산", ["M1-NUM-03", "M1-NUM-04"], 1),
                     ("3. 문자와 식", "문자 사용, 식의 값, 일차식의 덧셈과 뺄셈", ["M1-ALG-01"], 1),
@@ -1450,7 +1450,7 @@ def init_db():
                     ("6. 기본 도형과 통계", "기본 도형, 작도, 평면도형, 통계", ["M1-GEO-01", "M1-GEO-02", "M1-GEO-03", "M1-STA-01"], 2),
                 ]),
                 # --- 중학교 2학년 (6단원) ---
-                "m2": ("MIDDLE_2", [
+                "m2": ("middle_2", [
                     ("1. 유리수와 순환소수 / 식의 계산", "유한소수, 순환소수, 지수법칙, 다항식 계산", ["M2-NUM-01", "M2-ALG-01", "M2-ALG-02"], 1),
                     ("2. 일차부등식과 연립방정식", "일차부등식 풀이, 연립일차방정식(가감법·대입법)", ["M2-ALG-03", "M2-ALG-04"], 1),
                     ("3. 일차함수", "기울기, 절편, 그래프, 일차함수와 일차방정식", ["M2-FUNC-01"], 1),
@@ -1459,7 +1459,7 @@ def init_db():
                     ("6. 확률", "경우의 수, 확률의 기본, 여사건, 연속 사건", ["M2-STA-01"], 2),
                 ]),
                 # --- 중학교 3학년 (7단원) ---
-                "m3": ("MIDDLE_3", [
+                "m3": ("middle_3", [
                     ("1. 실수와 그 연산", "제곱근, 무리수, 실수의 대소, 근호 계산, 분모의 유리화", ["M3-NUM-01", "M3-NUM-02"], 1),
                     ("2. 다항식의 곱셈과 인수분해", "곱셈공식, 인수분해, 완전제곱식", ["M3-ALG-01", "M3-ALG-02"], 1),
                     ("3. 이차방정식", "인수분해·완전제곱식·근의 공식 풀이, 판별식", ["M3-ALG-03"], 1),
@@ -1469,14 +1469,14 @@ def init_db():
                     ("7. 통계", "대푯값, 산점도, 상관관계, 상자그림", ["M3-STA-01", "M3-STA-02"], 2),
                 ]),
                 # --- 공통수학1 / 고1 1학기 (4단원) ---
-                "h1": ("HIGH_1", [
+                "h1": ("high_1", [
                     ("1. 다항식", "다항식 연산, 항등식, 나머지정리, 인수분해", ["concept-h1-polynomial"], 1),
                     ("2. 방정식과 부등식", "복소수, 이차방정식, 이차함수, 이차부등식", ["concept-h1-equation"], 1),
                     ("3. 경우의 수", "합·곱의 법칙, 순열, 조합", ["concept-h1-counting"], 1),
                     ("4. 행렬", "행렬의 덧셈·뺄셈·실수배·곱셈 (2×2 한정)", ["concept-h1-matrix"], 1),
                 ]),
                 # --- 공통수학2 (고1 과정) ---
-                "h2": ("HIGH_2", [
+                "h2": ("high_2", [
                     ("1. 도형의 방정식", "평면좌표, 직선·원의 방정식, 평행이동·대칭이동", ["concept-h2-plane-coord", "concept-h2-line", "concept-h2-circle", "concept-h2-transform"], 1),
                     ("2. 집합과 명제", "집합 연산, 명제와 조건, 절대부등식", ["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"], 1),
                     ("3. 함수", "합성함수, 역함수, 유리함수, 무리함수", ["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"], 1),
@@ -1541,9 +1541,9 @@ def init_db():
         else:
             # 기존 테스트 유저의 grade 동기화 (코드와 DB 불일치 해결)
             TEST_USER_GRADES = {
-                "student-001": "MIDDLE_1",
-                "student-002": "ELEMENTARY_3",
-                "student-003": "HIGH_1",
+                "student-001": "middle_1",
+                "student-002": "elementary_3",
+                "student-003": "high_1",
             }
             updated = 0
             for user_id, expected_grade in TEST_USER_GRADES.items():
