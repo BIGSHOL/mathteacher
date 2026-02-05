@@ -9,26 +9,26 @@ from pydantic import BaseModel
 class UserRole(str, Enum):
     """사용자 역할."""
 
-    STUDENT = "student"
-    TEACHER = "teacher"
-    ADMIN = "admin"
-    MASTER = "master"
+    STUDENT = "STUDENT"
+    TEACHER = "TEACHER"
+    ADMIN = "ADMIN"
+    MASTER = "MASTER"
 
 
 class Grade(str, Enum):
     """학년."""
 
-    ELEMENTARY_1 = "elementary_1"
-    ELEMENTARY_2 = "elementary_2"
-    ELEMENTARY_3 = "elementary_3"
-    ELEMENTARY_4 = "elementary_4"
-    ELEMENTARY_5 = "elementary_5"
-    ELEMENTARY_6 = "elementary_6"
-    MIDDLE_1 = "middle_1"
-    MIDDLE_2 = "middle_2"
-    MIDDLE_3 = "middle_3"
-    HIGH_1 = "high_1"
-    HIGH_2 = "high_2"
+    ELEMENTARY_1 = "ELEMENTARY_1"
+    ELEMENTARY_2 = "ELEMENTARY_2"
+    ELEMENTARY_3 = "ELEMENTARY_3"
+    ELEMENTARY_4 = "ELEMENTARY_4"
+    ELEMENTARY_5 = "ELEMENTARY_5"
+    ELEMENTARY_6 = "ELEMENTARY_6"
+    MIDDLE_1 = "MIDDLE_1"
+    MIDDLE_2 = "MIDDLE_2"
+    MIDDLE_3 = "MIDDLE_3"
+    HIGH_1 = "HIGH_1"
+    HIGH_2 = "HIGH_2"
 
 
 class QuestionType(str, Enum):
