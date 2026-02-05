@@ -1364,8 +1364,13 @@ def init_db():
             db.flush()
 
             # 단원 선수관계 설정 (완전 순차: 1→2→3→4→5→6)
+            # lazy='raise' 때문에 직접 테이블에 insert
+            from app.models.chapter import chapter_prerequisites
             for i in range(1, len(m1_chapters)):
-                m1_chapters[i].prerequisites.append(m1_chapters[i - 1])
+                db.execute(chapter_prerequisites.insert().values(
+                    chapter_id=m1_chapters[i].id,
+                    prerequisite_id=m1_chapters[i - 1].id
+                ))
 
             # =============================================
             # 전체 학년 Chapter 데이터 (2022 개정 교육과정)
@@ -1491,9 +1496,13 @@ def init_db():
             db.flush()
 
             # 각 학년 단원 선수관계 설정 (순차)
+            # lazy='raise' 때문에 직접 테이블에 insert
             for grade_chapters in all_new_chapters.values():
                 for i in range(1, len(grade_chapters)):
-                    grade_chapters[i].prerequisites.append(grade_chapters[i - 1])
+                    db.execute(chapter_prerequisites.insert().values(
+                        chapter_id=grade_chapters[i].id,
+                        prerequisite_id=grade_chapters[i - 1].id
+                    ))
 
             # 각 테스트 학생에게 1단원 해제 (학습 시작 가능)
             _unlock_defs = [
