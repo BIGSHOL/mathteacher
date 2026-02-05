@@ -304,6 +304,7 @@ class ChapterService:
             result.append({
                 "chapter_id": chapter.id,
                 "chapter_number": chapter.chapter_number,
+                "semester": chapter.semester,
                 "name": chapter.name,
                 "description": chapter.description,
                 "is_unlocked": progress.is_unlocked if progress else False,

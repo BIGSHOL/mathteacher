@@ -301,6 +301,7 @@ export interface DailyTestTodayResponse {
 export interface ChapterProgressItem {
   chapter_id: string
   chapter_number: number
+  semester: number
   name: string
   description: string
   is_unlocked: boolean

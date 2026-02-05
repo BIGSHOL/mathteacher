@@ -32,6 +32,9 @@ class Chapter(Base):
         String(200), index=True, comment="예: 1. 소인수분해"
     )
     grade: Mapped[Grade] = mapped_column(SAEnum(Grade), index=True)
+    semester: Mapped[int] = mapped_column(
+        Integer, default=1, comment="학기 (1 또는 2)"
+    )
     chapter_number: Mapped[int] = mapped_column(
         Integer, index=True, comment="단원 번호 (1, 2, 3, ...)"
     )

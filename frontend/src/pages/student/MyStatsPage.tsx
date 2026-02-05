@@ -301,6 +301,19 @@ export function MyStatsPage() {
 
   const gradeLabel = user?.grade ? GRADE_LABELS[user.grade] : null
 
+  // 학기별로 단원 그룹화
+  const chaptersBySemester = useMemo(() => {
+    const grouped = new Map<number, ChapterProgressItem[]>()
+    chapters.forEach(ch => {
+      const semester = ch.semester || 1
+      if (!grouped.has(semester)) {
+        grouped.set(semester, [])
+      }
+      grouped.get(semester)!.push(ch)
+    })
+    return Array.from(grouped.entries()).sort(([a], [b]) => a - b)
+  }, [chapters])
+
   useEffect(() => {
     fetchStats()
   }, [])
@@ -312,7 +325,9 @@ export function MyStatsPage() {
 
       const [statsRes, chaptersRes] = await Promise.all([
         api.get<{ success: boolean; data: StudentStats }>('/api/v1/stats/me'),
-        api.get<{ success: boolean; data: ChapterProgressItem[] }>('/api/v1/chapters/progress').catch(() => null),
+        api.get<{ success: boolean; data: ChapterProgressItem[] }>('/api/v1/chapters/progress', {
+          params: { grade: user?.grade }
+        }).catch(() => null),
       ])
       setStats(statsRes.data.data)
       if (chaptersRes?.data?.data) {
@@ -500,9 +515,16 @@ export function MyStatsPage() {
             transition={{ delay: 0.28 }}
           >
             <h2 className="mb-2 text-sm font-semibold text-gray-900">단원 진행 상황</h2>
-            <div className="space-y-2">
-              {chapters.map((ch) => (
-                <ChapterRow key={ch.chapter_id} chapter={ch} />
+            <div className="space-y-4">
+              {chaptersBySemester.map(([semester, semesterChapters]) => (
+                <div key={semester}>
+                  <h3 className="mb-2 text-xs font-medium text-gray-500">{semester}학기</h3>
+                  <div className="space-y-2">
+                    {semesterChapters.map((ch) => (
+                      <ChapterRow key={ch.chapter_id} chapter={ch} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </motion.div>
