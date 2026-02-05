@@ -129,7 +129,14 @@ class TestService:
         all_tests = list((await self.db.scalars(stmt)).all())
 
         # 테스트의 concept_ids가 해금된 concept에 포함되는 것만 필터링
-        if available_concept_ids:
+        if available_concept_ids and grade:
+            from app.services.chapter_service import ChapterService
+            chapter_service = ChapterService(self.db)
+
+            # 학기/학년 완료 상태 조회
+            semester_status = await chapter_service.get_semester_completion_status(student_id, grade)
+            grade_status = await chapter_service.get_grade_completion_status(student_id, grade)
+
             filtered_tests = []
             for t in all_tests:
                 # 일일 테스트는 이미 생성 시 챕터 필터링 적용됨 → 항상 표시
@@ -143,9 +150,28 @@ class TestService:
                 if not t.concept_ids:
                     filtered_tests.append(t)
                     continue
-                # 테스트의 concept_ids 중 하나라도 해금된 concept에 포함되면 표시
-                if any(cid in available_concept_ids for cid in t.concept_ids):
-                    filtered_tests.append(t)
+
+                # 테스트 유형별 필터링
+                test_type = getattr(t, "test_type", "concept")
+
+                if test_type == "semester_final":
+                    # 학기 종합시험: 해당 학기 100% 완료 시에만 표시
+                    semester = getattr(t, "semester", None)
+                    if semester and semester_status.get(semester, {}).get("is_completed"):
+                        filtered_tests.append(t)
+                elif test_type == "grade_final":
+                    # 학년 종합시험: 학년 전체 100% 완료 시에만 표시
+                    if grade_status.get("is_completed"):
+                        filtered_tests.append(t)
+                elif test_type == "cumulative":
+                    # 누적 종합시험: 해금된 개념만 포함 (동적 필터링)
+                    # 해금된 개념 중 하나라도 있으면 표시
+                    if any(cid in available_concept_ids for cid in t.concept_ids):
+                        filtered_tests.append(t)
+                else:
+                    # 일반 개념/연산 테스트: 테스트의 concept_ids 중 하나라도 해금되면 표시
+                    if any(cid in available_concept_ids for cid in t.concept_ids):
+                        filtered_tests.append(t)
             all_tests = filtered_tests
 
         total = len(all_tests)

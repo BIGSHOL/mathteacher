@@ -25,6 +25,12 @@ class Test(Base):
     title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text, default="")
     grade: Mapped[Grade] = mapped_column(Enum(Grade), index=True)
+    test_type: Mapped[str] = mapped_column(
+        String(50), default="concept", comment="테스트 유형: concept, cumulative, semester_final, grade_final"
+    )
+    semester: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, comment="학기 종합시험의 경우 학기 번호"
+    )
     concept_ids: Mapped[list[str]] = mapped_column(JSON)
     question_ids: Mapped[list[str]] = mapped_column(JSON)
     question_count: Mapped[int] = mapped_column(Integer)

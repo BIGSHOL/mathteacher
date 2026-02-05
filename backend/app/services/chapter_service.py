@@ -316,6 +316,88 @@ class ChapterService:
 
         return result
 
+    async def get_semester_completion_status(
+        self, student_id: str, grade: str
+    ) -> dict[int, dict]:
+        """학기별 완료 상태 조회.
+
+        Returns:
+            {1: {"total": 6, "completed": 3, "is_completed": False},
+             2: {"total": 6, "completed": 6, "is_completed": True}}
+        """
+        # 해당 학년의 모든 단원 조회
+        stmt = select(Chapter).where(
+            Chapter.is_active == True,  # noqa: E712
+            Chapter.grade == grade,
+        )
+        chapters = list((await self.db.scalars(stmt)).all())
+
+        if not chapters:
+            return {}
+
+        # 학기별로 그룹화
+        semesters = {}
+        for ch in chapters:
+            sem = ch.semester
+            if sem not in semesters:
+                semesters[sem] = []
+            semesters[sem].append(ch.id)
+
+        # 각 학기의 완료 상태 확인
+        chapter_ids = [ch.id for ch in chapters]
+        progress_stmt = select(ChapterProgress).where(
+            ChapterProgress.student_id == student_id,
+            ChapterProgress.chapter_id.in_(chapter_ids),
+        )
+        progresses = list((await self.db.scalars(progress_stmt)).all())
+        progress_map = {p.chapter_id: p for p in progresses}
+
+        result = {}
+        for sem, ch_ids in semesters.items():
+            completed = sum(
+                1 for ch_id in ch_ids
+                if progress_map.get(ch_id) and progress_map[ch_id].is_completed
+            )
+            result[sem] = {
+                "total": len(ch_ids),
+                "completed": completed,
+                "is_completed": completed == len(ch_ids),
+            }
+
+        return result
+
+    async def get_grade_completion_status(
+        self, student_id: str, grade: str
+    ) -> dict:
+        """학년 완료 상태 조회.
+
+        Returns:
+            {"total": 12, "completed": 9, "is_completed": False}
+        """
+        stmt = select(Chapter).where(
+            Chapter.is_active == True,  # noqa: E712
+            Chapter.grade == grade,
+        )
+        chapters = list((await self.db.scalars(stmt)).all())
+
+        if not chapters:
+            return {"total": 0, "completed": 0, "is_completed": False}
+
+        chapter_ids = [ch.id for ch in chapters]
+        progress_stmt = select(ChapterProgress).where(
+            ChapterProgress.student_id == student_id,
+            ChapterProgress.chapter_id.in_(chapter_ids),
+        )
+        progresses = list((await self.db.scalars(progress_stmt)).all())
+
+        completed = sum(1 for p in progresses if p.is_completed)
+
+        return {
+            "total": len(chapters),
+            "completed": completed,
+            "is_completed": completed == len(chapters),
+        }
+
     async def get_next_recommendation(self, student_id: str) -> dict | None:
         """다음 학습 추천."""
         # 1. 해제되었지만 완료되지 않은 단원 찾기

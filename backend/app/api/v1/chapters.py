@@ -37,6 +37,38 @@ async def get_my_chapter_progress(
     )
 
 
+@router.get("/completion-status", response_model=ApiResponse[dict])
+async def get_completion_status(
+    current_user: UserResponse = Depends(require_role(UserRole.STUDENT)),
+    grade: str | None = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """학기/학년 완료 상태 조회 (학생)."""
+    service = ChapterService(db)
+
+    if not grade:
+        grade = current_user.grade
+
+    if not grade:
+        return ApiResponse(
+            success=True,
+            data={"semesters": {}, "grade": {}},
+            message="학년 정보가 없습니다",
+        )
+
+    semester_status = await service.get_semester_completion_status(current_user.id, grade)
+    grade_status = await service.get_grade_completion_status(current_user.id, grade)
+
+    return ApiResponse(
+        success=True,
+        data={
+            "semesters": semester_status,
+            "grade": grade_status,
+        },
+        message="완료 상태 조회 성공",
+    )
+
+
 @router.get("/progress/{chapter_id}", response_model=ApiResponse[ChapterDetailResponse])
 async def get_chapter_detail(
     chapter_id: str,
