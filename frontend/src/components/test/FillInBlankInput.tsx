@@ -90,7 +90,7 @@ export function FillInBlankInput({
                     onKeyDown={(e) => handleKeyDown(e, blankId)}
                     disabled={disabled}
                     className={clsx(
-                      'inline-block w-24 px-2 py-1 text-center border-b-2 bg-transparent transition-colors',
+                      'inline-block w-24 px-2 py-1 text-center border-b bg-transparent transition-colors',
                       'focus:outline-none',
                       getInputStyle(blankId)
                     )}

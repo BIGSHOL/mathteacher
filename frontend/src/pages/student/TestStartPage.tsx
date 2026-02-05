@@ -109,7 +109,13 @@ export function TestStartPage() {
               <InfoItem
                 icon="⏱️"
                 label="제한 시간"
-                value={test.time_limit_minutes ? `${test.time_limit_minutes}분` : '없음'}
+                value={
+                  test.time_limit_minutes
+                    ? `${test.time_limit_minutes}분`
+                    : test.category
+                    ? `${test.question_count * (test.category === 'computation' ? 20 : 30)}초`
+                    : '없음'
+                }
               />
             </div>
 
