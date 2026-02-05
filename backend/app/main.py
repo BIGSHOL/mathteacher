@@ -1263,15 +1263,24 @@ def init_db():
 
             db.flush()
 
-            # 계통수학: 개념 선수관계 설정
+            # 계통수학: 개념 선수관계 설정 (lazy='raise' 때문에 직접 테이블에 insert)
+            from app.models.concept import concept_prerequisites
             # 일차방정식(concept-001) ← 사칙연산(concept-002) 필요
-            concept.prerequisites.append(op_concept)
+            db.execute(concept_prerequisites.insert().values(
+                concept_id=concept.id, prerequisite_id=op_concept.id
+            ))
             # 일차부등식(concept-003) ← 일차방정식(concept-001) 필요
-            ineq_concept.prerequisites.append(concept)
+            db.execute(concept_prerequisites.insert().values(
+                concept_id=ineq_concept.id, prerequisite_id=concept.id
+            ))
             # 좌표와 그래프(concept-004) ← 일차방정식(concept-001) 필요
-            coord_concept.prerequisites.append(concept)
+            db.execute(concept_prerequisites.insert().values(
+                concept_id=coord_concept.id, prerequisite_id=concept.id
+            ))
             # 통계(concept-005) ← 사칙연산(concept-002) 필요
-            stat_concept.prerequisites.append(op_concept)
+            db.execute(concept_prerequisites.insert().values(
+                concept_id=stat_concept.id, prerequisite_id=op_concept.id
+            ))
 
             # 2022 개정 교육과정 중1 단원 구조 (6단원, 완전 순차)
             m1_chapters = [
