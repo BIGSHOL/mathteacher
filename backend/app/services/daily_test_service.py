@@ -223,7 +223,7 @@ class DailyTestService:
 
         label = CATEGORY_LABELS.get(category, category)
         test = Test(
-            id=f"daily-{student_id[:8]}-{date}-{category}",
+            id=f"daily-{student_id}-{date}-{category}",
             title=f"오늘의 {label} ({date})",
             description=f"{date} 일일 {label} 테스트",
             grade=grade,
