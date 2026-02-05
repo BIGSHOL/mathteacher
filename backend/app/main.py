@@ -1415,6 +1415,7 @@ def init_db():
 
             # 각 학년 단원 선수관계 설정 (순차)
             # lazy='raise' 때문에 직접 테이블에 insert
+            from app.models.chapter import chapter_prerequisites
             for grade_chapters in all_new_chapters.values():
                 for i in range(1, len(grade_chapters)):
                     db.execute(chapter_prerequisites.insert().values(
