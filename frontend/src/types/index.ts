@@ -114,6 +114,8 @@ export interface Test {
   description: string
   grade: Grade
   category?: QuestionCategory
+  test_type?: string  // concept, cumulative, semester_final, grade_final
+  semester?: number   // 학기 종합시험의 경우 학기 번호
   concept_ids: string[]
   question_count: number
   time_limit_minutes?: number

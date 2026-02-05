@@ -191,6 +191,21 @@ function TestCard({ test, index, onStart }: TestCardProps) {
               )}>
                 {test.category === 'computation' ? '연산' : test.category === 'concept' ? '개념' : '종합'}
               </span>
+              {test.test_type === 'cumulative' && (
+                <span className="rounded-full bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700">
+                  📈 누적
+                </span>
+              )}
+              {test.test_type === 'semester_final' && (
+                <span className="rounded-full bg-amber-100 px-1.5 py-0.5 text-[10px] font-medium text-amber-700">
+                  🏆 {test.semester}학기 기말
+                </span>
+              )}
+              {test.test_type === 'grade_final' && (
+                <span className="rounded-full bg-red-100 px-1.5 py-0.5 text-[10px] font-medium text-red-700">
+                  👑 학년 기말
+                </span>
+              )}
               {test.is_adaptive && (
                 <span className="rounded-full bg-indigo-100 px-1.5 py-0.5 text-[10px] font-medium text-indigo-700">
                   적응형
