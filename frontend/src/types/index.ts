@@ -1,19 +1,19 @@
 // 타입 정의
 
-export type UserRole = 'student' | 'teacher' | 'admin' | 'master'
+export type UserRole = 'STUDENT' | 'TEACHER' | 'ADMIN' | 'MASTER'
 
 export type Grade =
-  | 'elementary_1'
-  | 'elementary_2'
-  | 'elementary_3'
-  | 'elementary_4'
-  | 'elementary_5'
-  | 'elementary_6'
-  | 'middle_1'
-  | 'middle_2'
-  | 'middle_3'
-  | 'high_1'
-  | 'high_2'
+  | 'ELEMENTARY_1'
+  | 'ELEMENTARY_2'
+  | 'ELEMENTARY_3'
+  | 'ELEMENTARY_4'
+  | 'ELEMENTARY_5'
+  | 'ELEMENTARY_6'
+  | 'MIDDLE_1'
+  | 'MIDDLE_2'
+  | 'MIDDLE_3'
+  | 'HIGH_1'
+  | 'HIGH_2'
 
 export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer' | 'fill_in_blank'
 

@@ -56,7 +56,7 @@ function App() {
           <Route
             path="/test/play/:attemptId"
             element={
-              <ProtectedRoute allowedRoles={['student']}>
+              <ProtectedRoute allowedRoles={['STUDENT']}>
                 <TestPlayPage />
               </ProtectedRoute>
             }
@@ -71,7 +71,7 @@ function App() {
             <Route
               path="/daily-lab"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <DailyLabPage />
                 </ProtectedRoute>
               }
@@ -79,7 +79,7 @@ function App() {
             <Route
               path="/tests"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <TestListPage />
                 </ProtectedRoute>
               }
@@ -87,7 +87,7 @@ function App() {
             <Route
               path="/test/:testId"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <TestStartPage />
                 </ProtectedRoute>
               }
@@ -95,7 +95,7 @@ function App() {
             <Route
               path="/test/result/:attemptId"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <TestResultPage />
                 </ProtectedRoute>
               }
@@ -103,7 +103,7 @@ function App() {
             <Route
               path="/my-stats"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <MyStatsPage />
                 </ProtectedRoute>
               }
@@ -111,7 +111,7 @@ function App() {
             <Route
               path="/review"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <ReviewPage />
                 </ProtectedRoute>
               }
@@ -119,7 +119,7 @@ function App() {
             <Route
               path="/practice"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <QuickPracticeSetupPage />
                 </ProtectedRoute>
               }
@@ -127,7 +127,7 @@ function App() {
             <Route
               path="/help"
               element={
-                <ProtectedRoute allowedRoles={['student']}>
+                <ProtectedRoute allowedRoles={['STUDENT']}>
                   <HelpPage />
                 </ProtectedRoute>
               }
@@ -137,7 +137,7 @@ function App() {
             <Route
               path="/teacher/dashboard"
               element={
-                <ProtectedRoute allowedRoles={['teacher', 'admin', 'master']}>
+                <ProtectedRoute allowedRoles={['TEACHER', 'ADMIN', 'MASTER']}>
                   <TeacherDashboardPage />
                 </ProtectedRoute>
               }
@@ -145,7 +145,7 @@ function App() {
             <Route
               path="/teacher/students"
               element={
-                <ProtectedRoute allowedRoles={['teacher', 'admin', 'master']}>
+                <ProtectedRoute allowedRoles={['TEACHER', 'ADMIN', 'MASTER']}>
                   <TeacherStudentsListPage />
                 </ProtectedRoute>
               }
@@ -153,7 +153,7 @@ function App() {
             <Route
               path="/teacher/students/:studentId"
               element={
-                <ProtectedRoute allowedRoles={['teacher', 'admin', 'master']}>
+                <ProtectedRoute allowedRoles={['TEACHER', 'ADMIN', 'MASTER']}>
                   <TeacherStudentDetailPage />
                 </ProtectedRoute>
               }
@@ -163,7 +163,7 @@ function App() {
             <Route
               path="/admin/questions"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'master']}>
+                <ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}>
                   <QuestionBankPage />
                 </ProtectedRoute>
               }
@@ -171,7 +171,7 @@ function App() {
             <Route
               path="/admin/users"
               element={
-                <ProtectedRoute allowedRoles={['admin', 'master']}>
+                <ProtectedRoute allowedRoles={['ADMIN', 'MASTER']}>
                   <UserManagementPage />
                 </ProtectedRoute>
               }
@@ -179,7 +179,7 @@ function App() {
             <Route
               path="/admin/generate"
               element={
-                <ProtectedRoute allowedRoles={['master']}>
+                <ProtectedRoute allowedRoles={['MASTER']}>
                   <QuestionGenerationPage />
                 </ProtectedRoute>
               }
