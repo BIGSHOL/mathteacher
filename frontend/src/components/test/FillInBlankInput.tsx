@@ -94,7 +94,7 @@ export function FillInBlankInput({
                       'focus:outline-none',
                       getInputStyle(blankId)
                     )}
-                    placeholder="___"
+                    placeholder=""
                   />
                 </span>
               )}
