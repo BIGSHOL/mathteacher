@@ -160,11 +160,12 @@ async def reset_database(
         # 3) Recreate tables
         Base.metadata.create_all(bind=sync_engine)
 
-        # 4) Re-run init_db (seeds users) + load_seed_data (seeds concepts/questions)
+        # 4) Re-run init_db (seeds users) + load_seed_data (seeds concepts/questions) + update chapter concept IDs
         import importlib
         main_module = importlib.import_module("app.main")
         main_module.init_db()
         main_module.load_seed_data()
+        main_module.update_chapter_concept_ids()
 
         # 5) AI 생성 문제 복원 (개념이 존재하는 것만)
         restored = 0

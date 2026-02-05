@@ -82,18 +82,35 @@ async def get_available_tests(
     items = []
     for r in results:
         test = r["test"]
+        # Handle both Test objects and dict (auto-generated tests)
+        if isinstance(test, dict):
+            test_data = test
+        else:
+            test_data = {
+                "id": test.id,
+                "title": test.title,
+                "description": test.description,
+                "grade": test.grade,
+                "concept_ids": test.concept_ids,
+                "question_count": test.question_count,
+                "time_limit_minutes": test.time_limit_minutes,
+                "is_active": test.is_active,
+                "is_adaptive": test.is_adaptive,
+                "created_at": test.created_at,
+            }
+
         items.append(
             AvailableTestResponse(
-                id=test.id,
-                title=test.title,
-                description=test.description,
-                grade=test.grade,
-                concept_ids=test.concept_ids,
-                question_count=test.question_count,
-                time_limit_minutes=test.time_limit_minutes,
-                is_active=test.is_active,
-                is_adaptive=test.is_adaptive,
-                created_at=test.created_at,
+                id=test_data["id"],
+                title=test_data["title"],
+                description=test_data["description"],
+                grade=test_data["grade"],
+                concept_ids=test_data["concept_ids"],
+                question_count=test_data["question_count"],
+                time_limit_minutes=test_data["time_limit_minutes"],
+                is_active=test_data["is_active"],
+                is_adaptive=test_data["is_adaptive"],
+                created_at=test_data["created_at"],
                 is_completed=r["is_completed"],
                 best_score=r["best_score"],
                 attempt_count=r["attempt_count"],
