@@ -134,11 +134,11 @@ class StatsService:
         )
         today_solved = await self.db.scalar(today_solved_stmt) or 0
 
-        # 개념별/트랙별 통계 계산
+        # 개념별/트랙별/유형별 통계 계산
         from app.models.question import Question
 
         all_logs_stmt = (
-            select(AnswerLog, Question.concept_id, Question.category)
+            select(AnswerLog, Question.concept_id, Question.category, Question.question_type)
             .join(Question, AnswerLog.question_id == Question.id)
             .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)
             .join(Concept, Question.concept_id == Concept.id)
@@ -153,19 +153,33 @@ class StatsService:
         concept_agg: dict[str, dict] = defaultdict(
             lambda: {"correct": 0, "total": 0}
         )
-        # 트랙별 집계
+        # 트랙별 집계 (평균 시간 포함)
         track_agg: dict[str, dict] = defaultdict(
-            lambda: {"correct": 0, "total": 0}
+            lambda: {"correct": 0, "total": 0, "time": 0.0}
+        )
+        # 문제 유형별 집계 (평균 시간 포함)
+        type_agg: dict[str, dict] = defaultdict(
+            lambda: {"correct": 0, "total": 0, "time": 0.0}
         )
 
-        for log, concept_id, category in all_logs:
+        for log, concept_id, category, question_type in all_logs:
             concept_agg[concept_id]["total"] += 1
             if log.is_correct:
                 concept_agg[concept_id]["correct"] += 1
+
+            # 트랙별 집계
             cat_key = category.value if hasattr(category, "value") else category
             track_agg[cat_key]["total"] += 1
+            track_agg[cat_key]["time"] += (log.time_spent_seconds or 0)
             if log.is_correct:
                 track_agg[cat_key]["correct"] += 1
+
+            # 문제 유형별 집계
+            type_key = question_type.value if hasattr(question_type, "value") else question_type
+            type_agg[type_key]["total"] += 1
+            type_agg[type_key]["time"] += (log.time_spent_seconds or 0)
+            if log.is_correct:
+                type_agg[type_key]["correct"] += 1
 
         # 개념 이름 매핑
         concept_ids = list(concept_agg.keys())
@@ -204,18 +218,34 @@ class StatsService:
         concept_stats = None
         if "computation" in track_agg:
             t = track_agg["computation"]
+            avg_time = t["time"] / t["total"] if t["total"] > 0 else 0
             computation_stats = {
                 "total_questions": t["total"],
                 "correct_answers": t["correct"],
                 "accuracy_rate": self.calculate_accuracy_rate(t["correct"], t["total"]),
+                "average_time": round(avg_time, 1),
             }
         if "concept" in track_agg:
             t = track_agg["concept"]
+            avg_time = t["time"] / t["total"] if t["total"] > 0 else 0
             concept_stats = {
                 "total_questions": t["total"],
                 "correct_answers": t["correct"],
                 "accuracy_rate": self.calculate_accuracy_rate(t["correct"], t["total"]),
+                "average_time": round(avg_time, 1),
             }
+
+        # 문제 유형별 통계
+        type_stats = {}
+        for type_key, t in type_agg.items():
+            if t["total"] > 0:
+                avg_time = t["time"] / t["total"]
+                type_stats[type_key] = {
+                    "total_questions": t["total"],
+                    "correct_answers": t["correct"],
+                    "accuracy_rate": self.calculate_accuracy_rate(t["correct"], t["total"]),
+                    "average_time": round(avg_time, 1),
+                }
 
         return {
             "user_id": student_id,
@@ -233,6 +263,7 @@ class StatsService:
             "strong_concepts": strong_concepts,
             "computation_stats": computation_stats,
             "concept_stats": concept_stats,
+            "type_stats": type_stats,
         }
 
     async def get_dashboard_stats(self, teacher_id: str) -> dict:

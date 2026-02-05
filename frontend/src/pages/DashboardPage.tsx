@@ -13,6 +13,13 @@ interface QuotaProgress {
   carry_over: boolean
 }
 
+interface CategoryStats {
+  total_questions: number
+  correct_answers: number
+  accuracy_rate: number
+  average_time: number
+}
+
 interface StudentStats {
   today_solved: number
   current_streak: number
@@ -20,6 +27,9 @@ interface StudentStats {
   level: number
   total_xp: number
   quota: QuotaProgress | null
+  computation_stats: CategoryStats | null
+  concept_stats: CategoryStats | null
+  type_stats: Record<string, CategoryStats>
 }
 
 export function DashboardPage() {
@@ -69,6 +79,44 @@ export function DashboardPage() {
           <StatCard label="현재 레벨" value={`Lv.${stats?.level ?? user?.level ?? 1}`} icon="⭐" color="level" />
           <StatCard label="최고 콤보" value={`${stats?.max_streak ?? 0}`} icon="💫" color="combo" />
         </motion.div>
+
+        {/* 트랙별 성적 */}
+        {(stats?.computation_stats || stats?.concept_stats || stats?.type_stats) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18 }}
+            className="mb-8"
+          >
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">트랙별 성적</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {stats.computation_stats && (
+                <CategoryCard
+                  title="연산 연습"
+                  icon="🧮"
+                  stats={stats.computation_stats}
+                  color="blue"
+                />
+              )}
+              {stats.concept_stats && (
+                <CategoryCard
+                  title="개념 테스트"
+                  icon="📚"
+                  stats={stats.concept_stats}
+                  color="green"
+                />
+              )}
+              {stats.type_stats?.fill_in_blank && (
+                <CategoryCard
+                  title="빈칸 채우기"
+                  icon="✍️"
+                  stats={stats.type_stats.fill_in_blank}
+                  color="purple"
+                />
+              )}
+            </div>
+          </motion.div>
+        )}
 
         {/* 학습 메뉴 */}
         <motion.div
@@ -155,6 +203,82 @@ function LearningCard({ title, description, icon, href }: LearningCardProps) {
   )
 }
 
+interface CategoryCardProps {
+  title: string
+  icon: string
+  stats: CategoryStats
+  color: 'blue' | 'green' | 'purple'
+}
+
+function CategoryCard({ title, icon, stats, color }: CategoryCardProps) {
+  const colorClasses = {
+    blue: {
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      text: 'text-blue-600',
+      accent: 'text-blue-700',
+    },
+    green: {
+      bg: 'bg-green-50',
+      border: 'border-green-200',
+      text: 'text-green-600',
+      accent: 'text-green-700',
+    },
+    purple: {
+      bg: 'bg-purple-50',
+      border: 'border-purple-200',
+      text: 'text-purple-600',
+      accent: 'text-purple-700',
+    },
+  }
+
+  const colors = colorClasses[color]
+  const accuracy = Math.round(stats.accuracy_rate)
+
+  return (
+    <div className={`card p-5 border-2 ${colors.bg} ${colors.border}`}>
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-2xl">{icon}</span>
+        <h3 className="font-semibold text-gray-900">{title}</h3>
+      </div>
+
+      <div className="space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600">정답률</span>
+          <span className={`text-2xl font-bold ${colors.accent}`}>{accuracy}%</span>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600">풀이 문제</span>
+          <span className="text-sm font-medium text-gray-900">{stats.total_questions}문제</span>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600">정답 수</span>
+          <span className="text-sm font-medium text-gray-900">{stats.correct_answers}개</span>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-600">평균 풀이</span>
+          <span className={`text-sm font-medium ${colors.text}`}>{stats.average_time.toFixed(1)}초</span>
+        </div>
+      </div>
+
+      {/* 정답률 프로그레스 바 */}
+      <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
+        <div
+          className={`h-2 rounded-full transition-all duration-500 ${
+            accuracy >= 80 ? 'bg-green-500' :
+            accuracy >= 60 ? 'bg-yellow-500' :
+            'bg-red-500'
+          }`}
+          style={{ width: `${accuracy}%` }}
+        />
+      </div>
+    </div>
+  )
+}
+
 function QuotaCard({ quota }: { quota: QuotaProgress }) {
   const target = quota.carry_over ? quota.accumulated_quota : quota.daily_quota
   const progress = Math.min(100, Math.round((quota.correct_today / target) * 100))
@@ -163,15 +287,15 @@ function QuotaCard({ quota }: { quota: QuotaProgress }) {
     <div className={`card p-5 border-2 ${quota.quota_met ? 'border-green-300 bg-green-50' : 'border-blue-200 bg-white'}`}>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-xl">{quota.quota_met ? '\u2705' : '\uD83C\uDFAF'}</span>
+          <span className="text-xl">{quota.quota_met ? '✅' : '🎯'}</span>
           <span className="font-semibold text-gray-900">
-            {quota.quota_met ? '\uC624\uB298 \uBAA9\uD45C \uB2EC\uC131!' : '\uC624\uB298 \uBAA9\uD45C'}
+            {quota.quota_met ? '오늘 목표 달성!' : '오늘 목표'}
           </span>
         </div>
         <span className="text-sm text-gray-500">
           {quota.carry_over && quota.accumulated_quota > quota.daily_quota
-            ? `(\uB204\uC801 ${quota.accumulated_quota}\uBB38\uC81C)`
-            : `\uB9E4\uC77C ${quota.daily_quota}\uBB38\uC81C`}
+            ? `(누적 ${quota.accumulated_quota}문제)`
+            : `매일 ${quota.daily_quota}문제`}
         </span>
       </div>
 
@@ -193,7 +317,7 @@ function QuotaCard({ quota }: { quota: QuotaProgress }) {
 
       {!quota.quota_met && quota.quota_remaining > 0 && (
         <p className="text-sm text-gray-500 mt-2">
-          \uC815\uB2F5 <span className="font-semibold text-blue-600">{quota.quota_remaining}\uBB38\uC81C</span> \uB0A8\uC558\uC5B4\uC694
+          정답 <span className="font-semibold text-blue-600">{quota.quota_remaining}문제</span> 남았어요
         </p>
       )}
     </div>
