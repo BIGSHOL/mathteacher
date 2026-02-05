@@ -1527,6 +1527,22 @@ def init_db():
 
             db.commit()
             print("Database seeded with initial data")
+        else:
+            # 기존 테스트 유저의 grade 동기화 (코드와 DB 불일치 해결)
+            TEST_USER_GRADES = {
+                "student-001": "middle_1",
+                "student-002": "elementary_3",
+                "student-003": "high_1",
+            }
+            updated = 0
+            for user_id, expected_grade in TEST_USER_GRADES.items():
+                user = db.query(User).filter(User.id == user_id).first()
+                if user and user.grade != expected_grade:
+                    user.grade = expected_grade
+                    updated += 1
+            if updated:
+                db.commit()
+                logger.info(f"Updated {updated} test user grades")
     finally:
         db.close()
 
