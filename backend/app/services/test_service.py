@@ -604,10 +604,10 @@ class TestService:
 
         # 셔플 설정에서 정답 확인
         shuffle_config = attempt.question_shuffle_config or {}
-        if question_id in shuffle_config:
+        if question_id in shuffle_config and "correct_answer" in shuffle_config[question_id]:
             return shuffle_config[question_id]["correct_answer"]
 
-        # 셔플이 없으면 원본 정답
+        # 셔플이 없거나 correct_answer가 없으면 원본 정답
         question = await self.db.get(Question, question_id)
         return question.correct_answer if question else None
 
