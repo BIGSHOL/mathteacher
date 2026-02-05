@@ -9,6 +9,16 @@ export default defineConfig({
             '@': fileURLToPath(new URL('./src', import.meta.url)),
         },
     },
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['react', 'react-dom', 'react-router-dom'],
+                    animation: ['framer-motion'],
+                },
+            },
+        },
+    },
     server: {
         port: 5173,
         host: true, // Docker에서 외부 접근 허용

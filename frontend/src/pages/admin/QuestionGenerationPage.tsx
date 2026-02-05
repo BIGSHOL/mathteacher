@@ -100,7 +100,8 @@ export function QuestionGenerationPage() {
 
   // 학기별 개념 그룹 (초~중3: 1학기/2학기, 고등: 전체)
   const semesterGroups = useMemo(() => {
-    if (chapters.length === 0 || concepts.length === 0) return []
+    if (concepts.length === 0) return []
+
     const conceptMap = new Map(concepts.map((c) => [c.id, c]))
     const useSemester = grade && !grade.startsWith('high_')
 
@@ -108,18 +109,31 @@ export function QuestionGenerationPage() {
     type Entry = { chNum: number; chName: string; concept: ConceptItem }
     const entries: Entry[] = []
     const assigned = new Set<string>()
-    for (const ch of chapters) {
-      for (const cid of ch.concept_ids) {
-        const c = conceptMap.get(cid)
-        if (c) {
-          entries.push({ chNum: ch.chapter_number, chName: ch.name, concept: c })
-          assigned.add(cid)
+
+    // chapters가 있고 concept_ids 매핑이 유효한 경우에만 단원별 그룹화 시도
+    if (chapters.length > 0) {
+      for (const ch of chapters) {
+        for (const cid of ch.concept_ids) {
+          const c = conceptMap.get(cid)
+          if (c) {
+            entries.push({ chNum: ch.chapter_number, chName: ch.name, concept: c })
+            assigned.add(cid)
+          }
         }
       }
     }
-    // 미배정 개념
+
+    // 미배정 개념 (또는 chapters 연결이 없는 모든 개념)
     for (const c of concepts) {
       if (!assigned.has(c.id)) entries.push({ chNum: 999, chName: '기타', concept: c })
+    }
+
+    // 단원 연결이 하나도 없으면 (모두 "기타"인 경우) 이름순으로 단순 표시
+    const hasChapterLinks = entries.some((e) => e.chNum !== 999)
+    if (!hasChapterLinks) {
+      // 단원 연결이 없으면 이름순 정렬 후 단일 그룹으로 반환
+      const sorted = [...entries].sort((a, b) => a.concept.name.localeCompare(b.concept.name, 'ko'))
+      return [{ label: '전체', items: sorted }]
     }
 
     if (useSemester) {

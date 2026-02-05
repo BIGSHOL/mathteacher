@@ -69,13 +69,20 @@ class AuthService:
 
     async def authenticate_user(self, login_id: str, password: str) -> User | None:
         """사용자 인증."""
+        import logging
+        logger = logging.getLogger(__name__)
+
         user = await self.get_user_by_login_id(login_id)
         if not user:
+            logger.warning("Login failed: user '%s' not found", login_id)
             return None
         if not self.verify_password(password, user.hashed_password):
+            logger.warning("Login failed: wrong password for user '%s'", login_id)
             return None
         if not user.is_active:
+            logger.warning("Login failed: user '%s' is inactive", login_id)
             return None
+        logger.info("Login successful for user '%s'", login_id)
         return user
 
     async def create_user(self, user_data: UserCreate) -> User:

@@ -18,6 +18,7 @@ from app.models.user import User
 from app.models.question import Question
 from app.models.concept import Concept
 from app.services.ai_service import AIService
+from app.api.v1.questions import validate_options_no_duplicates
 
 logger = logging.getLogger(__name__)
 

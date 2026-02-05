@@ -24,6 +24,36 @@ router = APIRouter(prefix="/questions", tags=["questions"])
 
 
 # ===========================
+# 헬퍼: 중복 보기 검증
+# ===========================
+
+
+def validate_options_no_duplicates(options: list[dict] | None) -> None:
+    """보기 텍스트 중복 검증. 중복 시 HTTPException 발생."""
+    if not options:
+        return
+    texts = [opt.get("text", "").strip() for opt in options if isinstance(opt, dict)]
+    if len(texts) != len(set(texts)):
+        # 중복된 텍스트 찾기
+        seen = set()
+        duplicates = []
+        for t in texts:
+            if t in seen:
+                duplicates.append(t)
+            seen.add(t)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "DUPLICATE_OPTIONS",
+                    "message": f"보기에 중복된 텍스트가 있습니다: {', '.join(duplicates)}",
+                },
+            },
+        )
+
+
+# ===========================
 # 문제 생성
 # ===========================
 
@@ -39,6 +69,10 @@ async def create_question(
     _user: UserResponse = Depends(require_role("teacher", "admin", "master")),
 ):
     """단일 문제 생성."""
+    # 보기 중복 검증
+    if payload.options:
+        validate_options_no_duplicates([opt.model_dump() for opt in payload.options])
+
     # concept 존재 확인
     concept = await db.get(Concept, payload.concept_id)
     if not concept:
@@ -81,6 +115,18 @@ async def create_questions_batch(
     _user: UserResponse = Depends(require_role("teacher", "admin", "master")),
 ):
     """문제 일괄 생성 (프론트 템플릿 → DB 파이프라인)."""
+    # 보기 중복 검증 (각 문제별로)
+    for idx, item in enumerate(payload):
+        if item.options:
+            try:
+                validate_options_no_duplicates([opt.model_dump() for opt in item.options])
+            except HTTPException as e:
+                # 몇 번째 문제인지 명시
+                detail = e.detail
+                if isinstance(detail, dict) and "error" in detail:
+                    detail["error"]["message"] = f"[{idx + 1}번째 문제] {detail['error']['message']}"
+                raise HTTPException(status_code=e.status_code, detail=detail)
+
     if len(payload) > 100:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

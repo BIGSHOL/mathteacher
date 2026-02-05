@@ -313,7 +313,20 @@ class AIService:
                     max_output_tokens=4096,
                 ),
             )
+
+            # 응답 유효성 검사
+            if not response.text:
+                logger.warning(
+                    "AI returned empty response for concept %s (possibly blocked by safety filters)",
+                    concept_name
+                )
+                return None
+
             text = response.text.strip()
+
+            if not text:
+                logger.warning("AI returned whitespace-only response for concept %s", concept_name)
+                return None
 
             # JSON 추출
             if "```" in text:

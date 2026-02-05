@@ -158,13 +158,15 @@ async def login(
     await auth_service.save_refresh_token(user.id, refresh_token)
 
     # HttpOnly 쿠키로 refresh token 설정 (XSS 방지)
+    # 크로스 오리진(Vercel↔Railway)에서는 samesite="none" 필수
+    is_production = settings.ENV != "development"
     response.set_cookie(
         key=REFRESH_TOKEN_COOKIE_NAME,
         value=refresh_token,
         max_age=REFRESH_TOKEN_MAX_AGE,
         httponly=True,  # JavaScript 접근 불가
-        secure=settings.ENV != "development",  # HTTPS only in production
-        samesite="lax",  # CSRF 방지
+        secure=is_production,  # HTTPS only in production
+        samesite="none" if is_production else "lax",  # 크로스 오리진 허용
         path="/api/v1/auth",  # 인증 API 경로에서만 전송
     )
 
@@ -244,13 +246,14 @@ async def refresh_token(
     await auth_service.save_refresh_token(user_id, new_refresh_token)
 
     # 새 refresh token을 HttpOnly 쿠키로 설정
+    is_production = settings.ENV != "development"
     response.set_cookie(
         key=REFRESH_TOKEN_COOKIE_NAME,
         value=new_refresh_token,
         max_age=REFRESH_TOKEN_MAX_AGE,
         httponly=True,
-        secure=settings.ENV != "development",
-        samesite="lax",
+        secure=is_production,
+        samesite="none" if is_production else "lax",
         path="/api/v1/auth",
     )
 
@@ -285,6 +288,31 @@ async def logout(
 async def get_me(current_user: UserResponse = Depends(get_current_user)):
     """현재 사용자 정보 조회."""
     return ApiResponse(data=current_user)
+
+
+@router.get("/debug-users")
+async def debug_users(auth_service: AuthService = Depends(get_auth_service)):
+    """디버그: DB에 있는 사용자 목록 확인 (배포 후 삭제 필요)."""
+    from sqlalchemy import select
+    from app.models.user import User
+
+    stmt = select(User.id, User.login_id, User.name, User.role, User.is_active)
+    result = await auth_service.db.execute(stmt)
+    users = result.all()
+
+    return {
+        "total_users": len(users),
+        "users": [
+            {
+                "id": u.id,
+                "login_id": u.login_id,
+                "name": u.name,
+                "role": u.role,
+                "is_active": u.is_active,
+            }
+            for u in users
+        ],
+    }
 
 
 @router.post(
