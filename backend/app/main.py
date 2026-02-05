@@ -83,19 +83,16 @@ def init_db():
                 id="class-001",
                 name="중1 테스트반",
                 teacher_id="teacher-001",
-                grade="middle_1",
             )
             test_class_e3 = Class(
                 id="class-002",
                 name="초3 테스트반",
                 teacher_id="teacher-001",
-                grade="elementary_3",
             )
             test_class_h1 = Class(
                 id="class-003",
                 name="고1 테스트반",
                 teacher_id="teacher-001",
-                grade="high_1",
             )
             db.add_all([test_class_m1, test_class_e3, test_class_h1])
             db.flush()
