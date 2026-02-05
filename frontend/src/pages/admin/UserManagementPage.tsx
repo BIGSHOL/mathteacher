@@ -17,10 +17,10 @@ interface UserListItem {
 }
 
 const ROLE_CONFIG: Record<UserRole, { label: string; color: string }> = {
-  MASTER: { label: '마스터', color: 'bg-red-100 text-red-700' },
-  ADMIN: { label: '관리자', color: 'bg-orange-100 text-orange-700' },
-  TEACHER: { label: '강사', color: 'bg-blue-100 text-blue-700' },
-  STUDENT: { label: '학생', color: 'bg-green-100 text-green-700' },
+  master: { label: '마스터', color: 'bg-red-100 text-red-700' },
+  admin: { label: '관리자', color: 'bg-orange-100 text-orange-700' },
+  teacher: { label: '강사', color: 'bg-blue-100 text-blue-700' },
+  student: { label: '학생', color: 'bg-green-100 text-green-700' },
 }
 
 const GRADE_OPTIONS: { value: Grade; label: string; disabled?: boolean }[] = [
