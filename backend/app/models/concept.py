@@ -36,7 +36,7 @@ class Concept(Base):
         String(36), primary_key=True, default=lambda: str(uuid4())
     )
     name: Mapped[str] = mapped_column(String(200), index=True)
-    grade: Mapped[Grade] = mapped_column(SAEnum(Grade), index=True)
+    grade: Mapped[str] = mapped_column(String(20), index=True)
     category: Mapped[QuestionCategory] = mapped_column(
         SAEnum(QuestionCategory), index=True, default=QuestionCategory.CONCEPT,
         comment="트랙: 연산(computation) / 개념(concept)"

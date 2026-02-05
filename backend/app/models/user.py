@@ -25,10 +25,10 @@ class User(Base):
     login_id: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
     name: Mapped[str] = mapped_column(String(100))
-    role: Mapped[UserRole] = mapped_column(
-        Enum(UserRole), default=UserRole.STUDENT
+    role: Mapped[str] = mapped_column(
+        String(20), default="student"
     )
-    grade: Mapped[Grade | None] = mapped_column(Enum(Grade), nullable=True)
+    grade: Mapped[str | None] = mapped_column(String(20), nullable=True)
     class_id: Mapped[str | None] = mapped_column(
         String(36), ForeignKey("classes.id"), nullable=True
     )

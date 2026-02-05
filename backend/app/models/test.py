@@ -24,7 +24,7 @@ class Test(Base):
     )
     title: Mapped[str] = mapped_column(String(200))
     description: Mapped[str] = mapped_column(Text, default="")
-    grade: Mapped[Grade] = mapped_column(Enum(Grade), index=True)
+    grade: Mapped[str] = mapped_column(String(20), index=True)
     test_type: Mapped[str] = mapped_column(
         String(50), default="concept", comment="테스트 유형: concept, cumulative, semester_final, grade_final"
     )

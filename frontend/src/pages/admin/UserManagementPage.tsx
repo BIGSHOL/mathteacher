@@ -24,17 +24,17 @@ const ROLE_CONFIG: Record<UserRole, { label: string; color: string }> = {
 }
 
 const GRADE_OPTIONS: { value: Grade; label: string; disabled?: boolean }[] = [
-  { value: 'ELEMENTARY_1', label: '초등 1학년', disabled: true },
-  { value: 'ELEMENTARY_2', label: '초등 2학년', disabled: true },
-  { value: 'ELEMENTARY_3', label: '초등 3학년' },
-  { value: 'ELEMENTARY_4', label: '초등 4학년' },
-  { value: 'ELEMENTARY_5', label: '초등 5학년' },
-  { value: 'ELEMENTARY_6', label: '초등 6학년' },
-  { value: 'MIDDLE_1', label: '중등 1학년' },
-  { value: 'MIDDLE_2', label: '중등 2학년' },
-  { value: 'MIDDLE_3', label: '중등 3학년' },
-  { value: 'HIGH_1', label: '고등 1학년' },
-  { value: 'HIGH_2', label: '고등 2학년' },
+  { value: 'elementary_1', label: '초등 1학년', disabled: true },
+  { value: 'elementary_2', label: '초등 2학년', disabled: true },
+  { value: 'elementary_3', label: '초등 3학년' },
+  { value: 'elementary_4', label: '초등 4학년' },
+  { value: 'elementary_5', label: '초등 5학년' },
+  { value: 'elementary_6', label: '초등 6학년' },
+  { value: 'middle_1', label: '중등 1학년' },
+  { value: 'middle_2', label: '중등 2학년' },
+  { value: 'middle_3', label: '중등 3학년' },
+  { value: 'high_1', label: '고등 1학년' },
+  { value: 'high_2', label: '고등 2학년' },
 ]
 
 export function UserManagementPage() {

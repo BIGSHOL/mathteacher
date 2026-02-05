@@ -26,7 +26,7 @@ class Class(Base):
     teacher_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("users.id"), index=True
     )
-    grade: Mapped[Grade] = mapped_column(Enum(Grade))
+    grade: Mapped[str] = mapped_column(String(20))
     description: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     # 일일 할당량

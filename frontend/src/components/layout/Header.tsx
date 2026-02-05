@@ -15,14 +15,14 @@ export function Header() {
     navigate('/login')
   }
 
-  const isStaff = user?.role === 'TEACHER' || user?.role === 'ADMIN' || user?.role === 'MASTER'
-  const isAdmin = user?.role === 'ADMIN' || user?.role === 'MASTER'
+  const isStaff = user?.role === 'teacher' || user?.role === 'admin' || user?.role === 'master'
+  const isAdmin = user?.role === 'admin' || user?.role === 'master'
 
   const getRoleLabel = (role: string) => {
     switch (role) {
-      case 'MASTER': return '마스터'
-      case 'ADMIN': return '관리자'
-      case 'TEACHER': return '강사'
+      case 'master': return '마스터'
+      case 'admin': return '관리자'
+      case 'teacher': return '강사'
       default: return '학생'
     }
   }
@@ -45,7 +45,7 @@ export function Header() {
                   <NavLink to="/teacher/dashboard">대시보드</NavLink>
                   <NavLink to="/teacher/students">학생 관리</NavLink>
                   {isAdmin && <NavLink to="/admin/questions">문제 은행</NavLink>}
-                  {user?.role === 'MASTER' && <NavLink to="/admin/generate">문제 생성</NavLink>}
+                  {user?.role === 'master' && <NavLink to="/admin/generate">문제 생성</NavLink>}
                   {isAdmin && <NavLink to="/admin/users">계정 관리</NavLink>}
                 </>
               ) : (
