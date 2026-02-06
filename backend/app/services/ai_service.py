@@ -35,6 +35,53 @@ def _get_client() -> genai.Client | None:
     return _client
 
 
+def _cross_validate_answer(q: dict, options: list) -> str | None:
+    """객관식 정답 라벨이 해설의 최종 답과 일치하는지 교차검증.
+
+    Returns:
+        불일치 시 경고 메시지, 일치 시 None.
+        불일치가 자동 수정 가능한 경우 q["correct_answer"]를 직접 수정함.
+    """
+    correct_label = str(q.get("correct_answer", "")).strip().upper()
+    explanation = str(q.get("explanation", ""))
+
+    # 정답 라벨에 해당하는 선지 텍스트 찾기
+    label_to_text: dict[str, str] = {}
+    for opt in options:
+        if isinstance(opt, dict):
+            label_to_text[str(opt.get("label", "")).upper()] = str(opt.get("text", ""))
+
+    correct_text = label_to_text.get(correct_label, "")
+    if not correct_text:
+        return None
+
+    # 해설에서 최종 답 추출: "= 8개", "= 360", "답은 8개이다" 등
+    final_answers = re.findall(r"=\s*(\-?[\d,]+(?:\.\d+)?)\s*(개|cm|m|kg|g|원|명|마리|장|번|°)?", explanation)
+    if not final_answers:
+        return None
+
+    # 마지막으로 나온 최종 답
+    final_value = final_answers[-1][0].replace(",", "")
+    final_unit = final_answers[-1][1]
+    final_str = f"{final_value}{final_unit}" if final_unit else final_value
+
+    # 정답 선지에 최종 답이 포함되어 있는지 확인
+    if final_value in correct_text or final_str in correct_text:
+        return None  # 일치 → OK
+
+    # 다른 선지에 최종 답이 있으면 자동 수정
+    for label, text in label_to_text.items():
+        if label != correct_label and (final_value in text or final_str in text):
+            logger.warning(
+                "정답 라벨 자동 수정: %s(%s) → %s(%s) | 해설 최종답=%s",
+                correct_label, correct_text, label, text, final_str,
+            )
+            q["correct_answer"] = label  # 자동 수정
+            return None  # 수정 완료 → 경고 없음 (문제 유지)
+
+    return None
+
+
 def _validate_generated_question(q: dict, category: str = "") -> list[str]:
     """생성된 문제의 품질 검증. 경고 메시지 목록을 반환."""
     warnings: list[str] = []
@@ -67,6 +114,11 @@ def _validate_generated_question(q: dict, category: str = "") -> list[str]:
         options = q.get("options")
         if not options or not isinstance(options, list) or len(options) < 2:
             warnings.append("객관식인데 보기가 없거나 부족함")
+        # 정답 라벨-해설 교차검증: 해설의 최종 답이 정답 선지와 일치하는지
+        elif q.get("correct_answer") and q.get("explanation"):
+            _check = _cross_validate_answer(q, options)
+            if _check:
+                warnings.append(_check)
 
     # 연산 트랙인데 계산 문제가 아닌 경우
     if category == "computation":
@@ -422,6 +474,9 @@ class AIService:
             "4. 한국어로 작성하세요.\n"
             "5. 각 문제가 서로 다른 유형/소재여야 합니다.\n"
             "6. 위 '학생 주요 오개념' 목록의 오류 유형을 반영하여 매력적인 오답 선지를 만드세요.\n"
+            "7. **객관식 정답 검증 필수**: correct_answer 라벨(A/B/C/D)이 가리키는 선지의 text가 "
+            "explanation의 최종 답과 반드시 일치해야 합니다. 예: 해설에서 '8개'가 정답이면 "
+            "correct_answer는 '8개'가 적힌 선지의 라벨이어야 합니다.\n"
             f"{existing_section}\n"
             f"## 출력 형식 (JSON 배열)\n"
             f"예시: [{json_example}]\n\n"

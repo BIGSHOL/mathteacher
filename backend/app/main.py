@@ -1698,6 +1698,72 @@ def update_chapter_concept_ids():
         db.close()
 
 
+def fix_mc_answer_mismatch():
+    """객관식 문제의 정답 라벨-해설 불일치를 자동 수정."""
+    from app.models.question import Question
+
+    db = SyncSessionLocal()
+    try:
+        questions = db.query(Question).filter(
+            Question.question_type == "multiple_choice",
+            Question.options.isnot(None),
+            Question.explanation.isnot(None),
+        ).all()
+
+        fixed = 0
+        for q in questions:
+            if not q.options or not q.explanation or not q.correct_answer:
+                continue
+
+            correct_label = q.correct_answer.strip().upper()
+            label_to_text: dict[str, str] = {}
+            for opt in q.options:
+                if isinstance(opt, dict):
+                    label_to_text[str(opt.get("label", "")).upper()] = str(opt.get("text", ""))
+
+            correct_text = label_to_text.get(correct_label, "")
+            if not correct_text:
+                continue
+
+            # 해설에서 최종 답 추출
+            final_answers = re.findall(
+                r"=\s*(\-?[\d,]+(?:\.\d+)?)\s*(개|cm|m|kg|g|원|명|마리|장|번|°)?",
+                q.explanation,
+            )
+            if not final_answers:
+                continue
+
+            final_value = final_answers[-1][0].replace(",", "")
+            final_unit = final_answers[-1][1]
+            final_str = f"{final_value}{final_unit}" if final_unit else final_value
+
+            # 정답 선지에 최종 답이 이미 포함 → OK
+            if final_value in correct_text or final_str in correct_text:
+                continue
+
+            # 다른 선지에서 매칭되는 것 찾기
+            for label, text in label_to_text.items():
+                if label != correct_label and (final_value in text or final_str in text):
+                    logger.info(
+                        "Fix MC answer: Q=%s, %s(%s)→%s(%s), 해설답=%s",
+                        q.id, correct_label, correct_text, label, text, final_str,
+                    )
+                    q.correct_answer = label
+                    fixed += 1
+                    break
+
+        db.commit()
+        if fixed:
+            logger.info(f"Fixed {fixed} MC questions with answer-explanation mismatch")
+        else:
+            logger.info("No MC answer mismatches found")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to fix MC answers: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
 def migrate_test_category():
     """기존 일일 테스트의 category 컬럼을 ID에서 파싱하여 채움."""
     from app.models.test import Test
@@ -2287,6 +2353,7 @@ async def lifespan(app: FastAPI):
     await loop.run_in_executor(None, update_chapter_concept_ids)
     await loop.run_in_executor(None, migrate_chapter_semester_numbering)
     await loop.run_in_executor(None, migrate_test_category)
+    await loop.run_in_executor(None, fix_mc_answer_mismatch)
     await loop.run_in_executor(None, migrate_concept_sequential_unlock)
     await loop.run_in_executor(None, cleanup_bad_ai_questions)
     yield
