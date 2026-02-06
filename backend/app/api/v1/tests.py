@@ -811,18 +811,20 @@ async def complete_test(
             Question.id.in_(question_ids),
             Question.concept_id.isnot(None)
         ).distinct()
-        concept_ids = list((await db.scalars(concepts_stmt)).all())
+        concept_ids_set = set((await db.scalars(concepts_stmt)).all())
 
-        if concept_ids:
-            # 2. 해당 개념들을 포함하는 단원들 찾기
-            chapters_stmt = select(Chapter.id).where(
-                Chapter.concept_ids.overlap(concept_ids)
-            )
-            chapter_ids = list((await db.scalars(chapters_stmt)).all())
+        if concept_ids_set:
+            # 2. 학생 학년의 단원들을 조회하여 해당 개념 포함 여부 확인
+            chapters_stmt = select(Chapter).where(Chapter.is_active == True)  # noqa: E712
+            if current_user.grade:
+                chapters_stmt = chapters_stmt.where(Chapter.grade == current_user.grade)
+            all_chapters = list((await db.scalars(chapters_stmt)).all())
 
-            # 3. 각 단원의 진행률 업데이트
-            for chapter_id in chapter_ids:
-                await chapter_service.update_chapter_progress(current_user.id, chapter_id)
+            # 3. 개념이 속한 단원만 필터링하여 진행률 업데이트
+            for ch in all_chapters:
+                ch_concepts = set(ch.concept_ids or [])
+                if ch_concepts & concept_ids_set:
+                    await chapter_service.update_chapter_progress(current_user.id, ch.id)
 
     # 일일 테스트 기록 동기화
     from app.services.daily_test_service import DailyTestService

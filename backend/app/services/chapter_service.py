@@ -297,6 +297,27 @@ class ChapterService:
         progresses = list((await self.db.scalars(progress_stmt)).all())
         progress_map = {p.chapter_id: p for p in progresses}
 
+        # 첫 번째 단원은 자동 해금
+        first_chapter = chapters[0] if chapters else None
+        if first_chapter:
+            progress = progress_map.get(first_chapter.id)
+            if not progress:
+                progress = ChapterProgress(
+                    student_id=student_id,
+                    chapter_id=first_chapter.id,
+                    is_unlocked=True,
+                    unlocked_at=datetime.now(timezone.utc),
+                )
+                self.db.add(progress)
+                await self.db.flush()
+                progress_map[first_chapter.id] = progress
+            elif not progress.is_unlocked:
+                progress.is_unlocked = True
+                progress.unlocked_at = datetime.now(timezone.utc)
+                await self.db.flush()
+
+            await self.db.commit()
+
         result = []
         for chapter in chapters:
             progress = progress_map.get(chapter.id)
