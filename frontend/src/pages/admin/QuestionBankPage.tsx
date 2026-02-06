@@ -114,8 +114,8 @@ const SEMESTER_STRUCTURE: Record<string, { semester1: number[]; semester2: numbe
   elementary_4: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
   elementary_5: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
   elementary_6: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-  middle_1: { semester1: [1, 2, 3, 4], semester2: [5, 6] },
-  middle_2: { semester1: [1, 2], semester2: [3, 4, 5, 6] },
+  middle_1: { semester1: [1, 2, 3, 4, 5], semester2: [6] },
+  middle_2: { semester1: [1, 2, 3], semester2: [4, 5, 6] },
   middle_3: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
   high_1: null, // 공통수학1 - 학기 구분 없음
   high_2: null, // 공통수학2 - 학기 구분 없음
