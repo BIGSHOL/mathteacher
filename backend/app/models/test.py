@@ -8,7 +8,7 @@ from sqlalchemy import Boolean, DateTime, Enum, Integer, JSON, String, Text, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.schemas.common import Grade
+from app.schemas.common import Grade, QuestionCategory
 
 if TYPE_CHECKING:
     from app.models.test_attempt import TestAttempt
@@ -27,6 +27,10 @@ class Test(Base):
     grade: Mapped[str] = mapped_column(String(20), index=True)
     test_type: Mapped[str] = mapped_column(
         String(50), default="concept", comment="테스트 유형: concept, cumulative, semester_final, grade_final"
+    )
+    category: Mapped[str | None] = mapped_column(
+        String(30), nullable=True, index=True,
+        comment="문제 카테고리: computation, concept, fill_in_blank, 또는 NULL(종합)"
     )
     semester: Mapped[int | None] = mapped_column(
         Integer, nullable=True, comment="학기 종합시험의 경우 학기 번호"

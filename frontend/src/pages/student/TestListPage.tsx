@@ -13,6 +13,7 @@ const CATEGORY_TABS: { key: CategoryFilter; label: string; icon: string }[] = [
   { key: 'all', label: '전체', icon: '📋' },
   { key: 'computation', label: '연산', icon: '🧮' },
   { key: 'concept', label: '개념', icon: '📚' },
+  { key: 'fill_in_blank', label: '빈칸', icon: '✏️' },
   { key: 'comprehensive', label: '종합', icon: '📝' },
 ]
 
@@ -53,10 +54,11 @@ export function TestListPage() {
     }
   }
 
+  const KNOWN_CATEGORIES = ['computation', 'concept', 'fill_in_blank']
   const filteredTests = activeCategory === 'all'
     ? tests
     : activeCategory === 'comprehensive'
-      ? tests.filter((t) => !t.category || (t.category !== 'computation' && t.category !== 'concept'))
+      ? tests.filter((t) => !t.category || !KNOWN_CATEGORIES.includes(t.category))
       : tests.filter((t) => t.category === activeCategory)
 
   const handleStartTest = (testId: string) => {
@@ -165,6 +167,9 @@ function TestCard({ test, index, onStart }: TestCardProps) {
     if (test.category === 'concept') {
       return 'bg-gradient-to-br from-blue-50 to-sky-50 border-l-4 border-l-blue-400'
     }
+    if (test.category === 'fill_in_blank') {
+      return 'bg-gradient-to-br from-amber-50 to-yellow-50 border-l-4 border-l-amber-400'
+    }
     // 종합 (category 없음)
     return 'bg-gradient-to-br from-violet-50 to-purple-50 border-l-4 border-l-violet-400'
   }
@@ -183,13 +188,15 @@ function TestCard({ test, index, onStart }: TestCardProps) {
               <h3 className="text-sm font-semibold text-gray-900">{test.title}</h3>
               <span className={clsx(
                 'rounded-full px-1.5 py-0.5 text-[10px] font-medium',
-                test.category === 'computation'
-                  ? 'bg-rose-100 text-rose-700'
-                  : test.category === 'concept'
-                    ? 'bg-blue-100 text-blue-700'
-                    : 'bg-violet-100 text-violet-700'
+                test.category === 'computation' ? 'bg-rose-100 text-rose-700'
+                  : test.category === 'concept' ? 'bg-blue-100 text-blue-700'
+                  : test.category === 'fill_in_blank' ? 'bg-amber-100 text-amber-700'
+                  : 'bg-violet-100 text-violet-700'
               )}>
-                {test.category === 'computation' ? '연산' : test.category === 'concept' ? '개념' : '종합'}
+                {test.category === 'computation' ? '연산'
+                  : test.category === 'concept' ? '개념'
+                  : test.category === 'fill_in_blank' ? '빈칸'
+                  : '종합'}
               </span>
               {test.test_type === 'cumulative' && (
                 <span className="rounded-full bg-purple-100 px-1.5 py-0.5 text-[10px] font-medium text-purple-700">

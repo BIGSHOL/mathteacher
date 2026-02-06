@@ -11,7 +11,7 @@ import type { GeneratedQuestion } from './questionGenerator/types'
 /** 백엔드 QuestionCreate 스키마에 대응하는 요청 타입 */
 interface QuestionCreatePayload {
   concept_id: string
-  category: 'computation' | 'concept'
+  category: 'computation' | 'concept' | 'fill_in_blank'
   part: 'calc' | 'algebra' | 'func' | 'geo' | 'data' | 'word'
   question_type: 'multiple_choice' | 'short_answer'
   difficulty: number

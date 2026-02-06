@@ -150,6 +150,13 @@ export function QuestionGenerationPage() {
     return [{ label: '전체', items: entries }]
   }, [chapters, concepts, grade])
 
+  // 선택된 개념이 연산인지 확인
+  const selectedConceptCategory = useMemo(
+    () => concepts.find((c) => c.id === conceptId)?.category ?? '',
+    [concepts, conceptId],
+  )
+  const isComputation = selectedConceptCategory === 'computation'
+
   // 전체 선택/해제
   const toggleAll = useCallback(() => {
     if (selected.size === generated.length) {
@@ -440,9 +447,15 @@ export function QuestionGenerationPage() {
               </div>
             )}
 
+            {isComputation && strategy === 'ai' && (
+              <p className="mt-2 text-sm text-amber-600">
+                연산 문제는 AI 생성 대상이 아닙니다. 템플릿 생성기를 사용하거나 FB 파생을 선택하세요.
+              </p>
+            )}
+
             <button
               onClick={handleGenerate}
-              disabled={step === 'generating' || !conceptId}
+              disabled={step === 'generating' || !conceptId || (isComputation && strategy === 'ai')}
               className="mt-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {step === 'generating' ? (

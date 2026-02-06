@@ -16,8 +16,8 @@ export type Grade =
 
 export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer' | 'fill_in_blank'
 
-/** 문제 카테고리 (트랙): 연산(computation) / 개념(concept) */
-export type QuestionCategory = 'computation' | 'concept'
+/** 문제 카테고리 (트랙): 연산(computation) / 개념(concept) / 빈칸(fill_in_blank) */
+export type QuestionCategory = 'computation' | 'concept' | 'fill_in_blank'
 
 /** 문제 파트 (6개 영역) */
 export type ProblemPart = 'calc' | 'algebra' | 'func' | 'geo' | 'data' | 'word'

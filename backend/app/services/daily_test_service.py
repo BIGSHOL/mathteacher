@@ -241,6 +241,7 @@ class DailyTestService:
             title=f"오늘의 {label} ({date})",
             description=f"{date} 일일 {label} 테스트",
             grade=grade or "",
+            category=category,
             concept_ids=concept_ids,
             question_ids=question_ids,
             question_count=question_count,

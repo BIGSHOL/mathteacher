@@ -1698,6 +1698,47 @@ def update_chapter_concept_ids():
         db.close()
 
 
+def migrate_test_category():
+    """기존 일일 테스트의 category 컬럼을 ID에서 파싱하여 채움."""
+    from app.models.test import Test
+
+    db = SyncSessionLocal()
+    try:
+        # category 컬럼 추가 (없으면)
+        from sqlalchemy import inspect, text
+        inspector = inspect(db.bind)
+        columns = [c["name"] for c in inspector.get_columns("tests")]
+        if "category" not in columns:
+            db.execute(text("ALTER TABLE tests ADD COLUMN category VARCHAR(30)"))
+            db.commit()
+            logger.info("Added 'category' column to tests table")
+
+        # 일일 테스트: ID에서 category 파싱 (daily-{sid}-{date}-{category})
+        daily_tests = db.query(Test).filter(
+            Test.id.like("daily-%"),
+            Test.category.is_(None),
+        ).all()
+        updated = 0
+        for t in daily_tests:
+            parts = t.id.split("-")
+            # daily-student-001-2026-02-07-concept → category = 마지막 부분
+            if len(parts) >= 5:
+                cat = parts[-1]
+                if cat in ("concept", "computation", "fill_in_blank"):
+                    t.category = cat
+                    updated += 1
+        db.commit()
+        if updated:
+            logger.info(f"Migrated category for {updated} daily tests")
+        else:
+            logger.info("No daily tests needed category migration")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to migrate test category: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
 def migrate_chapter_semester_numbering():
     """기존 챕터의 chapter_number와 name을 학기별 번호로 업데이트 (2학기도 1부터 시작)."""
     from app.models.chapter import Chapter
@@ -2245,6 +2286,7 @@ async def lifespan(app: FastAPI):
     await loop.run_in_executor(None, migrate_concept_subdivision)
     await loop.run_in_executor(None, update_chapter_concept_ids)
     await loop.run_in_executor(None, migrate_chapter_semester_numbering)
+    await loop.run_in_executor(None, migrate_test_category)
     await loop.run_in_executor(None, migrate_concept_sequential_unlock)
     await loop.run_in_executor(None, cleanup_bad_ai_questions)
     yield
