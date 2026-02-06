@@ -461,7 +461,7 @@ class StatsService:
             if class_ and class_.teacher_id != teacher_id:
                 # admin이 아니면 접근 불가
                 teacher = await self.db.get(User, teacher_id)
-                if not teacher or teacher.role != UserRole.ADMIN:
+                if not teacher or teacher.role not in (UserRole.ADMIN, UserRole.MASTER):
                     return None
 
         # 기본 통계
