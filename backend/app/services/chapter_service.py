@@ -284,7 +284,7 @@ class ChapterService:
         if grade:
             stmt = stmt.where(Chapter.grade == grade)
 
-        stmt = stmt.order_by(Chapter.chapter_number)
+        stmt = stmt.order_by(Chapter.semester, Chapter.chapter_number)
         chapters = list((await self.db.scalars(stmt)).all())
 
         if not chapters:

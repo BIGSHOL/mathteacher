@@ -329,7 +329,7 @@ async def debug_chapters(
     db = auth_service.db
 
     # 챕터 조회
-    stmt = select(Chapter).order_by(Chapter.grade, Chapter.chapter_number)
+    stmt = select(Chapter).order_by(Chapter.grade, Chapter.semester, Chapter.chapter_number)
     if grade:
         stmt = stmt.where(Chapter.grade == grade)
     chapters = list((await db.scalars(stmt)).all())
@@ -349,6 +349,7 @@ async def debug_chapters(
             "id": ch.id,
             "name": ch.name,
             "grade": ch.grade,
+            "semester": ch.semester,
             "chapter_number": ch.chapter_number,
             "concept_ids": ch.concept_ids,
             "question_count": q_count,

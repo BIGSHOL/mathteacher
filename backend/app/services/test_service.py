@@ -72,8 +72,44 @@ class TestService:
         self.db = db
 
     async def _get_student_available_concept_ids(self, student_id: str, grade: Grade) -> list[str]:
-        """학생이 해금한 개념 ID만 반환 (ConceptMastery.is_unlocked 기반)."""
-        # ConceptMastery에서 해금된 개념만 조회
+        """학생이 해금한 개념 ID만 반환 (ChapterProgress.is_unlocked + ConceptMastery.is_unlocked 기반)."""
+        from app.models.chapter_progress import ChapterProgress
+
+        # 1. 해금된 챕터의 개념 ID 목록 수집
+        unlocked_ch_stmt = (
+            select(Chapter)
+            .join(ChapterProgress, Chapter.id == ChapterProgress.chapter_id)
+            .where(
+                ChapterProgress.student_id == student_id,
+                ChapterProgress.is_unlocked == True,  # noqa: E712
+                Chapter.grade == grade,
+            )
+        )
+        unlocked_chapters = list((await self.db.scalars(unlocked_ch_stmt)).all())
+        chapter_concept_ids = set()
+        for ch in unlocked_chapters:
+            chapter_concept_ids.update(ch.concept_ids or [])
+
+        if not chapter_concept_ids:
+            # 폴백: 해금된 챕터가 없으면 첫 챕터 첫 개념 자동 해금
+            from app.services.mastery_service import MasteryService
+            first_chapter_stmt = (
+                select(Chapter)
+                .where(Chapter.grade == grade, Chapter.semester == 1, Chapter.chapter_number == 1)
+            )
+            first_chapter = await self.db.scalar(first_chapter_stmt)
+            if first_chapter and first_chapter.concept_ids:
+                mastery_service = MasteryService(self.db)
+                first_concept_id = first_chapter.concept_ids[0]
+                await mastery_service.ensure_first_concept_unlocked(student_id, first_chapter.id)
+                await self.db.flush()
+                return [first_concept_id]
+
+            # 최종 폴백: 챕터 데이터가 없는 학년 → 전체 개념
+            fallback_stmt = select(Concept.id).where(Concept.grade == grade)
+            return list((await self.db.scalars(fallback_stmt)).all())
+
+        # 2. 해금된 개념 중 해금된 챕터에 속한 것만 반환
         stmt = (
             select(ConceptMastery.concept_id)
             .join(Concept, ConceptMastery.concept_id == Concept.id)
@@ -81,29 +117,10 @@ class TestService:
                 ConceptMastery.student_id == student_id,
                 ConceptMastery.is_unlocked == True,  # noqa: E712
                 Concept.grade == grade,
+                ConceptMastery.concept_id.in_(chapter_concept_ids),
             )
         )
-        unlocked_concepts = list((await self.db.scalars(stmt)).all())
-        if unlocked_concepts:
-            return unlocked_concepts
-
-        # 폴백: 해금된 개념이 없으면 첫 챕터 첫 개념 자동 해금
-        from app.services.mastery_service import MasteryService
-        first_chapter_stmt = (
-            select(Chapter)
-            .where(Chapter.grade == grade, Chapter.chapter_number == 1)
-        )
-        first_chapter = await self.db.scalar(first_chapter_stmt)
-        if first_chapter and first_chapter.concept_ids:
-            mastery_service = MasteryService(self.db)
-            first_concept_id = first_chapter.concept_ids[0]
-            await mastery_service.ensure_first_concept_unlocked(student_id, first_chapter.id)
-            await self.db.flush()
-            return [first_concept_id]
-
-        # 최종 폴백: 챕터 데이터가 없는 학년 → 전체 개념
-        fallback_stmt = select(Concept.id).where(Concept.grade == grade)
-        return list((await self.db.scalars(fallback_stmt)).all())
+        return list((await self.db.scalars(stmt)).all())
 
     async def generate_comprehensive_test(
         self,

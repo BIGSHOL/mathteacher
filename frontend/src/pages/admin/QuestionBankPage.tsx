@@ -28,6 +28,7 @@ interface ChapterItem {
   id: string
   name: string
   grade: string
+  semester: number
   chapter_number: number
   concept_ids: string[]
 }
@@ -108,17 +109,11 @@ const GRADE_LABEL: Record<string, string> = {
   high_1: '고1',
 }
 
-// 학년별 실제 학기 구분 (2022 개정 교육과정 가이드 기반)
-const SEMESTER_STRUCTURE: Record<string, { semester1: number[]; semester2: number[] } | null> = {
-  elementary_3: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-  elementary_4: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-  elementary_5: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-  elementary_6: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-  middle_1: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-  middle_2: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7, 8] },
-  middle_3: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
-  high_1: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
-}
+// 고등은 학기 구분 없이 표시 (공통수학1/2는 semester 필드로 구분)
+const HAS_SEMESTER_GROUPS = new Set([
+  'elementary_3', 'elementary_4', 'elementary_5', 'elementary_6',
+  'middle_1', 'middle_2', 'middle_3', 'high_1',
+])
 
 /** 단원 이름에서 선행 "N. " 접두사 제거 */
 function stripChapterNum(name: string): string {
@@ -229,25 +224,17 @@ export function QuestionBankPage() {
     if (!gradeFilter) return undefined
 
     const conceptMap = new Map(concepts.map((c) => [c.id, c]))
-    const semesterInfo = SEMESTER_STRUCTURE[gradeFilter]
 
-    type Entry = { chNum: number; value: string; label: string }
+    type Entry = { semester: number; value: string; label: string }
     const entries: Entry[] = []
     const assigned = new Set<string>()
 
-    // 단원별로 개념 매핑 및 표시 번호 결정
+    // 단원별로 개념 매핑 (chapter_number는 이미 학기별 번호)
     for (const ch of chapters) {
-      let displayNum = ch.chapter_number
-
-      // 2학기 단원인 경우 표시 번호 재계산
-      if (semesterInfo && semesterInfo.semester2.includes(ch.chapter_number)) {
-        displayNum = semesterInfo.semester2.indexOf(ch.chapter_number) + 1
-      }
-
       for (const cid of ch.concept_ids) {
         const c = conceptMap.get(cid)
         if (c) {
-          entries.push({ chNum: ch.chapter_number, value: c.id, label: `${displayNum}. ${c.name}` })
+          entries.push({ semester: ch.semester, value: c.id, label: `${ch.chapter_number}. ${c.name}` })
           assigned.add(cid)
         }
       }
@@ -255,16 +242,14 @@ export function QuestionBankPage() {
 
     // 단원에 속하지 않은 개념들
     for (const c of concepts) {
-      if (!assigned.has(c.id)) entries.push({ chNum: 999, value: c.id, label: c.name })
+      if (!assigned.has(c.id)) entries.push({ semester: 0, value: c.id, label: c.name })
     }
 
     // 학기별 그룹 생성
-    if (semesterInfo) {
-      const s1Set = new Set(semesterInfo.semester1)
-      const s2Set = new Set(semesterInfo.semester2)
-      const s1 = entries.filter((e) => s1Set.has(e.chNum))
-      const s2 = entries.filter((e) => s2Set.has(e.chNum))
-      const etc = entries.filter((e) => e.chNum === 999)
+    if (gradeFilter && HAS_SEMESTER_GROUPS.has(gradeFilter)) {
+      const s1 = entries.filter((e) => e.semester === 1)
+      const s2 = entries.filter((e) => e.semester === 2)
+      const etc = entries.filter((e) => e.semester === 0)
 
       const groups: { label: string; options: { value: string; label: string }[] }[] = []
       const isHigh = gradeFilter?.startsWith('high_')
@@ -291,8 +276,7 @@ export function QuestionBankPage() {
       for (const cid of ch.concept_ids) conceptToChNum.set(cid, ch.chapter_number)
     }
     return concepts.map((c) => {
-      const raw = conceptToChNum.get(c.id)
-      const num = raw ? (raw <= 6 ? raw : raw - 6) : 0
+      const num = conceptToChNum.get(c.id) ?? 0
       return { value: c.id, label: num > 0 ? `${num}. ${c.name}` : c.name }
     })
   }, [conceptGroups, concepts, chapters, chapterFilter])
@@ -301,18 +285,10 @@ export function QuestionBankPage() {
   const chapterGroups = useMemo(() => {
     if (chapters.length === 0) return undefined
     if (!gradeFilter) return undefined
+    if (!HAS_SEMESTER_GROUPS.has(gradeFilter)) return undefined
 
-    const semesterInfo = SEMESTER_STRUCTURE[gradeFilter]
-    if (!semesterInfo) {
-      // 고등(공통수학1/2): 학기 구분 없음 → flat
-      return undefined
-    }
-
-    // 실제 교육과정 기반 학기 구분
-    const s1Set = new Set(semesterInfo.semester1)
-    const s2Set = new Set(semesterInfo.semester2)
-    const s1 = chapters.filter((ch) => s1Set.has(ch.chapter_number))
-    const s2 = chapters.filter((ch) => s2Set.has(ch.chapter_number))
+    const s1 = chapters.filter((ch) => ch.semester === 1)
+    const s2 = chapters.filter((ch) => ch.semester === 2)
 
     const groups: { label: string; options: { value: string; label: string }[] }[] = []
     const isHigh = gradeFilter?.startsWith('high_')
@@ -326,12 +302,11 @@ export function QuestionBankPage() {
       })
     }
     if (s2.length > 0) {
-      // 2학기 번호 재정렬 (1부터 시작)
       groups.push({
         label: isHigh ? '공통수학2' : '2학기',
-        options: s2.map((ch, idx) => ({
+        options: s2.map((ch) => ({
           value: ch.id,
-          label: `${idx + 1}. ${stripChapterNum(ch.name)}`
+          label: `${ch.chapter_number}. ${stripChapterNum(ch.name)}`
         }))
       })
     }

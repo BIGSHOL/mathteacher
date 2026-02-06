@@ -530,7 +530,7 @@ class StatsService:
             chapters_stmt = (
                 select(Chapter)
                 .where(Chapter.grade == student.grade, Chapter.is_active == True)  # noqa: E712
-                .order_by(Chapter.chapter_number)
+                .order_by(Chapter.semester, Chapter.chapter_number)
             )
             chapters = list((await self.db.scalars(chapters_stmt)).all())
 
@@ -568,6 +568,7 @@ class StatsService:
                     "chapter_id": ch.id,
                     "chapter_name": ch.name,
                     "chapter_number": ch.chapter_number,
+                    "semester": ch.semester,
                     "is_unlocked": prog.is_unlocked if prog else False,
                     "is_completed": prog.is_completed if prog else False,
                     "overall_progress": prog.overall_progress if prog else 0,

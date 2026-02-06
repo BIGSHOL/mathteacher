@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import re
 from contextlib import asynccontextmanager
 from datetime import datetime, timedelta, timezone
 
@@ -1407,13 +1408,19 @@ def init_db():
             all_new_chapters = {}
             for prefix, (grade, ch_list) in _chapter_defs.items():
                 grade_chapters = []
+                semester_counters: dict[int, int] = {}
                 for idx, (name, desc, cids, semester) in enumerate(ch_list, 1):
+                    semester_counters[semester] = semester_counters.get(semester, 0) + 1
+                    ch_num = semester_counters[semester]
+                    # 단원명에서 기존 번호를 제거하고 학기별 번호로 교체
+                    clean_name = re.sub(r'^\d+\.\s*', '', name)
+                    display_name = f"{ch_num}. {clean_name}"
                     ch = Chapter(
                         id=f"chapter-{prefix}-{idx:02d}",
-                        name=name,
+                        name=display_name,
                         grade=grade,
                         semester=semester,
-                        chapter_number=idx,
+                        chapter_number=ch_num,
                         description=desc,
                         concept_ids=cids,
                         mastery_threshold=90,
@@ -1687,6 +1694,53 @@ def update_chapter_concept_ids():
     except Exception as e:
         db.rollback()
         logger.error(f"Failed to update chapter concept_ids: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
+def migrate_chapter_semester_numbering():
+    """기존 챕터의 chapter_number와 name을 학기별 번호로 업데이트 (2학기도 1부터 시작)."""
+    from app.models.chapter import Chapter
+
+    db = SyncSessionLocal()
+    try:
+        chapters = db.query(Chapter).order_by(Chapter.grade, Chapter.id).all()
+
+        # 학년별로 그룹화
+        grade_chapters: dict[str, list] = {}
+        for ch in chapters:
+            grade_chapters.setdefault(ch.grade, []).append(ch)
+
+        updated = 0
+        for grade_chs in grade_chapters.values():
+            # 기존 chapter_number(=전체 순번) 기준 정렬 유지
+            grade_chs.sort(key=lambda c: (c.semester, c.id))
+
+            semester_counters: dict[int, int] = {}
+            for ch in grade_chs:
+                semester_counters[ch.semester] = semester_counters.get(ch.semester, 0) + 1
+                new_num = semester_counters[ch.semester]
+
+                # chapter_number 업데이트
+                if ch.chapter_number != new_num:
+                    ch.chapter_number = new_num
+                    updated += 1
+
+                # 단원명 업데이트: "7. 기본 도형과 작도" → "1. 기본 도형과 작도"
+                clean_name = re.sub(r'^\d+\.\s*', '', ch.name)
+                new_name = f"{new_num}. {clean_name}"
+                if ch.name != new_name:
+                    ch.name = new_name
+                    updated += 1
+
+        db.commit()
+        if updated:
+            logger.info(f"Chapter semester numbering migration: {updated} field updates")
+        else:
+            logger.info("Chapter semester numbering already up to date")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Failed to migrate chapter numbering: {e}", exc_info=True)
     finally:
         db.close()
 
@@ -2190,6 +2244,7 @@ async def lifespan(app: FastAPI):
     await loop.run_in_executor(None, load_seed_data)
     await loop.run_in_executor(None, migrate_concept_subdivision)
     await loop.run_in_executor(None, update_chapter_concept_ids)
+    await loop.run_in_executor(None, migrate_chapter_semester_numbering)
     await loop.run_in_executor(None, migrate_concept_sequential_unlock)
     await loop.run_in_executor(None, cleanup_bad_ai_questions)
     yield

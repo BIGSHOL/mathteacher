@@ -300,39 +300,12 @@ export function MyStatsPage() {
 
   const gradeLabel = user?.grade ? GRADE_LABELS[user.grade] : null
 
-  // 학년별 실제 학기 구분 (2022 개정 교육과정 기반)
-  const SEMESTER_STRUCTURE: Record<string, { semester1: number[]; semester2: number[] } | null> = {
-    elementary_3: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-    elementary_4: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-    elementary_5: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-    elementary_6: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-    middle_1: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
-    middle_2: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7, 8] },
-    middle_3: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
-    high_1: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
-  }
-
-  // 학기별로 단원 그룹화 (실제 교육과정 기준)
+  // 학기별로 단원 그룹화 (서버에서 받은 semester 필드 기반)
   const chaptersBySemester = useMemo(() => {
     const grouped = new Map<number, ChapterProgressItem[]>()
 
-    // 현재 학년의 학기 구조 확인
-    const gradeKey = user?.grade || ''
-    const structure = SEMESTER_STRUCTURE[gradeKey]
-
     chapters.forEach(ch => {
-      let semester = 1
-
-      if (structure) {
-        // 학기 구조가 있으면 chapter_number로 학기 판단
-        if (structure.semester1.includes(ch.chapter_number)) {
-          semester = 1
-        } else if (structure.semester2.includes(ch.chapter_number)) {
-          semester = 2
-        }
-      }
-      // structure가 null이면 모두 semester=1로 처리
-
+      const semester = ch.semester || 1
       if (!grouped.has(semester)) {
         grouped.set(semester, [])
       }
@@ -340,7 +313,7 @@ export function MyStatsPage() {
     })
 
     return Array.from(grouped.entries()).sort(([a], [b]) => a - b)
-  }, [chapters, user?.grade])
+  }, [chapters])
 
   useEffect(() => {
     fetchStats()

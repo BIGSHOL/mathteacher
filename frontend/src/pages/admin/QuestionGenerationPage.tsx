@@ -14,6 +14,7 @@ interface ChapterItem {
   id: string
   name: string
   grade: string
+  semester: number
   chapter_number: number
   concept_ids: string[]
 }
@@ -106,7 +107,7 @@ export function QuestionGenerationPage() {
     const useSemester = grade && !grade.startsWith('high_')
 
     // 단원별 개념 매핑 (chapter_number 순서 유지)
-    type Entry = { chNum: number; chName: string; concept: ConceptItem }
+    type Entry = { chNum: number; chName: string; semester: number; concept: ConceptItem }
     const entries: Entry[] = []
     const assigned = new Set<string>()
 
@@ -116,7 +117,7 @@ export function QuestionGenerationPage() {
         for (const cid of ch.concept_ids) {
           const c = conceptMap.get(cid)
           if (c) {
-            entries.push({ chNum: ch.chapter_number, chName: ch.name, concept: c })
+            entries.push({ chNum: ch.chapter_number, chName: ch.name, semester: ch.semester, concept: c })
             assigned.add(cid)
           }
         }
@@ -125,7 +126,7 @@ export function QuestionGenerationPage() {
 
     // 미배정 개념 (또는 chapters 연결이 없는 모든 개념)
     for (const c of concepts) {
-      if (!assigned.has(c.id)) entries.push({ chNum: 999, chName: '기타', concept: c })
+      if (!assigned.has(c.id)) entries.push({ chNum: 999, chName: '기타', semester: 0, concept: c })
     }
 
     // 단원 연결이 하나도 없으면 (모두 "기타"인 경우) 이름순으로 단순 표시
@@ -137,9 +138,9 @@ export function QuestionGenerationPage() {
     }
 
     if (useSemester) {
-      const s1 = entries.filter((e) => e.chNum <= 6)
-      const s2 = entries.filter((e) => e.chNum > 6 && e.chNum < 999)
-      const etc = entries.filter((e) => e.chNum === 999)
+      const s1 = entries.filter((e) => e.semester === 1)
+      const s2 = entries.filter((e) => e.semester === 2)
+      const etc = entries.filter((e) => e.semester === 0)
       const groups: { label: string; items: Entry[] }[] = []
       if (s1.length > 0) groups.push({ label: '1학기', items: s1 })
       if (s2.length > 0) groups.push({ label: '2학기', items: s2 })

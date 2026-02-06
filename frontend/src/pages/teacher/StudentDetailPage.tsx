@@ -508,7 +508,7 @@ export function StudentDetailPage() {
                       <div className="flex items-center gap-2">
                         <span className={`text-sm font-medium ${statusColor}`}>{statusIcon}</span>
                         <span className="text-sm font-medium text-gray-800">
-                          {chapter.chapter_number}. {chapter.chapter_name}
+                          {chapter.chapter_name}
                         </span>
                         <span className={`text-xs ${statusColor}`}>({statusText})</span>
                       </div>

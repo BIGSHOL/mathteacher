@@ -266,11 +266,11 @@ async def get_filter_options(
     # 단원 조회
     ch_stmt = select(
         Chapter.id, Chapter.name, Chapter.grade,
-        Chapter.chapter_number, Chapter.concept_ids,
+        Chapter.semester, Chapter.chapter_number, Chapter.concept_ids,
     ).where(Chapter.is_active.is_(True))
     if grade:
         ch_stmt = ch_stmt.where(Chapter.grade == grade)
-    ch_stmt = ch_stmt.order_by(Chapter.grade, Chapter.chapter_number)
+    ch_stmt = ch_stmt.order_by(Chapter.grade, Chapter.semester, Chapter.chapter_number)
 
     # 개념 조회
     co_stmt = select(Concept.id, Concept.name, Concept.grade)
@@ -286,6 +286,7 @@ async def get_filter_options(
                     "id": r.id,
                     "name": r.name,
                     "grade": r.grade.value if hasattr(r.grade, "value") else r.grade,
+                    "semester": r.semester,
                     "chapter_number": r.chapter_number,
                     "concept_ids": r.concept_ids or [],
                 }
@@ -308,11 +309,11 @@ async def list_chapters_for_filter(
     """필터용 단원 목록 조회 (경량: 필요한 컬럼만 SELECT)."""
     cols = select(
         Chapter.id, Chapter.name, Chapter.grade,
-        Chapter.chapter_number, Chapter.concept_ids,
+        Chapter.semester, Chapter.chapter_number, Chapter.concept_ids,
     ).where(Chapter.is_active.is_(True))
     if grade:
         cols = cols.where(Chapter.grade == grade)
-    cols = cols.order_by(Chapter.grade, Chapter.chapter_number)
+    cols = cols.order_by(Chapter.grade, Chapter.semester, Chapter.chapter_number)
     rows = (await db.execute(cols)).all()
     return ApiResponse(
         data=[
@@ -320,6 +321,7 @@ async def list_chapters_for_filter(
                 "id": r.id,
                 "name": r.name,
                 "grade": r.grade.value if hasattr(r.grade, "value") else r.grade,
+                "semester": r.semester,
                 "chapter_number": r.chapter_number,
                 "concept_ids": r.concept_ids or [],
             }
