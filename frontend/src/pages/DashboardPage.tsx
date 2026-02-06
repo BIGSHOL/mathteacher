@@ -260,7 +260,7 @@ function CategoryCard({ title, icon, stats, color }: CategoryCardProps) {
 
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-600">평균 풀이</span>
-          <span className={`text-sm font-medium ${colors.text}`}>{stats.average_time.toFixed(1)}초</span>
+          <span className={`text-sm font-medium ${colors.text}`}>{(stats.average_time ?? 0).toFixed(1)}초</span>
         </div>
       </div>
 

@@ -366,10 +366,16 @@ class DailyTestService:
         random.shuffle(selected)
         return selected
 
+    # fill_in_blank 부적절 패턴 (AI 불량 문제 DB 레벨 제외)
+    _FB_BAD_PATTERNS = ["(가)", "(나)", "고르시오", "선택하시오", "옳은 것", "옳지 않은"]
+
     def _build_category_filter(self, query, category: str):
         """카테고리 필터 적용 (fill_in_blank 중복 방지 포함)."""
         if category == "fill_in_blank":
-            return query.where(Question.question_type == QuestionType.FILL_IN_BLANK)
+            query = query.where(Question.question_type == QuestionType.FILL_IN_BLANK)
+            for pat in self._FB_BAD_PATTERNS:
+                query = query.where(~Question.content.contains(pat))
+            return query
         elif category == "concept":
             return query.where(
                 Question.category == QuestionCategory.CONCEPT,

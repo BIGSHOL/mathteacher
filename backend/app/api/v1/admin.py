@@ -161,6 +161,82 @@ async def update_user(
     )
 
 
+@router.post("/reset-student/{student_id}", response_model=ApiResponse[dict])
+async def reset_student_data(
+    student_id: str,
+    current_user: UserResponse = Depends(require_role(UserRole.ADMIN)),
+    db: AsyncSession = Depends(get_db),
+):
+    """특정 학생의 학습 데이터만 초기화 (계정은 유지).
+
+    삭제: AnswerLog, TestAttempt, DailyTestRecord, ConceptMastery, ChapterProgress
+    초기화: level=1, total_xp=0, streak=0
+    """
+    from app.models.test_attempt import TestAttempt
+    from app.models.answer_log import AnswerLog
+    from app.models.daily_test_record import DailyTestRecord
+    from app.models.concept_mastery import ConceptMastery
+    from app.models.chapter_progress import ChapterProgress
+
+    student = await db.get(User, student_id)
+    if not student:
+        raise HTTPException(status_code=404, detail="학생을 찾을 수 없습니다.")
+    if student.role != "student":
+        raise HTTPException(status_code=400, detail="학생 계정만 리셋할 수 있습니다.")
+
+    # 1) AnswerLog (attempt_id 기반)
+    attempt_ids_stmt = select(TestAttempt.id).where(TestAttempt.student_id == student_id)
+    attempt_ids = list((await db.scalars(attempt_ids_stmt)).all())
+    if attempt_ids:
+        await db.execute(
+            text("DELETE FROM answer_logs WHERE attempt_id IN :ids"),
+            {"ids": tuple(attempt_ids)},
+        )
+
+    # 2) TestAttempt
+    await db.execute(
+        text("DELETE FROM test_attempts WHERE student_id = :sid"),
+        {"sid": student_id},
+    )
+
+    # 3) DailyTestRecord
+    await db.execute(
+        text("DELETE FROM daily_test_records WHERE student_id = :sid"),
+        {"sid": student_id},
+    )
+
+    # 4) ConceptMastery
+    await db.execute(
+        text("DELETE FROM concept_masteries WHERE student_id = :sid"),
+        {"sid": student_id},
+    )
+
+    # 5) ChapterProgress
+    await db.execute(
+        text("DELETE FROM chapter_progresses WHERE student_id = :sid"),
+        {"sid": student_id},
+    )
+
+    # 6) User 통계 초기화
+    student.level = 1
+    student.total_xp = 0
+    student.current_streak = 0
+    student.max_streak = 0
+    student.level_down_defense = 3
+
+    await db.commit()
+
+    logger.info(f"Student {student_id} ({student.name}) data reset by {current_user.name}")
+    return ApiResponse(
+        data={
+            "student_id": student_id,
+            "name": student.name,
+            "deleted_attempts": len(attempt_ids),
+        },
+        message=f"'{student.name}' 학생 데이터가 초기화되었습니다.",
+    )
+
+
 @router.post("/reset-db", response_model=ApiResponse[dict])
 async def reset_database(
     current_user: UserResponse = Depends(

@@ -479,7 +479,7 @@ export function StudentDetailPage() {
         >
           <StatCard label="총 테스트" value={`${data.total_tests}회`} />
           <StatCard label="정답률" value={`${data.accuracy_rate}%`} color={data.accuracy_rate >= 80 ? 'green' : data.accuracy_rate >= 60 ? 'yellow' : 'red'} />
-          <StatCard label="평균 풀이 시간" value={`${data.average_time_per_question.toFixed(1)}초`} />
+          <StatCard label="평균 풀이 시간" value={`${(data.average_time_per_question ?? 0).toFixed(1)}초`} />
           <StatCard label="최대 스트릭" value={`${data.max_streak}일`} />
           <StatCard label="현재 레벨" value={`Lv.${data.level}`} color="purple" />
           <StatCard label="총 XP" value={`${data.total_xp.toLocaleString()} XP`} />

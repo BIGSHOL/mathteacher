@@ -185,7 +185,7 @@ class TestService:
         grade_labels = {
             "elementary_3": "초3", "elementary_4": "초4", "elementary_5": "초5", "elementary_6": "초6",
             "middle_1": "중1", "middle_2": "중2", "middle_3": "중3",
-            "high_1": "고1",
+            "high_1": "고1", "high_2": "고1",
         }
         grade_key = grade.value if hasattr(grade, "value") else grade
         grade_label = grade_labels.get(grade_key, str(grade_key))

@@ -1,7 +1,7 @@
 // 테스트 결과 페이지
 
 import { useEffect, useState } from 'react'
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
+import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import confetti from 'canvas-confetti'
 import api from '../../lib/api'
@@ -392,7 +392,7 @@ function WrongAnswerItem({ answer, index, onReport }: WrongAnswerItemProps) {
         <span className="text-sm text-gray-500">내 답: {answer.selected_answer}</span>
       </div>
       <div className="flex items-center justify-between">
-        <button className="text-sm text-primary-500 hover:underline">복습하기</button>
+        <Link to="/review" className="text-sm text-primary-500 hover:underline">복습하기</Link>
         <button
           onClick={onReport}
           className="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-red-500"

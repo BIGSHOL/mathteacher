@@ -2017,8 +2017,6 @@ def migrate_concept_sequential_unlock():
 
     db = SyncSessionLocal()
     try:
-        # 마이그레이션 필요 여부 체크: 해금된 챕터가 있는 학생 중
-        # is_unlocked=True인 ConceptMastery가 하나도 없으면 마이그레이션 필요
         students = db.query(User).filter(User.role == "student").all()
         if not students:
             return
@@ -2036,15 +2034,8 @@ def migrate_concept_sequential_unlock():
             if not progresses:
                 continue
 
-            # 이미 해금된 개념이 있는지 확인 (마이그레이션 완료 여부)
-            has_unlocked = db.query(ConceptMastery).filter(
-                ConceptMastery.student_id == student_id,
-                ConceptMastery.is_unlocked == True,  # noqa: E712
-            ).first()
-            if has_unlocked:
-                continue  # 이미 마이그레이션됨
-
             now = datetime.now(timezone.utc)
+            changed = False
 
             for progress in progresses:
                 chapter = db.query(Chapter).get(progress.chapter_id)
@@ -2061,6 +2052,7 @@ def migrate_concept_sequential_unlock():
                         if mastery and not mastery.is_unlocked:
                             mastery.is_unlocked = True
                             mastery.unlocked_at = now
+                            changed = True
                         elif not mastery:
                             mastery = ConceptMastery(
                                 student_id=student_id,
@@ -2069,6 +2061,7 @@ def migrate_concept_sequential_unlock():
                                 unlocked_at=now,
                             )
                             db.add(mastery)
+                            changed = True
                 else:
                     # 미완료 해금 챕터: mastery > 0인 개념 해금 + 첫 개념 해금
                     first_concept_id = chapter.concept_ids[0]
@@ -2087,6 +2080,7 @@ def migrate_concept_sequential_unlock():
                         if mastery and not mastery.is_unlocked and should_unlock:
                             mastery.is_unlocked = True
                             mastery.unlocked_at = now
+                            changed = True
                         elif not mastery and should_unlock:
                             mastery = ConceptMastery(
                                 student_id=student_id,
@@ -2095,6 +2089,7 @@ def migrate_concept_sequential_unlock():
                                 unlocked_at=now,
                             )
                             db.add(mastery)
+                            changed = True
 
                     # mastery > 0인 개념들의 다음 개념도 해금 (연쇄)
                     for i, concept_id in enumerate(chapter.concept_ids[:-1]):
@@ -2111,6 +2106,7 @@ def migrate_concept_sequential_unlock():
                             if next_m and not next_m.is_unlocked:
                                 next_m.is_unlocked = True
                                 next_m.unlocked_at = now
+                                changed = True
                             elif not next_m:
                                 next_m = ConceptMastery(
                                     student_id=student_id,
@@ -2119,18 +2115,61 @@ def migrate_concept_sequential_unlock():
                                     unlocked_at=now,
                                 )
                                 db.add(next_m)
+                                changed = True
 
-            migrated_count += 1
+            if changed:
+                migrated_count += 1
 
         if migrated_count > 0:
             db.commit()
             logger.info(f"개념 순차 해금 마이그레이션: {migrated_count}명 학생 처리 완료")
         else:
-            logger.info("개념 순차 해금 마이그레이션: 대상 학생 없음 (이미 완료)")
+            logger.info("개념 순차 해금 마이그레이션: 변경 없음")
 
     except Exception as e:
         db.rollback()
         logger.error(f"개념 순차 해금 마이그레이션 실패: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
+def cleanup_bad_ai_questions():
+    """AI가 생성한 불량 문제(참조형 빈칸, 외부 참조 등)를 비활성화."""
+    import re as _re
+    db = SyncSessionLocal()
+    try:
+        questions = db.query(Question).filter(
+            Question.is_active == True,  # noqa: E712
+            Question.id.like("ai-%"),
+        ).all()
+
+        deactivated = 0
+        for q in questions:
+            content = q.content or ""
+            bad = False
+            # (가)/(나) 등 참조형 기호
+            if _re.search(r"\([ㄱㄴㄷㄹㅁ가나다라]\)", content):
+                bad = True
+            # '다음은...과정이다' 외부 참조
+            if _re.search(r"다음[은의\s]*(수|중|표|식|그림|보기|과정)", content):
+                bad = True
+            # 빈칸인데 선택형 표현
+            if q.question_type == "fill_in_blank":
+                if _re.search(r"고르[시면]|선택|모두 고르", content):
+                    bad = True
+            if bad:
+                q.is_active = False
+                deactivated += 1
+                logger.info(f"불량 AI 문제 비활성화: {q.id} | {content[:60]}")
+
+        if deactivated:
+            db.commit()
+            logger.info(f"불량 AI 문제 {deactivated}개 비활성화 완료")
+        else:
+            logger.info("불량 AI 문제 없음 (정리 불필요)")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"불량 AI 문제 정리 실패: {e}", exc_info=True)
     finally:
         db.close()
 
@@ -2145,6 +2184,7 @@ async def lifespan(app: FastAPI):
     await loop.run_in_executor(None, migrate_concept_subdivision)
     await loop.run_in_executor(None, update_chapter_concept_ids)
     await loop.run_in_executor(None, migrate_concept_sequential_unlock)
+    await loop.run_in_executor(None, cleanup_bad_ai_questions)
     yield
     # Shutdown
 

@@ -169,11 +169,14 @@ async def get_wrong_questions(
         .subquery()
     )
 
-    # 오답 문제 조회 (정답 맞힌 적 없는 것만)
+    # 오답 문제 조회 (정답 맞힌 적 없는 것만, 비활성 문제 제외)
     stmt = (
         select(Question, wrong_subq.c.wrong_count, wrong_subq.c.last_attempted_at)
         .join(wrong_subq, Question.id == wrong_subq.c.question_id)
-        .where(Question.id.notin_(select(correct_subq.c.question_id)))
+        .where(
+            Question.id.notin_(select(correct_subq.c.question_id)),
+            Question.is_active == True,  # noqa: E712
+        )
         .order_by(desc(wrong_subq.c.wrong_count))
     )
 
@@ -200,6 +203,8 @@ async def get_wrong_questions(
                 question=QuestionWithAnswer(
                     id=question.id,
                     concept_id=question.concept_id,
+                    category=question.category,
+                    part=question.part,
                     question_type=question.question_type,
                     difficulty=question.difficulty,
                     content=question.content,
@@ -207,6 +212,7 @@ async def get_wrong_questions(
                     explanation=question.explanation,
                     points=question.points,
                     correct_answer=question.correct_answer,
+                    blank_config=question.blank_config,
                 ),
                 wrong_count=wrong_count,
                 last_selected_answer=last_selected,
@@ -241,6 +247,11 @@ async def get_test_detail(
 
     test = result["test"]
     questions = result["questions"]
+    is_auto = isinstance(test, dict)
+
+    # dict/model 공통 접근 헬퍼
+    def _get(obj, key, default=None):
+        return obj[key] if isinstance(obj, dict) else getattr(obj, key, default)
 
     # 정답 제외한 문제 목록
     question_responses = [
@@ -262,15 +273,15 @@ async def get_test_detail(
 
     return ApiResponse(
         data=TestWithQuestionsResponse(
-            id=test.id,
-            title=test.title,
-            description=test.description,
-            grade=test.grade,
-            concept_ids=test.concept_ids,
-            question_count=test.question_count,
-            time_limit_minutes=test.time_limit_minutes,
-            is_active=test.is_active,
-            created_at=test.created_at,
+            id=_get(test, "id"),
+            title=_get(test, "title"),
+            description=_get(test, "description", ""),
+            grade=_get(test, "grade"),
+            concept_ids=_get(test, "concept_ids", []),
+            question_count=_get(test, "question_count", 0),
+            time_limit_minutes=_get(test, "time_limit_minutes", 30),
+            is_active=_get(test, "is_active", True),
+            created_at=_get(test, "created_at"),
             questions=question_responses,
         )
     )
@@ -356,6 +367,7 @@ async def start_test(
                 options=first_question.options,
                 explanation="",
                 points=first_question.points,
+                blank_config=first_question.blank_config,
             )
         ]
 
@@ -702,6 +714,7 @@ async def get_next_question(
                 options=question.options,
                 explanation="",
                 points=question.points,
+                blank_config=question.blank_config,
             ),
             current_difficulty=target_difficulty,
             questions_answered=new_answered,

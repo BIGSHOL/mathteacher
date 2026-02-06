@@ -89,11 +89,11 @@ export function FeedbackModal({
                 duration: 0.5,
                 x: { duration: 0.5, ease: 'easeInOut' }
               }}
-              className="w-full max-h-[85vh] max-w-lg overflow-y-auto rounded-t-3xl bg-white shadow-2xl md:rounded-3xl"
+              className="w-full max-h-[85vh] max-w-lg flex flex-col rounded-t-3xl bg-white shadow-2xl md:rounded-3xl"
             >
             {/* 헤더 */}
             <div
-              className={`p-6 text-center ${
+              className={`shrink-0 p-6 text-center rounded-t-3xl ${
                 isTimeUp ? 'bg-gray-700 text-white' : isCorrect ? 'bg-correct text-white' : 'bg-incorrect text-white'
               }`}
             >
@@ -146,8 +146,8 @@ export function FeedbackModal({
               )}
             </div>
 
-            {/* 내용 */}
-            <div className="p-6">
+            {/* 내용 (스크롤 영역) */}
+            <div className="flex-1 overflow-y-auto p-6 min-h-0">
               {/* 시간초과/오답 시 난이도 하락 경고 */}
               {!isCorrect && nextDifficulty !== undefined && currentDifficulty !== undefined && nextDifficulty < currentDifficulty && (
                 <motion.div
@@ -213,7 +213,10 @@ export function FeedbackModal({
                 </div>
               )}
 
-              {/* 다음 버튼 */}
+            </div>
+
+            {/* 다음 버튼 (항상 하단 고정) */}
+            <div className="shrink-0 px-6 pb-6 pt-3 bg-white md:rounded-b-3xl">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}

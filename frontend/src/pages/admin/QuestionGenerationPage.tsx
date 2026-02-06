@@ -65,6 +65,7 @@ export function QuestionGenerationPage() {
   const [selected, setSelected] = useState<Set<number>>(new Set())
   const [savedCount, setSavedCount] = useState(0)
 
+  const [expandedIdx, setExpandedIdx] = useState<number | null>(null)
   const [conceptsLoading, setConceptsLoading] = useState(false)
 
   // 학년 변경 시 단원+개념 한 번에 로드
@@ -512,14 +513,10 @@ export function QuestionGenerationPage() {
 
             {/* 테이블 */}
             <div className="mb-4 max-h-[60vh] overflow-auto rounded-lg border border-gray-200">
-              <table className="w-full table-fixed text-left text-sm">
+              <table className="w-full text-left text-sm">
                 <colgroup>
                   <col className="w-10" />
-                  <col className="w-10" />
                   <col />
-                  <col className="w-20" />
-                  <col className="w-16" />
-                  <col className="w-32" />
                 </colgroup>
                 <thead className="sticky top-0 bg-gray-50">
                   <tr>
@@ -531,60 +528,140 @@ export function QuestionGenerationPage() {
                         className="rounded border-gray-300"
                       />
                     </th>
-                    <th className="px-3 py-2 text-gray-600">#</th>
-                    <th className="px-3 py-2 text-gray-600">문제 내용</th>
-                    <th className="px-3 py-2 text-gray-600">유형</th>
-                    <th className="px-3 py-2 text-gray-600">난이도</th>
-                    <th className="px-3 py-2 text-gray-600">정답</th>
+                    <th className="px-3 py-2 text-gray-600">
+                      <div className="flex items-center gap-3">
+                        <span className="w-6">#</span>
+                        <span className="flex-1">문제 내용</span>
+                        <span className="w-14 text-center">유형</span>
+                        <span className="w-10 text-center">난이도</span>
+                        <span className="w-[120px]">정답</span>
+                        <span className="w-4" />
+                      </div>
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {generated.map((q, idx) => (
-                    <tr
-                      key={idx}
-                      className={`border-t border-gray-100 ${
-                        selected.has(idx)
-                          ? 'bg-indigo-50/50'
-                          : 'hover:bg-gray-50'
-                      }`}
-                    >
-                      <td className="px-3 py-2">
-                        <input
-                          type="checkbox"
-                          checked={selected.has(idx)}
-                          onChange={() => toggleOne(idx)}
-                          className="rounded border-gray-300"
-                        />
-                      </td>
-                      <td className="px-3 py-2 text-gray-400">{idx + 1}</td>
-                      <td className="px-3 py-2">
-                        <div className="line-clamp-2 text-gray-800">
-                          {String(q.content || '')}
-                        </div>
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-2">
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                            q.question_type === 'fill_in_blank'
-                              ? 'bg-cyan-100 text-cyan-700'
-                              : 'bg-purple-100 text-purple-700'
+                  {generated.map((q, idx) => {
+                    const isExpanded = expandedIdx === idx
+                    const warnings = (q._warnings as string[] | undefined) || []
+                    const options = q.options as { label: string; text: string }[] | null | undefined
+                    return (
+                      <tr key={idx} className="border-t border-gray-100">
+                        {/* 메인 행 */}
+                        <td className="px-3 py-2 align-top" rowSpan={isExpanded ? 2 : 1}>
+                          <input
+                            type="checkbox"
+                            checked={selected.has(idx)}
+                            onChange={() => toggleOne(idx)}
+                            className="rounded border-gray-300"
+                          />
+                        </td>
+                        <td
+                          className={`cursor-pointer px-3 py-2 align-top text-gray-400 ${
+                            selected.has(idx) ? 'bg-indigo-50/50' : 'hover:bg-gray-50'
                           }`}
+                          colSpan={5}
+                          onClick={() => setExpandedIdx(isExpanded ? null : idx)}
                         >
-                          {q.question_type === 'fill_in_blank'
-                            ? '빈칸'
-                            : '객관식'}
-                        </span>
-                      </td>
-                      <td className="whitespace-nowrap px-3 py-2">
-                        <span className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600">
-                          Lv.{String(q.difficulty || '?')}
-                        </span>
-                      </td>
-                      <td className="truncate px-3 py-2 font-mono text-xs text-gray-600">
-                        {String(q.correct_answer || '')}
-                      </td>
-                    </tr>
-                  ))}
+                          <div className="flex items-start gap-3">
+                            {/* 번호 */}
+                            <span className="shrink-0 w-6 text-gray-400">{idx + 1}</span>
+                            {/* 내용 */}
+                            <div className="min-w-0 flex-1">
+                              <div className={`text-gray-800 ${isExpanded ? '' : 'line-clamp-2'}`}>
+                                {String(q.content || '')}
+                              </div>
+                              {/* 경고 배지 */}
+                              {warnings.length > 0 && (
+                                <div className="mt-1 flex flex-wrap gap-1">
+                                  {warnings.map((w, wi) => (
+                                    <span key={wi} className="rounded bg-red-100 px-1.5 py-0.5 text-xs text-red-600">
+                                      {w}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            {/* 유형 뱃지 */}
+                            <span
+                              className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                                q.question_type === 'fill_in_blank'
+                                  ? 'bg-cyan-100 text-cyan-700'
+                                  : 'bg-purple-100 text-purple-700'
+                              }`}
+                            >
+                              {q.question_type === 'fill_in_blank' ? '빈칸' : '객관식'}
+                            </span>
+                            {/* 난이도 */}
+                            <span className="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600">
+                              Lv.{String(q.difficulty || '?')}
+                            </span>
+                            {/* 정답 */}
+                            <span className="shrink-0 font-mono text-xs text-gray-600 max-w-[120px] truncate">
+                              {String(q.correct_answer || '')}
+                            </span>
+                            {/* 펼침 화살표 */}
+                            <svg
+                              className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                              fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </div>
+
+                          {/* 펼쳐진 상세 정보 */}
+                          {isExpanded && (
+                            <div className="mt-3 space-y-3 border-t border-gray-100 pt-3">
+                              {/* 보기 (객관식) */}
+                              {options && options.length > 0 ? (
+                                <div>
+                                  <div className="mb-1 text-xs font-semibold text-gray-500">보기</div>
+                                  <div className="grid grid-cols-2 gap-1.5">
+                                    {options.map((opt, oi) => (
+                                      <div
+                                        key={oi}
+                                        className={`rounded-lg border px-3 py-1.5 text-sm ${
+                                          opt.label === String(q.correct_answer)
+                                            ? 'border-green-300 bg-green-50 font-semibold text-green-800'
+                                            : 'border-gray-200 bg-gray-50 text-gray-700'
+                                        }`}
+                                      >
+                                        <span className="font-medium">{opt.label}.</span> {opt.text}
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              ) : null}
+
+                              {/* 해설 */}
+                              {q.explanation ? (
+                                <div>
+                                  <div className="mb-1 text-xs font-semibold text-gray-500">해설</div>
+                                  <div className="rounded-lg bg-blue-50 px-3 py-2 text-sm text-gray-700">
+                                    {String(q.explanation)}
+                                  </div>
+                                </div>
+                              ) : null}
+
+                              {/* 빈칸 허용 포맷 */}
+                              {q.question_type === 'fill_in_blank' && q.blank_config ? (
+                                <div>
+                                  <div className="mb-1 text-xs font-semibold text-gray-500">허용 답안</div>
+                                  <div className="flex flex-wrap gap-1">
+                                    {((q.blank_config as Record<string, unknown>).accept_formats as string[] || []).map((f, fi) => (
+                                      <span key={fi} className="rounded bg-gray-100 px-2 py-0.5 text-xs font-mono text-gray-600">
+                                        {f}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              ) : null}
+                            </div>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>

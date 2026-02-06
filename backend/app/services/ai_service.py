@@ -18,7 +18,7 @@ GRADE_LABELS: dict[str, str] = {
     "elementary_3": "초3", "elementary_4": "초4",
     "elementary_5": "초5", "elementary_6": "초6",
     "middle_1": "중1", "middle_2": "중2", "middle_3": "중3",
-    "high_1": "고1",
+    "high_1": "고1", "high_2": "고1",
 }
 
 # 싱글턴 클라이언트
@@ -33,6 +33,38 @@ def _get_client() -> genai.Client | None:
     if _client is None:
         _client = genai.Client(api_key=settings.GEMINI_API_KEY)
     return _client
+
+
+def _validate_generated_question(q: dict) -> list[str]:
+    """생성된 문제의 품질 검증. 경고 메시지 목록을 반환."""
+    warnings: list[str] = []
+    content = str(q.get("content", ""))
+    qtype = q.get("question_type", "")
+
+    # 보기 기호가 content에 포함된 경우
+    if re.search(r"\([ㄱㄴㄷㄹㅁ가나다라]\)", content):
+        warnings.append("보기 기호가 문제 내용에 포함됨")
+
+    # 빈칸인데 선택형 표현 사용
+    if qtype == "fill_in_blank":
+        if re.search(r"고르[시면]|선택|모두 고르", content):
+            warnings.append("빈칸 문제에 선택형 표현 사용됨")
+
+    # '다음 수/중/표' 등 외부 참조 (조사 포함: 다음은, 다음의, 다음 수 등)
+    if re.search(r"다음[은의\s]*(수|중|표|식|그림|보기|과정)", content):
+        warnings.append("외부 참조 표현 '다음...' 사용됨")
+
+    # '과정이다' + '(가)/(나)' 참조형 빈칸 문제 감지
+    if re.search(r"과정이다.*\([가나다라]\)", content):
+        warnings.append("참조형 빈칸 문제 - 풀이 과정 참조")
+
+    # 객관식인데 options가 없거나 비어있음
+    if qtype == "multiple_choice":
+        options = q.get("options")
+        if not options or not isinstance(options, list) or len(options) < 2:
+            warnings.append("객관식인데 보기가 없거나 부족함")
+
+    return warnings
 
 
 class AIService:
@@ -242,6 +274,26 @@ class AIService:
                 "- options: null\n"
                 '- correct_answer: 정답 (예: "2³×3²")\n'
                 '- accept_formats: 허용 답안 리스트 (예: ["2^3×3^2", "2^3*3^2"])\n'
+                "\n## 빈칸 채우기 필수 규칙\n"
+                "- 학생이 숫자·수식·단어를 직접 입력하는 형식입니다.\n"
+                "- 정답은 반드시 하나의 명확한 값(숫자, 수식, 용어)이어야 합니다.\n"
+                "- content 안에 모든 정보가 포함되어야 합니다. 외부 참조 금지.\n"
+                "\n### 절대 금지 (위반 시 문제 삭제됨)\n"
+                "- (가)/(나)/(ㄱ)/(ㄴ)/(ㄷ) 등 보기·참조형 기호 사용 금지\n"
+                "- '고르시오', '선택하시오', '모두 고르면' 등 선택형 표현 금지\n"
+                "- '옳은 것', '옳지 않은 것' 등 판별형 표현 금지\n"
+                "- '다음 수', '다음 중', '아래 표' 등 외부 데이터를 참조하는 표현 금지\n"
+                "  → content에 없는 데이터를 '다음'이라고 언급하면 안 됩니다.\n"
+                "- 보기를 content 안에 나열하는 것 금지\n"
+                "\n### 좋은 예시\n"
+                "- '72를 소인수분해하면?'\n"
+                "- 'x²+5x+6을 인수분해하면?'\n"
+                "- '18의 약수 중 소수는 몇 개인가?'\n"
+                "- '두 수 14와 21의 최대공약수는?'\n"
+                "\n### 나쁜 예시 (이런 문제 생성 시 삭제됨)\n"
+                "- '다음 수들을 소인수분해했을 때...' → '다음 수'가 어디에도 없음\n"
+                "- '다음 중 36과 서로소인 수를 모두 고르면? (ㄱ) 7 (ㄴ) 9...' → 보기를 content에 넣음\n"
+                "- '(가)에 들어갈 수는?' → 참조형 빈칸\n"
             )
             json_example = (
                 '{"content": "72를 소인수분해하면?", '
@@ -256,6 +308,11 @@ class AIService:
                 "- 반드시 선지 4개 (A, B, C, D)\n"
                 "- 오개념을 반영한 매력적인 오답 선지 포함\n"
                 "- correct_answer: 정답 라벨 (A/B/C/D 중 하나)\n"
+                "\n### 객관식 필수 규칙\n"
+                "- content에는 문제 텍스트만 포함하세요. 보기는 절대 content에 넣지 마세요.\n"
+                "- 보기는 반드시 options 배열에 별도로 넣으세요.\n"
+                "- content에 (ㄱ)/(ㄴ)/(ㄷ)/(가)/(나) 등 보기 기호를 넣지 마세요.\n"
+                "- content 안에 모든 정보가 포함되어야 합니다. '다음 수', '아래 표' 등 외부 참조 금지.\n"
             )
             json_example = (
                 '{"content": "24의 약수의 개수는?", '
@@ -394,6 +451,15 @@ class AIService:
                     }
 
                 if question_dict["content"]:
+                    # 후처리 검증: 문제 품질 경고 → 위반 시 제외
+                    warnings = _validate_generated_question(question_dict)
+                    if warnings:
+                        logger.warning(
+                            "AI 생성 문제 제외 (concept=%s, id=%s): %s | content=%s",
+                            concept_name, qid, "; ".join(warnings),
+                            question_dict["content"][:80],
+                        )
+                        continue
                     result.append(question_dict)
 
             logger.info("AI generated %d questions for concept %s", len(result), concept_name)
