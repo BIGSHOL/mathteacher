@@ -18,6 +18,7 @@ const MyStatsPage = lazy(() => import('./pages/student/MyStatsPage').then(m => (
 const ReviewPage = lazy(() => import('./pages/student/ReviewPage').then(m => ({ default: m.ReviewPage })))
 const QuickPracticeSetupPage = lazy(() => import('./pages/student/QuickPracticeSetupPage').then(m => ({ default: m.QuickPracticeSetupPage })))
 const HelpPage = lazy(() => import('./pages/student/HelpPage').then(m => ({ default: m.HelpPage })))
+const ProfilePage = lazy(() => import('./pages/student/ProfilePage').then(m => ({ default: m.ProfilePage })))
 
 // 강사 페이지 (lazy load)
 const TeacherDashboardPage = lazy(() => import('./pages/teacher').then(m => ({ default: m.TeacherDashboardPage })))
@@ -129,6 +130,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['student']}>
                   <HelpPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <ProfilePage />
                 </ProtectedRoute>
               }
             />
