@@ -424,7 +424,7 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
         <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
           <h2 className="mb-6 text-xl font-bold text-gray-900">새 계정 만들기</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
             {error && (
               <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
             )}
@@ -438,6 +438,7 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 placeholder="홍길동"
                 required
+                autoComplete="off"
               />
             </div>
 
@@ -450,6 +451,7 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 placeholder="아이디를 입력하세요"
                 required
+                autoComplete="off"
               />
             </div>
 
@@ -463,6 +465,7 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
                 placeholder="••••••••"
                 required
                 minLength={6}
+                autoComplete="new-password"
               />
             </div>
 
@@ -603,7 +606,7 @@ function EditUserModal({ user, creatableRoles, onClose, onUpdated }: EditUserMod
           <h2 className="mb-6 text-xl font-bold text-gray-900">계정 수정</h2>
           <p className="mb-4 text-sm text-gray-500">아이디: {user.login_id}</p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
             {error && (
               <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
             )}
@@ -619,6 +622,7 @@ function EditUserModal({ user, creatableRoles, onClose, onUpdated }: EditUserMod
                 onChange={(e) => setName(e.target.value)}
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 required
+                autoComplete="off"
               />
             </div>
 
@@ -633,6 +637,7 @@ function EditUserModal({ user, creatableRoles, onClose, onUpdated }: EditUserMod
                 className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 placeholder="새 비밀번호"
                 minLength={6}
+                autoComplete="new-password"
               />
             </div>
 

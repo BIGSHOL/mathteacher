@@ -59,7 +59,7 @@ export function LoginPage() {
           <p className="text-gray-600 mt-2">개념부터 연산까지, 로그인하고 수학 테스트를 시작하세요</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" autoComplete="off">
           {error && (
             <motion.div
               initial={{ opacity: 0, x: -10 }}
@@ -83,6 +83,7 @@ export function LoginPage() {
               placeholder="아이디를 입력하세요"
               required
               minLength={4}
+              autoComplete="off"
             />
           </div>
 
@@ -98,6 +99,7 @@ export function LoginPage() {
               className="input"
               placeholder="••••••••"
               required
+              autoComplete="new-password"
             />
           </div>
 
