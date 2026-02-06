@@ -72,24 +72,25 @@ export function FeedbackModal({
             className="fixed inset-0 z-40 bg-black/50"
           />
 
-          {/* 모달 */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 50 }}
-            animate={{
-              opacity: 1,
-              scale: 1,
-              y: 0,
-              // 오답일 때 흔들림 효과
-              x: isCorrect ? 0 : [0, -10, 10, -10, 10, -5, 5, 0]
-            }}
-            exit={{ opacity: 0, scale: 0.9, y: 50 }}
-            transition={{
-              type: 'spring',
-              duration: 0.5,
-              x: { duration: 0.5, ease: 'easeInOut' }
-            }}
-            className="fixed inset-x-4 bottom-0 z-50 mx-auto max-h-[85vh] max-w-lg overflow-y-auto rounded-t-3xl bg-white shadow-2xl md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:rounded-3xl"
-          >
+          {/* 모달 래퍼 (flex 중앙 정렬) */}
+          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-0 md:p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 50 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                y: 0,
+                // 오답일 때 흔들림 효과
+                x: isCorrect ? 0 : [0, -10, 10, -10, 10, -5, 5, 0]
+              }}
+              exit={{ opacity: 0, scale: 0.9, y: 50 }}
+              transition={{
+                type: 'spring',
+                duration: 0.5,
+                x: { duration: 0.5, ease: 'easeInOut' }
+              }}
+              className="w-full max-h-[85vh] max-w-lg overflow-y-auto rounded-t-3xl bg-white shadow-2xl md:rounded-3xl"
+            >
             {/* 헤더 */}
             <div
               className={`p-6 text-center ${
@@ -223,6 +224,7 @@ export function FeedbackModal({
               </motion.button>
             </div>
           </motion.div>
+          </div>
         </>
       )}
     </AnimatePresence>
