@@ -25,7 +25,7 @@ from app.services.test_service import TestService
 logger = logging.getLogger(__name__)
 
 QUESTIONS_PER_DAILY_TEST = 10
-MIN_QUESTIONS_PER_DAILY_TEST = 3
+MIN_QUESTIONS_PER_DAILY_TEST = 5
 CATEGORY_LABELS = {
     "concept": "개념",
     "computation": "연산",
@@ -206,12 +206,7 @@ class DailyTestService:
         question_ids = await self._select_questions(student_id, category, grade)
 
         # 시드 문제가 최소 기준 미달 → AI로 추가 생성 후 DB 저장
-        # 연산(computation)은 시드가 충분하므로 빈칸/개념만 AI 생성
-        if (
-            len(question_ids) < MIN_QUESTIONS_PER_DAILY_TEST
-            and grade
-            and category in ("concept", "fill_in_blank")
-        ):
+        if len(question_ids) < MIN_QUESTIONS_PER_DAILY_TEST and grade:
             needed = MIN_QUESTIONS_PER_DAILY_TEST - len(question_ids)
             ai_ids = await self._generate_ai_questions(
                 student_id, category, grade, needed
