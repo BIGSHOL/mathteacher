@@ -12,15 +12,7 @@ import { ProgressBar } from '../../components/test/ProgressBar'
 import { ComboDisplay } from '../../components/test/ComboDisplay'
 import { CountdownTimer } from '../../components/test/CountdownTimer'
 import type { Question, QuestionCategory, SubmitAnswerResponse, NextQuestionResponse, CompleteTestResult } from '../../types'
-
-/** 문제 유형 + 카테고리별 제한시간 (초) */
-function getTimeLimit(questionType?: string, category?: string): number {
-  if (questionType === 'fill_in_blank') {
-    return category === 'computation' ? 30 : 45
-  }
-  // multiple_choice, true_false, short_answer 등
-  return category === 'computation' ? 20 : 60
-}
+import { getTimeLimit } from '../../lib/timeLimit'
 
 /** 난이도 변경 정보 */
 interface DifficultyChange {

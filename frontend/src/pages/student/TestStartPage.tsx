@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import api from '../../lib/api'
+import { getTimeLimit } from '../../lib/timeLimit'
 import type { TestWithQuestions } from '../../types'
 
 export function TestStartPage() {
@@ -112,9 +113,15 @@ export function TestStartPage() {
                 value={
                   test.time_limit_minutes
                     ? `${test.time_limit_minutes}분`
-                    : test.category
-                    ? `${test.question_count * (test.category === 'computation' ? 20 : 30)}초`
-                    : '없음'
+                    : (() => {
+                        const totalSec = test.questions.reduce(
+                          (sum, q) => sum + getTimeLimit(q.question_type, q.category),
+                          0,
+                        )
+                        return totalSec >= 60
+                          ? `약 ${Math.ceil(totalSec / 60)}분`
+                          : `${totalSec}초`
+                      })()
                 }
               />
             </div>
