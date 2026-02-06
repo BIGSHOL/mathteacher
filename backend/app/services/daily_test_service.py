@@ -270,15 +270,16 @@ class DailyTestService:
           1. 약점 개념 (mastery < 60%) 문제 40%
           2. 최근 해금 개념 문제 20%
           3. 나머지 풀에서 랜덤 40%
-        난이도: 학생 레벨 기반 (레벨-2 ~ 레벨+1)
+        난이도: 숙련도(mastery) 기반 (XP 레벨과 독립)
         중복 제외: 최근 3일 출제 문제
         """
-        student = await self.db.get(User, student_id)
-        level = student.level if student else 3
-
-        # 난이도 범위
-        diff_min = max(1, level - 2)
-        diff_max = min(10, level + 1)
+        # 숙련도 기반 난이도 결정 (XP 레벨과 별개)
+        mastery_map = await self._get_mastery_map(student_id)
+        avg_mastery = (
+            sum(mastery_map.values()) / len(mastery_map)
+            if mastery_map else 0
+        )
+        diff_min, diff_max = self._mastery_to_difficulty_range(avg_mastery)
 
         # 최근 3일 출제 문제 ID
         recently_used = await self._get_recently_used_questions(student_id, category, days=3)
@@ -325,8 +326,7 @@ class DailyTestService:
                 student_id, category, grade, count, recently_used
             )
 
-        # 숙련도 기반 분류
-        mastery_map = await self._get_mastery_map(student_id)
+        # 숙련도 기반 분류 (mastery_map은 위에서 이미 조회됨)
         weak_questions = []
         recent_questions = []
         other_questions = []
@@ -531,6 +531,20 @@ class DailyTestService:
         ).where(ConceptMastery.student_id == student_id)
         rows = (await self.db.execute(stmt)).all()
         return {row[0]: row[1] for row in rows}
+
+    @staticmethod
+    def _mastery_to_difficulty_range(avg_mastery: float) -> tuple[int, int]:
+        """숙련도 → 난이도 범위 (좁은 범위, 학생 수준 밀착).
+
+        숙련도 0~100% → 난이도 1~9 선형 매핑 후 ±1 범위.
+        예: 50% → center 5, range 4~6
+            80% → center 7, range 6~8
+            0%  → center 1, range 1~2
+        """
+        center = max(1, min(9, round(1 + avg_mastery * 8 / 100)))
+        diff_min = max(1, center - 1)
+        diff_max = min(10, center + 1)
+        return diff_min, diff_max
 
     async def _get_recently_unlocked_concepts(
         self, student_id: str, days: int = 14
