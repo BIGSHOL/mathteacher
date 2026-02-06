@@ -23,10 +23,9 @@ from app.schemas import (
     LoginResponse,
     LogoutRequest,
     LogoutResponse,
-    RegisterAdminRequest,
-    RegisterStudentRequest,
-    RegisterTeacherRequest,
+    RegisterRequest,
     RegisterResponse,
+    UpdateUserRequest,
     TokenRefreshRequest,
     TokenRefreshResponse,
     UserCreate,
@@ -323,7 +322,7 @@ async def debug_users(auth_service: AuthService = Depends(get_auth_service)):
 @limiter.limit("10000/minute" if _testing else "5/minute")
 async def register(
     request: Request,
-    register_request: RegisterStudentRequest | RegisterTeacherRequest | RegisterAdminRequest,
+    register_request: RegisterRequest,
     current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
     auth_service: AuthService = Depends(get_auth_service),
 ):
@@ -348,57 +347,51 @@ async def register(
             },
         )
 
-    # 역할 결정 및 권한 검증
-    if isinstance(register_request, RegisterStudentRequest):
-        role = UserRole.STUDENT
-        user_data = UserCreate(
-            login_id=register_request.login_id,
-            password=register_request.password,
-            name=register_request.name,
-            role=role,
-            grade=register_request.grade,
-            class_id=register_request.class_id,
-        )
-    elif isinstance(register_request, RegisterTeacherRequest):
-        # 강사 생성은 ADMIN, MASTER만 가능
-        if current_user.role == UserRole.TEACHER:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "success": False,
-                    "error": {
-                        "code": "FORBIDDEN",
-                        "message": "강사 계정 생성 권한이 없습니다.",
-                    },
+    role = register_request.role
+
+    # 권한 검증
+    if role == UserRole.ADMIN and current_user.role != UserRole.MASTER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "FORBIDDEN",
+                    "message": "관리자 계정 생성 권한이 없습니다. 마스터만 가능합니다.",
                 },
-            )
-        role = UserRole.TEACHER
-        user_data = UserCreate(
-            login_id=register_request.login_id,
-            password=register_request.password,
-            name=register_request.name,
-            role=role,
+            },
         )
-    else:  # RegisterAdminRequest
-        # 관리자 생성은 MASTER만 가능
-        if current_user.role != UserRole.MASTER:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail={
-                    "success": False,
-                    "error": {
-                        "code": "FORBIDDEN",
-                        "message": "관리자 계정 생성 권한이 없습니다. 마스터만 가능합니다.",
-                    },
+    if role == UserRole.TEACHER and current_user.role == UserRole.TEACHER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "FORBIDDEN",
+                    "message": "강사 계정 생성 권한이 없습니다.",
                 },
-            )
-        role = UserRole.ADMIN
-        user_data = UserCreate(
-            login_id=register_request.login_id,
-            password=register_request.password,
-            name=register_request.name,
-            role=role,
+            },
         )
+    if role == UserRole.MASTER:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "FORBIDDEN",
+                    "message": "마스터 계정은 생성할 수 없습니다.",
+                },
+            },
+        )
+
+    user_data = UserCreate(
+        login_id=register_request.login_id,
+        password=register_request.password,
+        name=register_request.name,
+        role=role,
+        grade=register_request.grade if role == UserRole.STUDENT else None,
+        class_id=register_request.class_id if role == UserRole.STUDENT else None,
+    )
 
     user = await auth_service.create_user(user_data)
 

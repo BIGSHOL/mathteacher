@@ -45,6 +45,7 @@ export function UserManagementPage() {
   const [roleFilter, setRoleFilter] = useState<UserRole | ''>('')
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [editingUser, setEditingUser] = useState<UserListItem | null>(null)
   const [isResetting, setIsResetting] = useState(false)
   const [isUpdatingChapters, setIsUpdatingChapters] = useState(false)
   const [adminMessage, setAdminMessage] = useState('')
@@ -277,6 +278,7 @@ export function UserManagementPage() {
                     <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">역할</th>
                     <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">학년</th>
                     <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">가입일</th>
+                    <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">관리</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -310,6 +312,14 @@ export function UserManagementPage() {
                       <td className="px-6 py-4 text-center text-sm text-gray-500">
                         {formatDate(user.created_at)}
                       </td>
+                      <td className="px-6 py-4 text-center">
+                        <button
+                          onClick={() => setEditingUser(user)}
+                          className="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-200"
+                        >
+                          편집
+                        </button>
+                      </td>
                     </motion.tr>
                   ))}
                 </tbody>
@@ -331,6 +341,21 @@ export function UserManagementPage() {
             onClose={() => setShowCreateModal(false)}
             onCreated={() => {
               setShowCreateModal(false)
+              fetchUsers()
+            }}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* 계정 편집 모달 */}
+      <AnimatePresence>
+        {editingUser && (
+          <EditUserModal
+            user={editingUser}
+            creatableRoles={getCreatableRoles()}
+            onClose={() => setEditingUser(null)}
+            onUpdated={() => {
+              setEditingUser(null)
               fetchUsers()
             }}
           />
@@ -504,6 +529,169 @@ function CreateUserModal({ creatableRoles, onClose, onCreated }: CreateUserModal
                 className="flex-1 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50"
               >
                 {isSubmitting ? '생성 중...' : '계정 생성'}
+              </motion.button>
+            </div>
+          </form>
+        </div>
+      </motion.div>
+    </>
+  )
+}
+
+// 계정 편집 모달
+interface EditUserModalProps {
+  user: UserListItem
+  creatableRoles: { value: UserRole; label: string }[]
+  onClose: () => void
+  onUpdated: () => void
+}
+
+function EditUserModal({ user, creatableRoles, onClose, onUpdated }: EditUserModalProps) {
+  const [name, setName] = useState(user.name)
+  const [password, setPassword] = useState('')
+  const [role, setRole] = useState<UserRole>(user.role)
+  const [grade, setGrade] = useState<Grade | ''>(user.grade || '')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+    setError('')
+    setSuccess('')
+
+    try {
+      const payload: Record<string, unknown> = {}
+      if (name !== user.name) payload.name = name
+      if (role !== user.role) payload.role = role
+      if (password) payload.password = password
+      if (role === 'student' && grade && grade !== user.grade) payload.grade = grade
+
+      if (Object.keys(payload).length === 0) {
+        setError('변경된 내용이 없습니다.')
+        setIsSubmitting(false)
+        return
+      }
+
+      await api.put(`/api/v1/admin/users/${user.id}`, payload)
+      setSuccess('수정 완료!')
+      setTimeout(() => onUpdated(), 800)
+    } catch {
+      setError('계정 수정에 실패했습니다.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+        className="fixed inset-0 z-50 bg-black/50"
+      />
+
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      >
+        <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <h2 className="mb-6 text-xl font-bold text-gray-900">계정 수정</h2>
+          <p className="mb-4 text-sm text-gray-500">아이디: {user.login_id}</p>
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {error && (
+              <div className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>
+            )}
+            {success && (
+              <div className="rounded-lg bg-green-50 p-3 text-sm text-green-600">{success}</div>
+            )}
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">이름</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                비밀번호 변경 <span className="text-gray-400">(빈칸이면 유지)</span>
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full rounded-lg border border-gray-300 px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                placeholder="새 비밀번호"
+                minLength={6}
+              />
+            </div>
+
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">역할</label>
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value as UserRole)}
+                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+              >
+                {creatableRoles.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label}
+                  </option>
+                ))}
+                {/* 현재 역할이 목록에 없으면 표시 */}
+                {!creatableRoles.find((r) => r.value === user.role) && (
+                  <option value={user.role}>
+                    {ROLE_CONFIG[user.role]?.label || user.role}
+                  </option>
+                )}
+              </select>
+            </div>
+
+            {role === 'student' && (
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">학년</label>
+                <select
+                  value={grade}
+                  onChange={(e) => setGrade(e.target.value as Grade | '')}
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
+                >
+                  <option value="">선택하세요</option>
+                  {GRADE_OPTIONS.map((g) => (
+                    <option key={g.value} value={g.value} disabled={g.disabled}>
+                      {g.label}{g.disabled ? ' (준비중)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="flex-1 rounded-xl border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                취소
+              </button>
+              <motion.button
+                type="submit"
+                disabled={isSubmitting}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="flex-1 rounded-xl bg-primary-500 px-4 py-2.5 text-sm font-medium text-white hover:bg-primary-600 disabled:opacity-50"
+              >
+                {isSubmitting ? '수정 중...' : '수정 완료'}
               </motion.button>
             </div>
           </form>

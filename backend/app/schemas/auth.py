@@ -111,30 +111,32 @@ class LogoutResponse(BaseModel):
 # ===========================
 
 
-class RegisterStudentRequest(BaseModel):
-    """학생 등록 요청."""
+class RegisterRequest(BaseModel):
+    """계정 등록 요청 (역할 통합)."""
 
     login_id: str = Field(..., min_length=4, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
     password: str = Field(..., min_length=6, max_length=100)
     name: str = Field(..., min_length=1, max_length=100)
-    grade: Grade
-    class_id: str
+    role: UserRole
+    grade: Grade | None = None
+    class_id: str | None = None
 
 
-class RegisterTeacherRequest(BaseModel):
-    """강사 등록 요청."""
-
-    login_id: str = Field(..., min_length=4, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
-    password: str = Field(..., min_length=6, max_length=100)
-    name: str = Field(..., min_length=1, max_length=100)
+# 하위호환용 별칭
+RegisterStudentRequest = RegisterRequest
+RegisterTeacherRequest = RegisterRequest
+RegisterAdminRequest = RegisterRequest
 
 
-class RegisterAdminRequest(BaseModel):
-    """관리자 등록 요청 (마스터 전용)."""
+class UpdateUserRequest(BaseModel):
+    """계정 수정 요청."""
 
-    login_id: str = Field(..., min_length=4, max_length=50, pattern=r"^[a-zA-Z0-9_]+$")
-    password: str = Field(..., min_length=6, max_length=100)
-    name: str = Field(..., min_length=1, max_length=100)
+    name: str | None = Field(None, min_length=1, max_length=100)
+    password: str | None = Field(None, min_length=6, max_length=100)
+    role: UserRole | None = None
+    grade: Grade | None = None
+    class_id: str | None = None
+    is_active: bool | None = None
 
 
 class RegisterResponse(BaseModel):

@@ -13,8 +13,9 @@ from sqlalchemy import text, select, func
 from app.core.database import get_db, sync_engine
 from app.api.v1.auth import require_role
 from app.schemas.common import ApiResponse, PaginatedResponse, UserRole
-from app.schemas.auth import UserResponse
+from app.schemas.auth import UserResponse, UpdateUserRequest
 from app.models.user import User
+from app.services.auth_service import AuthService
 from app.models.question import Question
 from app.models.concept import Concept
 from app.services.ai_service import AIService
@@ -97,6 +98,66 @@ async def list_users(
             page_size=page_size,
             total_pages=total_pages,
         ),
+    )
+
+
+@router.put("/users/{user_id}", response_model=ApiResponse[dict])
+async def update_user(
+    user_id: str,
+    update_request: UpdateUserRequest,
+    current_user: UserResponse = Depends(
+        require_role(UserRole.MASTER, UserRole.ADMIN)
+    ),
+    db: AsyncSession = Depends(get_db),
+):
+    """사용자 정보 수정 (관리자/마스터 전용)."""
+    user = await db.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="사용자를 찾을 수 없습니다")
+
+    # 마스터 계정은 수정 불가 (마스터 본인만 예외)
+    user_role = user.role.value if hasattr(user.role, "value") else user.role
+    if user_role == "master" and user.id != current_user.id:
+        raise HTTPException(status_code=403, detail="마스터 계정은 수정할 수 없습니다")
+
+    # admin은 teacher/student만 수정 가능
+    if current_user.role == UserRole.ADMIN and user_role in ("master", "admin"):
+        raise HTTPException(status_code=403, detail="관리자/마스터 계정을 수정할 권한이 없습니다")
+
+    # 역할 변경 시 권한 검증
+    if update_request.role is not None:
+        new_role = update_request.role.value if hasattr(update_request.role, "value") else update_request.role
+        if new_role == "master":
+            raise HTTPException(status_code=403, detail="마스터 역할로 변경할 수 없습니다")
+        if new_role == "admin" and current_user.role != UserRole.MASTER:
+            raise HTTPException(status_code=403, detail="관리자 역할 부여는 마스터만 가능합니다")
+
+    # 필드 업데이트
+    if update_request.name is not None:
+        user.name = update_request.name
+    if update_request.role is not None:
+        user.role = update_request.role
+    if update_request.grade is not None:
+        user.grade = update_request.grade
+    if update_request.class_id is not None:
+        user.class_id = update_request.class_id
+    if update_request.is_active is not None:
+        user.is_active = update_request.is_active
+    if update_request.password is not None:
+        auth_service = AuthService(db)
+        user.hashed_password = auth_service.hash_password(update_request.password)
+
+    await db.commit()
+
+    return ApiResponse(
+        success=True,
+        data={
+            "id": user.id,
+            "name": user.name,
+            "role": user.role.value if hasattr(user.role, "value") else user.role,
+            "grade": (user.grade.value if hasattr(user.grade, "value") else user.grade) if user.grade else None,
+        },
+        message=f"'{user.name}' 계정이 수정되었습니다",
     )
 
 
