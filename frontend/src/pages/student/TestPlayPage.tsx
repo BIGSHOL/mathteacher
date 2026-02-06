@@ -13,12 +13,14 @@ import { ComboDisplay } from '../../components/test/ComboDisplay'
 import { CountdownTimer } from '../../components/test/CountdownTimer'
 import type { Question, QuestionCategory, SubmitAnswerResponse, NextQuestionResponse, CompleteTestResult } from '../../types'
 
-/** 카테고리별 제한시간 (초) */
-const TIME_LIMITS: Record<string, number> = {
-  computation: 20,
-  concept: 60,
+/** 문제 유형 + 카테고리별 제한시간 (초) */
+function getTimeLimit(questionType?: string, category?: string): number {
+  if (questionType === 'fill_in_blank') {
+    return category === 'computation' ? 30 : 45
+  }
+  // multiple_choice, true_false, short_answer 등
+  return category === 'computation' ? 20 : 60
 }
-const DEFAULT_TIME_LIMIT = 60
 
 /** 난이도 변경 정보 */
 interface DifficultyChange {
@@ -187,7 +189,7 @@ export function TestPlayPage() {
   const totalQuestions = attemptDetail?.attempt.total_count ?? 0
   const currentQuestion: Question | undefined = attemptDetail?.test.questions[currentIndex]
   const category = currentQuestion?.category
-  const timeLimit = TIME_LIMITS[category ?? ''] ?? DEFAULT_TIME_LIMIT
+  const timeLimit = getTimeLimit(currentQuestion?.question_type, category)
 
   // 클린업
   useEffect(() => {
