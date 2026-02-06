@@ -1709,14 +1709,17 @@ def _cleanup_today_daily_tests(db):
         return
 
     for record in records:
+        test_id = record.test_id
         # 연결된 attempt와 answer_log 삭제
         if record.attempt_id:
             db.query(AnswerLog).filter(AnswerLog.attempt_id == record.attempt_id).delete()
             db.query(TestAttempt).filter(TestAttempt.id == record.attempt_id).delete()
-        # 일일 테스트 Test 레코드 삭제
-        if record.test_id:
-            db.query(Test).filter(Test.id == record.test_id).delete()
+        # DailyTestRecord 먼저 삭제 (FK 제약 해소)
         db.delete(record)
+        db.flush()
+        # 일일 테스트 Test 레코드 삭제
+        if test_id:
+            db.query(Test).filter(Test.id == test_id).delete()
 
     logger.info(f"Cleaned up {len(records)} daily test records for today ({today})")
 
@@ -2136,6 +2139,7 @@ def migrate_concept_sequential_unlock():
 def cleanup_bad_ai_questions():
     """AI가 생성한 불량 문제(참조형 빈칸, 외부 참조 등)를 비활성화."""
     import re as _re
+    from app.models.question import Question
     db = SyncSessionLocal()
     try:
         questions = db.query(Question).filter(
