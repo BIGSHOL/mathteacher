@@ -1286,122 +1286,121 @@ def init_db():
             # 중1: 12단원 (1학기 6 + 2학기 6)
             # 중2: 8단원 (1학기 4 + 2학기 4)
             # 중3: 7단원 (1학기 4 + 2학기 3)
-            # 공통수학1(high_1): 4단원, 공통수학2(high_2): 3단원
+            # 고1(high_1): 7단원 (공통수학1 4 + 공통수학2 3)
             # =============================================
             _chapter_defs = {
-                # --- 초등학교 3학년 (12단원) - 개념 데이터 미구축 ---
+                # --- 초등학교 3학년 (12단원) ---
                 # 형식: (name, description, concept_ids, semester)
                 "e3": ("elementary_3", [
-                    ("1. 덧셈과 뺄셈", "세 자리 수의 덧셈과 뺄셈, 받아올림과 받아내림", [], 1),
-                    ("2. 평면도형", "선분, 반직선, 직선, 각, 직각", [], 1),
-                    ("3. 나눗셈", "등분제, 포함제, 곱셈과 나눗셈의 관계", [], 1),
-                    ("4. 곱셈", "(몇십몇)×(몇), 올림이 있는 곱셈, 분배법칙의 기초", [], 1),
-                    ("5. 길이와 시간", "km와 m, 시간의 덧셈과 뺄셈", [], 1),
-                    ("6. 분수와 소수", "분수의 개념, 소수의 개념, 분수와 소수의 관계", [], 1),
-                    ("7. 곱셈 (2)", "(몇)×(몇십몇), (몇십몇)×(몇십몇)", [], 2),
-                    ("8. 나눗셈 (2)", "(두 자리 수)÷(한 자리 수), 나머지가 있는 나눗셈", [], 2),
-                    ("9. 원", "원의 중심, 반지름, 지름, 컴퍼스 사용", [], 2),
-                    ("10. 분수 (2)", "단위분수, 진분수, 가분수, 대분수, 분수의 크기 비교", [], 2),
-                    ("11. 들이와 무게", "L와 mL, kg과 g, 들이와 무게의 덧셈과 뺄셈", [], 2),
-                    ("12. 자료의 정리", "그림그래프, 자료의 분류와 정리", [], 2),
+                    ("1. 덧셈과 뺄셈", "세 자리 수의 덧셈과 뺄셈, 받아올림과 받아내림", ["concept-e3-add-sub"], 1),
+                    ("2. 평면도형", "선분, 반직선, 직선, 각, 직각", ["concept-e3-plane"], 1),
+                    ("3. 나눗셈", "등분제, 포함제, 곱셈과 나눗셈의 관계", ["concept-e3-div1"], 1),
+                    ("4. 곱셈", "(몇십몇)×(몇), 올림이 있는 곱셈, 분배법칙의 기초", ["concept-e3-mul1"], 1),
+                    ("5. 길이와 시간", "km와 m, 시간의 덧셈과 뺄셈", ["concept-e3-length-time"], 1),
+                    ("6. 분수와 소수", "분수의 개념, 소수의 개념, 분수와 소수의 관계", ["concept-e3-frac-dec"], 1),
+                    ("7. 곱셈 (2)", "(몇)×(몇십몇), (몇십몇)×(몇십몇)", ["concept-e3-mul2"], 2),
+                    ("8. 나눗셈 (2)", "(두 자리 수)÷(한 자리 수), 나머지가 있는 나눗셈", ["concept-e3-div2"], 2),
+                    ("9. 원", "원의 중심, 반지름, 지름, 컴퍼스 사용", ["concept-e3-circle"], 2),
+                    ("10. 분수 (2)", "단위분수, 진분수, 가분수, 대분수, 분수의 크기 비교", ["concept-e3-frac2"], 2),
+                    ("11. 들이와 무게", "L와 mL, kg과 g, 들이와 무게의 덧셈과 뺄셈", ["concept-e3-volume-weight"], 2),
+                    ("12. 자료의 정리", "그림그래프, 자료의 분류와 정리", ["concept-e3-data"], 2),
                 ]),
                 # --- 초등학교 4학년 (12단원) ---
                 "e4": ("elementary_4", [
-                    ("1. 큰 수", "만, 억, 조, 수의 크기 비교, 자릿값", ["E4-NUM-01", "E4-NUM-02", "E4-NUM-03", "E4-NUM-04"], 1),
-                    ("2. 각도", "각의 크기, 예각·직각·둔각, 삼각형 내각의 합", ["E4-GEO-01", "E4-GEO-02", "E4-GEO-03"], 1),
-                    ("3. 곱셈과 나눗셈", "(세 자리 수)×(두 자리 수), (세 자리 수)÷(두 자리 수)", ["E4-NUM-05", "E4-NUM-06"], 1),
-                    ("4. 평면도형의 이동", "밀기, 뒤집기, 돌리기", ["E4-GEO-08"], 1),
-                    ("5. 막대그래프", "막대그래프 읽기와 그리기, 눈금 설정", ["E4-STA-01"], 1),
-                    ("6. 규칙 찾기", "수의 배열에서 규칙 찾기, 규칙을 식으로 나타내기", ["E4-ALG-01"], 1),
-                    ("7. 분수의 덧셈과 뺄셈", "진분수·대분수의 덧셈과 뺄셈, 통분", ["E4-NUM-07", "E4-NUM-08", "E4-NUM-09", "E4-NUM-10"], 2),
-                    ("8. 삼각형", "이등변삼각형, 정삼각형, 예각·직각·둔각삼각형", ["E4-GEO-04", "E4-GEO-05"], 2),
-                    ("9. 소수의 덧셈과 뺄셈", "소수 두 자리 수의 덧셈과 뺄셈", ["E4-NUM-11", "E4-NUM-12"], 2),
-                    ("10. 사각형", "수직과 평행, 평행사변형, 마름모, 사다리꼴", ["E4-GEO-06"], 2),
-                    ("11. 꺾은선그래프", "꺾은선그래프 읽기와 그리기, 변화 추이", ["E4-STA-02"], 2),
-                    ("12. 다각형", "정다각형, 대각선, 다각형의 내각의 합", ["E4-GEO-07"], 2),
+                    ("1. 큰 수", "만, 억, 조, 수의 크기 비교, 자릿값", ["concept-e4-big-num"], 1),
+                    ("2. 각도", "각의 크기, 예각·직각·둔각, 삼각형 내각의 합", ["concept-e4-angle"], 1),
+                    ("3. 곱셈과 나눗셈", "(세 자리 수)×(두 자리 수), (세 자리 수)÷(두 자리 수)", ["concept-e4-mul-div"], 1),
+                    ("4. 평면도형의 이동", "밀기, 뒤집기, 돌리기", ["concept-e4-transform"], 1),
+                    ("5. 막대그래프", "막대그래프 읽기와 그리기, 눈금 설정", ["concept-e4-bar-graph"], 1),
+                    ("6. 규칙 찾기", "수의 배열에서 규칙 찾기, 규칙을 식으로 나타내기", ["concept-e4-pattern"], 1),
+                    ("7. 분수의 덧셈과 뺄셈", "진분수·대분수의 덧셈과 뺄셈, 통분", ["concept-e4-frac-op"], 2),
+                    ("8. 삼각형", "이등변삼각형, 정삼각형, 예각·직각·둔각삼각형", ["concept-e4-triangle"], 2),
+                    ("9. 소수의 덧셈과 뺄셈", "소수 두 자리 수의 덧셈과 뺄셈", ["concept-e4-dec-op"], 2),
+                    ("10. 사각형", "수직과 평행, 평행사변형, 마름모, 사다리꼴", ["concept-e4-quad"], 2),
+                    ("11. 꺾은선그래프", "꺾은선그래프 읽기와 그리기, 변화 추이", ["concept-e4-line-graph"], 2),
+                    ("12. 다각형", "정다각형, 대각선, 다각형의 내각의 합", ["concept-e4-polygon"], 2),
                 ]),
                 # --- 초등학교 5학년 (12단원) ---
                 "e5": ("elementary_5", [
-                    ("1. 자연수의 혼합 계산", "연산의 우선순위, 괄호가 있는 식, 문장제 모델링", ["E5-NUM-07"], 1),
-                    ("2. 약수와 배수", "약수, 배수, 최대공약수, 최소공배수", ["E5-NUM-01", "E5-NUM-02", "E5-NUM-03", "E5-NUM-04"], 1),
-                    ("3. 규칙과 대응", "두 양 사이의 관계, 대응 관계를 식으로 표현", ["E5-ALG-01"], 1),
-                    ("4. 약분과 통분", "분수의 기본 성질, 약분, 통분, 크기 비교", ["E5-NUM-05", "E5-NUM-06"], 1),
-                    ("5. 분수의 덧셈과 뺄셈", "이분모 분수의 덧셈과 뺄셈, 대분수 혼합 계산", ["E5-NUM-08", "E5-NUM-09", "E5-NUM-10"], 1),
-                    ("6. 다각형의 둘레와 넓이", "직사각형, 평행사변형, 삼각형, 사다리꼴, 마름모의 넓이", ["E5-GEO-01", "E5-GEO-02", "E5-GEO-03", "E5-GEO-04"], 1),
-                    ("7. 수의 범위와 어림하기", "이상, 이하, 초과, 미만, 올림, 버림, 반올림", ["E5-NUM-11", "E5-NUM-12"], 2),
-                    ("8. 분수의 곱셈", "(분수)×(자연수), (자연수)×(분수), (분수)×(분수)", ["E5-NUM-13"], 2),
-                    ("9. 합동과 대칭", "합동인 도형, 선대칭, 점대칭", ["E5-GEO-05", "E5-GEO-06"], 2),
-                    ("10. 소수의 곱셈", "(소수)×(자연수), (소수)×(소수), 곱의 소수점 위치", ["E5-NUM-14"], 2),
-                    ("11. 직육면체", "직육면체와 정육면체, 전개도, 겨냥도", ["E5-GEO-07"], 2),
-                    ("12. 평균과 가능성", "평균 구하기, 가능성의 표현, 경우의 수", ["E5-NUM-15", "E5-NUM-16"], 2),
+                    ("1. 자연수의 혼합 계산", "연산의 우선순위, 괄호가 있는 식, 문장제 모델링", ["concept-e5-mixed-calc"], 1),
+                    ("2. 약수와 배수", "약수, 배수, 최대공약수, 최소공배수", ["concept-e5-divisor"], 1),
+                    ("3. 규칙과 대응", "두 양 사이의 관계, 대응 관계를 식으로 표현", ["concept-e5-correspondence"], 1),
+                    ("4. 약분과 통분", "분수의 기본 성질, 약분, 통분, 크기 비교", ["concept-e5-reduce"], 1),
+                    ("5. 분수의 덧셈과 뺄셈", "이분모 분수의 덧셈과 뺄셈, 대분수 혼합 계산", ["concept-e5-frac-add"], 1),
+                    ("6. 다각형의 둘레와 넓이", "직사각형, 평행사변형, 삼각형, 사다리꼴, 마름모의 넓이", ["concept-e5-polygon-area"], 1),
+                    ("7. 수의 범위와 어림하기", "이상, 이하, 초과, 미만, 올림, 버림, 반올림", ["concept-e5-range-rounding"], 2),
+                    ("8. 분수의 곱셈", "(분수)×(자연수), (자연수)×(분수), (분수)×(분수)", ["concept-e5-frac-mul"], 2),
+                    ("9. 합동과 대칭", "합동인 도형, 선대칭, 점대칭", ["concept-e5-congruence"], 2),
+                    ("10. 소수의 곱셈", "(소수)×(자연수), (소수)×(소수), 곱의 소수점 위치", ["concept-e5-dec-mul"], 2),
+                    ("11. 직육면체", "직육면체와 정육면체, 전개도, 겨냥도", ["concept-e5-cuboid"], 2),
+                    ("12. 평균과 가능성", "평균 구하기, 가능성의 표현, 경우의 수", ["concept-e5-average"], 2),
                 ]),
                 # --- 초등학교 6학년 (12단원) ---
                 "e6": ("elementary_6", [
-                    ("1. 분수의 나눗셈", "(자연수)÷(자연수)의 몫을 분수로, (분수)÷(자연수)", ["E6-NUM-01", "E6-NUM-02"], 1),
-                    ("2. 각기둥과 각뿔", "각기둥과 각뿔의 구성 요소, 전개도", ["E6-GEO-01"], 1),
-                    ("3. 소수의 나눗셈", "(소수)÷(자연수), 몫의 소수점 위치", ["E6-NUM-04"], 1),
-                    ("4. 비와 비율", "비, 비율, 백분율, 기준량과 비교하는 양", ["E6-ALG-01", "E6-ALG-02"], 1),
-                    ("5. 여러 가지 그래프", "띠그래프, 원그래프, 그래프 해석", ["E6-STA-01"], 1),
-                    ("6. 직육면체의 부피와 겉넓이", "부피 단위, 직육면체의 부피와 겉넓이 구하기", ["E6-GEO-02"], 1),
-                    ("7. 분수의 나눗셈 (2)", "(분수)÷(분수), 역수 활용", ["E6-NUM-03"], 2),
-                    ("8. 소수의 나눗셈 (2)", "(소수)÷(소수), 소수점 이동 원리", ["E6-NUM-05"], 2),
-                    ("9. 공간과 입체", "쌓기나무, 공간 감각, 위·앞·옆에서 본 모양", ["E6-GEO-06"], 2),
-                    ("10. 비례식과 비례배분", "비례식의 성질, 비례배분", ["E6-ALG-03", "E6-ALG-04"], 2),
-                    ("11. 원의 넓이", "원주율, 원의 둘레, 원의 넓이", ["E6-GEO-03", "E6-GEO-04"], 2),
-                    ("12. 원기둥, 원뿔, 구", "원기둥의 전개도와 겉넓이, 원뿔, 구의 특징", ["E6-GEO-05"], 2),
+                    ("1. 분수의 나눗셈", "(자연수)÷(자연수)의 몫을 분수로, (분수)÷(자연수)", ["concept-e6-frac-div1"], 1),
+                    ("2. 각기둥과 각뿔", "각기둥과 각뿔의 구성 요소, 전개도", ["concept-e6-prism-pyramid"], 1),
+                    ("3. 소수의 나눗셈", "(소수)÷(자연수), 몫의 소수점 위치", ["concept-e6-dec-div1"], 1),
+                    ("4. 비와 비율", "비, 비율, 백분율, 기준량과 비교하는 양", ["concept-e6-ratio"], 1),
+                    ("5. 여러 가지 그래프", "띠그래프, 원그래프, 그래프 해석", ["concept-e6-graphs"], 1),
+                    ("6. 직육면체의 부피와 겉넓이", "부피 단위, 직육면체의 부피와 겉넓이 구하기", ["concept-e6-volume"], 1),
+                    ("7. 분수의 나눗셈 (2)", "(분수)÷(분수), 역수 활용", ["concept-e6-frac-div2"], 2),
+                    ("8. 소수의 나눗셈 (2)", "(소수)÷(소수), 소수점 이동 원리", ["concept-e6-dec-div2"], 2),
+                    ("9. 공간과 입체", "쌓기나무, 공간 감각, 위·앞·옆에서 본 모양", ["concept-e6-spatial"], 2),
+                    ("10. 비례식과 비례배분", "비례식의 성질, 비례배분", ["concept-e6-proportion"], 2),
+                    ("11. 원의 넓이", "원주율, 원의 둘레, 원의 넓이", ["concept-e6-circle-area"], 2),
+                    ("12. 원기둥, 원뿔, 구", "원기둥의 전개도와 겉넓이, 원뿔, 구의 특징", ["concept-e6-solids"], 2),
                 ]),
                 # --- 중학교 1학년 (12단원: 1학기 6 + 2학기 6) ---
                 "m1": ("middle_1", [
                     # 1학기
-                    ("1. 소인수분해", "소수, 합성수, 소인수분해, 최대공약수, 최소공배수", ["M1-NUM-01", "M1-NUM-02"], 1),
-                    ("2. 정수와 유리수", "양수·음수·0, 절댓값, 정수·유리수 사칙연산", ["M1-NUM-03", "M1-NUM-04"], 1),
-                    ("3. 문자의 사용과 식의 계산", "문자 사용, 대수적 관습, 동류항, 식의 값", ["M1-ALG-01"], 1),
-                    ("4. 일차방정식", "등식의 성질, 이항, 일차방정식의 풀이, 활용", ["M1-ALG-02"], 1),
-                    ("5. 좌표평면과 그래프", "순서쌍, 좌표, 사분면, 그래프 해석", ["M1-FUNC-01"], 1),
-                    ("6. 정비례와 반비례", "정비례 y=ax, 반비례 y=a/x, 그래프", ["M1-FUNC-02"], 1),
+                    ("1. 소인수분해", "소수, 합성수, 소인수분해, 최대공약수, 최소공배수", ["concept-m1-prime"], 1),
+                    ("2. 정수와 유리수", "양수·음수·0, 절댓값, 정수·유리수 사칙연산", ["concept-m1-integer"], 1),
+                    ("3. 문자의 사용과 식의 계산", "문자 사용, 대수적 관습, 동류항, 식의 값", ["concept-m1-expression"], 1),
+                    ("4. 일차방정식", "등식의 성질, 이항, 일차방정식의 풀이, 활용", ["concept-m1-equation"], 1),
+                    ("5. 좌표평면과 그래프", "순서쌍, 좌표, 사분면, 그래프 해석", ["concept-m1-coord"], 1),
+                    ("6. 정비례와 반비례", "정비례 y=ax, 반비례 y=a/x, 그래프", ["concept-m1-proportion"], 1),
                     # 2학기
-                    ("7. 기본 도형과 작도", "점·선·면, 위치 관계, 평행선 성질, 작도, 삼각형 합동", ["M1-GEO-01"], 2),
-                    ("8. 평면도형의 성질", "다각형 내각·외각의 합, 원과 부채꼴", ["M1-GEO-02"], 2),
-                    ("9. 입체도형의 성질", "다면체, 회전체, 겉넓이와 부피", ["M1-GEO-03"], 2),
-                    ("10. 자료의 정리와 해석", "줄기와 잎 그림, 도수분포표, 히스토그램, 상대도수", ["M1-STA-01"], 2),
-                    ("11. 대푯값", "평균, 중앙값, 최빈값, 상황별 대푯값 선택", ["M1-STA-02"], 2),
-                    ("12. 산점도와 상관관계", "산점도, 양의 상관관계, 음의 상관관계, 인과관계 구분", ["M1-STA-03"], 2),
+                    ("7. 기본 도형과 작도", "점·선·면, 위치 관계, 평행선 성질, 작도, 삼각형 합동", ["concept-m1-basic-geo"], 2),
+                    ("8. 평면도형의 성질", "다각형 내각·외각의 합, 원과 부채꼴", ["concept-m1-plane-fig"], 2),
+                    ("9. 입체도형의 성질", "다면체, 회전체, 겉넓이와 부피", ["concept-m1-solid-fig"], 2),
+                    ("10. 자료의 정리와 해석", "줄기와 잎 그림, 도수분포표, 히스토그램, 상대도수", ["concept-m1-frequency"], 2),
+                    ("11. 대푯값", "평균, 중앙값, 최빈값, 상황별 대푯값 선택", ["concept-m1-representative"], 2),
+                    ("12. 산점도와 상관관계", "산점도, 양의 상관관계, 음의 상관관계, 인과관계 구분", ["concept-m1-scatter"], 2),
                 ]),
                 # --- 중학교 2학년 (8단원: 1학기 4 + 2학기 4) ---
                 "m2": ("middle_2", [
                     # 1학기
-                    ("1. 유리수와 순환소수", "유한소수 조건, 순환소수, 순환소수의 분수 표현", ["M2-NUM-01"], 1),
-                    ("2. 식의 계산", "지수법칙, 다항식 계산, 동류항, 분배법칙", ["M2-ALG-01", "M2-ALG-02"], 1),
-                    ("3. 부등식과 연립방정식", "일차부등식 풀이, 연립일차방정식(가감법·대입법)", ["M2-ALG-03", "M2-ALG-04"], 1),
-                    ("4. 일차함수", "기울기, 절편, 그래프, 일차함수와 일차방정식", ["M2-FUNC-01"], 1),
+                    ("1. 유리수와 순환소수", "유한소수 조건, 순환소수, 순환소수의 분수 표현", ["concept-m2-rational"], 1),
+                    ("2. 식의 계산", "지수법칙, 다항식 계산, 동류항, 분배법칙", ["concept-m2-expression"], 1),
+                    ("3. 부등식과 연립방정식", "일차부등식 풀이, 연립일차방정식(가감법·대입법)", ["concept-m2-inequality", "concept-m2-simultaneous"], 1),
+                    ("4. 일차함수", "기울기, 절편, 그래프, 일차함수와 일차방정식", ["concept-m2-linear-func"], 1),
                     # 2학기
-                    ("5. 도형의 성질", "이등변삼각형, 외심·내심, 평행사변형, 특수사각형", ["M2-GEO-01"], 2),
-                    ("6. 도형의 닮음", "닮음 조건(SSS, SAS, AA), 닮음비, 넓이비, 부피비", ["M2-GEO-02"], 2),
-                    ("7. 평행선과 피타고라스 정리", "평행선과 선분의 비, 삼각형 무게중심, 피타고라스 정리", ["M2-GEO-03"], 2),
-                    ("8. 확률", "경우의 수, 합·곱의 법칙, 확률의 기본, 여사건", ["M2-STA-01"], 2),
+                    ("5. 도형의 성질", "이등변삼각형, 외심·내심, 평행사변형, 특수사각형", ["concept-m2-triangle", "concept-m2-quadrilateral"], 2),
+                    ("6. 도형의 닮음", "닮음 조건(SSS, SAS, AA), 닮음비, 넓이비, 부피비", ["concept-m2-similarity"], 2),
+                    ("7. 평행선과 피타고라스 정리", "평행선과 선분의 비, 삼각형 무게중심, 피타고라스 정리", ["concept-m2-pythagoras"], 2),
+                    ("8. 확률", "경우의 수, 합·곱의 법칙, 확률의 기본, 여사건", ["concept-m2-probability"], 2),
                 ]),
                 # --- 중학교 3학년 (7단원) ---
                 "m3": ("middle_3", [
-                    ("1. 실수와 그 연산", "제곱근, 무리수, 실수의 대소, 근호 계산, 분모의 유리화", ["M3-NUM-01", "M3-NUM-02"], 1),
-                    ("2. 다항식의 곱셈과 인수분해", "곱셈공식, 인수분해, 완전제곱식", ["M3-ALG-01", "M3-ALG-02"], 1),
-                    ("3. 이차방정식", "인수분해·완전제곱식·근의 공식 풀이, 판별식", ["M3-ALG-03"], 1),
-                    ("4. 이차함수", "y=ax², 표준형, 일반형, 꼭짓점, 최대·최소", ["M3-FUNC-01"], 1),
-                    ("5. 삼각비", "sin·cos·tan 정의, 특수각, 삼각형 넓이", ["M3-GEO-01"], 2),
-                    ("6. 원의 성질", "원주각, 중심각, 접선, 내접 사각형", ["M3-GEO-02"], 2),
-                    ("7. 통계", "대푯값, 산점도, 상관관계, 상자그림", ["M3-STA-01", "M3-STA-02"], 2),
+                    ("1. 실수와 그 연산", "제곱근, 무리수, 실수의 대소, 근호 계산, 분모의 유리화", ["concept-m3-real-num"], 1),
+                    ("2. 다항식의 곱셈과 인수분해", "곱셈공식, 인수분해, 완전제곱식", ["concept-m3-factoring"], 1),
+                    ("3. 이차방정식", "인수분해·완전제곱식·근의 공식 풀이, 판별식", ["concept-m3-quad-eq"], 1),
+                    ("4. 이차함수", "y=ax², 표준형, 일반형, 꼭짓점, 최대·최소", ["concept-m3-quad-func"], 1),
+                    ("5. 삼각비", "sin·cos·tan 정의, 특수각, 삼각형 넓이", ["concept-m3-trig"], 2),
+                    ("6. 원의 성질", "원주각, 중심각, 접선, 내접 사각형", ["concept-m3-circle"], 2),
+                    ("7. 통계", "대푯값, 산점도, 상관관계, 상자그림", ["concept-m3-statistics"], 2),
                 ]),
-                # --- 공통수학1 / 고1 1학기 (4단원) ---
+                # --- 고1 (7단원: 공통수학1 4단원 + 공통수학2 3단원) ---
                 "h1": ("high_1", [
+                    # 공통수학1 (1학기)
                     ("1. 다항식", "다항식 연산, 항등식, 나머지정리, 인수분해", ["concept-h1-polynomial"], 1),
                     ("2. 방정식과 부등식", "복소수, 이차방정식, 이차함수, 이차부등식", ["concept-h1-equation"], 1),
                     ("3. 경우의 수", "합·곱의 법칙, 순열, 조합", ["concept-h1-counting"], 1),
                     ("4. 행렬", "행렬의 덧셈·뺄셈·실수배·곱셈 (2×2 한정)", ["concept-h1-matrix"], 1),
-                ]),
-                # --- 공통수학2 (고1 과정) ---
-                "h2": ("high_2", [
-                    ("1. 도형의 방정식", "평면좌표, 직선·원의 방정식, 평행이동·대칭이동", ["concept-h2-plane-coord", "concept-h2-line", "concept-h2-circle", "concept-h2-transform"], 1),
-                    ("2. 집합과 명제", "집합 연산, 명제와 조건, 절대부등식", ["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"], 1),
-                    ("3. 함수", "합성함수, 역함수, 유리함수, 무리함수", ["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"], 1),
+                    # 공통수학2 (2학기)
+                    ("5. 도형의 방정식", "평면좌표, 직선·원의 방정식, 평행이동·대칭이동", ["concept-h2-plane-coord", "concept-h2-line", "concept-h2-circle", "concept-h2-transform"], 2),
+                    ("6. 집합과 명제", "집합 연산, 명제와 조건, 절대부등식", ["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"], 2),
+                    ("7. 함수", "합성함수, 역함수, 유리함수, 무리함수", ["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"], 2),
                 ]),
             }
 
@@ -1568,22 +1567,98 @@ def update_chapter_concept_ids():
     """서버 시작 시 챕터 concept_ids를 최신 매핑으로 갱신."""
     from app.models.chapter import Chapter
 
-    # 중1 단원-개념 매핑 (12단원, 가이드 기준)
+    # 전체 학년 단원-개념 매핑 (시드 데이터 concept ID 기준)
     CHAPTER_CONCEPT_MAP = {
-        # 1학기
-        "chapter-m1-01": ["M1-NUM-01", "M1-NUM-02"],  # 소인수분해
-        "chapter-m1-02": ["M1-NUM-03", "M1-NUM-04"],  # 정수와 유리수
-        "chapter-m1-03": ["M1-ALG-01"],               # 문자의 사용과 식의 계산
-        "chapter-m1-04": ["M1-ALG-02"],               # 일차방정식
-        "chapter-m1-05": ["M1-FUNC-01"],              # 좌표평면과 그래프
-        "chapter-m1-06": ["M1-FUNC-02"],              # 정비례와 반비례
-        # 2학기
-        "chapter-m1-07": ["M1-GEO-01"],               # 기본 도형과 작도
-        "chapter-m1-08": ["M1-GEO-02"],               # 평면도형의 성질
-        "chapter-m1-09": ["M1-GEO-03"],               # 입체도형의 성질
-        "chapter-m1-10": ["M1-STA-01"],               # 자료의 정리와 해석
-        "chapter-m1-11": ["M1-STA-02"],               # 대푯값
-        "chapter-m1-12": ["M1-STA-03"],               # 산점도와 상관관계
+        # --- 초3 ---
+        "chapter-e3-01": ["concept-e3-add-sub"],
+        "chapter-e3-02": ["concept-e3-plane"],
+        "chapter-e3-03": ["concept-e3-div1"],
+        "chapter-e3-04": ["concept-e3-mul1"],
+        "chapter-e3-05": ["concept-e3-length-time"],
+        "chapter-e3-06": ["concept-e3-frac-dec"],
+        "chapter-e3-07": ["concept-e3-mul2"],
+        "chapter-e3-08": ["concept-e3-div2"],
+        "chapter-e3-09": ["concept-e3-circle"],
+        "chapter-e3-10": ["concept-e3-frac2"],
+        "chapter-e3-11": ["concept-e3-volume-weight"],
+        "chapter-e3-12": ["concept-e3-data"],
+        # --- 초4 ---
+        "chapter-e4-01": ["concept-e4-big-num"],
+        "chapter-e4-02": ["concept-e4-angle"],
+        "chapter-e4-03": ["concept-e4-mul-div"],
+        "chapter-e4-04": ["concept-e4-transform"],
+        "chapter-e4-05": ["concept-e4-bar-graph"],
+        "chapter-e4-06": ["concept-e4-pattern"],
+        "chapter-e4-07": ["concept-e4-frac-op"],
+        "chapter-e4-08": ["concept-e4-triangle"],
+        "chapter-e4-09": ["concept-e4-dec-op"],
+        "chapter-e4-10": ["concept-e4-quad"],
+        "chapter-e4-11": ["concept-e4-line-graph"],
+        "chapter-e4-12": ["concept-e4-polygon"],
+        # --- 초5 ---
+        "chapter-e5-01": ["concept-e5-mixed-calc"],
+        "chapter-e5-02": ["concept-e5-divisor"],
+        "chapter-e5-03": ["concept-e5-correspondence"],
+        "chapter-e5-04": ["concept-e5-reduce"],
+        "chapter-e5-05": ["concept-e5-frac-add"],
+        "chapter-e5-06": ["concept-e5-polygon-area"],
+        "chapter-e5-07": ["concept-e5-range-rounding"],
+        "chapter-e5-08": ["concept-e5-frac-mul"],
+        "chapter-e5-09": ["concept-e5-congruence"],
+        "chapter-e5-10": ["concept-e5-dec-mul"],
+        "chapter-e5-11": ["concept-e5-cuboid"],
+        "chapter-e5-12": ["concept-e5-average"],
+        # --- 초6 ---
+        "chapter-e6-01": ["concept-e6-frac-div1"],
+        "chapter-e6-02": ["concept-e6-prism-pyramid"],
+        "chapter-e6-03": ["concept-e6-dec-div1"],
+        "chapter-e6-04": ["concept-e6-ratio"],
+        "chapter-e6-05": ["concept-e6-graphs"],
+        "chapter-e6-06": ["concept-e6-volume"],
+        "chapter-e6-07": ["concept-e6-frac-div2"],
+        "chapter-e6-08": ["concept-e6-dec-div2"],
+        "chapter-e6-09": ["concept-e6-spatial"],
+        "chapter-e6-10": ["concept-e6-proportion"],
+        "chapter-e6-11": ["concept-e6-circle-area"],
+        "chapter-e6-12": ["concept-e6-solids"],
+        # --- 중1 ---
+        "chapter-m1-01": ["concept-m1-prime"],
+        "chapter-m1-02": ["concept-m1-integer"],
+        "chapter-m1-03": ["concept-m1-expression"],
+        "chapter-m1-04": ["concept-m1-equation"],
+        "chapter-m1-05": ["concept-m1-coord"],
+        "chapter-m1-06": ["concept-m1-proportion"],
+        "chapter-m1-07": ["concept-m1-basic-geo"],
+        "chapter-m1-08": ["concept-m1-plane-fig"],
+        "chapter-m1-09": ["concept-m1-solid-fig"],
+        "chapter-m1-10": ["concept-m1-frequency"],
+        "chapter-m1-11": ["concept-m1-representative"],
+        "chapter-m1-12": ["concept-m1-scatter"],
+        # --- 중2 ---
+        "chapter-m2-01": ["concept-m2-rational"],
+        "chapter-m2-02": ["concept-m2-expression"],
+        "chapter-m2-03": ["concept-m2-inequality", "concept-m2-simultaneous"],
+        "chapter-m2-04": ["concept-m2-linear-func"],
+        "chapter-m2-05": ["concept-m2-triangle", "concept-m2-quadrilateral"],
+        "chapter-m2-06": ["concept-m2-similarity"],
+        "chapter-m2-07": ["concept-m2-pythagoras"],
+        "chapter-m2-08": ["concept-m2-probability"],
+        # --- 중3 ---
+        "chapter-m3-01": ["concept-m3-real-num"],
+        "chapter-m3-02": ["concept-m3-factoring"],
+        "chapter-m3-03": ["concept-m3-quad-eq"],
+        "chapter-m3-04": ["concept-m3-quad-func"],
+        "chapter-m3-05": ["concept-m3-trig"],
+        "chapter-m3-06": ["concept-m3-circle"],
+        "chapter-m3-07": ["concept-m3-statistics"],
+        # --- 고1 (h1+h2 통합) - 이미 올바른 ID 사용 ---
+        "chapter-h1-01": ["concept-h1-polynomial"],
+        "chapter-h1-02": ["concept-h1-equation"],
+        "chapter-h1-03": ["concept-h1-counting"],
+        "chapter-h1-04": ["concept-h1-matrix"],
+        "chapter-h1-05": ["concept-h2-plane-coord", "concept-h2-line", "concept-h2-circle", "concept-h2-transform"],
+        "chapter-h1-06": ["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"],
+        "chapter-h1-07": ["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"],
     }
 
     db = SyncSessionLocal()

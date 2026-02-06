@@ -34,7 +34,6 @@ const GRADE_OPTIONS: { value: Grade; label: string; disabled?: boolean }[] = [
   { value: 'middle_2', label: '중등 2학년' },
   { value: 'middle_3', label: '중등 3학년' },
   { value: 'high_1', label: '고등 1학년' },
-  { value: 'high_2', label: '고등 2학년' },
 ]
 
 export function UserManagementPage() {

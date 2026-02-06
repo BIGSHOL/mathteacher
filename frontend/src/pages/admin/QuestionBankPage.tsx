@@ -48,7 +48,6 @@ const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 'middle_2', label: '중2' },
   { value: 'middle_3', label: '중3' },
   { value: 'high_1', label: '고1' },
-  { value: 'high_2', label: '고2' },
 ]
 
 const CATEGORY_OPTIONS = [
@@ -105,7 +104,7 @@ const GRADE_LABEL: Record<string, string> = {
   elementary_1: '초1', elementary_2: '초2', elementary_3: '초3',
   elementary_4: '초4', elementary_5: '초5', elementary_6: '초6',
   middle_1: '중1', middle_2: '중2', middle_3: '중3',
-  high_1: '공통수학1', high_2: '공통수학2',
+  high_1: '고1',
 }
 
 // 학년별 실제 학기 구분 (2022 개정 교육과정 가이드 기반)
@@ -117,8 +116,7 @@ const SEMESTER_STRUCTURE: Record<string, { semester1: number[]; semester2: numbe
   middle_1: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
   middle_2: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7, 8] },
   middle_3: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
-  high_1: null, // 공통수학1 - 학기 구분 없음
-  high_2: null, // 공통수학2 - 학기 구분 없음
+  high_1: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
 }
 
 /** 단원 이름에서 선행 "N. " 접두사 제거 */
@@ -268,13 +266,13 @@ export function QuestionBankPage() {
       const etc = entries.filter((e) => e.chNum === 999)
 
       const groups: { label: string; options: { value: string; label: string }[] }[] = []
-      if (s1.length > 0) groups.push({ label: '1학기', options: s1 })
-      if (s2.length > 0) groups.push({ label: '2학기', options: s2 })
+      const isHigh = gradeFilter?.startsWith('high_')
+      if (s1.length > 0) groups.push({ label: isHigh ? '공통수학1' : '1학기', options: s1 })
+      if (s2.length > 0) groups.push({ label: isHigh ? '공통수학2' : '2학기', options: s2 })
       if (etc.length > 0) groups.push({ label: '기타', options: etc })
       return groups.length > 0 ? groups : undefined
     }
 
-    // 고등(공통수학1/2): 학기 구분 없음 → flat
     return undefined
   }, [chapters, concepts, chapterFilter, gradeFilter])
 
@@ -316,9 +314,10 @@ export function QuestionBankPage() {
     const s2 = chapters.filter((ch) => s2Set.has(ch.chapter_number))
 
     const groups: { label: string; options: { value: string; label: string }[] }[] = []
+    const isHigh = gradeFilter?.startsWith('high_')
     if (s1.length > 0) {
       groups.push({
-        label: '1학기',
+        label: isHigh ? '공통수학1' : '1학기',
         options: s1.map((ch) => ({
           value: ch.id,
           label: `${ch.chapter_number}. ${stripChapterNum(ch.name)}`
@@ -328,7 +327,7 @@ export function QuestionBankPage() {
     if (s2.length > 0) {
       // 2학기 번호 재정렬 (1부터 시작)
       groups.push({
-        label: '2학기',
+        label: isHigh ? '공통수학2' : '2학기',
         options: s2.map((ch, idx) => ({
           value: ch.id,
           label: `${idx + 1}. ${stripChapterNum(ch.name)}`

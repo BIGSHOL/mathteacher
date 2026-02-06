@@ -17,7 +17,7 @@ def _get_concepts():
         concept(
             id="concept-h2-plane-coord",
             name="평면좌표",
-            grade="high_2",
+            grade="high_1",
             category="computation",
             part="calc",
             description="두 점 사이의 거리, 내분점, 무게중심 (2022 개정: 외분점 삭제)"
@@ -25,7 +25,7 @@ def _get_concepts():
         concept(
             id="concept-h2-line",
             name="직선의 방정식",
-            grade="high_2",
+            grade="high_1",
             category="computation",
             part="algebra",
             description="직선의 결정조건, 평행과 수직, 점과 직선 사이의 거리"
@@ -33,7 +33,7 @@ def _get_concepts():
         concept(
             id="concept-h2-circle",
             name="원의 방정식",
-            grade="high_2",
+            grade="high_1",
             category="computation",
             part="algebra",
             description="원의 방정식(표준형·일반형), 원과 직선의 위치 관계, 접선의 방정식"
@@ -41,7 +41,7 @@ def _get_concepts():
         concept(
             id="concept-h2-transform",
             name="도형의 이동",
-            grade="high_2",
+            grade="high_1",
             category="computation",
             part="geo",
             description="평행이동, 대칭이동(x축·y축·원점·y=x)"
@@ -247,7 +247,7 @@ def _get_tests():
             id="test-h2-geometry-eq",
             title="공통수학2 도형의 방정식",
             description="평면좌표, 직선, 원, 도형의 이동",
-            grade="high_2",
+            grade="high_1",
             concept_ids=[
                 "concept-h2-plane-coord",
                 "concept-h2-line",

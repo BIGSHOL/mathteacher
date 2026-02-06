@@ -549,7 +549,7 @@ class DailyTestService:
         "elementary_3": "e3", "elementary_4": "e4",
         "elementary_5": "e5", "elementary_6": "e6",
         "middle_1": "m1", "middle_2": "m2", "middle_3": "m3",
-        "high_1": "h1", "high_2": "h2",
+        "high_1": "h1",
     }
 
     # 카테고리 → ID 접두사 매핑

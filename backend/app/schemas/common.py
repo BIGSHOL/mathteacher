@@ -28,7 +28,6 @@ class Grade(str, Enum):
     MIDDLE_2 = "middle_2"
     MIDDLE_3 = "middle_3"
     HIGH_1 = "high_1"
-    HIGH_2 = "high_2"
 
 
 class QuestionType(str, Enum):

@@ -18,7 +18,7 @@ def _get_concepts():
         concept(
             id="concept-h2-set",
             name="집합",
-            grade="high_2",
+            grade="high_1",
             category="concept",
             part="data",
             description="집합의 정의, ∈과 ⊂ 구분, 교집합/합집합/여집합/차집합, 드 모르간의 법칙, 포함-배제 원리"
@@ -26,7 +26,7 @@ def _get_concepts():
         concept(
             id="concept-h2-proposition",
             name="명제",
-            grade="high_2",
+            grade="high_1",
             category="concept",
             part="data",
             description="명제, 조건과 진리집합, 역/대우, 충분조건/필요조건"
@@ -34,7 +34,7 @@ def _get_concepts():
         concept(
             id="concept-h2-abs-inequality",
             name="절대부등식",
-            grade="high_2",
+            grade="high_1",
             category="concept",
             part="algebra",
             description="A²≥0, AM-GM(산술평균≥기하평균), 양수 조건, 등호 성립"
@@ -44,7 +44,7 @@ def _get_concepts():
         concept(
             id="concept-h2-function",
             name="함수의 뜻과 그래프",
-            grade="high_2",
+            grade="high_1",
             category="concept",
             part="func",
             description="함수의 정의, 일대일 함수, 일대일 대응"
@@ -52,7 +52,7 @@ def _get_concepts():
         concept(
             id="concept-h2-composite",
             name="합성함수와 역함수",
-            grade="high_2",
+            grade="high_1",
             category="concept",
             part="func",
             description="합성함수 교환법칙 불성립, 역함수 존재 조건(일대일 대응), y=x 대칭"
@@ -60,7 +60,7 @@ def _get_concepts():
         concept(
             id="concept-h2-rational-irrational",
             name="유리함수와 무리함수",
-            grade="high_2",
+            grade="high_1",
             category="concept",
             part="func",
             description="유리함수 y=k/(x-p)+q 점근선, 무리함수 y=√(ax+b) 정의역, 무연근"
@@ -525,7 +525,7 @@ def _get_tests():
             id="test-h2-set-proposition",
             title="공통수학2 집합과 명제",
             description="집합(교집합/합집합/여집합), 명제(역/대우/충분조건), 절대부등식(AM-GM)",
-            grade="high_2",
+            grade="high_1",
             concept_ids=["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"],
             question_ids=[f"h2-conc-{i:03d}" for i in range(1, 10)],
             time_limit_minutes=15,
@@ -536,7 +536,7 @@ def _get_tests():
             id="test-h2-function",
             title="공통수학2 함수",
             description="함수의 정의와 그래프, 합성함수와 역함수, 유리함수와 무리함수",
-            grade="high_2",
+            grade="high_1",
             concept_ids=["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"],
             question_ids=[f"h2-conc-{i:03d}" for i in range(10, 19)],
             time_limit_minutes=15,
@@ -547,7 +547,7 @@ def _get_tests():
             id="test-h2-ch1-concept",
             title="공통수학2 도형의 방정식 개념",
             description="평면좌표, 직선, 원, 도형의 이동의 개념 이해",
-            grade="high_2",
+            grade="high_1",
             concept_ids=[
                 "concept-h2-plane-coord",
                 "concept-h2-line",

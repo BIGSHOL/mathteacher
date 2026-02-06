@@ -13,7 +13,6 @@ export type Grade =
   | 'middle_2'
   | 'middle_3'
   | 'high_1'
-  | 'high_2'
 
 export type QuestionType = 'multiple_choice' | 'true_false' | 'short_answer' | 'fill_in_blank'
 

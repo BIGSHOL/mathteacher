@@ -18,7 +18,6 @@ const GRADE_OPTIONS: { value: Grade; label: string; disabled?: boolean }[] = [
   { value: 'middle_2', label: '중등 2학년' },
   { value: 'middle_3', label: '중등 3학년' },
   { value: 'high_1', label: '고등 1학년' },
-  { value: 'high_2', label: '고등 2학년' },
 ]
 
 interface ClassItem {
@@ -89,7 +88,6 @@ export function StudentsListPage() {
       middle_2: '중2',
       middle_3: '중3',
       high_1: '고1',
-      high_2: '고2',
     }
     return gradeMap[grade] || grade
   }

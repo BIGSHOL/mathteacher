@@ -37,7 +37,6 @@ const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 'middle_2', label: '중2' },
   { value: 'middle_3', label: '중3' },
   { value: 'high_1', label: '고1' },
-  { value: 'high_2', label: '고2' },
 ]
 
 export function QuestionGenerationPage() {

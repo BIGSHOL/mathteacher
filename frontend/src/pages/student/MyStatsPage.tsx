@@ -289,7 +289,6 @@ const GRADE_LABELS: Record<Grade, string> = {
   middle_2: '중등 2학년',
   middle_3: '중등 3학년',
   high_1: '고등 1학년',
-  high_2: '고등 2학년',
 }
 
 export function MyStatsPage() {
@@ -310,8 +309,7 @@ export function MyStatsPage() {
     middle_1: { semester1: [1, 2, 3, 4, 5, 6], semester2: [7, 8, 9, 10, 11, 12] },
     middle_2: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7, 8] },
     middle_3: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
-    high_1: null, // 공통수학1 - 학기 구분 없음
-    high_2: null, // 공통수학2 - 학기 구분 없음
+    high_1: { semester1: [1, 2, 3, 4], semester2: [5, 6, 7] },
   }
 
   // 학기별로 단원 그룹화 (실제 교육과정 기준)
@@ -333,7 +331,7 @@ export function MyStatsPage() {
           semester = 2
         }
       }
-      // 고등학교는 structure가 null이므로 모두 semester=1로 처리 (학기 구분 없음)
+      // structure가 null이면 모두 semester=1로 처리
 
       if (!grouped.has(semester)) {
         grouped.set(semester, [])
@@ -548,7 +546,11 @@ export function MyStatsPage() {
             <div className="space-y-4">
               {chaptersBySemester.map(([semester, semesterChapters]) => (
                 <div key={semester}>
-                  <h3 className="mb-2 text-xs font-medium text-gray-500">{semester}학기</h3>
+                  <h3 className="mb-2 text-xs font-medium text-gray-500">
+                    {user?.grade?.startsWith('high_')
+                      ? (semester === 1 ? '공통수학1' : '공통수학2')
+                      : `${semester}학기`}
+                  </h3>
                   <div className="space-y-2">
                     {semesterChapters.map((ch) => (
                       <ChapterRow key={ch.chapter_id} chapter={ch} />
