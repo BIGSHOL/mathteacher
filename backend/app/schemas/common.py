@@ -44,6 +44,7 @@ class QuestionCategory(str, Enum):
 
     COMPUTATION = "computation"  # 연산
     CONCEPT = "concept"  # 개념
+    FILL_IN_BLANK = "fill_in_blank"  # 빈칸
 
 
 class ProblemPart(str, Enum):

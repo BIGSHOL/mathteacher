@@ -112,7 +112,7 @@ class TestBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=200)
     description: str = ""
     grade: Grade
-    category: QuestionCategory | None = None  # None이면 혼합 테스트
+    category: str | None = None  # computation, concept, fill_in_blank, 또는 None(종합)
     time_limit_minutes: int | None = None
 
 

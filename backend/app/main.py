@@ -2306,6 +2306,29 @@ def cleanup_bad_ai_questions():
     from app.models.question import Question
     db = SyncSessionLocal()
     try:
+        # 먼저, 이전 과도한 패턴('다음 중')으로 잘못 비활성화된 문제 복구
+        wrongly_deactivated = db.query(Question).filter(
+            Question.is_active == False,  # noqa: E712
+            Question.id.like("ai-%"),
+        ).all()
+        reactivated = 0
+        for q in wrongly_deactivated:
+            content = q.content or ""
+            # 실제 불량 기준에 해당하지 않으면 복구
+            is_actually_bad = False
+            if _re.search(r"\([ㄱㄴㄷㄹㅁ가나다라]\)", content):
+                is_actually_bad = True
+            if _re.search(r"다음[은의]\s*(표|식|그림|과정)", content):
+                is_actually_bad = True
+            if q.question_type == "fill_in_blank" and _re.search(r"고르[시면]|선택|모두 고르", content):
+                is_actually_bad = True
+            if not is_actually_bad:
+                q.is_active = True
+                reactivated += 1
+        if reactivated:
+            db.commit()
+            logger.info(f"잘못 비활성화된 AI 문제 {reactivated}개 복구")
+
         questions = db.query(Question).filter(
             Question.is_active == True,  # noqa: E712
             Question.id.like("ai-%"),
@@ -2318,8 +2341,8 @@ def cleanup_bad_ai_questions():
             # (가)/(나) 등 참조형 기호
             if _re.search(r"\([ㄱㄴㄷㄹㅁ가나다라]\)", content):
                 bad = True
-            # '다음은...과정이다' 외부 참조
-            if _re.search(r"다음[은의\s]*(수|중|표|식|그림|보기|과정)", content):
+            # '다음은...과정이다' 외부 참조 (단, '다음 중'은 일반 표현이므로 제외)
+            if _re.search(r"다음[은의]\s*(표|식|그림|과정)", content):
                 bad = True
             # 빈칸인데 선택형 표현
             if q.question_type == "fill_in_blank":

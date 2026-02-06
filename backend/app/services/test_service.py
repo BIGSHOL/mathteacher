@@ -224,6 +224,7 @@ class TestService:
             "title": title,
             "description": description,
             "grade": grade_val,
+            "category": None,
             "test_type": test_type,
             "semester": semester,
             "concept_ids": available_concept_ids,
@@ -268,9 +269,8 @@ class TestService:
 
             filtered_tests = []
             for t in all_tests:
-                # 일일 테스트는 이미 생성 시 챕터 필터링 적용됨 → 항상 표시
+                # 일일 테스트는 별도 API(/daily-tests)로 관리 → available 목록에서 제외
                 if t.id.startswith("daily-"):
-                    filtered_tests.append(t)
                     continue
                 # 진단 평가는 항상 표시
                 if getattr(t, "is_placement", False):
@@ -298,8 +298,8 @@ class TestService:
                     if any(cid in available_concept_ids for cid in t.concept_ids):
                         filtered_tests.append(t)
                 else:
-                    # 일반 개념/연산 테스트: 테스트의 concept_ids 중 하나라도 해금되면 표시
-                    if any(cid in available_concept_ids for cid in t.concept_ids):
+                    # 일반 개념/연산 테스트: 테스트의 모든 concept_ids가 해금되어야 표시
+                    if t.concept_ids and all(cid in available_concept_ids for cid in t.concept_ids):
                         filtered_tests.append(t)
             all_tests = filtered_tests
 
@@ -657,6 +657,16 @@ class TestService:
             return False
         if attempt.completed_at is not None:
             return False
+
+        # DailyTestRecord에서 참조 해제
+        from app.models.daily_test_record import DailyTestRecord
+        dr_stmt = select(DailyTestRecord).where(
+            DailyTestRecord.attempt_id == attempt_id
+        )
+        daily_record = await self.db.scalar(dr_stmt)
+        if daily_record:
+            daily_record.attempt_id = None
+            daily_record.status = "pending"
 
         await self.db.delete(attempt)
         await self.db.commit()
