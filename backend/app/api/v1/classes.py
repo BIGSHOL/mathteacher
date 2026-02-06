@@ -20,7 +20,7 @@ class ClassResponse(BaseModel):
     """반 응답 스키마."""
     id: str
     name: str
-    grade: str
+    grade: str | None = None
     teacher_id: str
     description: str | None = None
     daily_quota: int = 20
