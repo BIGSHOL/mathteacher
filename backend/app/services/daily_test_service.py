@@ -245,7 +245,7 @@ class DailyTestService:
             id=test_id,
             title=f"오늘의 {label} ({date})",
             description=f"{date} 일일 {label} 테스트",
-            grade=grade,
+            grade=grade or "",
             concept_ids=concept_ids,
             question_ids=question_ids,
             question_count=question_count,
@@ -261,7 +261,7 @@ class DailyTestService:
         self,
         student_id: str,
         category: str,
-        grade,
+        grade: str | None,
         count: int = QUESTIONS_PER_DAILY_TEST,
     ) -> list[str]:
         """학생 맞춤형 문제 선택 알고리즘.
@@ -277,7 +277,7 @@ class DailyTestService:
         mastery_map = await self._get_mastery_map(student_id)
         avg_mastery = (
             sum(mastery_map.values()) / len(mastery_map)
-            if mastery_map else 0
+            if mastery_map else 0.0
         )
         diff_min, diff_max = self._mastery_to_difficulty_range(avg_mastery)
 
@@ -386,7 +386,7 @@ class DailyTestService:
         self,
         student_id: str,
         category: str,
-        grade,
+        grade: str | None,
         count: int,
         recently_used: list[str],
     ) -> list[str]:
@@ -463,7 +463,7 @@ class DailyTestService:
                 used.extend(qids)
         return list(set(used))
 
-    async def _get_student_available_concept_ids(self, student_id: str, grade) -> list[str]:
+    async def _get_student_available_concept_ids(self, student_id: str, grade: str | None) -> list[str]:
         """학생이 해금한 단원에 속하는 개념 ID만 반환."""
         from app.models.chapter_progress import ChapterProgress
 
@@ -617,7 +617,7 @@ class DailyTestService:
         self,
         student_id: str,
         category: str,
-        grade,
+        grade: str | None,
         count: int,
     ) -> list[str]:
         """AI로 문제를 생성하여 DB에 저장하고 ID 목록을 반환.
