@@ -41,22 +41,20 @@ def _validate_generated_question(q: dict) -> list[str]:
     content = str(q.get("content", ""))
     qtype = q.get("question_type", "")
 
-    # 보기 기호가 content에 포함된 경우
+    # 보기 기호가 content에 포함된 경우 (객관식/빈칸 공통)
     if re.search(r"\([ㄱㄴㄷㄹㅁ가나다라]\)", content):
         warnings.append("보기 기호가 문제 내용에 포함됨")
 
-    # 빈칸인데 선택형 표현 사용
+    # 빈칸 전용 검증
     if qtype == "fill_in_blank":
         if re.search(r"고르[시면]|선택|모두 고르", content):
             warnings.append("빈칸 문제에 선택형 표현 사용됨")
-
-    # '다음 수/중/표' 등 외부 참조 (조사 포함: 다음은, 다음의, 다음 수 등)
-    if re.search(r"다음[은의\s]*(수|중|표|식|그림|보기|과정)", content):
-        warnings.append("외부 참조 표현 '다음...' 사용됨")
-
-    # '과정이다' + '(가)/(나)' 참조형 빈칸 문제 감지
-    if re.search(r"과정이다.*\([가나다라]\)", content):
-        warnings.append("참조형 빈칸 문제 - 풀이 과정 참조")
+        # 빈칸에서 '다음 중/다음 수' 등 외부 참조 차단
+        if re.search(r"다음[은의\s]*(수|중|표|식|그림|보기|과정)", content):
+            warnings.append("외부 참조 표현 '다음...' 사용됨")
+        # '과정이다' + '(가)/(나)' 참조형 빈칸
+        if re.search(r"과정이다.*\([가나다라]\)", content):
+            warnings.append("참조형 빈칸 문제 - 풀이 과정 참조")
 
     # 객관식인데 options가 없거나 비어있음
     if qtype == "multiple_choice":

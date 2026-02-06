@@ -497,10 +497,10 @@ async def admin_save_generated_questions(
     for q_data in request.questions:
         # ID가 없으면 자동 생성
         qid = q_data.get("id") or f"ai-{uuid4().hex[:12]}"
-        # 이미 존재하는 ID는 건너뛰기
+        # 이미 존재하는 ID면 새 UUID로 대체
         existing = await db.get(Question, qid)
         if existing:
-            continue
+            qid = f"ai-{uuid4().hex[:12]}"
 
         q = Question(
             id=qid,
