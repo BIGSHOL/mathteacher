@@ -798,7 +798,31 @@ async def complete_test(
     await mastery_service.update_mastery_from_attempt(current_user.id, attempt_id)
 
     # 관련 단원 진행률 업데이트 (테스트의 개념들이 속한 단원)
-    # TODO: 테스트와 단원 연결 후 구현
+    from app.models.answer_log import AnswerLog
+    from app.models.question import Question
+    from app.models.chapter import Chapter
+
+    # 1. 이번 시도에서 다룬 개념들 추출
+    logs_stmt = select(AnswerLog.question_id).where(AnswerLog.attempt_id == attempt_id)
+    question_ids = list((await db.scalars(logs_stmt)).all())
+
+    if question_ids:
+        concepts_stmt = select(Question.concept_id).where(
+            Question.id.in_(question_ids),
+            Question.concept_id.isnot(None)
+        ).distinct()
+        concept_ids = list((await db.scalars(concepts_stmt)).all())
+
+        if concept_ids:
+            # 2. 해당 개념들을 포함하는 단원들 찾기
+            chapters_stmt = select(Chapter.id).where(
+                Chapter.concept_ids.overlap(concept_ids)
+            )
+            chapter_ids = list((await db.scalars(chapters_stmt)).all())
+
+            # 3. 각 단원의 진행률 업데이트
+            for chapter_id in chapter_ids:
+                await chapter_service.update_chapter_progress(current_user.id, chapter_id)
 
     # 일일 테스트 기록 동기화
     from app.services.daily_test_service import DailyTestService
