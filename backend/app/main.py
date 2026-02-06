@@ -1664,27 +1664,35 @@ def update_chapter_concept_ids():
     db = SyncSessionLocal()
     try:
         updated = 0
+        missing = 0
         for chapter_id, concept_ids in CHAPTER_CONCEPT_MAP.items():
             ch = db.query(Chapter).filter(Chapter.id == chapter_id).first()
-            if ch and ch.concept_ids != concept_ids:
+            if not ch:
+                missing += 1
+                logger.warning(f"Chapter not found: {chapter_id}")
+                continue
+            if ch.concept_ids != concept_ids:
+                logger.info(f"Updating {chapter_id}: {ch.concept_ids} -> {concept_ids}")
                 ch.concept_ids = concept_ids
                 updated += 1
+
+        # 항상 오늘의 0문제 일일 테스트 정리 (매핑 변경 여부와 무관)
+        _cleanup_today_daily_tests(db)
+        db.commit()
+
         if updated:
-            # 챕터 매핑이 변경되면 오늘의 일일 테스트를 삭제하여 재생성 유도
-            _cleanup_today_daily_tests(db)
-            db.commit()
-            logger.info(f"Updated concept_ids for {updated} chapters, cleaned up today's daily tests")
+            logger.info(f"Updated concept_ids for {updated} chapters (missing: {missing}), cleaned up today's daily tests")
         else:
-            db.commit()
+            logger.info(f"All {len(CHAPTER_CONCEPT_MAP)} chapter concept_ids already up to date (missing: {missing})")
     except Exception as e:
         db.rollback()
-        logger.error(f"Failed to update chapter concept_ids: {e}")
+        logger.error(f"Failed to update chapter concept_ids: {e}", exc_info=True)
     finally:
         db.close()
 
 
 def _cleanup_today_daily_tests(db):
-    """오늘의 일일 테스트 레코드 및 관련 테스트/시도 삭제."""
+    """오늘의 0문제/미완료 일일 테스트 정리. 완료된 테스트는 보존."""
     from app.models.daily_test_record import DailyTestRecord
     from app.models.test import Test
     from app.models.test_attempt import TestAttempt
@@ -1692,7 +1700,11 @@ def _cleanup_today_daily_tests(db):
 
     KST = timezone(timedelta(hours=9))
     today = datetime.now(KST).date().isoformat()
-    records = db.query(DailyTestRecord).filter(DailyTestRecord.date == today).all()
+    # 0문제이거나 아직 시작 안 한 테스트만 정리 (완료된 것은 보존)
+    records = db.query(DailyTestRecord).filter(
+        DailyTestRecord.date == today,
+        DailyTestRecord.status != "completed",
+    ).all()
     if not records:
         return
 

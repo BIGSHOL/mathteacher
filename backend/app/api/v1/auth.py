@@ -8,6 +8,7 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 import os
 from slowapi import Limiter
 from slowapi.util import get_remote_address
+from sqlalchemy import func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import verify_token as _verify_jwt
@@ -310,6 +311,68 @@ async def debug_users(auth_service: AuthService = Depends(get_auth_service)):
                 "is_active": u.is_active,
             }
             for u in users
+        ],
+    }
+
+
+@router.get("/debug-chapters")
+async def debug_chapters(
+    grade: str | None = None,
+    auth_service: AuthService = Depends(get_auth_service),
+):
+    """디버그: 챕터 concept_ids 매핑 상태 확인."""
+    from sqlalchemy import select
+    from app.models.chapter import Chapter
+    from app.models.question import Question
+    from app.models.daily_test_record import DailyTestRecord
+
+    db = auth_service.db
+
+    # 챕터 조회
+    stmt = select(Chapter).order_by(Chapter.grade, Chapter.chapter_number)
+    if grade:
+        stmt = stmt.where(Chapter.grade == grade)
+    chapters = list((await db.scalars(stmt)).all())
+
+    chapter_data = []
+    for ch in chapters:
+        # 이 concept_ids에 해당하는 문제 수 확인
+        q_count = 0
+        if ch.concept_ids:
+            q_stmt = select(func.count()).select_from(Question).where(
+                Question.concept_id.in_(ch.concept_ids),
+                Question.is_active == True,  # noqa: E712
+            )
+            q_count = await db.scalar(q_stmt) or 0
+
+        chapter_data.append({
+            "id": ch.id,
+            "name": ch.name,
+            "grade": ch.grade,
+            "chapter_number": ch.chapter_number,
+            "concept_ids": ch.concept_ids,
+            "question_count": q_count,
+        })
+
+    # 오늘의 일일 테스트 현황
+    from datetime import datetime, timedelta, timezone as tz
+    KST = tz(timedelta(hours=9))
+    today = datetime.now(KST).date().isoformat()
+    daily_stmt = select(DailyTestRecord).where(DailyTestRecord.date == today)
+    daily_records = list((await db.scalars(daily_stmt)).all())
+
+    return {
+        "total_chapters": len(chapters),
+        "chapters": chapter_data,
+        "today_daily_tests": [
+            {
+                "student_id": r.student_id,
+                "category": r.category,
+                "test_id": r.test_id,
+                "total_count": r.total_count,
+                "status": r.status,
+            }
+            for r in daily_records
         ],
     }
 
