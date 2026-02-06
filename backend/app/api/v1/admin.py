@@ -287,12 +287,20 @@ async def update_chapter_data(
     from app.models.chapter import Chapter
 
     CHAPTER_CONCEPT_MAP = {
+        # 1학기
         "chapter-m1-01": ["concept-m1-prime"],
         "chapter-m1-02": ["concept-m1-integer", "concept-002"],
-        "chapter-m1-03": ["concept-m1-expression", "concept-m1-equation", "concept-001", "concept-003"],
-        "chapter-m1-04": ["concept-m1-coord", "concept-m1-proportion", "concept-004"],
-        "chapter-m1-05": ["concept-m1-basic-geo", "concept-m1-plane-fig", "concept-m1-solid-fig"],
-        "chapter-m1-06": ["concept-m1-frequency", "concept-m1-representative", "concept-m1-scatter", "concept-005"],
+        "chapter-m1-03": ["concept-m1-expression", "concept-001", "concept-003"],
+        "chapter-m1-04": ["concept-m1-equation"],
+        "chapter-m1-05": ["concept-m1-coord", "concept-004"],
+        "chapter-m1-06": ["concept-m1-proportion"],
+        # 2학기
+        "chapter-m1-07": ["concept-m1-basic-geo"],
+        "chapter-m1-08": ["concept-m1-plane-fig"],
+        "chapter-m1-09": ["concept-m1-solid-fig"],
+        "chapter-m1-10": ["concept-m1-frequency", "concept-005"],
+        "chapter-m1-11": ["concept-m1-representative"],
+        "chapter-m1-12": ["concept-m1-scatter"],
     }
 
     stmt = select(Chapter).where(Chapter.grade == "middle_1")

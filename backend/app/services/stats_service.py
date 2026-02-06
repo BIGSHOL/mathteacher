@@ -266,7 +266,7 @@ class StatsService:
             "type_stats": type_stats,
         }
 
-    async def get_dashboard_stats(self, teacher_id: str) -> dict:
+    async def get_dashboard_stats(self, teacher_id: str | None = None) -> dict:
         """대시보드 통계 조회."""
         if not self.db:
             raise ValueError("Database session required")
@@ -274,17 +274,20 @@ class StatsService:
         today = _kst_today()
         week_ago = today - timedelta(days=7)
 
-        # 담당 반 조회
-        classes_stmt = select(Class).where(Class.teacher_id == teacher_id)
+        # 담당 반 조회 (teacher_id가 None이면 전체 - 관리자/마스터)
+        classes_stmt = select(Class)
+        if teacher_id:
+            classes_stmt = classes_stmt.where(Class.teacher_id == teacher_id)
         classes = list((await self.db.scalars(classes_stmt)).all())
         class_ids = [c.id for c in classes]
 
         # 담당 학생 조회
         students_stmt = select(User).where(
-            User.class_id.in_(class_ids),
             User.role == UserRole.STUDENT,
             User.is_active == True,  # noqa: E712
         )
+        if teacher_id:
+            students_stmt = students_stmt.where(User.class_id.in_(class_ids))
         students = list((await self.db.scalars(students_stmt)).all())
         student_ids = [s.id for s in students]
 
@@ -357,7 +360,7 @@ class StatsService:
 
     async def get_students_summary(
         self,
-        teacher_id: str,
+        teacher_id: str | None = None,
         class_id: str | None = None,
         grade: Grade | None = None,
         page: int = 1,
@@ -367,8 +370,10 @@ class StatsService:
         if not self.db:
             raise ValueError("Database session required")
 
-        # 담당 반 조회
-        classes_stmt = select(Class).where(Class.teacher_id == teacher_id)
+        # 담당 반 조회 (teacher_id가 None이면 전체 반 조회 - 관리자/마스터)
+        classes_stmt = select(Class)
+        if teacher_id:
+            classes_stmt = classes_stmt.where(Class.teacher_id == teacher_id)
         if class_id:
             classes_stmt = classes_stmt.where(Class.id == class_id)
         classes = list((await self.db.scalars(classes_stmt)).all())
@@ -377,10 +382,15 @@ class StatsService:
 
         # 학생 조회
         students_stmt = select(User).where(
-            User.class_id.in_(class_ids),
             User.role == UserRole.STUDENT,
             User.is_active == True,  # noqa: E712
         )
+        if teacher_id:
+            # 강사는 자신의 반 학생만
+            students_stmt = students_stmt.where(User.class_id.in_(class_ids))
+        elif class_id:
+            # 관리자가 특정 반 필터
+            students_stmt = students_stmt.where(User.class_id.in_(class_ids))
         if grade:
             students_stmt = students_stmt.where(User.grade == grade)
 

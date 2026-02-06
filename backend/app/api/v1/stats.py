@@ -69,7 +69,8 @@ async def get_dashboard(
     stats_service: StatsService = Depends(get_stats_service),
 ):
     """대시보드 통계 (강사용)."""
-    stats = await stats_service.get_dashboard_stats(current_user.id)
+    teacher_id = current_user.id if current_user.role == UserRole.TEACHER else None
+    stats = await stats_service.get_dashboard_stats(teacher_id)
 
     return ApiResponse(
         data=DashboardStats(
