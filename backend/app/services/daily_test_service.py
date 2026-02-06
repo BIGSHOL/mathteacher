@@ -75,6 +75,14 @@ class DailyTestService:
         )
         record = await self.db.scalar(stmt)
         if record:
+            # 0문제 테스트는 재생성 시도
+            if record.total_count == 0 and record.status != "completed":
+                test = await self._generate_test(student_id, category, today)
+                if test.question_count > 0:
+                    record.test_id = test.id
+                    record.total_count = test.question_count
+                    await self.db.commit()
+                    await self.db.refresh(record)
             return record
 
         # 2. 테스트 생성
@@ -446,6 +454,8 @@ class DailyTestService:
 
     async def _get_student_available_concept_ids(self, student_id: str, grade) -> list[str]:
         """학생이 해금한 단원에 속하는 개념 ID만 반환."""
+        from app.models.chapter_progress import ChapterProgress
+
         # 해금된 챕터 조회
         unlocked_stmt = (
             select(ChapterProgress.chapter_id)
@@ -469,13 +479,38 @@ class DailyTestService:
             if available:
                 return list(set(available))
 
-        # 폴백: 해금된 챕터가 없으면 해당 학년 1단원 개념만 반환
+        # 해금된 챕터가 없으면 첫 단원 자동 해금 후 개념 반환
         first_chapter_stmt = (
-            select(Chapter.concept_ids)
+            select(Chapter)
             .where(Chapter.grade == grade, Chapter.chapter_number == 1)
         )
-        first_concepts = await self.db.scalar(first_chapter_stmt)
-        return first_concepts or []
+        first_chapter = await self.db.scalar(first_chapter_stmt)
+        if not first_chapter:
+            return []
+
+        # 첫 단원 자동 해금
+        from datetime import timezone as tz
+        existing = await self.db.scalar(
+            select(ChapterProgress).where(
+                ChapterProgress.student_id == student_id,
+                ChapterProgress.chapter_id == first_chapter.id,
+            )
+        )
+        if not existing:
+            progress = ChapterProgress(
+                student_id=student_id,
+                chapter_id=first_chapter.id,
+                is_unlocked=True,
+                unlocked_at=datetime.now(tz.utc),
+            )
+            self.db.add(progress)
+            await self.db.flush()
+        elif not existing.is_unlocked:
+            existing.is_unlocked = True
+            existing.unlocked_at = datetime.now(tz.utc)
+            await self.db.flush()
+
+        return first_chapter.concept_ids or []
 
     async def _get_mastery_map(self, student_id: str) -> dict[str, int]:
         """학생의 개념별 숙련도 맵."""
