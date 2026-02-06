@@ -442,7 +442,7 @@ def _to_question_with_answer(
         id=q.id,
         concept_id=q.concept_id,
         concept_name=q.concept.name if q.concept else "",
-        grade=q.concept.grade.value if q.concept and q.concept.grade else None,
+        grade=q.concept.grade if q.concept and q.concept.grade else None,
         chapter_name=(concept_chapter_map or {}).get(q.concept_id),
         category=q.category,
         part=q.part,

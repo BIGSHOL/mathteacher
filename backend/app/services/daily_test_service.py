@@ -230,8 +230,19 @@ class DailyTestService:
             concept_ids = []
 
         label = CATEGORY_LABELS.get(category, category)
+        test_id = f"daily-{student_id}-{date}-{category}"
+
+        # 기존 테스트가 있으면 업데이트 (0문제 재생성 시)
+        existing_test = await self.db.get(Test, test_id)
+        if existing_test:
+            existing_test.question_ids = question_ids
+            existing_test.question_count = question_count
+            existing_test.concept_ids = concept_ids
+            await self.db.flush()
+            return existing_test
+
         test = Test(
-            id=f"daily-{student_id}-{date}-{category}",
+            id=test_id,
             title=f"오늘의 {label} ({date})",
             description=f"{date} 일일 {label} 테스트",
             grade=grade,
