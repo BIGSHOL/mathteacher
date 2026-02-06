@@ -283,44 +283,24 @@ async def update_chapter_data(
     """챕터 concept_ids 업데이트 (관리자용).
 
     DB 전체 초기화 없이 챕터의 concept_ids만 갱신합니다.
+    main.py의 update_chapter_concept_ids()와 동일한 전체 학년 매핑 사용.
     """
     from app.models.chapter import Chapter
+    import app.main as main_module
 
-    CHAPTER_CONCEPT_MAP = {
-        # 1학기
-        "chapter-m1-01": ["concept-m1-prime-01", "concept-m1-prime-02", "concept-m1-prime-03"],
-        "chapter-m1-02": ["concept-m1-int-01", "concept-m1-int-02", "concept-m1-int-03"],
-        "chapter-m1-03": ["concept-m1-expr-01", "concept-m1-expr-02", "concept-m1-expr-03"],
-        "chapter-m1-04": ["concept-m1-eq-01", "concept-m1-eq-02", "concept-m1-eq-03"],
-        "chapter-m1-05": ["concept-m1-coord-01", "concept-m1-coord-02"],
-        "chapter-m1-06": ["concept-m1-prop-01", "concept-m1-prop-02", "concept-m1-prop-03"],
-        # 2학기
-        "chapter-m1-07": ["concept-m1-geo-01", "concept-m1-geo-02", "concept-m1-geo-03"],
-        "chapter-m1-08": ["concept-m1-plane-01", "concept-m1-plane-02"],
-        "chapter-m1-09": ["concept-m1-solid-01", "concept-m1-solid-02", "concept-m1-solid-03"],
-        "chapter-m1-10": ["concept-m1-freq-01", "concept-m1-freq-02", "concept-m1-freq-03"],
-        "chapter-m1-11": ["concept-m1-repr-01", "concept-m1-repr-02"],
-        "chapter-m1-12": ["concept-m1-scat-01", "concept-m1-scat-02"],
-    }
+    # main.py의 동기 함수를 비동기 래핑 (전체 학년 매핑 + 일일테스트 정리 포함)
+    import asyncio
+    loop = asyncio.get_event_loop()
+    await loop.run_in_executor(None, main_module.update_chapter_concept_ids)
 
-    stmt = select(Chapter).where(Chapter.grade == "middle_1")
-    result = await db.execute(stmt)
-    chapters = result.scalars().all()
-
-    updated = 0
-    for ch in chapters:
-        if ch.id in CHAPTER_CONCEPT_MAP:
-            new_ids = CHAPTER_CONCEPT_MAP[ch.id]
-            if ch.concept_ids != new_ids:
-                ch.concept_ids = new_ids
-                updated += 1
-
-    await db.commit()
+    # 마이그레이션도 함께 실행 (구 concept ID 문제 이전)
+    await loop.run_in_executor(None, main_module.migrate_concept_subdivision)
+    await loop.run_in_executor(None, main_module.migrate_concept_sequential_unlock)
 
     return ApiResponse(
         success=True,
-        data={"updated_chapters": updated, "total_chapters": len(chapters)},
-        message=f"{updated}개 챕터의 concept_ids가 업데이트되었습니다.",
+        data={"message": "전체 학년 챕터 업데이트 + 마이그레이션 완료"},
+        message="전체 학년 챕터 concept_ids 업데이트 및 마이그레이션 완료",
     )
 
 
