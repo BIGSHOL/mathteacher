@@ -13,6 +13,7 @@ from app.models.question import Question
 from app.models.chapter import Chapter
 from app.models.chapter_progress import ChapterProgress
 from app.models.concept import Concept
+from app.models.concept_mastery import ConceptMastery
 from app.schemas.common import Grade, QuestionType
 from app.services.blank_service import BlankService
 
@@ -71,40 +72,38 @@ class TestService:
         self.db = db
 
     async def _get_student_available_concept_ids(self, student_id: str, grade: Grade) -> list[str]:
-        """학생이 해금한 단원에 속하는 개념 ID만 반환."""
-        unlocked_stmt = (
-            select(ChapterProgress.chapter_id)
+        """학생이 해금한 개념 ID만 반환 (ConceptMastery.is_unlocked 기반)."""
+        # ConceptMastery에서 해금된 개념만 조회
+        stmt = (
+            select(ConceptMastery.concept_id)
+            .join(Concept, ConceptMastery.concept_id == Concept.id)
             .where(
-                ChapterProgress.student_id == student_id,
-                ChapterProgress.is_unlocked == True,  # noqa: E712
+                ConceptMastery.student_id == student_id,
+                ConceptMastery.is_unlocked == True,  # noqa: E712
+                Concept.grade == grade,
             )
         )
-        unlocked_chapter_ids = list((await self.db.scalars(unlocked_stmt)).all())
+        unlocked_concepts = list((await self.db.scalars(stmt)).all())
+        if unlocked_concepts:
+            return unlocked_concepts
 
-        if unlocked_chapter_ids:
-            chapter_stmt = select(Chapter.concept_ids).where(
-                Chapter.id.in_(unlocked_chapter_ids)
-            )
-            concept_id_lists = list((await self.db.scalars(chapter_stmt)).all())
-            available = []
-            for cids in concept_id_lists:
-                if cids:
-                    available.extend(cids)
-            if available:
-                return list(set(available))
-
-        # 폴백: 해금된 챕터가 없으면 해당 학년 1단원 개념만
+        # 폴백: 해금된 개념이 없으면 첫 챕터 첫 개념 자동 해금
+        from app.services.mastery_service import MasteryService
         first_chapter_stmt = (
-            select(Chapter.concept_ids)
+            select(Chapter)
             .where(Chapter.grade == grade, Chapter.chapter_number == 1)
         )
-        first_concepts = await self.db.scalar(first_chapter_stmt)
-        if first_concepts:
-            return first_concepts
+        first_chapter = await self.db.scalar(first_chapter_stmt)
+        if first_chapter and first_chapter.concept_ids:
+            mastery_service = MasteryService(self.db)
+            first_concept_id = first_chapter.concept_ids[0]
+            await mastery_service.ensure_first_concept_unlocked(student_id, first_chapter.id)
+            await self.db.flush()
+            return [first_concept_id]
 
         # 최종 폴백: 챕터 데이터가 없는 학년 → 전체 개념
-        stmt = select(Concept.id).where(Concept.grade == grade)
-        return list((await self.db.scalars(stmt)).all())
+        fallback_stmt = select(Concept.id).where(Concept.grade == grade)
+        return list((await self.db.scalars(fallback_stmt)).all())
 
     async def generate_comprehensive_test(
         self,
@@ -188,7 +187,8 @@ class TestService:
             "middle_1": "중1", "middle_2": "중2", "middle_3": "중3",
             "high_1": "고1",
         }
-        grade_label = grade_labels.get(grade, str(grade))
+        grade_key = grade.value if hasattr(grade, "value") else grade
+        grade_label = grade_labels.get(grade_key, str(grade_key))
 
         if test_type == "cumulative":
             title = f"{grade_label} 누적 종합 평가"
@@ -201,11 +201,12 @@ class TestService:
             description = f"{grade_label} 전체 과정을 종합적으로 평가합니다."
 
         # 가상 테스트 객체 생성 (DB에 저장하지 않음)
+        grade_val = grade.value if hasattr(grade, "value") else grade
         return {
-            "id": f"auto-{test_type}-{grade}-{semester or ''}",
+            "id": f"auto-{test_type}-{grade_val}-{semester or ''}",
             "title": title,
             "description": description,
-            "grade": grade,
+            "grade": grade_val,
             "test_type": test_type,
             "semester": semester,
             "concept_ids": available_concept_ids,

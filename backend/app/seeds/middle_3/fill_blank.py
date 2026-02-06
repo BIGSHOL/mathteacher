@@ -13,7 +13,7 @@ def get_fill_blank_data() -> dict:
         # ── 실수와 그 연산 (2문제) ──
         fb(
             id="m3-fb-001",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
             difficulty=4,
@@ -24,7 +24,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m3-fb-002",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
             difficulty=7,
@@ -37,7 +37,7 @@ def get_fill_blank_data() -> dict:
         # ── 다항식의 곱셈과 인수분해 (2문제) ──
         fb(
             id="m3-fb-003",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -48,7 +48,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m3-fb-004",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -61,7 +61,7 @@ def get_fill_blank_data() -> dict:
         # ── 이차방정식 (2문제) ──
         fb(
             id="m3-fb-005",
-            concept_id="concept-m3-quad-eq",
+            concept_id="concept-m3-quadeq-01",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -72,7 +72,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m3-fb-006",
-            concept_id="concept-m3-quad-eq",
+            concept_id="concept-m3-quadeq-02",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -85,7 +85,7 @@ def get_fill_blank_data() -> dict:
         # ── 이차함수 (2문제) ──
         fb(
             id="m3-fb-007",
-            concept_id="concept-m3-quad-func",
+            concept_id="concept-m3-quadfn-01",
             category="concept",
             part="func",
             difficulty=4,
@@ -96,7 +96,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m3-fb-008",
-            concept_id="concept-m3-quad-func",
+            concept_id="concept-m3-quadfn-03",
             category="concept",
             part="func",
             difficulty=7,
@@ -109,7 +109,7 @@ def get_fill_blank_data() -> dict:
         # ── 삼각비 (2문제) ──
         fb(
             id="m3-fb-009",
-            concept_id="concept-m3-trig",
+            concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -121,7 +121,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m3-fb-010",
-            concept_id="concept-m3-trig",
+            concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
             difficulty=4,
@@ -134,7 +134,7 @@ def get_fill_blank_data() -> dict:
         # ── 원의 성질 (2문제) ──
         fb(
             id="m3-fb-011",
-            concept_id="concept-m3-circle",
+            concept_id="concept-m3-circle-01",
             category="concept",
             part="geo",
             difficulty=4,
@@ -145,7 +145,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m3-fb-012",
-            concept_id="concept-m3-circle",
+            concept_id="concept-m3-circle-02",
             category="concept",
             part="geo",
             difficulty=5,
@@ -158,7 +158,7 @@ def get_fill_blank_data() -> dict:
         # ── 통계 (2문제) ──
         fb(
             id="m3-fb-013",
-            concept_id="concept-m3-statistics",
+            concept_id="concept-m3-stat-01",
             category="concept",
             part="data",
             difficulty=3,
@@ -169,7 +169,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m3-fb-014",
-            concept_id="concept-m3-statistics",
+            concept_id="concept-m3-stat-02",
             category="concept",
             part="data",
             difficulty=5,
@@ -191,13 +191,13 @@ def get_fill_blank_data() -> dict:
             description="7개 단원 주요 개념 빈칸 채우기",
             grade="middle_3",
             concept_ids=[
-                "concept-m3-real-num",
-                "concept-m3-factoring",
-                "concept-m3-quad-eq",
-                "concept-m3-quad-func",
-                "concept-m3-trig",
-                "concept-m3-circle",
-                "concept-m3-statistics",
+                "concept-m3-sqrt-01", "concept-m3-sqrt-02", "concept-m3-sqrt-03",
+                "concept-m3-factor-01", "concept-m3-factor-02", "concept-m3-factor-03",
+                "concept-m3-quadeq-01", "concept-m3-quadeq-02",
+                "concept-m3-quadfn-01", "concept-m3-quadfn-03",
+                "concept-m3-trig-01",
+                "concept-m3-circle-01", "concept-m3-circle-02",
+                "concept-m3-stat-01", "concept-m3-stat-02",
             ],
             question_ids=[q["id"] for q in questions],
             time_limit_minutes=25,

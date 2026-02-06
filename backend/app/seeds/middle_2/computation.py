@@ -12,37 +12,73 @@ from .._base import mc, concept, test
 def get_computation_data() -> dict:
     """연산 카테고리 데이터 반환."""
     concepts = [
+        # ── 1단원: 유리수와 순환소수 (2개) ──
         concept(
-            id="concept-m2-rational",
-            name="유리수와 순환소수",
+            id="concept-m2-rational-01",
+            name="유한소수 판별",
             grade="middle_2",
             category="computation",
             part="calc",
-            description="유한소수 조건 판별, 순환소수↔분수 변환, 0.999...=1 증명",
+            description="유리수의 정의(a/b), 기약분수의 분모 소인수가 2와 5뿐이면 유한소수, 유한소수 판별 3단계(약분→소인수분해→판단)",
         ),
         concept(
-            id="concept-m2-expression",
-            name="식의 계산",
+            id="concept-m2-rational-02",
+            name="순환소수와 분수 변환",
+            grade="middle_2",
+            category="computation",
+            part="calc",
+            description="순환소수의 정의와 순환마디, 순환소수↔분수 변환(10x-x 방법), 0.999...=1 증명",
+        ),
+        # ── 2단원: 식의 계산 (2개) ──
+        concept(
+            id="concept-m2-expr-01",
+            name="지수법칙",
             grade="middle_2",
             category="computation",
             part="algebra",
-            description="지수법칙(a^m×a^n, (a^m)^n), 단항식/다항식 계산, 분배법칙",
+            description="a^m×a^n=a^(m+n), (a^m)^n=a^(mn), (ab)^n=a^n·b^n, 거듭제곱의 정의로부터 유도",
         ),
         concept(
-            id="concept-m2-inequality",
-            name="일차부등식",
+            id="concept-m2-expr-02",
+            name="다항식의 계산",
             grade="middle_2",
             category="computation",
             part="algebra",
-            description="부등호, 일차부등식의 풀이, 음수 곱/나눗셈 시 부등호 방향 반전",
+            description="단항식·다항식의 곱셈/나눗셈, 동류항 정리, 분배법칙 전개, 지수법칙 복합 적용",
         ),
+        # ── 3-1단원: 일차부등식 (2개) ──
         concept(
-            id="concept-m2-simultaneous",
-            name="연립일차방정식",
+            id="concept-m2-ineq-01",
+            name="부등식의 성질과 풀이",
             grade="middle_2",
             category="computation",
             part="algebra",
-            description="가감법/대입법, 해의 의미(두 직선의 교점), 해의 특수성(불능/부정)",
+            description="부등호의 의미, 부등식의 성질(양변에 같은 수 더하기/빼기/곱하기/나누기), 음수 곱·나눗셈 시 부등호 방향 반전, 수직선 표현",
+        ),
+        concept(
+            id="concept-m2-ineq-02",
+            name="일차부등식의 활용",
+            grade="middle_2",
+            category="computation",
+            part="algebra",
+            description="복합 일차부등식 풀이, 분배법칙 활용, 실생활 맥락 부등식 모델링, 연립부등식",
+        ),
+        # ── 3-2단원: 연립일차방정식 (2개) ──
+        concept(
+            id="concept-m2-simul-01",
+            name="연립방정식의 풀이",
+            grade="middle_2",
+            category="computation",
+            part="algebra",
+            description="가감법(한 문자 소거), 대입법(한 식을 다른 식에 대입), 계수 맞추기, 풀이 전략 선택",
+        ),
+        concept(
+            id="concept-m2-simul-02",
+            name="연립방정식의 해의 해석",
+            grade="middle_2",
+            category="computation",
+            part="algebra",
+            description="해의 기하학적 의미(두 직선의 교점), 해의 특수성: 해 1개(일반), 해 없음(불능·평행), 해 무수히 많음(부정·일치)",
         ),
     ]
 
@@ -50,7 +86,7 @@ def get_computation_data() -> dict:
     rational_questions = [
         mc(
             id="m2-comp-001",
-            concept_id="concept-m2-rational",
+            concept_id="concept-m2-rational-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -62,7 +98,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-002",
-            concept_id="concept-m2-rational",
+            concept_id="concept-m2-rational-01",
             category="computation",
             part="calc",
             difficulty=4,
@@ -74,7 +110,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-003",
-            concept_id="concept-m2-rational",
+            concept_id="concept-m2-rational-02",
             category="computation",
             part="calc",
             difficulty=6,
@@ -86,7 +122,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-004",
-            concept_id="concept-m2-rational",
+            concept_id="concept-m2-rational-02",
             category="computation",
             part="calc",
             difficulty=8,
@@ -102,7 +138,7 @@ def get_computation_data() -> dict:
     expression_questions = [
         mc(
             id="m2-comp-005",
-            concept_id="concept-m2-expression",
+            concept_id="concept-m2-expr-01",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -114,7 +150,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-006",
-            concept_id="concept-m2-expression",
+            concept_id="concept-m2-expr-01",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -126,7 +162,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-007",
-            concept_id="concept-m2-expression",
+            concept_id="concept-m2-expr-02",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -138,7 +174,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-008",
-            concept_id="concept-m2-expression",
+            concept_id="concept-m2-expr-02",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -154,7 +190,7 @@ def get_computation_data() -> dict:
     inequality_questions = [
         mc(
             id="m2-comp-009",
-            concept_id="concept-m2-inequality",
+            concept_id="concept-m2-ineq-01",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -166,7 +202,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-010",
-            concept_id="concept-m2-inequality",
+            concept_id="concept-m2-ineq-01",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -178,7 +214,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-011",
-            concept_id="concept-m2-inequality",
+            concept_id="concept-m2-ineq-02",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -194,7 +230,7 @@ def get_computation_data() -> dict:
     simultaneous_questions = [
         mc(
             id="m2-comp-012",
-            concept_id="concept-m2-simultaneous",
+            concept_id="concept-m2-simul-01",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -206,7 +242,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-013",
-            concept_id="concept-m2-simultaneous",
+            concept_id="concept-m2-simul-01",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -218,7 +254,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m2-comp-014",
-            concept_id="concept-m2-simultaneous",
+            concept_id="concept-m2-simul-02",
             category="computation",
             part="algebra",
             difficulty=9,

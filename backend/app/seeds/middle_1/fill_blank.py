@@ -13,7 +13,7 @@ def get_fill_blank_data() -> dict:
         # 1. 소인수분해 (2문제)
         fb(
             id="m1-fb-001",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-02",
             category="computation",
             part="calc",
             difficulty=3,
@@ -25,7 +25,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-002",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-03",
             category="computation",
             part="calc",
             difficulty=5,
@@ -38,7 +38,7 @@ def get_fill_blank_data() -> dict:
         # 2. 정수와 유리수 (2문제)
         fb(
             id="m1-fb-003",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-03",
             category="computation",
             part="calc",
             difficulty=4,
@@ -50,7 +50,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-004",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-02",
             category="computation",
             part="calc",
             difficulty=6,
@@ -63,7 +63,7 @@ def get_fill_blank_data() -> dict:
         # 3. 문자의 사용과 식의 계산 (2문제)
         fb(
             id="m1-fb-005",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-02",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -75,7 +75,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-006",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-03",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -88,7 +88,7 @@ def get_fill_blank_data() -> dict:
         # 4. 일차방정식 (2문제)
         fb(
             id="m1-fb-007",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-02",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -100,7 +100,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-008",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-02",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -113,7 +113,7 @@ def get_fill_blank_data() -> dict:
         # 5. 좌표평면과 그래프 (2문제)
         fb(
             id="m1-fb-009",
-            concept_id="concept-m1-coord",
+            concept_id="concept-m1-coord-01",
             category="concept",
             part="func",
             difficulty=3,
@@ -125,7 +125,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-010",
-            concept_id="concept-m1-coord",
+            concept_id="concept-m1-coord-01",
             category="concept",
             part="func",
             difficulty=5,
@@ -138,7 +138,7 @@ def get_fill_blank_data() -> dict:
         # 6. 정비례와 반비례 (2문제)
         fb(
             id="m1-fb-011",
-            concept_id="concept-m1-proportion",
+            concept_id="concept-m1-prop-01",
             category="concept",
             part="func",
             difficulty=4,
@@ -150,7 +150,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-012",
-            concept_id="concept-m1-proportion",
+            concept_id="concept-m1-prop-02",
             category="concept",
             part="func",
             difficulty=6,
@@ -163,7 +163,7 @@ def get_fill_blank_data() -> dict:
         # 7. 기본 도형과 작도 (2문제)
         fb(
             id="m1-fb-013",
-            concept_id="concept-m1-basic-geo",
+            concept_id="concept-m1-geo-02",
             category="concept",
             part="geo",
             difficulty=4,
@@ -175,7 +175,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-014",
-            concept_id="concept-m1-basic-geo",
+            concept_id="concept-m1-geo-01",
             category="concept",
             part="geo",
             difficulty=6,
@@ -188,7 +188,7 @@ def get_fill_blank_data() -> dict:
         # 8. 평면도형의 성질 (2문제)
         fb(
             id="m1-fb-015",
-            concept_id="concept-m1-plane-fig",
+            concept_id="concept-m1-plane-01",
             category="concept",
             part="geo",
             difficulty=4,
@@ -200,7 +200,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-016",
-            concept_id="concept-m1-plane-fig",
+            concept_id="concept-m1-plane-02",
             category="concept",
             part="geo",
             difficulty=7,
@@ -213,7 +213,7 @@ def get_fill_blank_data() -> dict:
         # 9. 입체도형의 성질 (2문제)
         fb(
             id="m1-fb-017",
-            concept_id="concept-m1-solid-fig",
+            concept_id="concept-m1-solid-02",
             category="concept",
             part="geo",
             difficulty=5,
@@ -225,7 +225,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-018",
-            concept_id="concept-m1-solid-fig",
+            concept_id="concept-m1-solid-03",
             category="concept",
             part="geo",
             difficulty=7,
@@ -238,7 +238,7 @@ def get_fill_blank_data() -> dict:
         # 10. 자료의 정리와 해석 (2문제)
         fb(
             id="m1-fb-019",
-            concept_id="concept-m1-frequency",
+            concept_id="concept-m1-freq-01",
             category="concept",
             part="data",
             difficulty=4,
@@ -250,7 +250,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-020",
-            concept_id="concept-m1-frequency",
+            concept_id="concept-m1-freq-03",
             category="concept",
             part="data",
             difficulty=6,
@@ -263,7 +263,7 @@ def get_fill_blank_data() -> dict:
         # 11. 대푯값 (2문제) - NEW
         fb(
             id="m1-fb-021",
-            concept_id="concept-m1-representative",
+            concept_id="concept-m1-repr-01",
             category="concept",
             part="data",
             difficulty=4,
@@ -275,7 +275,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-022",
-            concept_id="concept-m1-representative",
+            concept_id="concept-m1-repr-01",
             category="concept",
             part="data",
             difficulty=6,
@@ -288,7 +288,7 @@ def get_fill_blank_data() -> dict:
         # 12. 산점도와 상관관계 (2문제) - NEW
         fb(
             id="m1-fb-023",
-            concept_id="concept-m1-scatter",
+            concept_id="concept-m1-scat-01",
             category="concept",
             part="data",
             difficulty=4,
@@ -300,7 +300,7 @@ def get_fill_blank_data() -> dict:
         ),
         fb(
             id="m1-fb-024",
-            concept_id="concept-m1-scatter",
+            concept_id="concept-m1-scat-01",
             category="concept",
             part="data",
             difficulty=7,

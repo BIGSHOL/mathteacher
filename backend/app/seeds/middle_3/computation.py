@@ -11,24 +11,58 @@ def get_computation_data() -> dict:
     """연산 카테고리 데이터 반환."""
 
     # ============================================================
-    # 개념 2개
+    # 개념 6개 (2단원 × 3개)
     # ============================================================
     concepts = [
+        # ── 1단원: 실수와 그 연산 (3개) ──
         concept(
-            id="concept-m3-real-num",
-            name="실수와 그 연산",
+            id="concept-m3-sqrt-01",
+            name="제곱근의 정의와 성질",
             grade="middle_3",
             category="computation",
             part="calc",
-            description="제곱근의 정의, 무리수와 실수, 근호를 포함한 식의 계산, 분모의 유리화",
+            description="제곱근의 정의(x²=a의 해), √a²=|a|, 완전제곱수 판별",
         ),
         concept(
-            id="concept-m3-factoring",
-            name="다항식의 곱셈과 인수분해",
+            id="concept-m3-sqrt-02",
+            name="무리수와 실수의 분류",
+            grade="middle_3",
+            category="computation",
+            part="calc",
+            description="무리수(순환하지 않는 무한소수), 실수=유리수+무리수, 실수의 대소 비교, 수직선 위의 무리수",
+        ),
+        concept(
+            id="concept-m3-sqrt-03",
+            name="근호를 포함한 식의 계산",
+            grade="middle_3",
+            category="computation",
+            part="calc",
+            description="근호의 사칙연산(√a√b=√ab), 분모의 유리화, 합차를 이용한 유리화",
+        ),
+        # ── 2단원: 다항식의 곱셈과 인수분해 (3개) ──
+        concept(
+            id="concept-m3-factor-01",
+            name="다항식의 곱셈과 곱셈 공식",
             grade="middle_3",
             category="computation",
             part="algebra",
-            description="곱셈 공식(완전제곱식, 합차), 인수분해, 공통인수 묶기",
+            description="분배법칙, 완전제곱식 (a±b)², 합차 공식 (a+b)(a-b), 곱셈 공식의 수 계산 활용",
+        ),
+        concept(
+            id="concept-m3-factor-02",
+            name="인수분해 기본",
+            grade="middle_3",
+            category="computation",
+            part="algebra",
+            description="공통인수 묶기, X자형 분리법(합과 곱 조건), 완전제곱식 인수분해, 합차 인수분해",
+        ),
+        concept(
+            id="concept-m3-factor-03",
+            name="완전제곱식과 인수분해 심화",
+            grade="middle_3",
+            category="computation",
+            part="algebra",
+            description="완전제곱식 조건 판별, 이차항 계수가 1이 아닌 경우의 인수분해, 복잡한 식의 인수분해",
         ),
     ]
 
@@ -38,7 +72,7 @@ def get_computation_data() -> dict:
     real_questions = [
         mc(
             id="m3-comp-001",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-01",
             category="computation",
             part="calc",
             difficulty=1,
@@ -50,7 +84,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-002",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -62,7 +96,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-003",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-02",
             category="computation",
             part="calc",
             difficulty=3,
@@ -79,7 +113,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-004",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
             difficulty=4,
@@ -91,7 +125,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-005",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
             difficulty=5,
@@ -103,7 +137,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-006",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
             difficulty=6,
@@ -120,7 +154,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-007",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
             difficulty=7,
@@ -132,7 +166,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-008",
-            concept_id="concept-m3-real-num",
+            concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
             difficulty=9,
@@ -150,7 +184,7 @@ def get_computation_data() -> dict:
     factor_questions = [
         mc(
             id="m3-comp-009",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-01",
             category="computation",
             part="algebra",
             difficulty=2,
@@ -162,7 +196,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-010",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-01",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -174,7 +208,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-011",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -186,7 +220,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-012",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -198,7 +232,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-013",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -210,7 +244,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-014",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-03",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -222,7 +256,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-015",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -234,7 +268,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m3-comp-016",
-            concept_id="concept-m3-factoring",
+            concept_id="concept-m3-factor-03",
             category="computation",
             part="algebra",
             difficulty=9,

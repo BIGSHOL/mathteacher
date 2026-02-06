@@ -197,15 +197,21 @@ class PlacementService:
         if result["starting_chapter_id"]:
             await self.chapter_service.unlock_chapter(student_id, result["starting_chapter_id"])
 
-        # 4. 해당 단원들의 개념 자동 해제
-        for chapter_id in result["unlocked_chapters"] + [result["starting_chapter_id"]]:
+        # 4. 개념 해금: 완료된 단원은 전체, 시작 단원은 첫 개념만
+        for chapter_id in result["unlocked_chapters"]:
             if not chapter_id:
                 continue
-
+            # 완료된(마스터) 단원: 모든 개념 해금
             chapter = await self.db.get(Chapter, chapter_id)
             if chapter and chapter.concept_ids:
                 for concept_id in chapter.concept_ids:
                     await self.mastery_service.unlock_concept(student_id, concept_id)
+
+        # 시작 단원: 첫 번째 개념만 해금
+        if result["starting_chapter_id"]:
+            await self.mastery_service.ensure_first_concept_unlocked(
+                student_id, result["starting_chapter_id"]
+            )
 
         await self.db.commit()
         return True

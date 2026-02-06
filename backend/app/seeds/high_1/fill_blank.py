@@ -17,7 +17,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-001",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -30,7 +30,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-002",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -43,7 +43,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-003",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -58,7 +58,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-004",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -71,7 +71,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-005",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -84,7 +84,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-006",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -99,7 +99,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-007",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
             difficulty=3,
@@ -112,7 +112,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-008",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
             difficulty=4,
@@ -125,7 +125,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-009",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
             difficulty=5,
@@ -140,7 +140,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-010",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-01",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -153,7 +153,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-011",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -166,7 +166,7 @@ def _get_questions():
 
         fb(
             id="h1-fb-012",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
             difficulty=5,

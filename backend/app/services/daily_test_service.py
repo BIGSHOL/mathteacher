@@ -464,64 +464,36 @@ class DailyTestService:
         return list(set(used))
 
     async def _get_student_available_concept_ids(self, student_id: str, grade: str | None) -> list[str]:
-        """학생이 해금한 단원에 속하는 개념 ID만 반환."""
-        from app.models.chapter_progress import ChapterProgress
-
-        # 해금된 챕터 조회
-        unlocked_stmt = (
-            select(ChapterProgress.chapter_id)
+        """학생이 해금한 개념 ID만 반환 (ConceptMastery.is_unlocked 기반)."""
+        # ConceptMastery에서 해금된 개념만 조회
+        stmt = (
+            select(ConceptMastery.concept_id)
+            .join(Concept, ConceptMastery.concept_id == Concept.id)
             .where(
-                ChapterProgress.student_id == student_id,
-                ChapterProgress.is_unlocked == True,  # noqa: E712
+                ConceptMastery.student_id == student_id,
+                ConceptMastery.is_unlocked == True,  # noqa: E712
+                Concept.grade == grade,
             )
         )
-        unlocked_chapter_ids = list((await self.db.scalars(unlocked_stmt)).all())
+        unlocked_concepts = list((await self.db.scalars(stmt)).all())
+        if unlocked_concepts:
+            return unlocked_concepts
 
-        if unlocked_chapter_ids:
-            # 해금된 챕터의 concept_ids 수집
-            chapter_stmt = select(Chapter.concept_ids).where(
-                Chapter.id.in_(unlocked_chapter_ids)
-            )
-            concept_id_lists = list((await self.db.scalars(chapter_stmt)).all())
-            available = []
-            for cids in concept_id_lists:
-                if cids:
-                    available.extend(cids)
-            if available:
-                return list(set(available))
-
-        # 해금된 챕터가 없으면 첫 단원 자동 해금 후 개념 반환
+        # 폴백: 해금된 개념이 없으면 첫 챕터 첫 개념 자동 해금
+        from app.services.mastery_service import MasteryService
         first_chapter_stmt = (
             select(Chapter)
             .where(Chapter.grade == grade, Chapter.chapter_number == 1)
         )
         first_chapter = await self.db.scalar(first_chapter_stmt)
-        if not first_chapter:
+        if not first_chapter or not first_chapter.concept_ids:
             return []
 
-        # 첫 단원 자동 해금
-        from datetime import timezone as tz
-        existing = await self.db.scalar(
-            select(ChapterProgress).where(
-                ChapterProgress.student_id == student_id,
-                ChapterProgress.chapter_id == first_chapter.id,
-            )
-        )
-        if not existing:
-            progress = ChapterProgress(
-                student_id=student_id,
-                chapter_id=first_chapter.id,
-                is_unlocked=True,
-                unlocked_at=datetime.now(tz.utc),
-            )
-            self.db.add(progress)
-            await self.db.flush()
-        elif not existing.is_unlocked:
-            existing.is_unlocked = True
-            existing.unlocked_at = datetime.now(tz.utc)
-            await self.db.flush()
-
-        return first_chapter.concept_ids or []
+        mastery_service = MasteryService(self.db)
+        first_concept_id = first_chapter.concept_ids[0]
+        await mastery_service.ensure_first_concept_unlocked(student_id, first_chapter.id)
+        await self.db.flush()
+        return [first_concept_id]
 
     async def _get_mastery_map(self, student_id: str) -> dict[str, int]:
         """학생의 개념별 숙련도 맵."""

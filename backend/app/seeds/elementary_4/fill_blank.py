@@ -15,7 +15,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-001",
-            concept_id="concept-e4-big-num",
+            concept_id="concept-e4-big-num-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -27,7 +27,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-002",
-            concept_id="concept-e4-big-num",
+            concept_id="concept-e4-big-num-01",
             category="computation",
             part="calc",
             difficulty=5,
@@ -43,7 +43,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-003",
-            concept_id="concept-e4-angle",
+            concept_id="concept-e4-angle-01",
             category="concept",
             part="geo",
             difficulty=2,
@@ -55,7 +55,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-004",
-            concept_id="concept-e4-angle",
+            concept_id="concept-e4-angle-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -71,7 +71,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-005",
-            concept_id="concept-e4-mul-div",
+            concept_id="concept-e4-mul-div-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -83,7 +83,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-006",
-            concept_id="concept-e4-mul-div",
+            concept_id="concept-e4-mul-div-02",
             category="computation",
             part="calc",
             difficulty=6,
@@ -99,7 +99,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-007",
-            concept_id="concept-e4-transform",
+            concept_id="concept-e4-transform-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -111,7 +111,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-008",
-            concept_id="concept-e4-transform",
+            concept_id="concept-e4-transform-02",
             category="concept",
             part="geo",
             difficulty=7,
@@ -127,7 +127,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-009",
-            concept_id="concept-e4-bar-graph",
+            concept_id="concept-e4-bar-graph-01",
             category="concept",
             part="data",
             difficulty=3,
@@ -139,7 +139,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-010",
-            concept_id="concept-e4-bar-graph",
+            concept_id="concept-e4-bar-graph-01",
             category="concept",
             part="data",
             difficulty=5,
@@ -155,7 +155,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-011",
-            concept_id="concept-e4-pattern",
+            concept_id="concept-e4-pattern-01",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -167,7 +167,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-012",
-            concept_id="concept-e4-pattern",
+            concept_id="concept-e4-pattern-02",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -183,7 +183,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-013",
-            concept_id="concept-e4-frac-op",
+            concept_id="concept-e4-frac-op-01",
             category="computation",
             part="calc",
             difficulty=3,
@@ -195,7 +195,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-014",
-            concept_id="concept-e4-frac-op",
+            concept_id="concept-e4-frac-op-02",
             category="computation",
             part="calc",
             difficulty=7,
@@ -211,7 +211,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-015",
-            concept_id="concept-e4-triangle",
+            concept_id="concept-e4-triangle-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -223,7 +223,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-016",
-            concept_id="concept-e4-triangle",
+            concept_id="concept-e4-triangle-01",
             category="concept",
             part="geo",
             difficulty=7,
@@ -239,7 +239,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-017",
-            concept_id="concept-e4-dec-op",
+            concept_id="concept-e4-dec-op-02",
             category="computation",
             part="calc",
             difficulty=3,
@@ -251,7 +251,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-018",
-            concept_id="concept-e4-dec-op",
+            concept_id="concept-e4-dec-op-02",
             category="computation",
             part="calc",
             difficulty=7,
@@ -267,7 +267,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-019",
-            concept_id="concept-e4-quad",
+            concept_id="concept-e4-quad-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -279,7 +279,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-020",
-            concept_id="concept-e4-quad",
+            concept_id="concept-e4-quad-02",
             category="concept",
             part="geo",
             difficulty=5,
@@ -295,7 +295,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-021",
-            concept_id="concept-e4-line-graph",
+            concept_id="concept-e4-line-graph-01",
             category="concept",
             part="data",
             difficulty=2,
@@ -307,7 +307,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-022",
-            concept_id="concept-e4-line-graph",
+            concept_id="concept-e4-line-graph-02",
             category="concept",
             part="data",
             difficulty=4,
@@ -323,7 +323,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e4-fb-023",
-            concept_id="concept-e4-polygon",
+            concept_id="concept-e4-polygon-01",
             category="concept",
             part="geo",
             difficulty=2,
@@ -335,7 +335,7 @@ def get_questions():
         ),
         fb(
             id="e4-fb-024",
-            concept_id="concept-e4-polygon",
+            concept_id="concept-e4-polygon-01",
             category="concept",
             part="geo",
             difficulty=6,

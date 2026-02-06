@@ -9,7 +9,7 @@ def get_all_data() -> dict:
 
     Returns:
         dict: {
-            "concepts": [...],      # 4개 (다항식, 방정식, 경우의 수, 행렬)
+            "concepts": [...],      # 8개 (다항식2, 방정식2, 경우의 수2, 행렬2)
             "questions": [...],     # 36개 (MC 24 + FB 12)
             "tests": [...]          # 3개 (연산, 경우의 수, 행렬)
         }

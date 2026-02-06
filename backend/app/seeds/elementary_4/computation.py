@@ -13,36 +13,68 @@ def get_concepts():
     """연산 관련 개념 반환."""
     return [
         concept(
-            id="concept-e4-big-num",
-            name="큰 수",
+            id="concept-e4-big-num-01",
+            name="큰 수 - 십진기수법과 자릿값",
             grade="elementary_4",
             category="computation",
             part="calc",
-            description="만, 억, 조 단위의 큰 수를 읽고 쓸 수 있으며, 10배의 원리와 수의 크기 비교를 이해합니다.",
+            description="만, 억, 조 단위의 큰 수를 읽고 쓸 수 있으며, 10배의 원리와 자릿값을 이해합니다.",
         ),
         concept(
-            id="concept-e4-mul-div",
-            name="곱셈과 나눗셈",
+            id="concept-e4-big-num-02",
+            name="큰 수 - 수의 크기 비교",
             grade="elementary_4",
             category="computation",
             part="calc",
-            description="(세 자리 수)×(두 자리 수), (세 자리 수)÷(두 자리 수) 계산과 검산(나누는 수×몫+나머지=나누어지는 수)을 할 수 있습니다.",
+            description="자릿수가 같은 큰 수의 크기를 최상위 자릿수부터 비교하여 대소를 판단합니다.",
         ),
         concept(
-            id="concept-e4-frac-op",
-            name="분수의 덧셈과 뺄셈",
+            id="concept-e4-mul-div-01",
+            name="곱셈과 나눗셈 - 곱셈 알고리즘",
             grade="elementary_4",
             category="computation",
             part="calc",
-            description="분모가 같은 분수의 덧셈·뺄셈, 대분수의 덧셈·뺄셈(받아내림 포함)을 이해하고 계산할 수 있습니다.",
+            description="(세 자리 수)×(두 자리 수) 세로셈을 이해하고 정확히 계산할 수 있습니다.",
         ),
         concept(
-            id="concept-e4-dec-op",
-            name="소수의 덧셈과 뺄셈",
+            id="concept-e4-mul-div-02",
+            name="곱셈과 나눗셈 - 나눗셈과 검산",
             grade="elementary_4",
             category="computation",
             part="calc",
-            description="소수의 크기 비교, 소수점 위치를 맞추어 정렬한 덧셈과 뺄셈을 할 수 있습니다.",
+            description="(세 자리 수)÷(두 자리 수) 계산과 검산(나누는 수×몫+나머지=나누어지는 수), 나머지의 맥락적 해석을 할 수 있습니다.",
+        ),
+        concept(
+            id="concept-e4-frac-op-01",
+            name="분수의 덧셈과 뺄셈 - 동분모 진분수 연산",
+            grade="elementary_4",
+            category="computation",
+            part="calc",
+            description="분모가 같은 분수의 덧셈·뺄셈에서 분모는 그대로 두고 분자끼리 연산합니다.",
+        ),
+        concept(
+            id="concept-e4-frac-op-02",
+            name="분수의 덧셈과 뺄셈 - 대분수와 받아내림",
+            grade="elementary_4",
+            category="computation",
+            part="calc",
+            description="대분수의 덧셈·뺄셈(받아내림 포함)을 이해하고, 자연수에서 분수를 빼는 계산을 할 수 있습니다.",
+        ),
+        concept(
+            id="concept-e4-dec-op-01",
+            name="소수의 덧셈과 뺄셈 - 소수 구조와 크기 비교",
+            grade="elementary_4",
+            category="computation",
+            part="calc",
+            description="소수의 자릿값(0.01, 0.001)을 이해하고, 소수점 아래 같은 자리부터 크기를 비교합니다.",
+        ),
+        concept(
+            id="concept-e4-dec-op-02",
+            name="소수의 덧셈과 뺄셈 - 소수 덧뺄셈 계산",
+            grade="elementary_4",
+            category="computation",
+            part="calc",
+            description="소수점 위치를 맞추어 정렬한 덧셈과 뺄셈을 정확히 계산할 수 있습니다.",
         ),
     ]
 
@@ -55,7 +87,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-comp-001",
-            concept_id="concept-e4-big-num",
+            concept_id="concept-e4-big-num-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -72,7 +104,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-002",
-            concept_id="concept-e4-big-num",
+            concept_id="concept-e4-big-num-01",
             category="computation",
             part="calc",
             difficulty=4,
@@ -89,7 +121,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-003",
-            concept_id="concept-e4-big-num",
+            concept_id="concept-e4-big-num-02",
             category="computation",
             part="calc",
             difficulty=6,
@@ -110,7 +142,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-comp-004",
-            concept_id="concept-e4-mul-div",
+            concept_id="concept-e4-mul-div-01",
             category="computation",
             part="calc",
             difficulty=3,
@@ -127,7 +159,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-005",
-            concept_id="concept-e4-mul-div",
+            concept_id="concept-e4-mul-div-02",
             category="computation",
             part="calc",
             difficulty=5,
@@ -144,7 +176,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-006",
-            concept_id="concept-e4-mul-div",
+            concept_id="concept-e4-mul-div-02",
             category="computation",
             part="calc",
             difficulty=8,
@@ -165,7 +197,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-comp-007",
-            concept_id="concept-e4-frac-op",
+            concept_id="concept-e4-frac-op-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -182,7 +214,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-008",
-            concept_id="concept-e4-frac-op",
+            concept_id="concept-e4-frac-op-01",
             category="computation",
             part="calc",
             difficulty=5,
@@ -199,7 +231,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-009",
-            concept_id="concept-e4-frac-op",
+            concept_id="concept-e4-frac-op-02",
             category="computation",
             part="calc",
             difficulty=8,
@@ -220,7 +252,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-comp-010",
-            concept_id="concept-e4-dec-op",
+            concept_id="concept-e4-dec-op-02",
             category="computation",
             part="calc",
             difficulty=2,
@@ -237,7 +269,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-011",
-            concept_id="concept-e4-dec-op",
+            concept_id="concept-e4-dec-op-01",
             category="computation",
             part="calc",
             difficulty=5,
@@ -254,7 +286,7 @@ def get_questions():
         ),
         mc(
             id="e4-comp-012",
-            concept_id="concept-e4-dec-op",
+            concept_id="concept-e4-dec-op-02",
             category="computation",
             part="calc",
             difficulty=7,

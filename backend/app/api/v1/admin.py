@@ -288,19 +288,19 @@ async def update_chapter_data(
 
     CHAPTER_CONCEPT_MAP = {
         # 1학기
-        "chapter-m1-01": ["concept-m1-prime"],
-        "chapter-m1-02": ["concept-m1-integer", "concept-002"],
-        "chapter-m1-03": ["concept-m1-expression", "concept-001", "concept-003"],
-        "chapter-m1-04": ["concept-m1-equation"],
-        "chapter-m1-05": ["concept-m1-coord", "concept-004"],
-        "chapter-m1-06": ["concept-m1-proportion"],
+        "chapter-m1-01": ["concept-m1-prime-01", "concept-m1-prime-02", "concept-m1-prime-03"],
+        "chapter-m1-02": ["concept-m1-int-01", "concept-m1-int-02", "concept-m1-int-03"],
+        "chapter-m1-03": ["concept-m1-expr-01", "concept-m1-expr-02", "concept-m1-expr-03"],
+        "chapter-m1-04": ["concept-m1-eq-01", "concept-m1-eq-02", "concept-m1-eq-03"],
+        "chapter-m1-05": ["concept-m1-coord-01", "concept-m1-coord-02"],
+        "chapter-m1-06": ["concept-m1-prop-01", "concept-m1-prop-02", "concept-m1-prop-03"],
         # 2학기
-        "chapter-m1-07": ["concept-m1-basic-geo"],
-        "chapter-m1-08": ["concept-m1-plane-fig"],
-        "chapter-m1-09": ["concept-m1-solid-fig"],
-        "chapter-m1-10": ["concept-m1-frequency", "concept-005"],
-        "chapter-m1-11": ["concept-m1-representative"],
-        "chapter-m1-12": ["concept-m1-scatter"],
+        "chapter-m1-07": ["concept-m1-geo-01", "concept-m1-geo-02", "concept-m1-geo-03"],
+        "chapter-m1-08": ["concept-m1-plane-01", "concept-m1-plane-02"],
+        "chapter-m1-09": ["concept-m1-solid-01", "concept-m1-solid-02", "concept-m1-solid-03"],
+        "chapter-m1-10": ["concept-m1-freq-01", "concept-m1-freq-02", "concept-m1-freq-03"],
+        "chapter-m1-11": ["concept-m1-repr-01", "concept-m1-repr-02"],
+        "chapter-m1-12": ["concept-m1-scat-01", "concept-m1-scat-02"],
     }
 
     stmt = select(Chapter).where(Chapter.grade == "middle_1")

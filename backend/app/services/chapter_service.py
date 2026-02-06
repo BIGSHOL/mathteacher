@@ -47,12 +47,14 @@ class ChapterService:
         return progress
 
     async def unlock_chapter(self, student_id: str, chapter_id: str) -> bool:
-        """단원 잠금 해제."""
+        """단원 잠금 해제 (첫 개념도 함께 해금)."""
         progress = await self.get_or_create_progress(student_id, chapter_id)
 
         if not progress.is_unlocked:
             progress.is_unlocked = True
             progress.unlocked_at = datetime.now(timezone.utc)
+            # 첫 번째 개념 자동 해금
+            await self.mastery_service.ensure_first_concept_unlocked(student_id, chapter_id)
             await self.db.commit()
             return True
 
@@ -311,10 +313,14 @@ class ChapterService:
                 self.db.add(progress)
                 await self.db.flush()
                 progress_map[first_chapter.id] = progress
+                # 첫 번째 개념 자동 해금
+                await self.mastery_service.ensure_first_concept_unlocked(student_id, first_chapter.id)
             elif not progress.is_unlocked:
                 progress.is_unlocked = True
                 progress.unlocked_at = datetime.now(timezone.utc)
                 await self.db.flush()
+                # 첫 번째 개념 자동 해금
+                await self.mastery_service.ensure_first_concept_unlocked(student_id, first_chapter.id)
 
             await self.db.commit()
 

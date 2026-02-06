@@ -7,72 +7,176 @@ def get_concept_data() -> dict:
     """개념 카테고리 데이터 반환 (좌표평면, 정비례/반비례, 기본 도형, 평면도형, 입체도형, 자료 정리, 대푯값, 산점도)."""
 
     # ============================================================
-    # 개념 8개
+    # 개념 20개 (5~12단원 세부 분화)
     # ============================================================
     concepts = [
+        # 5단원: 좌표평면과 그래프 (2개)
         concept(
-            id="concept-m1-coord",
-            name="좌표평면과 그래프",
+            id="concept-m1-coord-01",
+            name="순서쌍과 좌표평면",
             grade="middle_1",
             category="concept",
             part="func",
-            description="순서쌍, 좌표평면, 사분면의 부호 특성, 그래프 해석",
+            description="좌표평면, 사분면의 부호 특성, 대칭인 점(x축/y축/원점 대칭)",
         ),
         concept(
-            id="concept-m1-proportion",
-            name="정비례와 반비례",
+            id="concept-m1-coord-02",
+            name="그래프 해석",
             grade="middle_1",
             category="concept",
             part="func",
-            description="정비례(y = ax), 반비례(y = a/x), 그래프의 특성, 증감 패턴",
+            description="변화의 경향 읽기(증가/감소/일정), 정성적 추론, 실생활 그래프 해석",
+        ),
+        # 6단원: 정비례와 반비례 (3개)
+        concept(
+            id="concept-m1-prop-01",
+            name="정비례 관계",
+            grade="middle_1",
+            category="concept",
+            part="func",
+            description="정비례(y = ax), 비례상수 구하기, 그래프가 원점을 지나는 직선",
         ),
         concept(
-            id="concept-m1-basic-geo",
-            name="기본 도형과 작도",
+            id="concept-m1-prop-02",
+            name="반비례 관계",
+            grade="middle_1",
+            category="concept",
+            part="func",
+            description="반비례(y = a/x), xy = a(일정한 곱), 그래프가 쌍곡선",
+        ),
+        concept(
+            id="concept-m1-prop-03",
+            name="정비례/반비례 그래프",
+            grade="middle_1",
+            category="concept",
+            part="func",
+            description="식만 보고 그래프 개형 유추, 반비례 직사각형 넓이 일정, 실생활 활용",
+        ),
+        # 7단원: 기본 도형과 작도 (3개)
+        concept(
+            id="concept-m1-geo-01",
+            name="점/선/면과 위치관계",
             grade="middle_1",
             category="concept",
             part="geo",
-            description="점, 선, 면의 위치 관계, 평행선의 성질(동위각, 엇각), 삼각형 합동 조건(SSS, SAS, ASA)",
+            description="직선/반직선/선분 구분, 맞꼭지각, 꼬인 위치(공간)",
         ),
         concept(
-            id="concept-m1-plane-fig",
-            name="평면도형의 성질",
+            id="concept-m1-geo-02",
+            name="평행선의 성질",
             grade="middle_1",
             category="concept",
             part="geo",
-            description="다각형 내각/외각의 합, 원과 부채꼴의 성질, 호의 길이와 넓이",
+            description="동위각과 엇각, 평행할 때만 크기가 같음, 꺾인 선 문제(보조선)",
         ),
         concept(
-            id="concept-m1-solid-fig",
-            name="입체도형의 성질",
+            id="concept-m1-geo-03",
+            name="작도와 삼각형 합동",
             grade="middle_1",
             category="concept",
             part="geo",
-            description="다면체와 회전체, 겉넓이와 부피 공식, 단면의 모양",
+            description="기본 작도(눈금 없는 자+컴퍼스), 삼각형 합동 조건(SSS, SAS, ASA)",
+        ),
+        # 8단원: 평면도형의 성질 (2개)
+        concept(
+            id="concept-m1-plane-01",
+            name="다각형의 내각과 외각",
+            grade="middle_1",
+            category="concept",
+            part="geo",
+            description="대각선의 개수, 내각의 합 (n-2)×180, 외각의 합 항상 360도",
         ),
         concept(
-            id="concept-m1-frequency",
-            name="자료의 정리와 해석",
+            id="concept-m1-plane-02",
+            name="원과 부채꼴의 성질",
+            grade="middle_1",
+            category="concept",
+            part="geo",
+            description="원주와 넓이(2πr, πr²), 부채꼴 호의 길이와 넓이, S=½rl 공식",
+        ),
+        # 9단원: 입체도형의 성질 (3개)
+        concept(
+            id="concept-m1-solid-01",
+            name="다면체와 회전체",
+            grade="middle_1",
+            category="concept",
+            part="geo",
+            description="오일러 다면체 정리(V-E+F=2), 회전체의 단면 성질",
+        ),
+        concept(
+            id="concept-m1-solid-02",
+            name="겉넓이와 부피",
+            grade="middle_1",
+            category="concept",
+            part="geo",
+            description="기둥/뿔의 겉넓이와 부피, 원뿔 전개도(부채꼴 호=밑면 둘레)",
+        ),
+        concept(
+            id="concept-m1-solid-03",
+            name="구",
+            grade="middle_1",
+            category="concept",
+            part="geo",
+            description="구의 겉넓이(4πr²), 부피(4/3πr³), 반지름 배수와 부피/겉넓이 관계",
+        ),
+        # 10단원: 자료의 정리와 해석 (3개)
+        concept(
+            id="concept-m1-freq-01",
+            name="줄기와 잎 그림/도수분포표",
             grade="middle_1",
             category="concept",
             part="data",
-            description="도수분포표, 히스토그램, 상대도수, 계급값의 의미",
+            description="줄기와 잎 그림, 도수분포표(계급/계급값/도수)",
         ),
         concept(
-            id="concept-m1-representative",
-            name="대푯값",
+            id="concept-m1-freq-02",
+            name="히스토그램과 도수분포다각형",
             grade="middle_1",
             category="concept",
             part="data",
-            description="평균, 중앙값, 최빈값의 개념과 상황별 선택 (중3에서 중1로 이동)",
+            description="히스토그램 막대 높이=도수, 도수분포다각형 넓이=히스토그램 넓이",
         ),
         concept(
-            id="concept-m1-scatter",
-            name="산점도와 상관관계",
+            id="concept-m1-freq-03",
+            name="상대도수",
             grade="middle_1",
             category="concept",
             part="data",
-            description="산점도, 양/음/무 상관관계, 상관관계와 인과관계의 차이 (중3에서 중1로 이동)",
+            description="상대도수=계급도수/전체도수, 총합=1, 두 집단 분포 비교",
+        ),
+        # 11단원: 대푯값 (2개)
+        concept(
+            id="concept-m1-repr-01",
+            name="평균/중앙값/최빈값",
+            grade="middle_1",
+            category="concept",
+            part="data",
+            description="평균(총합/개수), 중앙값(크기순 가운데), 최빈값(최빈 관측값)",
+        ),
+        concept(
+            id="concept-m1-repr-02",
+            name="상황별 대푯값 선택",
+            grade="middle_1",
+            category="concept",
+            part="data",
+            description="극단값 있을 때 중앙값 선호, 맥락적 판단, 데이터 리터러시",
+        ),
+        # 12단원: 산점도와 상관관계 (2개)
+        concept(
+            id="concept-m1-scat-01",
+            name="산점도",
+            grade="middle_1",
+            category="concept",
+            part="data",
+            description="산점도 작성, 양/음/무 상관관계 판별, 분포 경향 파악",
+        ),
+        concept(
+            id="concept-m1-scat-02",
+            name="상관관계와 인과관계",
+            grade="middle_1",
+            category="concept",
+            part="data",
+            description="상관관계 ≠ 인과관계, 제3변수(교란변수), 경향성 vs 원인-결과",
         ),
     ]
 
@@ -83,7 +187,7 @@ def get_concept_data() -> dict:
         # 좌표평면과 그래프 (3문제)
         mc(
             id="m1-conc-001",
-            concept_id="concept-m1-coord",
+            concept_id="concept-m1-coord-01",
             category="concept",
             part="func",
             difficulty=2,
@@ -95,7 +199,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-002",
-            concept_id="concept-m1-coord",
+            concept_id="concept-m1-coord-01",
             category="concept",
             part="func",
             difficulty=4,
@@ -112,7 +216,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-003",
-            concept_id="concept-m1-coord",
+            concept_id="concept-m1-coord-02",
             category="concept",
             part="func",
             difficulty=6,
@@ -130,7 +234,7 @@ def get_concept_data() -> dict:
         # 정비례와 반비례 (3문제)
         mc(
             id="m1-conc-004",
-            concept_id="concept-m1-proportion",
+            concept_id="concept-m1-prop-01",
             category="concept",
             part="func",
             difficulty=3,
@@ -142,7 +246,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-005",
-            concept_id="concept-m1-proportion",
+            concept_id="concept-m1-prop-02",
             category="concept",
             part="func",
             difficulty=5,
@@ -154,7 +258,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-006",
-            concept_id="concept-m1-proportion",
+            concept_id="concept-m1-prop-03",
             category="concept",
             part="func",
             difficulty=7,
@@ -172,7 +276,7 @@ def get_concept_data() -> dict:
         # 기본 도형과 작도 (3문제)
         mc(
             id="m1-conc-007",
-            concept_id="concept-m1-basic-geo",
+            concept_id="concept-m1-geo-02",
             category="concept",
             part="geo",
             difficulty=3,
@@ -184,7 +288,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-008",
-            concept_id="concept-m1-basic-geo",
+            concept_id="concept-m1-geo-01",
             category="concept",
             part="geo",
             difficulty=5,
@@ -201,7 +305,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-009",
-            concept_id="concept-m1-basic-geo",
+            concept_id="concept-m1-geo-03",
             category="concept",
             part="geo",
             difficulty=8,
@@ -219,7 +323,7 @@ def get_concept_data() -> dict:
         # 평면도형의 성질 (3문제)
         mc(
             id="m1-conc-010",
-            concept_id="concept-m1-plane-fig",
+            concept_id="concept-m1-plane-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -231,7 +335,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-011",
-            concept_id="concept-m1-plane-fig",
+            concept_id="concept-m1-plane-01",
             category="concept",
             part="geo",
             difficulty=5,
@@ -243,7 +347,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-012",
-            concept_id="concept-m1-plane-fig",
+            concept_id="concept-m1-plane-02",
             category="concept",
             part="geo",
             difficulty=7,
@@ -256,7 +360,7 @@ def get_concept_data() -> dict:
         # 입체도형의 성질 (3문제)
         mc(
             id="m1-conc-013",
-            concept_id="concept-m1-solid-fig",
+            concept_id="concept-m1-solid-02",
             category="concept",
             part="geo",
             difficulty=4,
@@ -268,7 +372,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-014",
-            concept_id="concept-m1-solid-fig",
+            concept_id="concept-m1-solid-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -280,7 +384,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-015",
-            concept_id="concept-m1-solid-fig",
+            concept_id="concept-m1-solid-02",
             category="concept",
             part="geo",
             difficulty=8,
@@ -298,7 +402,7 @@ def get_concept_data() -> dict:
         # 자료의 정리와 해석 (3문제)
         mc(
             id="m1-conc-016",
-            concept_id="concept-m1-frequency",
+            concept_id="concept-m1-freq-01",
             category="concept",
             part="data",
             difficulty=3,
@@ -310,7 +414,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-017",
-            concept_id="concept-m1-frequency",
+            concept_id="concept-m1-freq-03",
             category="concept",
             part="data",
             difficulty=5,
@@ -322,7 +426,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-018",
-            concept_id="concept-m1-frequency",
+            concept_id="concept-m1-freq-02",
             category="concept",
             part="data",
             difficulty=7,
@@ -335,7 +439,7 @@ def get_concept_data() -> dict:
         # 대푯값 (3문제) - NEW
         mc(
             id="m1-conc-019",
-            concept_id="concept-m1-representative",
+            concept_id="concept-m1-repr-01",
             category="concept",
             part="data",
             difficulty=4,
@@ -347,7 +451,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-020",
-            concept_id="concept-m1-representative",
+            concept_id="concept-m1-repr-02",
             category="concept",
             part="data",
             difficulty=6,
@@ -364,7 +468,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-021",
-            concept_id="concept-m1-representative",
+            concept_id="concept-m1-repr-01",
             category="concept",
             part="data",
             difficulty=8,
@@ -382,7 +486,7 @@ def get_concept_data() -> dict:
         # 산점도와 상관관계 (3문제) - NEW
         mc(
             id="m1-conc-022",
-            concept_id="concept-m1-scatter",
+            concept_id="concept-m1-scat-01",
             category="concept",
             part="data",
             difficulty=4,
@@ -394,7 +498,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-023",
-            concept_id="concept-m1-scatter",
+            concept_id="concept-m1-scat-01",
             category="concept",
             part="data",
             difficulty=6,
@@ -411,7 +515,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-024",
-            concept_id="concept-m1-scatter",
+            concept_id="concept-m1-scat-02",
             category="concept",
             part="data",
             difficulty=9,
@@ -432,7 +536,7 @@ def get_concept_data() -> dict:
         # 소인수분해 (3문제)
         mc(
             id="m1-conc-025",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-01",
             category="concept",
             part="calc",
             difficulty=2,
@@ -449,7 +553,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-026",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-01",
             category="concept",
             part="calc",
             difficulty=5,
@@ -466,7 +570,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-027",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-03",
             category="concept",
             part="calc",
             difficulty=7,
@@ -479,7 +583,7 @@ def get_concept_data() -> dict:
         # 정수와 유리수 (3문제)
         mc(
             id="m1-conc-028",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-01",
             category="concept",
             part="calc",
             difficulty=2,
@@ -496,7 +600,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-029",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-02",
             category="concept",
             part="calc",
             difficulty=5,
@@ -513,7 +617,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-030",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-01",
             category="concept",
             part="calc",
             difficulty=7,
@@ -526,7 +630,7 @@ def get_concept_data() -> dict:
         # 문자의 사용과 식의 계산 (3문제)
         mc(
             id="m1-conc-031",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-01",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -538,7 +642,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-032",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-02",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -550,7 +654,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-033",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-03",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -563,7 +667,7 @@ def get_concept_data() -> dict:
         # 일차방정식 (3문제)
         mc(
             id="m1-conc-034",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-01",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -575,7 +679,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-035",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-01",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -592,7 +696,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m1-conc-036",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-01",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -618,7 +722,13 @@ def get_concept_data() -> dict:
             title="중1 함수와 좌표",
             description="좌표평면, 정비례, 반비례",
             grade="middle_1",
-            concept_ids=["concept-m1-coord", "concept-m1-proportion"],
+            concept_ids=[
+                "concept-m1-coord-01",
+                "concept-m1-coord-02",
+                "concept-m1-prop-01",
+                "concept-m1-prop-02",
+                "concept-m1-prop-03",
+            ],
             question_ids=[
                 "m1-conc-001",
                 "m1-conc-002",
@@ -637,9 +747,14 @@ def get_concept_data() -> dict:
             description="기본 도형, 평면도형, 입체도형",
             grade="middle_1",
             concept_ids=[
-                "concept-m1-basic-geo",
-                "concept-m1-plane-fig",
-                "concept-m1-solid-fig",
+                "concept-m1-geo-01",
+                "concept-m1-geo-02",
+                "concept-m1-geo-03",
+                "concept-m1-plane-01",
+                "concept-m1-plane-02",
+                "concept-m1-solid-01",
+                "concept-m1-solid-02",
+                "concept-m1-solid-03",
             ],
             question_ids=[
                 "m1-conc-007",
@@ -662,9 +777,13 @@ def get_concept_data() -> dict:
             description="자료 정리, 대푯값, 산점도",
             grade="middle_1",
             concept_ids=[
-                "concept-m1-frequency",
-                "concept-m1-representative",
-                "concept-m1-scatter",
+                "concept-m1-freq-01",
+                "concept-m1-freq-02",
+                "concept-m1-freq-03",
+                "concept-m1-repr-01",
+                "concept-m1-repr-02",
+                "concept-m1-scat-01",
+                "concept-m1-scat-02",
             ],
             question_ids=[
                 "m1-conc-016",
@@ -687,10 +806,14 @@ def get_concept_data() -> dict:
             description="소인수분해, 정수와 유리수, 문자와 식, 일차방정식의 개념 이해",
             grade="middle_1",
             concept_ids=[
-                "concept-m1-prime",
-                "concept-m1-integer",
-                "concept-m1-expression",
-                "concept-m1-equation",
+                "concept-m1-prime-01",
+                "concept-m1-prime-03",
+                "concept-m1-int-01",
+                "concept-m1-int-02",
+                "concept-m1-expr-01",
+                "concept-m1-expr-02",
+                "concept-m1-expr-03",
+                "concept-m1-eq-01",
             ],
             question_ids=[f"m1-conc-{i:03d}" for i in range(25, 37)],
             time_limit_minutes=15,

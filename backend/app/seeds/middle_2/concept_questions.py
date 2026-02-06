@@ -14,53 +14,107 @@ from .._base import mc, concept, test
 def get_concept_data() -> dict:
     """개념 카테고리 데이터 반환."""
     concepts = [
+        # ── 4단원: 일차함수 (2개) ──
         concept(
-            id="concept-m2-linear-func",
-            name="일차함수",
+            id="concept-m2-linfn-01",
+            name="일차함수의 그래프",
             grade="middle_2",
             category="concept",
             part="func",
-            description="y=ax+b, 기울기/절편, 일차함수↔일차방정식 연결",
+            description="y=ax+b(a≠0), 기울기(a)=Δy/Δx, y절편(b), 기울기의 부호·절댓값에 따른 그래프 변화, 상수함수와의 차이",
         ),
         concept(
-            id="concept-m2-triangle",
-            name="삼각형의 성질",
+            id="concept-m2-linfn-02",
+            name="일차함수와 일차방정식의 관계",
+            grade="middle_2",
+            category="concept",
+            part="func",
+            description="ax+by+c=0의 그래프는 직선, 두 점을 지나는 직선의 방정식 구하기, x=k(세로선)는 함수가 아님, 연립방정식의 해와 교점",
+        ),
+        # ── 5-1단원: 삼각형의 성질 (2개) ──
+        concept(
+            id="concept-m2-tri-01",
+            name="이등변삼각형과 직각삼각형",
             grade="middle_2",
             category="concept",
             part="geo",
-            description="이등변삼각형, 외심(수직이등분선 교점), 내심(이등분선 교점)",
+            description="이등변삼각형의 정의(두 변 같음)와 성질(두 밑각 같음), 정의와 성질의 구분, 직각삼각형의 합동 조건",
         ),
         concept(
-            id="concept-m2-quadrilateral",
-            name="사각형의 성질",
+            id="concept-m2-tri-02",
+            name="삼각형의 외심과 내심",
             grade="middle_2",
             category="concept",
             part="geo",
-            description="평행사변형, 직사각형, 마름모, 정사각형 계통도, 정의 vs 성질 구분",
+            description="외심: 세 변의 수직이등분선 교점(외접원 중심), 내심: 세 내각의 이등분선 교점(내접원 중심), 예각/직각/둔각삼각형에서 외심의 위치",
         ),
+        # ── 5-2단원: 사각형의 성질 (2개) ──
         concept(
-            id="concept-m2-similarity",
-            name="도형의 닮음",
+            id="concept-m2-quad-01",
+            name="평행사변형의 성질과 조건",
             grade="middle_2",
             category="concept",
             part="geo",
-            description="SSS/SAS/AA 닮음 조건, 닮음비→넓이비→부피비",
+            description="평행사변형의 정의·성질(대변·대각·대각선), 평행사변형이 되기 위한 조건 5가지",
         ),
         concept(
-            id="concept-m2-pythagoras",
-            name="피타고라스 정리",
+            id="concept-m2-quad-02",
+            name="특수 사각형의 관계",
             grade="middle_2",
             category="concept",
             part="geo",
-            description="삼각형 무게중심(2:1), 피타고라스 정리와 피타고라스 수",
+            description="직사각형·마름모·정사각형의 정의와 성질, 사각형 계통도(포함 관계), 정의 vs 성질 구분",
+        ),
+        # ── 6단원: 도형의 닮음 (2개) ──
+        concept(
+            id="concept-m2-simil-01",
+            name="닮음의 조건",
+            grade="middle_2",
+            category="concept",
+            part="geo",
+            description="SSS·SAS·AA 닮음 조건, 대응변과 대응각 찾기, 평행선과 선분의 비",
         ),
         concept(
-            id="concept-m2-probability",
-            name="확률",
+            id="concept-m2-simil-02",
+            name="닮음비와 넓이비·부피비",
+            grade="middle_2",
+            category="concept",
+            part="geo",
+            description="닮음비 m:n → 넓이비 m²:n² → 부피비 m³:n³, 축소·확대 계산, 축도와 실제 크기",
+        ),
+        # ── 7단원: 피타고라스 정리 (2개) ──
+        concept(
+            id="concept-m2-pytha-01",
+            name="피타고라스 정리와 증명",
+            grade="middle_2",
+            category="concept",
+            part="geo",
+            description="a²+b²=c²(c는 빗변), 다양한 증명 방법, 피타고라스 정리의 역(직각삼각형 판별), 피타고라스 수(3-4-5, 5-12-13)",
+        ),
+        concept(
+            id="concept-m2-pytha-02",
+            name="피타고라스 정리의 활용과 무게중심",
+            grade="middle_2",
+            category="concept",
+            part="geo",
+            description="좌표평면에서 두 점 사이 거리, 특수 직각삼각형(1:1:√2, 1:√3:2), 삼각형의 무게중심(중선을 2:1로 내분)",
+        ),
+        # ── 8단원: 확률 (2개) ──
+        concept(
+            id="concept-m2-prob-01",
+            name="경우의 수",
             grade="middle_2",
             category="concept",
             part="data",
-            description="합의 법칙/곱의 법칙, 수학적 확률, 근원사건 동등성",
+            description="합의 법칙(A 또는 B), 곱의 법칙(A 그리고 B), 사건의 배타성, 수형도·표를 이용한 경우의 수",
+        ),
+        concept(
+            id="concept-m2-prob-02",
+            name="확률의 계산과 성질",
+            grade="middle_2",
+            category="concept",
+            part="data",
+            description="수학적 확률 P(A)=n(A)/n(S), 근원사건의 동등성, 여사건 P(A')=1-P(A), 복원/비복원 추출 구별",
         ),
     ]
 
@@ -68,7 +122,7 @@ def get_concept_data() -> dict:
     func_questions = [
         mc(
             id="m2-conc-001",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-linfn-01",
             category="concept",
             part="func",
             difficulty=2,
@@ -80,7 +134,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-002",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-linfn-01",
             category="concept",
             part="func",
             difficulty=5,
@@ -92,7 +146,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-003",
-            concept_id="concept-m2-linear-func",
+            concept_id="concept-m2-linfn-02",
             category="concept",
             part="func",
             difficulty=7,
@@ -108,7 +162,7 @@ def get_concept_data() -> dict:
     triangle_questions = [
         mc(
             id="m2-conc-004",
-            concept_id="concept-m2-triangle",
+            concept_id="concept-m2-tri-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -120,7 +174,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-005",
-            concept_id="concept-m2-triangle",
+            concept_id="concept-m2-tri-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -132,7 +186,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-006",
-            concept_id="concept-m2-triangle",
+            concept_id="concept-m2-tri-02",
             category="concept",
             part="geo",
             difficulty=8,
@@ -148,7 +202,7 @@ def get_concept_data() -> dict:
     quadrilateral_questions = [
         mc(
             id="m2-conc-007",
-            concept_id="concept-m2-quadrilateral",
+            concept_id="concept-m2-quad-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -160,7 +214,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-008",
-            concept_id="concept-m2-quadrilateral",
+            concept_id="concept-m2-quad-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -172,7 +226,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-009",
-            concept_id="concept-m2-quadrilateral",
+            concept_id="concept-m2-quad-01",
             category="concept",
             part="geo",
             difficulty=8,
@@ -188,7 +242,7 @@ def get_concept_data() -> dict:
     similarity_questions = [
         mc(
             id="m2-conc-010",
-            concept_id="concept-m2-similarity",
+            concept_id="concept-m2-simil-01",
             category="concept",
             part="geo",
             difficulty=4,
@@ -200,7 +254,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-011",
-            concept_id="concept-m2-similarity",
+            concept_id="concept-m2-simil-02",
             category="concept",
             part="geo",
             difficulty=7,
@@ -212,7 +266,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-012",
-            concept_id="concept-m2-similarity",
+            concept_id="concept-m2-simil-02",
             category="concept",
             part="geo",
             difficulty=9,
@@ -228,7 +282,7 @@ def get_concept_data() -> dict:
     pythagoras_questions = [
         mc(
             id="m2-conc-013",
-            concept_id="concept-m2-pythagoras",
+            concept_id="concept-m2-pytha-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -240,7 +294,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-014",
-            concept_id="concept-m2-pythagoras",
+            concept_id="concept-m2-pytha-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -252,7 +306,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-015",
-            concept_id="concept-m2-pythagoras",
+            concept_id="concept-m2-pytha-01",
             category="concept",
             part="geo",
             difficulty=8,
@@ -268,7 +322,7 @@ def get_concept_data() -> dict:
     probability_questions = [
         mc(
             id="m2-conc-016",
-            concept_id="concept-m2-probability",
+            concept_id="concept-m2-prob-02",
             category="concept",
             part="data",
             difficulty=4,
@@ -280,7 +334,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-017",
-            concept_id="concept-m2-probability",
+            concept_id="concept-m2-prob-02",
             category="concept",
             part="data",
             difficulty=7,
@@ -292,7 +346,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-018",
-            concept_id="concept-m2-probability",
+            concept_id="concept-m2-prob-01",
             category="concept",
             part="data",
             difficulty=10,
@@ -309,7 +363,7 @@ def get_concept_data() -> dict:
         # 유리수와 순환소수 (3문제)
         mc(
             id="m2-conc-019",
-            concept_id="concept-m2-rational",
+            concept_id="concept-m2-rational-01",
             category="concept",
             part="calc",
             difficulty=3,
@@ -326,7 +380,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-020",
-            concept_id="concept-m2-rational",
+            concept_id="concept-m2-rational-02",
             category="concept",
             part="calc",
             difficulty=5,
@@ -338,7 +392,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-021",
-            concept_id="concept-m2-rational",
+            concept_id="concept-m2-rational-02",
             category="concept",
             part="calc",
             difficulty=7,
@@ -356,7 +410,7 @@ def get_concept_data() -> dict:
         # 식의 계산 (3문제)
         mc(
             id="m2-conc-022",
-            concept_id="concept-m2-expression",
+            concept_id="concept-m2-expr-01",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -373,7 +427,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-023",
-            concept_id="concept-m2-expression",
+            concept_id="concept-m2-expr-02",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -385,7 +439,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-024",
-            concept_id="concept-m2-expression",
+            concept_id="concept-m2-expr-02",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -398,7 +452,7 @@ def get_concept_data() -> dict:
         # 일차부등식 (3문제)
         mc(
             id="m2-conc-025",
-            concept_id="concept-m2-inequality",
+            concept_id="concept-m2-ineq-01",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -410,7 +464,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-026",
-            concept_id="concept-m2-inequality",
+            concept_id="concept-m2-ineq-01",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -427,7 +481,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-027",
-            concept_id="concept-m2-inequality",
+            concept_id="concept-m2-ineq-02",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -445,7 +499,7 @@ def get_concept_data() -> dict:
         # 연립일차방정식 (3문제)
         mc(
             id="m2-conc-028",
-            concept_id="concept-m2-simultaneous",
+            concept_id="concept-m2-simul-01",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -457,7 +511,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-029",
-            concept_id="concept-m2-simultaneous",
+            concept_id="concept-m2-simul-02",
             category="concept",
             part="algebra",
             difficulty=6,
@@ -469,7 +523,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="m2-conc-030",
-            concept_id="concept-m2-simultaneous",
+            concept_id="concept-m2-simul-01",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -498,7 +552,7 @@ def get_concept_data() -> dict:
             title="중2 일차함수 테스트",
             description="기울기, 절편, 일차함수와 일차방정식",
             grade="middle_2",
-            concept_ids=["concept-m2-linear-func"],
+            concept_ids=["concept-m2-linfn-01", "concept-m2-linfn-02"],
             question_ids=[q["id"] for q in func_questions],
             time_limit_minutes=10,
         ),
@@ -507,7 +561,7 @@ def get_concept_data() -> dict:
             title="중2 도형 종합 테스트",
             description="삼각형의 성질, 사각형의 성질, 닮음, 피타고라스 정리",
             grade="middle_2",
-            concept_ids=["concept-m2-triangle", "concept-m2-quadrilateral", "concept-m2-similarity", "concept-m2-pythagoras"],
+            concept_ids=["concept-m2-tri-01", "concept-m2-tri-02", "concept-m2-quad-01", "concept-m2-quad-02", "concept-m2-simil-01", "concept-m2-simil-02", "concept-m2-pytha-01", "concept-m2-pytha-02"],
             question_ids=[q["id"] for q in triangle_questions + quadrilateral_questions + similarity_questions + pythagoras_questions],
             time_limit_minutes=25,
             use_question_pool=True,
@@ -518,7 +572,7 @@ def get_concept_data() -> dict:
             title="중2 확률 테스트",
             description="합의 법칙, 곱의 법칙, 근원사건의 동등성",
             grade="middle_2",
-            concept_ids=["concept-m2-probability"],
+            concept_ids=["concept-m2-prob-01", "concept-m2-prob-02"],
             question_ids=[q["id"] for q in probability_questions],
             time_limit_minutes=10,
         ),
@@ -528,10 +582,10 @@ def get_concept_data() -> dict:
             description="유리수와 순환소수, 식의 계산, 일차부등식, 연립방정식의 개념 이해",
             grade="middle_2",
             concept_ids=[
-                "concept-m2-rational",
-                "concept-m2-expression",
-                "concept-m2-inequality",
-                "concept-m2-simultaneous",
+                "concept-m2-rational-01", "concept-m2-rational-02",
+                "concept-m2-expr-01", "concept-m2-expr-02",
+                "concept-m2-ineq-01", "concept-m2-ineq-02",
+                "concept-m2-simul-01", "concept-m2-simul-02",
             ],
             question_ids=[q["id"] for q in ch1_concept_questions],
             time_limit_minutes=15,

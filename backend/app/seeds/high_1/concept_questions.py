@@ -12,23 +12,39 @@ def get_concept_data() -> dict:
 
 
 def _get_concepts():
-    """개념 정의 (2개)."""
+    """개념 정의 (4개: 2단원 × 2)."""
     return [
         concept(
-            id="concept-h1-counting",
-            name="경우의 수",
+            id="concept-h1-counting-01",
+            name="합의 법칙과 곱의 법칙",
             grade="high_1",
             category="concept",
             part="data",
-            description="합의 법칙, 곱의 법칙, 순열(nPr), 조합(nCr)"
+            description="합의 법칙(배반사건), 곱의 법칙(연속·동시 사건), 경우의 수 세기 기초"
         ),
         concept(
-            id="concept-h1-matrix",
-            name="행렬",
+            id="concept-h1-counting-02",
+            name="순열과 조합",
+            grade="high_1",
+            category="concept",
+            part="data",
+            description="순열 nPr(순서O), 조합 nCr(순서X), 조건부 선택, 분할 문제"
+        ),
+        concept(
+            id="concept-h1-matrix-01",
+            name="행렬의 정의와 기본 연산",
             grade="high_1",
             category="concept",
             part="algebra",
-            description="2×2 행렬의 덧셈·뺄셈·실수배·곱셈 (역행렬 제외)"
+            description="행렬의 정의(2×2), 행렬의 덧셈·뺄셈·실수배, 같은 위치 성분별 연산"
+        ),
+        concept(
+            id="concept-h1-matrix-02",
+            name="행렬의 곱셈과 비가환성",
+            grade="high_1",
+            category="concept",
+            part="algebra",
+            description="행렬 곱셈(행×열 내적), AB≠BA(비가환성), 영인자, 약분 불가, 단위행렬·거듭제곱"
         ),
     ]
 
@@ -41,7 +57,7 @@ def _get_questions():
         # 합의 법칙
         mc(
             id="h1-conc-001",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-01",
             category="concept",
             part="data",
             difficulty=2,
@@ -55,7 +71,7 @@ def _get_questions():
         # 곱의 법칙
         mc(
             id="h1-conc-002",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-01",
             category="concept",
             part="data",
             difficulty=2,
@@ -69,7 +85,7 @@ def _get_questions():
         # 순열 기본
         mc(
             id="h1-conc-003",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
             difficulty=3,
@@ -83,7 +99,7 @@ def _get_questions():
         # 조합 기본
         mc(
             id="h1-conc-004",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
             difficulty=3,
@@ -97,7 +113,7 @@ def _get_questions():
         # 동적 선택지 축소 문제 ★★★
         mc(
             id="h1-conc-005",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
             difficulty=4,
@@ -111,7 +127,7 @@ def _get_questions():
         # 중복조합 vs 조합 혼동 방지
         mc(
             id="h1-conc-006",
-            concept_id="concept-h1-counting",
+            concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
             difficulty=5,
@@ -127,7 +143,7 @@ def _get_questions():
         # 행렬 덧셈
         mc(
             id="h1-conc-007",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-01",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -141,7 +157,7 @@ def _get_questions():
         # 행렬 실수배
         mc(
             id="h1-conc-008",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-01",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -155,7 +171,7 @@ def _get_questions():
         # 행렬 곱셈 기본
         mc(
             id="h1-conc-009",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -169,7 +185,7 @@ def _get_questions():
         # 행렬 교환법칙 불성립 ★★★
         mc(
             id="h1-conc-010",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -183,7 +199,7 @@ def _get_questions():
         # 영인자 존재 ★★★
         mc(
             id="h1-conc-011",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -197,7 +213,7 @@ def _get_questions():
         # 약분 불가 ★★★
         mc(
             id="h1-conc-012",
-            concept_id="concept-h1-matrix",
+            concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -213,7 +229,7 @@ def _get_questions():
         # 다항식 (3문제)
         mc(
             id="h1-conc-013",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-01",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -230,7 +246,7 @@ def _get_questions():
         ),
         mc(
             id="h1-conc-014",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-02",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -242,7 +258,7 @@ def _get_questions():
         ),
         mc(
             id="h1-conc-015",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-02",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -255,7 +271,7 @@ def _get_questions():
         # 방정식과 부등식 (3문제)
         mc(
             id="h1-conc-016",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -272,7 +288,7 @@ def _get_questions():
         ),
         mc(
             id="h1-conc-017",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="concept",
             part="algebra",
             difficulty=6,
@@ -289,7 +305,7 @@ def _get_questions():
         ),
         mc(
             id="h1-conc-018",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-02",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -315,7 +331,7 @@ def _get_tests():
             title="고1 경우의 수 테스트",
             description="합의 법칙, 곱의 법칙, 순열(nPr), 조합(nCr), 동적 선택지 축소 문제",
             grade="high_1",
-            concept_ids=["concept-h1-counting"],
+            concept_ids=["concept-h1-counting-01", "concept-h1-counting-02"],
             question_ids=[f"h1-conc-{i:03d}" for i in range(1, 7)],
             time_limit_minutes=20,
             use_question_pool=True,
@@ -326,7 +342,7 @@ def _get_tests():
             title="고1 행렬 테스트",
             description="2×2 행렬의 연산, 교환법칙 불성립, 영인자 존재, 약분 불가",
             grade="high_1",
-            concept_ids=["concept-h1-matrix"],
+            concept_ids=["concept-h1-matrix-01", "concept-h1-matrix-02"],
             question_ids=[f"h1-conc-{i:03d}" for i in range(7, 13)],
             time_limit_minutes=20,
             use_question_pool=True,
@@ -337,7 +353,7 @@ def _get_tests():
             title="고1 다항식·방정식 개념",
             description="항등식, 나머지정리, 인수분해, 복소수, 판별식, 이차부등식의 개념 이해",
             grade="high_1",
-            concept_ids=["concept-h1-polynomial", "concept-h1-equation"],
+            concept_ids=["concept-h1-polynomial-01", "concept-h1-polynomial-02", "concept-h1-equation-01", "concept-h1-equation-02"],
             question_ids=[f"h1-conc-{i:03d}" for i in range(13, 19)],
             time_limit_minutes=10,
             use_question_pool=True,

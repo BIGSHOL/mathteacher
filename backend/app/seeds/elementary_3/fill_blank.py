@@ -1,4 +1,9 @@
-"""초등학교 3학년 빈칸 채우기 문제 시드 데이터."""
+"""초등학교 3학년 빈칸 채우기 문제 시드 데이터.
+
+12단원 전체 커버 (단원당 2문항):
+  1학기: 덧셈과 뺄셈, 평면도형, 나눗셈, 곱셈, 길이와 시간, 분수와 소수
+  2학기: 곱셈 (2), 나눗셈 (2), 원, 분수 (2), 들이와 무게, 자료의 정리
+"""
 
 from .._base import fb
 
@@ -6,10 +11,12 @@ from .._base import fb
 def get_questions() -> list[dict]:
     """빈칸 채우기 문제 24개 반환 (단원당 2개)."""
     return [
-        # 1. 덧셈과 뺄셈 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 1단원: 덧셈과 뺄셈
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-001",
-            concept_id="concept-e3-add-sub",
+            concept_id="concept-e3-add-sub-01",
             category="computation",
             part="calc",
             difficulty=3,
@@ -21,7 +28,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-002",
-            concept_id="concept-e3-add-sub",
+            concept_id="concept-e3-add-sub-02",
             category="computation",
             part="calc",
             difficulty=4,
@@ -31,10 +38,12 @@ def get_questions() -> list[dict]:
             "받아내림을 올바르게 처리해야 합니다. 일의 자리에서 십의 자리로, 십의 자리에서 백의 자리로 빌려옵니다.",
             accept_formats=["264"],
         ),
-        # 2. 평면도형 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 2단원: 평면도형
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-003",
-            concept_id="concept-e3-plane",
+            concept_id="concept-e3-plane-02",
             category="concept",
             part="geo",
             difficulty=4,
@@ -45,7 +54,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-004",
-            concept_id="concept-e3-plane",
+            concept_id="concept-e3-plane-02",
             category="concept",
             part="geo",
             difficulty=5,
@@ -54,10 +63,12 @@ def get_questions() -> list[dict]:
             explanation="각의 정의: 한 점(꼭짓점)에서 그은 두 반직선(변)으로 이루어진 도형입니다.",
             accept_formats=["각"],
         ),
-        # 3. 나눗셈 1학기 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 3단원: 나눗셈
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-005",
-            concept_id="concept-e3-div1",
+            concept_id="concept-e3-div1-01",
             category="computation",
             part="calc",
             difficulty=3,
@@ -68,7 +79,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-006",
-            concept_id="concept-e3-div1",
+            concept_id="concept-e3-div1-01",
             category="computation",
             part="calc",
             difficulty=5,
@@ -77,10 +88,12 @@ def get_questions() -> list[dict]:
             explanation="24 ÷ 4 = 6묶음입니다. 이것은 포함제 나눗셈입니다.",
             accept_formats=["6"],
         ),
-        # 4. 곱셈 1학기 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 4단원: 곱셈
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-007",
-            concept_id="concept-e3-mul1",
+            concept_id="concept-e3-mul1-01",
             category="computation",
             part="calc",
             difficulty=3,
@@ -91,7 +104,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-008",
-            concept_id="concept-e3-mul1",
+            concept_id="concept-e3-mul1-02",
             category="computation",
             part="calc",
             difficulty=4,
@@ -100,10 +113,12 @@ def get_questions() -> list[dict]:
             explanation="52 × 3 = (50 + 2) × 3 = 150 + 6 = 156입니다.",
             accept_formats=["156"],
         ),
-        # 5. 길이와 시간 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 5단원: 길이와 시간
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-009",
-            concept_id="concept-e3-length-time",
+            concept_id="concept-e3-length-time-01",
             category="concept",
             part="calc",
             difficulty=4,
@@ -114,7 +129,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-010",
-            concept_id="concept-e3-length-time",
+            concept_id="concept-e3-length-time-02",
             category="concept",
             part="calc",
             difficulty=5,
@@ -124,10 +139,12 @@ def get_questions() -> list[dict]:
             "2시간 + 1시간 + 1시간 10분 = 4시간 10분입니다. 60진법을 잊지 마세요!",
             accept_formats=["4시간 10분", "4 10"],
         ),
-        # 6. 분수와 소수 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 6단원: 분수와 소수
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-011",
-            concept_id="concept-e3-frac-dec",
+            concept_id="concept-e3-frac-dec-01",
             category="concept",
             part="calc",
             difficulty=4,
@@ -138,7 +155,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-012",
-            concept_id="concept-e3-frac-dec",
+            concept_id="concept-e3-frac-dec-02",
             category="concept",
             part="calc",
             difficulty=6,
@@ -147,10 +164,12 @@ def get_questions() -> list[dict]:
             explanation="1/10 = 0.1입니다. 소수 0.1은 '영 점 일'이라고 읽습니다.",
             accept_formats=["0.1"],
         ),
-        # 7. 곱셈 2학기 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 7단원: 곱셈 (2)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-013",
-            concept_id="concept-e3-mul2",
+            concept_id="concept-e3-mul2-01",
             category="computation",
             part="calc",
             difficulty=5,
@@ -161,7 +180,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-014",
-            concept_id="concept-e3-mul2",
+            concept_id="concept-e3-mul2-02",
             category="computation",
             part="calc",
             difficulty=7,
@@ -171,10 +190,12 @@ def get_questions() -> list[dict]:
             "십의 자리 계산에서 0을 빠뜨리지 않도록 주의하세요!",
             accept_formats=["322"],
         ),
-        # 8. 나눗셈 2학기 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 8단원: 나눗셈 (2)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-015",
-            concept_id="concept-e3-div2",
+            concept_id="concept-e3-div2-01",
             category="computation",
             part="calc",
             difficulty=4,
@@ -185,7 +206,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-016",
-            concept_id="concept-e3-div2",
+            concept_id="concept-e3-div2-01",
             category="computation",
             part="calc",
             difficulty=6,
@@ -195,10 +216,12 @@ def get_questions() -> list[dict]:
             "나머지가 나누는 수보다 크거나 같으면 한 번 더 나눌 수 있으므로 계산이 끝나지 않은 것입니다.",
             accept_formats=["작아야"],
         ),
-        # 9. 원 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 9단원: 원
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-017",
-            concept_id="concept-e3-circle",
+            concept_id="concept-e3-circle-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -209,7 +232,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-018",
-            concept_id="concept-e3-circle",
+            concept_id="concept-e3-circle-02",
             category="concept",
             part="geo",
             difficulty=5,
@@ -218,10 +241,12 @@ def get_questions() -> list[dict]:
             explanation="지름 = 반지름 × 2 = 6 × 2 = 12cm입니다.",
             accept_formats=["12"],
         ),
-        # 10. 분수 2학기 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 10단원: 분수 (2)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-019",
-            concept_id="concept-e3-frac2",
+            concept_id="concept-e3-frac2-02",
             category="concept",
             part="calc",
             difficulty=4,
@@ -233,7 +258,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-020",
-            concept_id="concept-e3-frac2",
+            concept_id="concept-e3-frac2-01",
             category="concept",
             part="calc",
             difficulty=6,
@@ -242,10 +267,12 @@ def get_questions() -> list[dict]:
             explanation="가분수: 분자 ≥ 분모인 분수입니다. (예: 7/5, 8/3)",
             accept_formats=["가분수"],
         ),
-        # 11. 들이와 무게 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 11단원: 들이와 무게
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-021",
-            concept_id="concept-e3-volume-weight",
+            concept_id="concept-e3-vol-wt-01",
             category="concept",
             part="calc",
             difficulty=3,
@@ -256,7 +283,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-022",
-            concept_id="concept-e3-volume-weight",
+            concept_id="concept-e3-vol-wt-01",
             category="concept",
             part="calc",
             difficulty=4,
@@ -265,10 +292,12 @@ def get_questions() -> list[dict]:
             explanation="1kg = 1000g입니다. 무게 단위 변환을 기억하세요.",
             accept_formats=["1000"],
         ),
-        # 12. 자료의 정리 (2문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 12단원: 자료의 정리
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
             id="e3-fb-023",
-            concept_id="concept-e3-data",
+            concept_id="concept-e3-data-02",
             category="concept",
             part="data",
             difficulty=5,
@@ -280,7 +309,7 @@ def get_questions() -> list[dict]:
         ),
         fb(
             id="e3-fb-024",
-            concept_id="concept-e3-data",
+            concept_id="concept-e3-data-02",
             category="concept",
             part="data",
             difficulty=6,

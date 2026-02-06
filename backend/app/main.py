@@ -1292,48 +1292,48 @@ def init_db():
                 # --- 초등학교 3학년 (12단원) ---
                 # 형식: (name, description, concept_ids, semester)
                 "e3": ("elementary_3", [
-                    ("1. 덧셈과 뺄셈", "세 자리 수의 덧셈과 뺄셈, 받아올림과 받아내림", ["concept-e3-add-sub"], 1),
-                    ("2. 평면도형", "선분, 반직선, 직선, 각, 직각", ["concept-e3-plane"], 1),
-                    ("3. 나눗셈", "등분제, 포함제, 곱셈과 나눗셈의 관계", ["concept-e3-div1"], 1),
-                    ("4. 곱셈", "(몇십몇)×(몇), 올림이 있는 곱셈, 분배법칙의 기초", ["concept-e3-mul1"], 1),
-                    ("5. 길이와 시간", "km와 m, 시간의 덧셈과 뺄셈", ["concept-e3-length-time"], 1),
-                    ("6. 분수와 소수", "분수의 개념, 소수의 개념, 분수와 소수의 관계", ["concept-e3-frac-dec"], 1),
-                    ("7. 곱셈 (2)", "(몇)×(몇십몇), (몇십몇)×(몇십몇)", ["concept-e3-mul2"], 2),
-                    ("8. 나눗셈 (2)", "(두 자리 수)÷(한 자리 수), 나머지가 있는 나눗셈", ["concept-e3-div2"], 2),
-                    ("9. 원", "원의 중심, 반지름, 지름, 컴퍼스 사용", ["concept-e3-circle"], 2),
-                    ("10. 분수 (2)", "단위분수, 진분수, 가분수, 대분수, 분수의 크기 비교", ["concept-e3-frac2"], 2),
-                    ("11. 들이와 무게", "L와 mL, kg과 g, 들이와 무게의 덧셈과 뺄셈", ["concept-e3-volume-weight"], 2),
-                    ("12. 자료의 정리", "그림그래프, 자료의 분류와 정리", ["concept-e3-data"], 2),
+                    ("1. 덧셈과 뺄셈", "세 자리 수의 덧셈과 뺄셈, 받아올림과 받아내림", ["concept-e3-add-sub-01", "concept-e3-add-sub-02"], 1),
+                    ("2. 평면도형", "선분, 반직선, 직선, 각, 직각", ["concept-e3-plane-01", "concept-e3-plane-02"], 1),
+                    ("3. 나눗셈", "등분제, 포함제, 곱셈과 나눗셈의 관계", ["concept-e3-div1-01", "concept-e3-div1-02"], 1),
+                    ("4. 곱셈", "(몇십몇)×(몇), 올림이 있는 곱셈, 분배법칙의 기초", ["concept-e3-mul1-01", "concept-e3-mul1-02"], 1),
+                    ("5. 길이와 시간", "km와 m, 시간의 덧셈과 뺄셈", ["concept-e3-length-time-01", "concept-e3-length-time-02"], 1),
+                    ("6. 분수와 소수", "분수의 개념, 소수의 개념, 분수와 소수의 관계", ["concept-e3-frac-dec-01", "concept-e3-frac-dec-02"], 1),
+                    ("7. 곱셈 (2)", "(몇)×(몇십몇), (몇십몇)×(몇십몇)", ["concept-e3-mul2-01", "concept-e3-mul2-02"], 2),
+                    ("8. 나눗셈 (2)", "(두 자리 수)÷(한 자리 수), 나머지가 있는 나눗셈", ["concept-e3-div2-01", "concept-e3-div2-02"], 2),
+                    ("9. 원", "원의 중심, 반지름, 지름, 컴퍼스 사용", ["concept-e3-circle-01", "concept-e3-circle-02"], 2),
+                    ("10. 분수 (2)", "단위분수, 진분수, 가분수, 대분수, 분수의 크기 비교", ["concept-e3-frac2-01", "concept-e3-frac2-02"], 2),
+                    ("11. 들이와 무게", "L와 mL, kg과 g, 들이와 무게의 덧셈과 뺄셈", ["concept-e3-vol-wt-01", "concept-e3-vol-wt-02"], 2),
+                    ("12. 자료의 정리", "그림그래프, 자료의 분류와 정리", ["concept-e3-data-01", "concept-e3-data-02"], 2),
                 ]),
                 # --- 초등학교 4학년 (12단원) ---
                 "e4": ("elementary_4", [
-                    ("1. 큰 수", "만, 억, 조, 수의 크기 비교, 자릿값", ["concept-e4-big-num"], 1),
-                    ("2. 각도", "각의 크기, 예각·직각·둔각, 삼각형 내각의 합", ["concept-e4-angle"], 1),
-                    ("3. 곱셈과 나눗셈", "(세 자리 수)×(두 자리 수), (세 자리 수)÷(두 자리 수)", ["concept-e4-mul-div"], 1),
-                    ("4. 평면도형의 이동", "밀기, 뒤집기, 돌리기", ["concept-e4-transform"], 1),
-                    ("5. 막대그래프", "막대그래프 읽기와 그리기, 눈금 설정", ["concept-e4-bar-graph"], 1),
-                    ("6. 규칙 찾기", "수의 배열에서 규칙 찾기, 규칙을 식으로 나타내기", ["concept-e4-pattern"], 1),
-                    ("7. 분수의 덧셈과 뺄셈", "진분수·대분수의 덧셈과 뺄셈, 통분", ["concept-e4-frac-op"], 2),
-                    ("8. 삼각형", "이등변삼각형, 정삼각형, 예각·직각·둔각삼각형", ["concept-e4-triangle"], 2),
-                    ("9. 소수의 덧셈과 뺄셈", "소수 두 자리 수의 덧셈과 뺄셈", ["concept-e4-dec-op"], 2),
-                    ("10. 사각형", "수직과 평행, 평행사변형, 마름모, 사다리꼴", ["concept-e4-quad"], 2),
-                    ("11. 꺾은선그래프", "꺾은선그래프 읽기와 그리기, 변화 추이", ["concept-e4-line-graph"], 2),
-                    ("12. 다각형", "정다각형, 대각선, 다각형의 내각의 합", ["concept-e4-polygon"], 2),
+                    ("1. 큰 수", "만, 억, 조, 수의 크기 비교, 자릿값", ["concept-e4-big-num-01", "concept-e4-big-num-02"], 1),
+                    ("2. 각도", "각의 크기, 예각·직각·둔각, 삼각형 내각의 합", ["concept-e4-angle-01", "concept-e4-angle-02"], 1),
+                    ("3. 곱셈과 나눗셈", "(세 자리 수)×(두 자리 수), (세 자리 수)÷(두 자리 수)", ["concept-e4-mul-div-01", "concept-e4-mul-div-02"], 1),
+                    ("4. 평면도형의 이동", "밀기, 뒤집기, 돌리기", ["concept-e4-transform-01", "concept-e4-transform-02"], 1),
+                    ("5. 막대그래프", "막대그래프 읽기와 그리기, 눈금 설정", ["concept-e4-bar-graph-01", "concept-e4-bar-graph-02"], 1),
+                    ("6. 규칙 찾기", "수의 배열에서 규칙 찾기, 규칙을 식으로 나타내기", ["concept-e4-pattern-01", "concept-e4-pattern-02"], 1),
+                    ("7. 분수의 덧셈과 뺄셈", "진분수·대분수의 덧셈과 뺄셈, 통분", ["concept-e4-frac-op-01", "concept-e4-frac-op-02"], 2),
+                    ("8. 삼각형", "이등변삼각형, 정삼각형, 예각·직각·둔각삼각형", ["concept-e4-triangle-01", "concept-e4-triangle-02"], 2),
+                    ("9. 소수의 덧셈과 뺄셈", "소수 두 자리 수의 덧셈과 뺄셈", ["concept-e4-dec-op-01", "concept-e4-dec-op-02"], 2),
+                    ("10. 사각형", "수직과 평행, 평행사변형, 마름모, 사다리꼴", ["concept-e4-quad-01", "concept-e4-quad-02"], 2),
+                    ("11. 꺾은선그래프", "꺾은선그래프 읽기와 그리기, 변화 추이", ["concept-e4-line-graph-01", "concept-e4-line-graph-02"], 2),
+                    ("12. 다각형", "정다각형, 대각선, 다각형의 내각의 합", ["concept-e4-polygon-01", "concept-e4-polygon-02"], 2),
                 ]),
                 # --- 초등학교 5학년 (12단원) ---
                 "e5": ("elementary_5", [
-                    ("1. 자연수의 혼합 계산", "연산의 우선순위, 괄호가 있는 식, 문장제 모델링", ["concept-e5-mixed-calc"], 1),
-                    ("2. 약수와 배수", "약수, 배수, 최대공약수, 최소공배수", ["concept-e5-divisor"], 1),
-                    ("3. 규칙과 대응", "두 양 사이의 관계, 대응 관계를 식으로 표현", ["concept-e5-correspondence"], 1),
-                    ("4. 약분과 통분", "분수의 기본 성질, 약분, 통분, 크기 비교", ["concept-e5-reduce"], 1),
-                    ("5. 분수의 덧셈과 뺄셈", "이분모 분수의 덧셈과 뺄셈, 대분수 혼합 계산", ["concept-e5-frac-add"], 1),
-                    ("6. 다각형의 둘레와 넓이", "직사각형, 평행사변형, 삼각형, 사다리꼴, 마름모의 넓이", ["concept-e5-polygon-area"], 1),
-                    ("7. 수의 범위와 어림하기", "이상, 이하, 초과, 미만, 올림, 버림, 반올림", ["concept-e5-range-rounding"], 2),
-                    ("8. 분수의 곱셈", "(분수)×(자연수), (자연수)×(분수), (분수)×(분수)", ["concept-e5-frac-mul"], 2),
-                    ("9. 합동과 대칭", "합동인 도형, 선대칭, 점대칭", ["concept-e5-congruence"], 2),
-                    ("10. 소수의 곱셈", "(소수)×(자연수), (소수)×(소수), 곱의 소수점 위치", ["concept-e5-dec-mul"], 2),
-                    ("11. 직육면체", "직육면체와 정육면체, 전개도, 겨냥도", ["concept-e5-cuboid"], 2),
-                    ("12. 평균과 가능성", "평균 구하기, 가능성의 표현, 경우의 수", ["concept-e5-average"], 2),
+                    ("1. 자연수의 혼합 계산", "연산의 우선순위, 괄호가 있는 식, 문장제 모델링", ["concept-e5-mixed-calc-01", "concept-e5-mixed-calc-02"], 1),
+                    ("2. 약수와 배수", "약수, 배수, 최대공약수, 최소공배수", ["concept-e5-divisor-01", "concept-e5-divisor-02"], 1),
+                    ("3. 규칙과 대응", "두 양 사이의 관계, 대응 관계를 식으로 표현", ["concept-e5-corresp-01", "concept-e5-corresp-02"], 1),
+                    ("4. 약분과 통분", "분수의 기본 성질, 약분, 통분, 크기 비교", ["concept-e5-reduce-01", "concept-e5-reduce-02"], 1),
+                    ("5. 분수의 덧셈과 뺄셈", "이분모 분수의 덧셈과 뺄셈, 대분수 혼합 계산", ["concept-e5-frac-add-01", "concept-e5-frac-add-02"], 1),
+                    ("6. 다각형의 둘레와 넓이", "직사각형, 평행사변형, 삼각형, 사다리꼴, 마름모의 넓이", ["concept-e5-poly-area-01", "concept-e5-poly-area-02"], 1),
+                    ("7. 수의 범위와 어림하기", "이상, 이하, 초과, 미만, 올림, 버림, 반올림", ["concept-e5-range-01", "concept-e5-round-01"], 2),
+                    ("8. 분수의 곱셈", "(분수)×(자연수), (자연수)×(분수), (분수)×(분수)", ["concept-e5-frac-mul-01", "concept-e5-frac-mul-02"], 2),
+                    ("9. 합동과 대칭", "합동인 도형, 선대칭, 점대칭", ["concept-e5-congru-01", "concept-e5-congru-02"], 2),
+                    ("10. 소수의 곱셈", "(소수)×(자연수), (소수)×(소수), 곱의 소수점 위치", ["concept-e5-dec-mul-01", "concept-e5-dec-mul-02"], 2),
+                    ("11. 직육면체", "직육면체와 정육면체, 전개도, 겨냥도", ["concept-e5-cuboid-01", "concept-e5-cuboid-02"], 2),
+                    ("12. 평균과 가능성", "평균 구하기, 가능성의 표현, 경우의 수", ["concept-e5-avg-01", "concept-e5-avg-02"], 2),
                 ]),
                 # --- 초등학교 6학년 (12단원) ---
                 "e6": ("elementary_6", [
@@ -1353,50 +1353,50 @@ def init_db():
                 # --- 중학교 1학년 (12단원: 1학기 6 + 2학기 6) ---
                 "m1": ("middle_1", [
                     # 1학기
-                    ("1. 소인수분해", "소수, 합성수, 소인수분해, 최대공약수, 최소공배수", ["concept-m1-prime"], 1),
-                    ("2. 정수와 유리수", "양수·음수·0, 절댓값, 정수·유리수 사칙연산", ["concept-m1-integer"], 1),
-                    ("3. 문자의 사용과 식의 계산", "문자 사용, 대수적 관습, 동류항, 식의 값", ["concept-m1-expression"], 1),
-                    ("4. 일차방정식", "등식의 성질, 이항, 일차방정식의 풀이, 활용", ["concept-m1-equation"], 1),
-                    ("5. 좌표평면과 그래프", "순서쌍, 좌표, 사분면, 그래프 해석", ["concept-m1-coord"], 1),
-                    ("6. 정비례와 반비례", "정비례 y=ax, 반비례 y=a/x, 그래프", ["concept-m1-proportion"], 1),
+                    ("1. 소인수분해", "소수, 합성수, 소인수분해, 최대공약수, 최소공배수", ["concept-m1-prime-01", "concept-m1-prime-02", "concept-m1-prime-03"], 1),
+                    ("2. 정수와 유리수", "양수·음수·0, 절댓값, 정수·유리수 사칙연산", ["concept-m1-int-01", "concept-m1-int-02", "concept-m1-int-03"], 1),
+                    ("3. 문자의 사용과 식의 계산", "문자 사용, 대수적 관습, 동류항, 식의 값", ["concept-m1-expr-01", "concept-m1-expr-02", "concept-m1-expr-03"], 1),
+                    ("4. 일차방정식", "등식의 성질, 이항, 일차방정식의 풀이, 활용", ["concept-m1-eq-01", "concept-m1-eq-02", "concept-m1-eq-03"], 1),
+                    ("5. 좌표평면과 그래프", "순서쌍, 좌표, 사분면, 그래프 해석", ["concept-m1-coord-01", "concept-m1-coord-02"], 1),
+                    ("6. 정비례와 반비례", "정비례 y=ax, 반비례 y=a/x, 그래프", ["concept-m1-prop-01", "concept-m1-prop-02", "concept-m1-prop-03"], 1),
                     # 2학기
-                    ("7. 기본 도형과 작도", "점·선·면, 위치 관계, 평행선 성질, 작도, 삼각형 합동", ["concept-m1-basic-geo"], 2),
-                    ("8. 평면도형의 성질", "다각형 내각·외각의 합, 원과 부채꼴", ["concept-m1-plane-fig"], 2),
-                    ("9. 입체도형의 성질", "다면체, 회전체, 겉넓이와 부피", ["concept-m1-solid-fig"], 2),
-                    ("10. 자료의 정리와 해석", "줄기와 잎 그림, 도수분포표, 히스토그램, 상대도수", ["concept-m1-frequency"], 2),
-                    ("11. 대푯값", "평균, 중앙값, 최빈값, 상황별 대푯값 선택", ["concept-m1-representative"], 2),
-                    ("12. 산점도와 상관관계", "산점도, 양의 상관관계, 음의 상관관계, 인과관계 구분", ["concept-m1-scatter"], 2),
+                    ("7. 기본 도형과 작도", "점·선·면, 위치 관계, 평행선 성질, 작도, 삼각형 합동", ["concept-m1-geo-01", "concept-m1-geo-02", "concept-m1-geo-03"], 2),
+                    ("8. 평면도형의 성질", "다각형 내각·외각의 합, 원과 부채꼴", ["concept-m1-plane-01", "concept-m1-plane-02"], 2),
+                    ("9. 입체도형의 성질", "다면체, 회전체, 겉넓이와 부피", ["concept-m1-solid-01", "concept-m1-solid-02", "concept-m1-solid-03"], 2),
+                    ("10. 자료의 정리와 해석", "줄기와 잎 그림, 도수분포표, 히스토그램, 상대도수", ["concept-m1-freq-01", "concept-m1-freq-02", "concept-m1-freq-03"], 2),
+                    ("11. 대푯값", "평균, 중앙값, 최빈값, 상황별 대푯값 선택", ["concept-m1-repr-01", "concept-m1-repr-02"], 2),
+                    ("12. 산점도와 상관관계", "산점도, 양의 상관관계, 음의 상관관계, 인과관계 구분", ["concept-m1-scat-01", "concept-m1-scat-02"], 2),
                 ]),
                 # --- 중학교 2학년 (8단원: 1학기 4 + 2학기 4) ---
                 "m2": ("middle_2", [
                     # 1학기
-                    ("1. 유리수와 순환소수", "유한소수 조건, 순환소수, 순환소수의 분수 표현", ["concept-m2-rational"], 1),
-                    ("2. 식의 계산", "지수법칙, 다항식 계산, 동류항, 분배법칙", ["concept-m2-expression"], 1),
-                    ("3. 부등식과 연립방정식", "일차부등식 풀이, 연립일차방정식(가감법·대입법)", ["concept-m2-inequality", "concept-m2-simultaneous"], 1),
-                    ("4. 일차함수", "기울기, 절편, 그래프, 일차함수와 일차방정식", ["concept-m2-linear-func"], 1),
+                    ("1. 유리수와 순환소수", "유한소수 판별, 순환소수, 순환소수의 분수 표현", ["concept-m2-rational-01", "concept-m2-rational-02"], 1),
+                    ("2. 식의 계산", "지수법칙, 다항식 계산, 동류항, 분배법칙", ["concept-m2-expr-01", "concept-m2-expr-02"], 1),
+                    ("3. 부등식과 연립방정식", "일차부등식 풀이, 연립일차방정식(가감법·대입법)", ["concept-m2-ineq-01", "concept-m2-ineq-02", "concept-m2-simul-01", "concept-m2-simul-02"], 1),
+                    ("4. 일차함수", "기울기, 절편, 그래프, 일차함수와 일차방정식", ["concept-m2-linfn-01", "concept-m2-linfn-02"], 1),
                     # 2학기
-                    ("5. 도형의 성질", "이등변삼각형, 외심·내심, 평행사변형, 특수사각형", ["concept-m2-triangle", "concept-m2-quadrilateral"], 2),
-                    ("6. 도형의 닮음", "닮음 조건(SSS, SAS, AA), 닮음비, 넓이비, 부피비", ["concept-m2-similarity"], 2),
-                    ("7. 평행선과 피타고라스 정리", "평행선과 선분의 비, 삼각형 무게중심, 피타고라스 정리", ["concept-m2-pythagoras"], 2),
-                    ("8. 확률", "경우의 수, 합·곱의 법칙, 확률의 기본, 여사건", ["concept-m2-probability"], 2),
+                    ("5. 도형의 성질", "이등변삼각형, 외심·내심, 평행사변형, 특수사각형", ["concept-m2-tri-01", "concept-m2-tri-02", "concept-m2-quad-01", "concept-m2-quad-02"], 2),
+                    ("6. 도형의 닮음", "닮음 조건(SSS, SAS, AA), 닮음비, 넓이비, 부피비", ["concept-m2-simil-01", "concept-m2-simil-02"], 2),
+                    ("7. 평행선과 피타고라스 정리", "평행선과 선분의 비, 삼각형 무게중심, 피타고라스 정리", ["concept-m2-pytha-01", "concept-m2-pytha-02"], 2),
+                    ("8. 확률", "경우의 수, 합·곱의 법칙, 확률의 기본, 여사건", ["concept-m2-prob-01", "concept-m2-prob-02"], 2),
                 ]),
                 # --- 중학교 3학년 (7단원) ---
                 "m3": ("middle_3", [
-                    ("1. 실수와 그 연산", "제곱근, 무리수, 실수의 대소, 근호 계산, 분모의 유리화", ["concept-m3-real-num"], 1),
-                    ("2. 다항식의 곱셈과 인수분해", "곱셈공식, 인수분해, 완전제곱식", ["concept-m3-factoring"], 1),
-                    ("3. 이차방정식", "인수분해·완전제곱식·근의 공식 풀이, 판별식", ["concept-m3-quad-eq"], 1),
-                    ("4. 이차함수", "y=ax², 표준형, 일반형, 꼭짓점, 최대·최소", ["concept-m3-quad-func"], 1),
-                    ("5. 삼각비", "sin·cos·tan 정의, 특수각, 삼각형 넓이", ["concept-m3-trig"], 2),
-                    ("6. 원의 성질", "원주각, 중심각, 접선, 내접 사각형", ["concept-m3-circle"], 2),
-                    ("7. 통계", "대푯값, 산점도, 상관관계, 상자그림", ["concept-m3-statistics"], 2),
+                    ("1. 실수와 그 연산", "제곱근, 무리수, 실수의 대소, 근호 계산, 분모의 유리화", ["concept-m3-sqrt-01", "concept-m3-sqrt-02", "concept-m3-sqrt-03"], 1),
+                    ("2. 다항식의 곱셈과 인수분해", "곱셈공식, 인수분해, 완전제곱식", ["concept-m3-factor-01", "concept-m3-factor-02", "concept-m3-factor-03"], 1),
+                    ("3. 이차방정식", "인수분해·완전제곱식·근의 공식 풀이, 판별식", ["concept-m3-quadeq-01", "concept-m3-quadeq-02", "concept-m3-quadeq-03"], 1),
+                    ("4. 이차함수", "y=ax², 표준형, 일반형, 꼭짓점, 최대·최소", ["concept-m3-quadfn-01", "concept-m3-quadfn-02", "concept-m3-quadfn-03"], 1),
+                    ("5. 삼각비", "sin·cos·tan 정의, 특수각, 삼각형 넓이", ["concept-m3-trig-01", "concept-m3-trig-02"], 2),
+                    ("6. 원의 성질", "원주각, 중심각, 접선, 내접 사각형", ["concept-m3-circle-01", "concept-m3-circle-02", "concept-m3-circle-03"], 2),
+                    ("7. 통계", "대푯값, 산점도, 상관관계, 상자그림", ["concept-m3-stat-01", "concept-m3-stat-02", "concept-m3-stat-03"], 2),
                 ]),
                 # --- 고1 (7단원: 공통수학1 4단원 + 공통수학2 3단원) ---
                 "h1": ("high_1", [
                     # 공통수학1 (1학기)
-                    ("1. 다항식", "다항식 연산, 항등식, 나머지정리, 인수분해", ["concept-h1-polynomial"], 1),
-                    ("2. 방정식과 부등식", "복소수, 이차방정식, 이차함수, 이차부등식", ["concept-h1-equation"], 1),
-                    ("3. 경우의 수", "합·곱의 법칙, 순열, 조합", ["concept-h1-counting"], 1),
-                    ("4. 행렬", "행렬의 덧셈·뺄셈·실수배·곱셈 (2×2 한정)", ["concept-h1-matrix"], 1),
+                    ("1. 다항식", "다항식 연산, 항등식, 나머지정리, 인수분해", ["concept-h1-polynomial-01", "concept-h1-polynomial-02"], 1),
+                    ("2. 방정식과 부등식", "복소수, 이차방정식, 이차함수, 이차부등식", ["concept-h1-equation-01", "concept-h1-equation-02"], 1),
+                    ("3. 경우의 수", "합·곱의 법칙, 순열, 조합", ["concept-h1-counting-01", "concept-h1-counting-02"], 1),
+                    ("4. 행렬", "행렬의 덧셈·뺄셈·실수배·곱셈 (2×2 한정)", ["concept-h1-matrix-01", "concept-h1-matrix-02"], 1),
                     # 공통수학2 (2학기)
                     ("5. 도형의 방정식", "평면좌표, 직선·원의 방정식, 평행이동·대칭이동", ["concept-h2-plane-coord", "concept-h2-line", "concept-h2-circle", "concept-h2-transform"], 2),
                     ("6. 집합과 명제", "집합 연산, 명제와 조건, 절대부등식", ["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"], 2),
@@ -1570,44 +1570,44 @@ def update_chapter_concept_ids():
     # 전체 학년 단원-개념 매핑 (시드 데이터 concept ID 기준)
     CHAPTER_CONCEPT_MAP = {
         # --- 초3 ---
-        "chapter-e3-01": ["concept-e3-add-sub"],
-        "chapter-e3-02": ["concept-e3-plane"],
-        "chapter-e3-03": ["concept-e3-div1"],
-        "chapter-e3-04": ["concept-e3-mul1"],
-        "chapter-e3-05": ["concept-e3-length-time"],
-        "chapter-e3-06": ["concept-e3-frac-dec"],
-        "chapter-e3-07": ["concept-e3-mul2"],
-        "chapter-e3-08": ["concept-e3-div2"],
-        "chapter-e3-09": ["concept-e3-circle"],
-        "chapter-e3-10": ["concept-e3-frac2"],
-        "chapter-e3-11": ["concept-e3-volume-weight"],
-        "chapter-e3-12": ["concept-e3-data"],
+        "chapter-e3-01": ["concept-e3-add-sub-01", "concept-e3-add-sub-02"],
+        "chapter-e3-02": ["concept-e3-plane-01", "concept-e3-plane-02"],
+        "chapter-e3-03": ["concept-e3-div1-01", "concept-e3-div1-02"],
+        "chapter-e3-04": ["concept-e3-mul1-01", "concept-e3-mul1-02"],
+        "chapter-e3-05": ["concept-e3-length-time-01", "concept-e3-length-time-02"],
+        "chapter-e3-06": ["concept-e3-frac-dec-01", "concept-e3-frac-dec-02"],
+        "chapter-e3-07": ["concept-e3-mul2-01", "concept-e3-mul2-02"],
+        "chapter-e3-08": ["concept-e3-div2-01", "concept-e3-div2-02"],
+        "chapter-e3-09": ["concept-e3-circle-01", "concept-e3-circle-02"],
+        "chapter-e3-10": ["concept-e3-frac2-01", "concept-e3-frac2-02"],
+        "chapter-e3-11": ["concept-e3-vol-wt-01", "concept-e3-vol-wt-02"],
+        "chapter-e3-12": ["concept-e3-data-01", "concept-e3-data-02"],
         # --- 초4 ---
-        "chapter-e4-01": ["concept-e4-big-num"],
-        "chapter-e4-02": ["concept-e4-angle"],
-        "chapter-e4-03": ["concept-e4-mul-div"],
-        "chapter-e4-04": ["concept-e4-transform"],
-        "chapter-e4-05": ["concept-e4-bar-graph"],
-        "chapter-e4-06": ["concept-e4-pattern"],
-        "chapter-e4-07": ["concept-e4-frac-op"],
-        "chapter-e4-08": ["concept-e4-triangle"],
-        "chapter-e4-09": ["concept-e4-dec-op"],
-        "chapter-e4-10": ["concept-e4-quad"],
-        "chapter-e4-11": ["concept-e4-line-graph"],
-        "chapter-e4-12": ["concept-e4-polygon"],
+        "chapter-e4-01": ["concept-e4-big-num-01", "concept-e4-big-num-02"],
+        "chapter-e4-02": ["concept-e4-angle-01", "concept-e4-angle-02"],
+        "chapter-e4-03": ["concept-e4-mul-div-01", "concept-e4-mul-div-02"],
+        "chapter-e4-04": ["concept-e4-transform-01", "concept-e4-transform-02"],
+        "chapter-e4-05": ["concept-e4-bar-graph-01", "concept-e4-bar-graph-02"],
+        "chapter-e4-06": ["concept-e4-pattern-01", "concept-e4-pattern-02"],
+        "chapter-e4-07": ["concept-e4-frac-op-01", "concept-e4-frac-op-02"],
+        "chapter-e4-08": ["concept-e4-triangle-01", "concept-e4-triangle-02"],
+        "chapter-e4-09": ["concept-e4-dec-op-01", "concept-e4-dec-op-02"],
+        "chapter-e4-10": ["concept-e4-quad-01", "concept-e4-quad-02"],
+        "chapter-e4-11": ["concept-e4-line-graph-01", "concept-e4-line-graph-02"],
+        "chapter-e4-12": ["concept-e4-polygon-01", "concept-e4-polygon-02"],
         # --- 초5 ---
-        "chapter-e5-01": ["concept-e5-mixed-calc"],
-        "chapter-e5-02": ["concept-e5-divisor"],
-        "chapter-e5-03": ["concept-e5-correspondence"],
-        "chapter-e5-04": ["concept-e5-reduce"],
-        "chapter-e5-05": ["concept-e5-frac-add"],
-        "chapter-e5-06": ["concept-e5-polygon-area"],
-        "chapter-e5-07": ["concept-e5-range-rounding"],
-        "chapter-e5-08": ["concept-e5-frac-mul"],
-        "chapter-e5-09": ["concept-e5-congruence"],
-        "chapter-e5-10": ["concept-e5-dec-mul"],
-        "chapter-e5-11": ["concept-e5-cuboid"],
-        "chapter-e5-12": ["concept-e5-average"],
+        "chapter-e5-01": ["concept-e5-mixed-calc-01", "concept-e5-mixed-calc-02"],
+        "chapter-e5-02": ["concept-e5-divisor-01", "concept-e5-divisor-02"],
+        "chapter-e5-03": ["concept-e5-corresp-01", "concept-e5-corresp-02"],
+        "chapter-e5-04": ["concept-e5-reduce-01", "concept-e5-reduce-02"],
+        "chapter-e5-05": ["concept-e5-frac-add-01", "concept-e5-frac-add-02"],
+        "chapter-e5-06": ["concept-e5-poly-area-01", "concept-e5-poly-area-02"],
+        "chapter-e5-07": ["concept-e5-range-01", "concept-e5-round-01"],
+        "chapter-e5-08": ["concept-e5-frac-mul-01", "concept-e5-frac-mul-02"],
+        "chapter-e5-09": ["concept-e5-congru-01", "concept-e5-congru-02"],
+        "chapter-e5-10": ["concept-e5-dec-mul-01", "concept-e5-dec-mul-02"],
+        "chapter-e5-11": ["concept-e5-cuboid-01", "concept-e5-cuboid-02"],
+        "chapter-e5-12": ["concept-e5-avg-01", "concept-e5-avg-02"],
         # --- 초6 ---
         "chapter-e6-01": ["concept-e6-frac-div1"],
         "chapter-e6-02": ["concept-e6-prism-pyramid"],
@@ -1622,40 +1622,40 @@ def update_chapter_concept_ids():
         "chapter-e6-11": ["concept-e6-circle-area"],
         "chapter-e6-12": ["concept-e6-solids"],
         # --- 중1 ---
-        "chapter-m1-01": ["concept-m1-prime"],
-        "chapter-m1-02": ["concept-m1-integer"],
-        "chapter-m1-03": ["concept-m1-expression"],
-        "chapter-m1-04": ["concept-m1-equation"],
-        "chapter-m1-05": ["concept-m1-coord"],
-        "chapter-m1-06": ["concept-m1-proportion"],
-        "chapter-m1-07": ["concept-m1-basic-geo"],
-        "chapter-m1-08": ["concept-m1-plane-fig"],
-        "chapter-m1-09": ["concept-m1-solid-fig"],
-        "chapter-m1-10": ["concept-m1-frequency"],
-        "chapter-m1-11": ["concept-m1-representative"],
-        "chapter-m1-12": ["concept-m1-scatter"],
+        "chapter-m1-01": ["concept-m1-prime-01", "concept-m1-prime-02", "concept-m1-prime-03"],
+        "chapter-m1-02": ["concept-m1-int-01", "concept-m1-int-02", "concept-m1-int-03"],
+        "chapter-m1-03": ["concept-m1-expr-01", "concept-m1-expr-02", "concept-m1-expr-03"],
+        "chapter-m1-04": ["concept-m1-eq-01", "concept-m1-eq-02", "concept-m1-eq-03"],
+        "chapter-m1-05": ["concept-m1-coord-01", "concept-m1-coord-02"],
+        "chapter-m1-06": ["concept-m1-prop-01", "concept-m1-prop-02", "concept-m1-prop-03"],
+        "chapter-m1-07": ["concept-m1-geo-01", "concept-m1-geo-02", "concept-m1-geo-03"],
+        "chapter-m1-08": ["concept-m1-plane-01", "concept-m1-plane-02"],
+        "chapter-m1-09": ["concept-m1-solid-01", "concept-m1-solid-02", "concept-m1-solid-03"],
+        "chapter-m1-10": ["concept-m1-freq-01", "concept-m1-freq-02", "concept-m1-freq-03"],
+        "chapter-m1-11": ["concept-m1-repr-01", "concept-m1-repr-02"],
+        "chapter-m1-12": ["concept-m1-scat-01", "concept-m1-scat-02"],
         # --- 중2 ---
-        "chapter-m2-01": ["concept-m2-rational"],
-        "chapter-m2-02": ["concept-m2-expression"],
-        "chapter-m2-03": ["concept-m2-inequality", "concept-m2-simultaneous"],
-        "chapter-m2-04": ["concept-m2-linear-func"],
-        "chapter-m2-05": ["concept-m2-triangle", "concept-m2-quadrilateral"],
-        "chapter-m2-06": ["concept-m2-similarity"],
-        "chapter-m2-07": ["concept-m2-pythagoras"],
-        "chapter-m2-08": ["concept-m2-probability"],
+        "chapter-m2-01": ["concept-m2-rational-01", "concept-m2-rational-02"],
+        "chapter-m2-02": ["concept-m2-expr-01", "concept-m2-expr-02"],
+        "chapter-m2-03": ["concept-m2-ineq-01", "concept-m2-ineq-02", "concept-m2-simul-01", "concept-m2-simul-02"],
+        "chapter-m2-04": ["concept-m2-linfn-01", "concept-m2-linfn-02"],
+        "chapter-m2-05": ["concept-m2-tri-01", "concept-m2-tri-02", "concept-m2-quad-01", "concept-m2-quad-02"],
+        "chapter-m2-06": ["concept-m2-simil-01", "concept-m2-simil-02"],
+        "chapter-m2-07": ["concept-m2-pytha-01", "concept-m2-pytha-02"],
+        "chapter-m2-08": ["concept-m2-prob-01", "concept-m2-prob-02"],
         # --- 중3 ---
-        "chapter-m3-01": ["concept-m3-real-num"],
-        "chapter-m3-02": ["concept-m3-factoring"],
-        "chapter-m3-03": ["concept-m3-quad-eq"],
-        "chapter-m3-04": ["concept-m3-quad-func"],
-        "chapter-m3-05": ["concept-m3-trig"],
-        "chapter-m3-06": ["concept-m3-circle"],
-        "chapter-m3-07": ["concept-m3-statistics"],
-        # --- 고1 (h1+h2 통합) - 이미 올바른 ID 사용 ---
-        "chapter-h1-01": ["concept-h1-polynomial"],
-        "chapter-h1-02": ["concept-h1-equation"],
-        "chapter-h1-03": ["concept-h1-counting"],
-        "chapter-h1-04": ["concept-h1-matrix"],
+        "chapter-m3-01": ["concept-m3-sqrt-01", "concept-m3-sqrt-02", "concept-m3-sqrt-03"],
+        "chapter-m3-02": ["concept-m3-factor-01", "concept-m3-factor-02", "concept-m3-factor-03"],
+        "chapter-m3-03": ["concept-m3-quadeq-01", "concept-m3-quadeq-02", "concept-m3-quadeq-03"],
+        "chapter-m3-04": ["concept-m3-quadfn-01", "concept-m3-quadfn-02", "concept-m3-quadfn-03"],
+        "chapter-m3-05": ["concept-m3-trig-01", "concept-m3-trig-02"],
+        "chapter-m3-06": ["concept-m3-circle-01", "concept-m3-circle-02", "concept-m3-circle-03"],
+        "chapter-m3-07": ["concept-m3-stat-01", "concept-m3-stat-02", "concept-m3-stat-03"],
+        # --- 고1 (h1+h2 통합) ---
+        "chapter-h1-01": ["concept-h1-polynomial-01", "concept-h1-polynomial-02"],
+        "chapter-h1-02": ["concept-h1-equation-01", "concept-h1-equation-02"],
+        "chapter-h1-03": ["concept-h1-counting-01", "concept-h1-counting-02"],
+        "chapter-h1-04": ["concept-h1-matrix-01", "concept-h1-matrix-02"],
         "chapter-h1-05": ["concept-h2-plane-coord", "concept-h2-line", "concept-h2-circle", "concept-h2-transform"],
         "chapter-h1-06": ["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"],
         "chapter-h1-07": ["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"],
@@ -1721,6 +1721,414 @@ def _cleanup_today_daily_tests(db):
     logger.info(f"Cleaned up {len(records)} daily test records for today ({today})")
 
 
+def migrate_concept_subdivision():
+    """개념 세분화 마이그레이션: 기존 단일 개념 ID → 세분화 ID 전환.
+
+    서버 시작 시 자동 실행. 이미 마이그레이션된 경우 건너뜀.
+    구 개념 ID가 DB에 존재하면 마이그레이션 수행:
+    1. 시드 데이터에서 신규 개념 레코드 생성
+    2. 문제(questions) concept_id 업데이트
+    3. 숙련도(concept_mastery) 이전
+    4. 선수관계(concept_prerequisites) 업데이트
+    5. 테스트(tests) concept_ids JSON 업데이트
+    6. 문제 prerequisite_concept_ids JSON 업데이트
+    7. 구 개념 레코드 삭제
+    """
+    from app.models.concept import Concept, concept_prerequisites
+    from app.models.question import Question
+    from app.models.concept_mastery import ConceptMastery
+    from app.models.test import Test
+
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 구 개념 ID → 신규 세분화 개념 ID 매핑
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    OLD_TO_NEW: dict[str, list[str]] = {
+        # ── 초3 ──
+        "concept-e3-add-sub": ["concept-e3-add-sub-01", "concept-e3-add-sub-02"],
+        "concept-e3-plane": ["concept-e3-plane-01", "concept-e3-plane-02"],
+        "concept-e3-div1": ["concept-e3-div1-01", "concept-e3-div1-02"],
+        "concept-e3-mul1": ["concept-e3-mul1-01", "concept-e3-mul1-02"],
+        "concept-e3-length-time": ["concept-e3-length-time-01", "concept-e3-length-time-02"],
+        "concept-e3-frac-dec": ["concept-e3-frac-dec-01", "concept-e3-frac-dec-02"],
+        "concept-e3-mul2": ["concept-e3-mul2-01", "concept-e3-mul2-02"],
+        "concept-e3-div2": ["concept-e3-div2-01", "concept-e3-div2-02"],
+        "concept-e3-circle": ["concept-e3-circle-01", "concept-e3-circle-02"],
+        "concept-e3-frac2": ["concept-e3-frac2-01", "concept-e3-frac2-02"],
+        "concept-e3-volume-weight": ["concept-e3-vol-wt-01", "concept-e3-vol-wt-02"],
+        "concept-e3-data": ["concept-e3-data-01", "concept-e3-data-02"],
+        # ── 초4 ──
+        "concept-e4-big-num": ["concept-e4-big-num-01", "concept-e4-big-num-02"],
+        "concept-e4-angle": ["concept-e4-angle-01", "concept-e4-angle-02"],
+        "concept-e4-mul-div": ["concept-e4-mul-div-01", "concept-e4-mul-div-02"],
+        "concept-e4-transform": ["concept-e4-transform-01", "concept-e4-transform-02"],
+        "concept-e4-bar-graph": ["concept-e4-bar-graph-01", "concept-e4-bar-graph-02"],
+        "concept-e4-pattern": ["concept-e4-pattern-01", "concept-e4-pattern-02"],
+        "concept-e4-frac-op": ["concept-e4-frac-op-01", "concept-e4-frac-op-02"],
+        "concept-e4-triangle": ["concept-e4-triangle-01", "concept-e4-triangle-02"],
+        "concept-e4-dec-op": ["concept-e4-dec-op-01", "concept-e4-dec-op-02"],
+        "concept-e4-quad": ["concept-e4-quad-01", "concept-e4-quad-02"],
+        "concept-e4-line-graph": ["concept-e4-line-graph-01", "concept-e4-line-graph-02"],
+        "concept-e4-polygon": ["concept-e4-polygon-01", "concept-e4-polygon-02"],
+        # ── 초5 ──
+        "concept-e5-mixed-calc": ["concept-e5-mixed-calc-01", "concept-e5-mixed-calc-02"],
+        "concept-e5-divisor": ["concept-e5-divisor-01", "concept-e5-divisor-02"],
+        "concept-e5-correspondence": ["concept-e5-corresp-01", "concept-e5-corresp-02"],
+        "concept-e5-reduce": ["concept-e5-reduce-01", "concept-e5-reduce-02"],
+        "concept-e5-frac-add": ["concept-e5-frac-add-01", "concept-e5-frac-add-02"],
+        "concept-e5-polygon-area": ["concept-e5-poly-area-01", "concept-e5-poly-area-02"],
+        "concept-e5-range-rounding": ["concept-e5-range-01", "concept-e5-round-01"],
+        "concept-e5-frac-mul": ["concept-e5-frac-mul-01", "concept-e5-frac-mul-02"],
+        "concept-e5-congruence": ["concept-e5-congru-01", "concept-e5-congru-02"],
+        "concept-e5-dec-mul": ["concept-e5-dec-mul-01", "concept-e5-dec-mul-02"],
+        "concept-e5-cuboid": ["concept-e5-cuboid-01", "concept-e5-cuboid-02"],
+        "concept-e5-average": ["concept-e5-avg-01", "concept-e5-avg-02"],
+        # ── 중1 ──
+        "concept-m1-prime": ["concept-m1-prime-01", "concept-m1-prime-02", "concept-m1-prime-03"],
+        "concept-m1-integer": ["concept-m1-int-01", "concept-m1-int-02", "concept-m1-int-03"],
+        "concept-m1-expression": ["concept-m1-expr-01", "concept-m1-expr-02", "concept-m1-expr-03"],
+        "concept-m1-equation": ["concept-m1-eq-01", "concept-m1-eq-02", "concept-m1-eq-03"],
+        "concept-m1-coord": ["concept-m1-coord-01", "concept-m1-coord-02"],
+        "concept-m1-proportion": ["concept-m1-prop-01", "concept-m1-prop-02", "concept-m1-prop-03"],
+        "concept-m1-basic-geo": ["concept-m1-geo-01", "concept-m1-geo-02", "concept-m1-geo-03"],
+        "concept-m1-plane-fig": ["concept-m1-plane-01", "concept-m1-plane-02"],
+        "concept-m1-solid-fig": ["concept-m1-solid-01", "concept-m1-solid-02", "concept-m1-solid-03"],
+        "concept-m1-frequency": ["concept-m1-freq-01", "concept-m1-freq-02", "concept-m1-freq-03"],
+        "concept-m1-representative": ["concept-m1-repr-01", "concept-m1-repr-02"],
+        "concept-m1-scatter": ["concept-m1-scat-01", "concept-m1-scat-02"],
+        # ── 중2 ──
+        "concept-m2-rational": ["concept-m2-rational-01", "concept-m2-rational-02"],
+        "concept-m2-expression": ["concept-m2-expr-01", "concept-m2-expr-02"],
+        "concept-m2-inequality": ["concept-m2-ineq-01", "concept-m2-ineq-02"],
+        "concept-m2-simultaneous": ["concept-m2-simul-01", "concept-m2-simul-02"],
+        "concept-m2-linear-func": ["concept-m2-linfn-01", "concept-m2-linfn-02"],
+        "concept-m2-triangle": ["concept-m2-tri-01", "concept-m2-tri-02"],
+        "concept-m2-quadrilateral": ["concept-m2-quad-01", "concept-m2-quad-02"],
+        "concept-m2-similarity": ["concept-m2-simil-01", "concept-m2-simil-02"],
+        "concept-m2-pythagoras": ["concept-m2-pytha-01", "concept-m2-pytha-02"],
+        "concept-m2-probability": ["concept-m2-prob-01", "concept-m2-prob-02"],
+        # ── 중3 ──
+        "concept-m3-real-num": ["concept-m3-sqrt-01", "concept-m3-sqrt-02", "concept-m3-sqrt-03"],
+        "concept-m3-factoring": ["concept-m3-factor-01", "concept-m3-factor-02", "concept-m3-factor-03"],
+        "concept-m3-quad-eq": ["concept-m3-quadeq-01", "concept-m3-quadeq-02", "concept-m3-quadeq-03"],
+        "concept-m3-quad-func": ["concept-m3-quadfn-01", "concept-m3-quadfn-02", "concept-m3-quadfn-03"],
+        "concept-m3-trig": ["concept-m3-trig-01", "concept-m3-trig-02"],
+        "concept-m3-circle": ["concept-m3-circle-01", "concept-m3-circle-02", "concept-m3-circle-03"],
+        "concept-m3-statistics": ["concept-m3-stat-01", "concept-m3-stat-02", "concept-m3-stat-03"],
+        # ── 고1 공통수학1 ──
+        "concept-h1-polynomial": ["concept-h1-polynomial-01", "concept-h1-polynomial-02"],
+        "concept-h1-equation": ["concept-h1-equation-01", "concept-h1-equation-02"],
+        "concept-h1-counting": ["concept-h1-counting-01", "concept-h1-counting-02"],
+        "concept-h1-matrix": ["concept-h1-matrix-01", "concept-h1-matrix-02"],
+    }
+
+    all_old_ids = set(OLD_TO_NEW.keys())
+
+    db = SyncSessionLocal()
+    try:
+        # 마이그레이션 필요 여부 확인
+        old_concept = db.query(Concept).filter(
+            Concept.id.in_(all_old_ids)
+        ).first()
+        if not old_concept:
+            logger.info("개념 세분화 마이그레이션 불필요 (이미 완료)")
+            return
+
+        logger.info(f"개념 세분화 마이그레이션 시작 (구 개념 {len(all_old_ids)}개 → 세분화)")
+
+        # ── 1단계: 시드 데이터에서 신규 개념 레코드 생성 ──
+        from app.seeds import get_all_grade_seed_data
+        seed_data = get_all_grade_seed_data()
+
+        all_new_ids = set()
+        for new_ids in OLD_TO_NEW.values():
+            all_new_ids.update(new_ids)
+
+        existing_concept_ids = {c.id for c in db.query(Concept.id).all()}
+        seed_concept_map = {c["id"]: c for c in seed_data["concepts"]}
+
+        concepts_created = 0
+        for concept_id in sorted(all_new_ids):
+            if concept_id not in existing_concept_ids and concept_id in seed_concept_map:
+                c = seed_concept_map[concept_id]
+                db.add(Concept(
+                    id=c["id"], name=c["name"], grade=c["grade"],
+                    category=c["category"], part=c["part"],
+                    description=c.get("description", ""),
+                    parent_id=c.get("parent_id"),
+                ))
+                concepts_created += 1
+        db.flush()
+        logger.info(f"  [1/7] 신규 개념 {concepts_created}개 생성")
+
+        # ── 2단계: 문제 concept_id 업데이트 ──
+        # 시드 문제: 시드 데이터의 정확한 매핑 사용
+        # AI 생성 문제: 기본값 -01 (기초 하위 개념) 배정
+        seed_question_concept = {q["id"]: q["concept_id"] for q in seed_data["questions"]}
+
+        questions_from_seed = 0
+        questions_ai = 0
+        for q in db.query(Question).filter(
+            Question.concept_id.in_(all_old_ids)
+        ).all():
+            if q.id in seed_question_concept:
+                q.concept_id = seed_question_concept[q.id]
+                questions_from_seed += 1
+            else:
+                q.concept_id = OLD_TO_NEW[q.concept_id][0]
+                questions_ai += 1
+        db.flush()
+        logger.info(f"  [2/7] 문제 concept_id 업데이트: 시드 {questions_from_seed}개, AI생성 {questions_ai}개")
+
+        # ── 3단계: concept_mastery 이전 (-01로 이전, 중복 시 삭제) ──
+        mastery_migrated = 0
+        mastery_deleted = 0
+        for m in db.query(ConceptMastery).filter(
+            ConceptMastery.concept_id.in_(all_old_ids)
+        ).all():
+            new_id = OLD_TO_NEW[m.concept_id][0]
+            existing = db.query(ConceptMastery).filter(
+                ConceptMastery.student_id == m.student_id,
+                ConceptMastery.concept_id == new_id,
+            ).first()
+            if existing:
+                db.delete(m)
+                mastery_deleted += 1
+            else:
+                m.concept_id = new_id
+                mastery_migrated += 1
+        db.flush()
+        logger.info(f"  [3/7] concept_mastery: {mastery_migrated}개 이전, {mastery_deleted}개 중복 삭제")
+
+        # ── 4단계: concept_prerequisites 업데이트 ──
+        prereq_rows = db.execute(
+            concept_prerequisites.select().where(
+                concept_prerequisites.c.concept_id.in_(all_old_ids)
+                | concept_prerequisites.c.prerequisite_id.in_(all_old_ids)
+            )
+        ).fetchall()
+
+        if prereq_rows:
+            # 기존 행 삭제
+            db.execute(
+                concept_prerequisites.delete().where(
+                    concept_prerequisites.c.concept_id.in_(all_old_ids)
+                    | concept_prerequisites.c.prerequisite_id.in_(all_old_ids)
+                )
+            )
+            # 신규 조합 삽입
+            new_pairs = set()
+            for row in prereq_rows:
+                old_cid, old_pid = row[0], row[1]
+                new_cids = OLD_TO_NEW.get(old_cid, [old_cid])
+                new_pids = OLD_TO_NEW.get(old_pid, [old_pid])
+                for nc in new_cids:
+                    for np in new_pids:
+                        if nc != np:
+                            new_pairs.add((nc, np))
+
+            # 기존에 있는 쌍 제외
+            existing_pairs = {
+                (r[0], r[1]) for r in db.execute(concept_prerequisites.select()).fetchall()
+            }
+            insert_pairs = new_pairs - existing_pairs
+            for nc, np in insert_pairs:
+                db.execute(concept_prerequisites.insert().values(
+                    concept_id=nc, prerequisite_id=np
+                ))
+            db.flush()
+            logger.info(f"  [4/7] concept_prerequisites: {len(prereq_rows)}개 → {len(insert_pairs)}개 재생성")
+        else:
+            logger.info("  [4/7] concept_prerequisites: 변경 대상 없음")
+
+        # ── 5단계: tests concept_ids JSON 업데이트 ──
+        tests_updated = 0
+        for t in db.query(Test).all():
+            if not t.concept_ids:
+                continue
+            new_ids = []
+            changed = False
+            for cid in t.concept_ids:
+                if cid in OLD_TO_NEW:
+                    new_ids.extend(OLD_TO_NEW[cid])
+                    changed = True
+                else:
+                    new_ids.append(cid)
+            if changed:
+                t.concept_ids = new_ids
+                tests_updated += 1
+        db.flush()
+        logger.info(f"  [5/7] tests concept_ids: {tests_updated}개 업데이트")
+
+        # ── 6단계: questions prerequisite_concept_ids JSON 업데이트 ──
+        prereq_q_updated = 0
+        for q in db.query(Question).filter(
+            Question.prerequisite_concept_ids.isnot(None)
+        ).all():
+            if not q.prerequisite_concept_ids:
+                continue
+            new_ids = []
+            changed = False
+            for cid in q.prerequisite_concept_ids:
+                if cid in OLD_TO_NEW:
+                    new_ids.extend(OLD_TO_NEW[cid])
+                    changed = True
+                else:
+                    new_ids.append(cid)
+            if changed:
+                q.prerequisite_concept_ids = new_ids
+                prereq_q_updated += 1
+        db.flush()
+        logger.info(f"  [6/7] questions prerequisite_concept_ids: {prereq_q_updated}개 업데이트")
+
+        # ── 7단계: 구 개념 레코드 삭제 ──
+        deleted = db.query(Concept).filter(
+            Concept.id.in_(all_old_ids)
+        ).delete(synchronize_session="fetch")
+
+        db.commit()
+        logger.info(f"  [7/7] 구 개념 {deleted}개 삭제")
+        logger.info("개념 세분화 마이그레이션 완료!")
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"개념 세분화 마이그레이션 실패: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
+def migrate_concept_sequential_unlock():
+    """기존 학생의 개념 순차 해금 마이그레이션.
+
+    해금된 챕터가 있지만 ConceptMastery 레코드가 없거나 is_unlocked=False인 학생 처리:
+    - mastery_percentage > 0인 개념 → is_unlocked = True
+    - 해금된 챕터의 첫 개념 → is_unlocked = True
+    - 완료된 챕터의 모든 개념 → is_unlocked = True
+    """
+    from app.models.chapter import Chapter
+    from app.models.chapter_progress import ChapterProgress
+    from app.models.concept_mastery import ConceptMastery
+    from app.models.user import User
+
+    db = SyncSessionLocal()
+    try:
+        # 마이그레이션 필요 여부 체크: 해금된 챕터가 있는 학생 중
+        # is_unlocked=True인 ConceptMastery가 하나도 없으면 마이그레이션 필요
+        students = db.query(User).filter(User.role == "student").all()
+        if not students:
+            return
+
+        migrated_count = 0
+        for student in students:
+            student_id = student.id
+
+            # 해금된 챕터 조회
+            progresses = db.query(ChapterProgress).filter(
+                ChapterProgress.student_id == student_id,
+                ChapterProgress.is_unlocked == True,  # noqa: E712
+            ).all()
+
+            if not progresses:
+                continue
+
+            # 이미 해금된 개념이 있는지 확인 (마이그레이션 완료 여부)
+            has_unlocked = db.query(ConceptMastery).filter(
+                ConceptMastery.student_id == student_id,
+                ConceptMastery.is_unlocked == True,  # noqa: E712
+            ).first()
+            if has_unlocked:
+                continue  # 이미 마이그레이션됨
+
+            now = datetime.now(timezone.utc)
+
+            for progress in progresses:
+                chapter = db.query(Chapter).get(progress.chapter_id)
+                if not chapter or not chapter.concept_ids:
+                    continue
+
+                if progress.is_completed:
+                    # 완료된 챕터: 모든 개념 해금
+                    for concept_id in chapter.concept_ids:
+                        mastery = db.query(ConceptMastery).filter(
+                            ConceptMastery.student_id == student_id,
+                            ConceptMastery.concept_id == concept_id,
+                        ).first()
+                        if mastery and not mastery.is_unlocked:
+                            mastery.is_unlocked = True
+                            mastery.unlocked_at = now
+                        elif not mastery:
+                            mastery = ConceptMastery(
+                                student_id=student_id,
+                                concept_id=concept_id,
+                                is_unlocked=True,
+                                unlocked_at=now,
+                            )
+                            db.add(mastery)
+                else:
+                    # 미완료 해금 챕터: mastery > 0인 개념 해금 + 첫 개념 해금
+                    first_concept_id = chapter.concept_ids[0]
+
+                    for concept_id in chapter.concept_ids:
+                        mastery = db.query(ConceptMastery).filter(
+                            ConceptMastery.student_id == student_id,
+                            ConceptMastery.concept_id == concept_id,
+                        ).first()
+
+                        should_unlock = (
+                            concept_id == first_concept_id
+                            or (mastery and mastery.mastery_percentage > 0)
+                        )
+
+                        if mastery and not mastery.is_unlocked and should_unlock:
+                            mastery.is_unlocked = True
+                            mastery.unlocked_at = now
+                        elif not mastery and should_unlock:
+                            mastery = ConceptMastery(
+                                student_id=student_id,
+                                concept_id=concept_id,
+                                is_unlocked=True,
+                                unlocked_at=now,
+                            )
+                            db.add(mastery)
+
+                    # mastery > 0인 개념들의 다음 개념도 해금 (연쇄)
+                    for i, concept_id in enumerate(chapter.concept_ids[:-1]):
+                        m = db.query(ConceptMastery).filter(
+                            ConceptMastery.student_id == student_id,
+                            ConceptMastery.concept_id == concept_id,
+                        ).first()
+                        if m and m.mastery_percentage > 0:
+                            next_cid = chapter.concept_ids[i + 1]
+                            next_m = db.query(ConceptMastery).filter(
+                                ConceptMastery.student_id == student_id,
+                                ConceptMastery.concept_id == next_cid,
+                            ).first()
+                            if next_m and not next_m.is_unlocked:
+                                next_m.is_unlocked = True
+                                next_m.unlocked_at = now
+                            elif not next_m:
+                                next_m = ConceptMastery(
+                                    student_id=student_id,
+                                    concept_id=next_cid,
+                                    is_unlocked=True,
+                                    unlocked_at=now,
+                                )
+                                db.add(next_m)
+
+            migrated_count += 1
+
+        if migrated_count > 0:
+            db.commit()
+            logger.info(f"개념 순차 해금 마이그레이션: {migrated_count}명 학생 처리 완료")
+        else:
+            logger.info("개념 순차 해금 마이그레이션: 대상 학생 없음 (이미 완료)")
+
+    except Exception as e:
+        db.rollback()
+        logger.error(f"개념 순차 해금 마이그레이션 실패: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
@@ -1728,7 +2136,9 @@ async def lifespan(app: FastAPI):
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, init_db)
     await loop.run_in_executor(None, load_seed_data)
+    await loop.run_in_executor(None, migrate_concept_subdivision)
     await loop.run_in_executor(None, update_chapter_concept_ids)
+    await loop.run_in_executor(None, migrate_concept_sequential_unlock)
     yield
     # Shutdown
 

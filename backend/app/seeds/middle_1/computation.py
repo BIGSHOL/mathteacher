@@ -7,40 +7,108 @@ def get_computation_data() -> dict:
     """연산 카테고리 데이터 반환 (소인수분해, 정수와 유리수, 문자와 식, 일차방정식)."""
 
     # ============================================================
-    # 개념 4개
+    # 개념 12개 (1~4단원 세부 분화)
     # ============================================================
     concepts = [
+        # 1단원: 소인수분해 (3개)
         concept(
-            id="concept-m1-prime",
-            name="소인수분해",
+            id="concept-m1-prime-01",
+            name="소수와 합성수",
             grade="middle_1",
             category="computation",
             part="calc",
-            description="소수와 합성수의 개념, 거듭제곱 표기법, 소인수분해, 최대공약수와 최소공배수",
+            description="소수의 정의, 합성수, 1의 제외, 서로소의 개념",
         ),
         concept(
-            id="concept-m1-integer",
-            name="정수와 유리수",
+            id="concept-m1-prime-02",
+            name="거듭제곱과 소인수분해",
             grade="middle_1",
             category="computation",
             part="calc",
-            description="음수의 도입, 절대값, 수직선, 유리수의 사칙연산, 수의 대소 비교",
+            description="밑과 지수, 소인수분해 방법(가지치기/나눗셈), 약수의 개수 공식",
         ),
         concept(
-            id="concept-m1-expression",
-            name="문자의 사용과 식의 계산",
+            id="concept-m1-prime-03",
+            name="최대공약수와 최소공배수",
+            grade="middle_1",
+            category="computation",
+            part="calc",
+            description="GCD/LCM 구하기, A×B=GCD×LCM 관계, 공배수는 LCM의 배수",
+        ),
+        # 2단원: 정수와 유리수 (3개)
+        concept(
+            id="concept-m1-int-01",
+            name="정수의 분류와 수직선",
+            grade="middle_1",
+            category="computation",
+            part="calc",
+            description="양의 정수, 0, 음의 정수 분류, 수직선 모델, 대소 관계",
+        ),
+        concept(
+            id="concept-m1-int-02",
+            name="절대값과 유리수",
+            grade="middle_1",
+            category="computation",
+            part="calc",
+            description="절대값의 정의(원점으로부터의 거리), 유리수의 분류, 수 체계 포함 관계",
+        ),
+        concept(
+            id="concept-m1-int-03",
+            name="유리수의 사칙연산",
+            grade="middle_1",
+            category="computation",
+            part="calc",
+            description="부호가 같은/다른 경우의 덧셈뺄셈, 곱셈나눗셈 부호 규칙, 거듭제곱 부호 처리, 분배법칙",
+        ),
+        # 3단원: 문자의 사용과 식의 계산 (3개)
+        concept(
+            id="concept-m1-expr-01",
+            name="문자의 사용과 대수적 관습",
             grade="middle_1",
             category="computation",
             part="algebra",
-            description="문자를 사용한 식 표현, 동류항 정리, 분배법칙, 식의 값 구하기",
+            description="문자 사용 규칙(곱셈 기호 생략 등), 항/계수/차수 용어",
         ),
         concept(
-            id="concept-m1-equation",
-            name="일차방정식",
+            id="concept-m1-expr-02",
+            name="동류항과 식의 계산",
             grade="middle_1",
             category="computation",
             part="algebra",
-            description="등식의 성질, 이항, 일차방정식의 풀이, 항등식의 조건",
+            description="동류항 정리, 분배법칙을 이용한 괄호 풀기, 일차식의 덧셈뺄셈",
+        ),
+        concept(
+            id="concept-m1-expr-03",
+            name="대입과 식의 값",
+            grade="middle_1",
+            category="computation",
+            part="algebra",
+            description="문자에 수를 대입하여 식의 값 구하기, 식과 방정식의 구분",
+        ),
+        # 4단원: 일차방정식 (3개)
+        concept(
+            id="concept-m1-eq-01",
+            name="방정식과 등식의 성질",
+            grade="middle_1",
+            category="computation",
+            part="algebra",
+            description="방정식의 정의, 등식의 성질 4가지, 방정식의 해와 검증",
+        ),
+        concept(
+            id="concept-m1-eq-02",
+            name="일차방정식의 풀이",
+            grade="middle_1",
+            category="computation",
+            part="algebra",
+            description="이항, 소수/분수 계수 처리, 비례식 형태, 해의 특수성",
+        ),
+        concept(
+            id="concept-m1-eq-03",
+            name="항등식",
+            grade="middle_1",
+            category="computation",
+            part="algebra",
+            description="항등식의 정의, 미정계수법, 해가 무수히 많은/없는 경우",
         ),
     ]
 
@@ -50,7 +118,7 @@ def get_computation_data() -> dict:
     prime_questions = [
         mc(
             id="m1-comp-001",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -62,7 +130,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-002",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-01",
             category="computation",
             part="calc",
             difficulty=4,
@@ -79,7 +147,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-003",
-            concept_id="concept-m1-prime",
+            concept_id="concept-m1-prime-03",
             category="computation",
             part="calc",
             difficulty=6,
@@ -92,7 +160,7 @@ def get_computation_data() -> dict:
         # 정수와 유리수
         mc(
             id="m1-comp-004",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-03",
             category="computation",
             part="calc",
             difficulty=3,
@@ -104,7 +172,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-005",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-02",
             category="computation",
             part="calc",
             difficulty=5,
@@ -121,7 +189,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-006",
-            concept_id="concept-m1-integer",
+            concept_id="concept-m1-int-03",
             category="computation",
             part="calc",
             difficulty=7,
@@ -134,7 +202,7 @@ def get_computation_data() -> dict:
         # 문자의 사용과 식의 계산
         mc(
             id="m1-comp-007",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-02",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -146,7 +214,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-008",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-02",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -158,7 +226,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-009",
-            concept_id="concept-m1-expression",
+            concept_id="concept-m1-expr-03",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -171,7 +239,7 @@ def get_computation_data() -> dict:
         # 일차방정식
         mc(
             id="m1-comp-010",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-02",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -183,7 +251,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-011",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-02",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -195,7 +263,7 @@ def get_computation_data() -> dict:
         ),
         mc(
             id="m1-comp-012",
-            concept_id="concept-m1-equation",
+            concept_id="concept-m1-eq-03",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -210,7 +278,7 @@ def get_computation_data() -> dict:
     # 계산 오류 수정
     prime_questions[8] = mc(
         id="m1-comp-009",
-        concept_id="concept-m1-expression",
+        concept_id="concept-m1-expr-03",
         category="computation",
         part="algebra",
         difficulty=8,
@@ -223,7 +291,7 @@ def get_computation_data() -> dict:
 
     prime_questions[11] = mc(
         id="m1-comp-012",
-        concept_id="concept-m1-equation",
+        concept_id="concept-m1-eq-03",
         category="computation",
         part="algebra",
         difficulty=9,
@@ -244,10 +312,18 @@ def get_computation_data() -> dict:
             description="소인수분해, 정수와 유리수, 문자와 식, 일차방정식",
             grade="middle_1",
             concept_ids=[
-                "concept-m1-prime",
-                "concept-m1-integer",
-                "concept-m1-expression",
-                "concept-m1-equation",
+                "concept-m1-prime-01",
+                "concept-m1-prime-02",
+                "concept-m1-prime-03",
+                "concept-m1-int-01",
+                "concept-m1-int-02",
+                "concept-m1-int-03",
+                "concept-m1-expr-01",
+                "concept-m1-expr-02",
+                "concept-m1-expr-03",
+                "concept-m1-eq-01",
+                "concept-m1-eq-02",
+                "concept-m1-eq-03",
             ],
             question_ids=[
                 "m1-comp-001",

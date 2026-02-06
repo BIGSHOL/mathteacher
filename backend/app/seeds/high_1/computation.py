@@ -12,23 +12,39 @@ def get_computation_data() -> dict:
 
 
 def _get_concepts():
-    """연산 개념 정의 (2개)."""
+    """연산 개념 정의 (4개: 2단원 × 2)."""
     return [
         concept(
-            id="concept-h1-polynomial",
-            name="다항식",
+            id="concept-h1-polynomial-01",
+            name="다항식의 연산과 항등식",
             grade="high_1",
             category="computation",
             part="algebra",
-            description="다항식의 연산, 항등식(미정계수법), 나머지정리, 인수분해"
+            description="다항식 덧셈·뺄셈·곱셈, 곱셈 공식, 항등식, 미정계수법(수치대입법·계수비교법)"
         ),
         concept(
-            id="concept-h1-equation",
-            name="방정식과 부등식",
+            id="concept-h1-polynomial-02",
+            name="나머지정리와 인수분해",
             grade="high_1",
             category="computation",
             part="algebra",
-            description="복소수, 이차방정식(판별식, 근과 계수의 관계), 이차함수 최대·최소, 이차부등식"
+            description="다항식 나눗셈, 나머지정리 P(α), 인수정리 P(α)=0, 조립제법, 고차 인수분해"
+        ),
+        concept(
+            id="concept-h1-equation-01",
+            name="복소수와 이차방정식",
+            grade="high_1",
+            category="computation",
+            part="algebra",
+            description="복소수 i²=-1, 켤레복소수, 이차방정식 풀이, 판별식 D, 근과 계수의 관계"
+        ),
+        concept(
+            id="concept-h1-equation-02",
+            name="이차함수와 이차부등식",
+            grade="high_1",
+            category="computation",
+            part="algebra",
+            description="이차함수 최대·최소(정의역 제한), 이차부등식 그래프 해석, 절댓값 부등식"
         ),
     ]
 
@@ -41,7 +57,7 @@ def _get_questions():
         # 다항식 연산 - 기본
         mc(
             id="h1-comp-001",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
             difficulty=2,
@@ -55,7 +71,7 @@ def _get_questions():
         # 항등식 - 미정계수법
         mc(
             id="h1-comp-002",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -69,7 +85,7 @@ def _get_questions():
         # 나머지정리 - 기본
         mc(
             id="h1-comp-003",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -83,7 +99,7 @@ def _get_questions():
         # 인수분해 - 인수정리 활용
         mc(
             id="h1-comp-004",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -102,7 +118,7 @@ def _get_questions():
         # 항등식 응용 - 미정계수법
         mc(
             id="h1-comp-005",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -116,7 +132,7 @@ def _get_questions():
         # 나머지정리 응용
         mc(
             id="h1-comp-006",
-            concept_id="concept-h1-polynomial",
+            concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -132,7 +148,7 @@ def _get_questions():
         # 복소수 - 기본
         mc(
             id="h1-comp-007",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
             difficulty=2,
@@ -146,7 +162,7 @@ def _get_questions():
         # 이차방정식 판별식
         mc(
             id="h1-comp-008",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -160,7 +176,7 @@ def _get_questions():
         # 근과 계수의 관계
         mc(
             id="h1-comp-009",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -174,7 +190,7 @@ def _get_questions():
         # 판별식 응용 - 이차항 계수 조건 체크 ★★★
         mc(
             id="h1-comp-010",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -188,7 +204,7 @@ def _get_questions():
         # 이차함수 최대·최소 (제한 범위)
         mc(
             id="h1-comp-011",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-02",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -202,7 +218,7 @@ def _get_questions():
         # 이차부등식
         mc(
             id="h1-comp-012",
-            concept_id="concept-h1-equation",
+            concept_id="concept-h1-equation-02",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -223,7 +239,7 @@ def _get_tests():
             title="고1 연산 종합 테스트",
             description="다항식의 연산·항등식·나머지정리·인수분해, 복소수·이차방정식·판별식·이차부등식",
             grade="high_1",
-            concept_ids=["concept-h1-polynomial", "concept-h1-equation"],
+            concept_ids=["concept-h1-polynomial-01", "concept-h1-polynomial-02", "concept-h1-equation-01", "concept-h1-equation-02"],
             question_ids=[f"h1-comp-{i:03d}" for i in range(1, 13)],
             time_limit_minutes=30,
             use_question_pool=True,

@@ -17,68 +17,132 @@ def get_concepts():
     """개념 관련 개념 반환."""
     return [
         concept(
-            id="concept-e4-angle",
-            name="각도",
+            id="concept-e4-angle-01",
+            name="각도 - 각의 크기와 분류",
             grade="elementary_4",
             category="concept",
             part="geo",
-            description="각의 크기(예각·직각·둔각)를 이해하고, 각도기로 측정하며, 삼각형·사각형 내각의 합을 알 수 있습니다.",
+            description="각의 크기(예각·직각·둔각)를 이해하고, 각도기로 측정하며, 변의 길이와 각의 크기가 무관함을 압니다.",
         ),
         concept(
-            id="concept-e4-transform",
-            name="평면도형의 이동",
+            id="concept-e4-angle-02",
+            name="각도 - 내각의 합",
             grade="elementary_4",
             category="concept",
             part="geo",
-            description="밀기, 뒤집기, 돌리기를 이해하고, 이동 후 도형의 모양·크기·방향 변화를 설명할 수 있습니다.",
+            description="삼각형 내각의 합(180°)과 사각형 내각의 합(360°)을 이해하고 활용합니다.",
         ),
         concept(
-            id="concept-e4-bar-graph",
-            name="막대그래프",
+            id="concept-e4-transform-01",
+            name="평면도형의 이동 - 밀기",
+            grade="elementary_4",
+            category="concept",
+            part="geo",
+            description="밀기(평행이동)에서 위치만 변하고 모양·크기·방향은 불변임을 이해합니다.",
+        ),
+        concept(
+            id="concept-e4-transform-02",
+            name="평면도형의 이동 - 뒤집기와 돌리기",
+            grade="elementary_4",
+            category="concept",
+            part="geo",
+            description="뒤집기(대칭)와 돌리기(회전)의 차이를 이해하고, 시계/반시계 방향 관계를 압니다.",
+        ),
+        concept(
+            id="concept-e4-bar-graph-01",
+            name="막대그래프 - 읽기와 해석",
             grade="elementary_4",
             category="concept",
             part="data",
-            description="막대그래프의 구성 요소를 알고, 적절한 눈금 크기를 정하여 자료를 막대그래프로 나타내고 해석할 수 있습니다.",
+            description="막대그래프의 구성 요소를 알고, 눈금을 읽어 값을 파악하며 항목 간 비교를 합니다.",
         ),
         concept(
-            id="concept-e4-pattern",
-            name="규칙 찾기",
+            id="concept-e4-bar-graph-02",
+            name="막대그래프 - 그리기와 눈금 설정",
+            grade="elementary_4",
+            category="concept",
+            part="data",
+            description="자료에 적절한 눈금 크기를 정하여 막대그래프를 그릴 수 있습니다.",
+        ),
+        concept(
+            id="concept-e4-pattern-01",
+            name="규칙 찾기 - 수 배열 규칙",
             grade="elementary_4",
             category="concept",
             part="algebra",
-            description="수와 도형의 배열에서 규칙을 찾고, 계산식의 패턴을 발견하여 수학적 언어로 표현할 수 있습니다.",
+            description="수의 배열에서 덧셈, 곱셈 등의 규칙을 찾고 다음 수를 예측합니다.",
         ),
         concept(
-            id="concept-e4-triangle",
-            name="삼각형",
+            id="concept-e4-pattern-02",
+            name="규칙 찾기 - 도형과 계산식 패턴",
+            grade="elementary_4",
+            category="concept",
+            part="algebra",
+            description="도형 배열의 규칙과 계산식의 패턴을 발견하여 수학적 언어로 표현합니다.",
+        ),
+        concept(
+            id="concept-e4-triangle-01",
+            name="삼각형 - 변에 의한 분류",
             grade="elementary_4",
             category="concept",
             part="geo",
-            description="이등변삼각형·정삼각형의 성질, 예각·직각·둔각삼각형의 분류, 삼각형 간 포함 관계를 이해합니다.",
+            description="이등변삼각형·정삼각형의 성질과 포함 관계(정삼각형 ⊂ 이등변삼각형)를 이해합니다.",
         ),
         concept(
-            id="concept-e4-quad",
-            name="사각형",
+            id="concept-e4-triangle-02",
+            name="삼각형 - 각에 의한 분류",
             grade="elementary_4",
             category="concept",
             part="geo",
-            description="수직·평행 개념, 사다리꼴·평행사변형·마름모·직사각형·정사각형의 분류 체계와 포함 관계를 이해합니다.",
+            description="예각삼각형·직각삼각형·둔각삼각형의 분류 기준을 이해합니다.",
         ),
         concept(
-            id="concept-e4-line-graph",
-            name="꺾은선그래프",
+            id="concept-e4-quad-01",
+            name="사각형 - 수직과 평행",
+            grade="elementary_4",
+            category="concept",
+            part="geo",
+            description="수직(90° 만남)과 평행(만나지 않음)의 개념을 이해합니다.",
+        ),
+        concept(
+            id="concept-e4-quad-02",
+            name="사각형 - 사각형 분류와 포함 관계",
+            grade="elementary_4",
+            category="concept",
+            part="geo",
+            description="사다리꼴·평행사변형·마름모·직사각형·정사각형의 분류 체계와 포함 관계를 이해합니다.",
+        ),
+        concept(
+            id="concept-e4-line-graph-01",
+            name="꺾은선그래프 - 읽기와 해석",
             grade="elementary_4",
             category="concept",
             part="data",
-            description="연속적 변량의 변화를 꺾은선그래프로 나타내고, 기울기로 변화 크기를 판단하며 물결선의 역할을 이해합니다.",
+            description="꺾은선그래프에서 변화 추이를 읽고, 기울기로 변화 크기를 판단합니다.",
         ),
         concept(
-            id="concept-e4-polygon",
-            name="다각형",
+            id="concept-e4-line-graph-02",
+            name="꺾은선그래프 - 그리기와 물결선",
+            grade="elementary_4",
+            category="concept",
+            part="data",
+            description="적절한 그래프 유형을 선택하고, 물결선으로 불필요한 구간을 생략하여 그래프를 그립니다.",
+        ),
+        concept(
+            id="concept-e4-polygon-01",
+            name="다각형 - 다각형 정의와 대각선",
             grade="elementary_4",
             category="concept",
             part="geo",
-            description="다각형의 정의, 정다각형의 두 조건(변의 길이+각의 크기 모두 같음), 대각선의 개념을 이해합니다.",
+            description="다각형의 정의(선분으로만 둘러싸인 닫힌 도형)와 대각선의 개념을 이해합니다.",
+        ),
+        concept(
+            id="concept-e4-polygon-02",
+            name="다각형 - 정다각형의 조건",
+            grade="elementary_4",
+            category="concept",
+            part="geo",
+            description="정다각형의 두 조건(변의 길이 모두 같음 + 각의 크기 모두 같음)을 이해합니다.",
         ),
     ]
 
@@ -91,7 +155,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-001",
-            concept_id="concept-e4-angle",
+            concept_id="concept-e4-angle-01",
             category="concept",
             part="geo",
             difficulty=1,
@@ -108,7 +172,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-002",
-            concept_id="concept-e4-angle",
+            concept_id="concept-e4-angle-01",
             category="concept",
             part="geo",
             difficulty=4,
@@ -125,7 +189,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-003",
-            concept_id="concept-e4-angle",
+            concept_id="concept-e4-angle-02",
             category="concept",
             part="geo",
             difficulty=7,
@@ -146,7 +210,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-004",
-            concept_id="concept-e4-transform",
+            concept_id="concept-e4-transform-01",
             category="concept",
             part="geo",
             difficulty=2,
@@ -163,7 +227,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-005",
-            concept_id="concept-e4-transform",
+            concept_id="concept-e4-transform-02",
             category="concept",
             part="geo",
             difficulty=5,
@@ -180,7 +244,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-006",
-            concept_id="concept-e4-transform",
+            concept_id="concept-e4-transform-02",
             category="concept",
             part="geo",
             difficulty=7,
@@ -201,7 +265,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-007",
-            concept_id="concept-e4-bar-graph",
+            concept_id="concept-e4-bar-graph-01",
             category="concept",
             part="data",
             difficulty=2,
@@ -218,7 +282,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-008",
-            concept_id="concept-e4-bar-graph",
+            concept_id="concept-e4-bar-graph-02",
             category="concept",
             part="data",
             difficulty=5,
@@ -235,7 +299,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-009",
-            concept_id="concept-e4-bar-graph",
+            concept_id="concept-e4-bar-graph-01",
             category="concept",
             part="data",
             difficulty=7,
@@ -256,7 +320,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-010",
-            concept_id="concept-e4-pattern",
+            concept_id="concept-e4-pattern-01",
             category="concept",
             part="algebra",
             difficulty=1,
@@ -273,7 +337,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-011",
-            concept_id="concept-e4-pattern",
+            concept_id="concept-e4-pattern-01",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -290,7 +354,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-012",
-            concept_id="concept-e4-pattern",
+            concept_id="concept-e4-pattern-02",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -311,7 +375,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-013",
-            concept_id="concept-e4-triangle",
+            concept_id="concept-e4-triangle-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -328,7 +392,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-014",
-            concept_id="concept-e4-triangle",
+            concept_id="concept-e4-triangle-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -345,7 +409,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-015",
-            concept_id="concept-e4-triangle",
+            concept_id="concept-e4-triangle-01",
             category="concept",
             part="geo",
             difficulty=8,
@@ -366,7 +430,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-016",
-            concept_id="concept-e4-quad",
+            concept_id="concept-e4-quad-01",
             category="concept",
             part="geo",
             difficulty=2,
@@ -383,7 +447,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-017",
-            concept_id="concept-e4-quad",
+            concept_id="concept-e4-quad-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -400,7 +464,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-018",
-            concept_id="concept-e4-quad",
+            concept_id="concept-e4-quad-02",
             category="concept",
             part="geo",
             difficulty=9,
@@ -421,7 +485,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-019",
-            concept_id="concept-e4-line-graph",
+            concept_id="concept-e4-line-graph-01",
             category="concept",
             part="data",
             difficulty=3,
@@ -438,7 +502,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-020",
-            concept_id="concept-e4-line-graph",
+            concept_id="concept-e4-line-graph-01",
             category="concept",
             part="data",
             difficulty=5,
@@ -455,7 +519,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-021",
-            concept_id="concept-e4-line-graph",
+            concept_id="concept-e4-line-graph-02",
             category="concept",
             part="data",
             difficulty=7,
@@ -476,7 +540,7 @@ def get_questions():
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e4-conc-022",
-            concept_id="concept-e4-polygon",
+            concept_id="concept-e4-polygon-01",
             category="concept",
             part="geo",
             difficulty=2,
@@ -493,7 +557,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-023",
-            concept_id="concept-e4-polygon",
+            concept_id="concept-e4-polygon-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -510,7 +574,7 @@ def get_questions():
         ),
         mc(
             id="e4-conc-024",
-            concept_id="concept-e4-polygon",
+            concept_id="concept-e4-polygon-02",
             category="concept",
             part="geo",
             difficulty=9,

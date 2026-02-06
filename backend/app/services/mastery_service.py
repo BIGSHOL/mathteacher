@@ -9,6 +9,8 @@ from app.models.concept_mastery import ConceptMastery
 from app.models.concept import Concept, concept_prerequisites
 from app.models.answer_log import AnswerLog
 from app.models.test_attempt import TestAttempt
+from app.models.chapter import Chapter
+from app.models.chapter_progress import ChapterProgress
 
 MASTERY_THRESHOLD = 90  # 90% 이상이면 마스터
 
@@ -125,13 +127,19 @@ class MasteryService:
             mastery.mastery_percentage = int(accuracy * 0.7 + mastery.average_score * 0.3)
 
             # 마스터리 달성 체크
+            newly_mastered = False
             if mastery.mastery_percentage >= MASTERY_THRESHOLD and not mastery.is_mastered:
                 mastery.is_mastered = True
                 mastery.mastered_at = datetime.now(timezone.utc)
+                newly_mastered = True
 
             mastery.last_practiced = datetime.now(timezone.utc)
 
             updated_masteries[concept_id] = mastery.mastery_percentage
+
+            # 마스터 달성 시 같은 챕터의 다음 개념 해금
+            if newly_mastered:
+                await self.unlock_next_concept_in_chapter(student_id, concept_id)
 
         await self.db.commit()
         return updated_masteries
@@ -206,6 +214,56 @@ class MasteryService:
                 unmet_prerequisites.append(prereq_id)
 
         return len(unmet_prerequisites) == 0, unmet_prerequisites
+
+    async def unlock_next_concept_in_chapter(self, student_id: str, concept_id: str) -> str | None:
+        """마스터된 개념이 속한 챕터에서 다음 개념을 해금.
+
+        Returns:
+            해금된 개념 ID 또는 None
+        """
+        # 이 개념이 속한 챕터 찾기
+        stmt = select(Chapter).where(Chapter.concept_ids.contains([concept_id]))
+        chapter = await self.db.scalar(stmt)
+        if not chapter or not chapter.concept_ids:
+            return None
+
+        # 현재 개념의 인덱스 찾기
+        try:
+            idx = chapter.concept_ids.index(concept_id)
+        except ValueError:
+            return None
+
+        # 마지막 개념이면 해금할 다음 개념 없음
+        if idx >= len(chapter.concept_ids) - 1:
+            return None
+
+        next_concept_id = chapter.concept_ids[idx + 1]
+        mastery = await self.get_or_create_mastery(student_id, next_concept_id)
+        if not mastery.is_unlocked:
+            mastery.is_unlocked = True
+            mastery.unlocked_at = datetime.now(timezone.utc)
+            return next_concept_id
+
+        return None
+
+    async def ensure_first_concept_unlocked(self, student_id: str, chapter_id: str) -> str | None:
+        """해금된 챕터의 첫 번째 개념이 해금되어 있는지 확인/보장.
+
+        Returns:
+            해금된 개념 ID 또는 None (이미 해금됨)
+        """
+        chapter = await self.db.get(Chapter, chapter_id)
+        if not chapter or not chapter.concept_ids:
+            return None
+
+        first_concept_id = chapter.concept_ids[0]
+        mastery = await self.get_or_create_mastery(student_id, first_concept_id)
+        if not mastery.is_unlocked:
+            mastery.is_unlocked = True
+            mastery.unlocked_at = datetime.now(timezone.utc)
+            return first_concept_id
+
+        return None
 
     async def auto_unlock_next_concepts(self, student_id: str, concept_id: str) -> list[str]:
         """개념 마스터 시 다음 개념 자동 해제.

@@ -1,66 +1,139 @@
-"""초등학교 3학년 개념 문제 시드 데이터."""
+"""초등학교 3학년 개념 문제 시드 데이터.
+
+커버 단원:
+  1학기 2단원 - 평면도형
+  1학기 5단원 - 길이와 시간
+  1학기 6단원 - 분수와 소수
+  2학기 9단원 - 원
+  2학기 10단원 - 분수 (2)
+  2학기 11단원 - 들이와 무게
+  2학기 12단원 - 자료의 정리
+"""
 
 from .._base import concept, mc
 
 
 def get_concepts() -> list[dict]:
-    """개념 7개 반환."""
+    """개념 14개 반환 (단원당 2개)."""
     return [
+        # ━━ 1학기 2단원: 평면도형 ━━
         concept(
-            id="concept-e3-plane",
-            name="평면도형",
+            id="concept-e3-plane-01",
+            name="평면도형 - 선분·반직선·직선",
             grade="elementary_3",
             category="concept",
             part="geo",
-            description="선분, 반직선, 직선, 각, 직각의 정의와 성질",
+            description="선분(두 점 사이 가장 짧은 선), 반직선(시작점+방향), 직선(양쪽 무한)의 정의와 성질을 이해합니다.",
         ),
         concept(
-            id="concept-e3-length-time",
-            name="길이와 시간",
-            grade="elementary_3",
-            category="concept",
-            part="calc",
-            description="mm, cm, m, km 단위 변환, 시각과 시간의 구별, 60진법",
-        ),
-        concept(
-            id="concept-e3-frac-dec",
-            name="분수와 소수",
-            grade="elementary_3",
-            category="concept",
-            part="calc",
-            description="단위분수, 소수 도입 (0.1), 똑같이 나누기의 엄격한 적용",
-        ),
-        concept(
-            id="concept-e3-circle",
-            name="원",
+            id="concept-e3-plane-02",
+            name="평면도형 - 각과 직각",
             grade="elementary_3",
             category="concept",
             part="geo",
-            description="원의 중심, 반지름, 지름의 정의와 성질",
+            description="각(한 점에서 그은 두 반직선)의 정의, 직각(90도)의 성질, 각의 크기와 변의 길이는 무관함을 이해합니다.",
         ),
+        # ━━ 1학기 5단원: 길이와 시간 ━━
         concept(
-            id="concept-e3-frac2",
-            name="분수 2학기",
+            id="concept-e3-length-time-01",
+            name="길이와 시간 - 길이 단위와 변환",
             grade="elementary_3",
             category="concept",
             part="calc",
-            description="진분수, 가분수, 대분수, 분모가 같은 분수의 덧셈과 뺄셈",
+            description="mm, cm, m, km 단위 변환(10mm=1cm, 100cm=1m, 1000m=1km)과 자 눈금 읽기를 이해합니다.",
         ),
         concept(
-            id="concept-e3-volume-weight",
-            name="들이와 무게",
+            id="concept-e3-length-time-02",
+            name="길이와 시간 - 시각과 시간, 60진법",
             grade="elementary_3",
             category="concept",
             part="calc",
-            description="L, mL, kg, g 단위와 변환, 부피와 무게의 구별",
+            description="시각과 시간(양)을 구별하고, 60진법 기반의 시간 덧셈과 뺄셈을 정확히 계산합니다.",
+        ),
+        # ━━ 1학기 6단원: 분수와 소수 ━━
+        concept(
+            id="concept-e3-frac-dec-01",
+            name="분수와 소수 - 분수의 개념과 단위분수",
+            grade="elementary_3",
+            category="concept",
+            part="calc",
+            description="분수의 정의(전체를 '똑같이' 나눈 것 중 일부), 단위분수(분자가 1인 분수), 단위분수의 크기 비교를 이해합니다.",
         ),
         concept(
-            id="concept-e3-data",
-            name="자료의 정리",
+            id="concept-e3-frac-dec-02",
+            name="분수와 소수 - 소수의 개념과 분수-소수 관계",
+            grade="elementary_3",
+            category="concept",
+            part="calc",
+            description="소수 도입(1/10=0.1), 수직선 위 소수 위치, 분수와 소수의 관계를 이해합니다.",
+        ),
+        # ━━ 2학기 9단원: 원 ━━
+        concept(
+            id="concept-e3-circle-01",
+            name="원 - 중심·반지름·지름의 정의",
+            grade="elementary_3",
+            category="concept",
+            part="geo",
+            description="원의 중심, 반지름(중심→원 위), 지름(중심을 지나는 선분)의 정의를 이해하고, 한 원에서 모든 반지름의 길이가 같음을 압니다.",
+        ),
+        concept(
+            id="concept-e3-circle-02",
+            name="원 - 반지름과 지름의 관계·활용",
+            grade="elementary_3",
+            category="concept",
+            part="geo",
+            description="지름=반지름×2 관계를 이해하고, 컴퍼스를 사용하여 원을 그리는 원리를 알아봅니다.",
+        ),
+        # ━━ 2학기 10단원: 분수 (2) ━━
+        concept(
+            id="concept-e3-frac2-01",
+            name="분수 (2) - 진분수·가분수·대분수 분류",
+            grade="elementary_3",
+            category="concept",
+            part="calc",
+            description="진분수(분자<분모), 가분수(분자≥분모), 대분수(자연수+진분수)를 분류하고 상호 변환합니다.",
+        ),
+        concept(
+            id="concept-e3-frac2-02",
+            name="분수 (2) - 동분모 분수의 비교와 연산",
+            grade="elementary_3",
+            category="concept",
+            part="calc",
+            description="분모가 같은 분수의 크기 비교와 덧셈·뺄셈에서 분모는 그대로 두고 분자끼리 연산하는 원리를 이해합니다.",
+        ),
+        # ━━ 2학기 11단원: 들이와 무게 ━━
+        concept(
+            id="concept-e3-vol-wt-01",
+            name="들이와 무게 - 단위(L, mL, kg, g)와 변환",
+            grade="elementary_3",
+            category="concept",
+            part="calc",
+            description="들이(L, mL)와 무게(kg, g) 단위를 알고, 1L=1000mL, 1kg=1000g 변환을 정확히 합니다.",
+        ),
+        concept(
+            id="concept-e3-vol-wt-02",
+            name="들이와 무게 - 부피와 무게의 구별, 덧뺄셈",
+            grade="elementary_3",
+            category="concept",
+            part="calc",
+            description="부피(크기)와 무게는 다른 양임을 이해하고, 같은 단위끼리 들이·무게의 덧셈과 뺄셈을 합니다.",
+        ),
+        # ━━ 2학기 12단원: 자료의 정리 ━━
+        concept(
+            id="concept-e3-data-01",
+            name="자료의 정리 - 자료 수집과 표 정리",
             grade="elementary_3",
             category="concept",
             part="data",
-            description="자료 수집, 표 정리, 그림그래프 (범례 이해)",
+            description="자료를 수집하고 표로 체계적으로 정리하여 한눈에 비교·파악하는 방법을 이해합니다.",
+        ),
+        concept(
+            id="concept-e3-data-02",
+            name="자료의 정리 - 그림그래프와 범례",
+            grade="elementary_3",
+            category="concept",
+            part="data",
+            description="그림그래프에서 범례(그림 하나가 나타내는 수)를 확인하고, 그래프를 정확히 읽는 방법을 이해합니다.",
         ),
     ]
 
@@ -68,10 +141,12 @@ def get_concepts() -> list[dict]:
 def get_questions() -> list[dict]:
     """개념 문제 21개 반환 (단원당 3개)."""
     return [
-        # 1. 평면도형 (3문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 2단원: 평면도형
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e3-conc-001",
-            concept_id="concept-e3-plane",
+            concept_id="concept-e3-plane-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -90,7 +165,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-002",
-            concept_id="concept-e3-plane",
+            concept_id="concept-e3-plane-02",
             category="concept",
             part="geo",
             difficulty=4,
@@ -108,7 +183,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-003",
-            concept_id="concept-e3-plane",
+            concept_id="concept-e3-plane-02",
             category="concept",
             part="geo",
             difficulty=5,
@@ -124,10 +199,12 @@ def get_questions() -> list[dict]:
             "변의 길이와는 관계가 없습니다! "
             "변이 길어도 좁게 벌어지면 작은 각이고, 변이 짧아도 넓게 벌어지면 큰 각입니다.",
         ),
-        # 2. 길이와 시간 (3문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 5단원: 길이와 시간
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e3-conc-004",
-            concept_id="concept-e3-length-time",
+            concept_id="concept-e3-length-time-01",
             category="concept",
             part="calc",
             difficulty=4,
@@ -145,7 +222,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-005",
-            concept_id="concept-e3-length-time",
+            concept_id="concept-e3-length-time-02",
             category="concept",
             part="calc",
             difficulty=5,
@@ -164,7 +241,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-006",
-            concept_id="concept-e3-length-time",
+            concept_id="concept-e3-length-time-01",
             category="concept",
             part="calc",
             difficulty=6,
@@ -179,10 +256,12 @@ def get_questions() -> list[dict]:
             explanation="1km = 1000m입니다. "
             "길이 단위 변환: 10mm = 1cm, 100cm = 1m, 1000m = 1km",
         ),
-        # 3. 분수와 소수 (3문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 6단원: 분수와 소수
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e3-conc-007",
-            concept_id="concept-e3-frac-dec",
+            concept_id="concept-e3-frac-dec-01",
             category="concept",
             part="calc",
             difficulty=4,
@@ -200,7 +279,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-008",
-            concept_id="concept-e3-frac-dec",
+            concept_id="concept-e3-frac-dec-01",
             category="concept",
             part="calc",
             difficulty=6,
@@ -218,7 +297,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-009",
-            concept_id="concept-e3-frac-dec",
+            concept_id="concept-e3-frac-dec-02",
             category="concept",
             part="calc",
             difficulty=7,
@@ -234,10 +313,12 @@ def get_questions() -> list[dict]:
             "1/10 = 0.1입니다. "
             "소수는 0보다 작은 수가 아니라 0과 1 사이의 수입니다!",
         ),
-        # 4. 원 (3문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 9단원: 원
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e3-conc-010",
-            concept_id="concept-e3-circle",
+            concept_id="concept-e3-circle-01",
             category="concept",
             part="geo",
             difficulty=3,
@@ -255,7 +336,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-011",
-            concept_id="concept-e3-circle",
+            concept_id="concept-e3-circle-01",
             category="concept",
             part="geo",
             difficulty=5,
@@ -273,7 +354,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-012",
-            concept_id="concept-e3-circle",
+            concept_id="concept-e3-circle-02",
             category="concept",
             part="geo",
             difficulty=6,
@@ -287,10 +368,12 @@ def get_questions() -> list[dict]:
             correct="10cm",
             explanation="지름 = 반지름 × 2 = 5 × 2 = 10cm입니다.",
         ),
-        # 5. 분수 2학기 (3문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 10단원: 분수 (2)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e3-conc-013",
-            concept_id="concept-e3-frac2",
+            concept_id="concept-e3-frac2-02",
             category="concept",
             part="calc",
             difficulty=4,
@@ -308,7 +391,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-014",
-            concept_id="concept-e3-frac2",
+            concept_id="concept-e3-frac2-01",
             category="concept",
             part="calc",
             difficulty=5,
@@ -326,7 +409,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-015",
-            concept_id="concept-e3-frac2",
+            concept_id="concept-e3-frac2-02",
             category="concept",
             part="calc",
             difficulty=7,
@@ -342,10 +425,12 @@ def get_questions() -> list[dict]:
             "파이 차트로 시각적으로 확인하면: 조각의 크기(분모 7)는 불변하고, "
             "색칠된 조각의 개수(분자)만 2개 → 5개로 증가합니다.",
         ),
-        # 6. 들이와 무게 (3문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 11단원: 들이와 무게
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e3-conc-016",
-            concept_id="concept-e3-volume-weight",
+            concept_id="concept-e3-vol-wt-01",
             category="concept",
             part="calc",
             difficulty=3,
@@ -362,7 +447,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-017",
-            concept_id="concept-e3-volume-weight",
+            concept_id="concept-e3-vol-wt-02",
             category="concept",
             part="calc",
             difficulty=5,
@@ -380,7 +465,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-018",
-            concept_id="concept-e3-volume-weight",
+            concept_id="concept-e3-vol-wt-01",
             category="concept",
             part="calc",
             difficulty=6,
@@ -395,10 +480,12 @@ def get_questions() -> list[dict]:
             explanation="1kg = 1000g입니다. "
             "무게 단위 변환: 1kg = 1000g",
         ),
-        # 7. 자료의 정리 (3문제)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 12단원: 자료의 정리
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
             id="e3-conc-019",
-            concept_id="concept-e3-data",
+            concept_id="concept-e3-data-02",
             category="concept",
             part="data",
             difficulty=4,
@@ -416,7 +503,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-020",
-            concept_id="concept-e3-data",
+            concept_id="concept-e3-data-02",
             category="concept",
             part="data",
             difficulty=6,
@@ -435,7 +522,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e3-conc-021",
-            concept_id="concept-e3-data",
+            concept_id="concept-e3-data-01",
             category="concept",
             part="data",
             difficulty=7,
