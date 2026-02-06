@@ -88,7 +88,7 @@ export function FeedbackModal({
               duration: 0.5,
               x: { duration: 0.5, ease: 'easeInOut' }
             }}
-            className="fixed inset-x-4 bottom-0 z-50 mx-auto max-w-lg overflow-hidden rounded-t-3xl bg-white shadow-2xl md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:rounded-3xl"
+            className="fixed inset-x-4 bottom-0 z-50 mx-auto max-h-[85vh] max-w-lg overflow-y-auto rounded-t-3xl bg-white shadow-2xl md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:rounded-3xl"
           >
             {/* 헤더 */}
             <div

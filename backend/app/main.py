@@ -1782,6 +1782,12 @@ def migrate_concept_subdivision():
         "concept-e5-dec-mul": ["concept-e5-dec-mul-01", "concept-e5-dec-mul-02"],
         "concept-e5-cuboid": ["concept-e5-cuboid-01", "concept-e5-cuboid-02"],
         "concept-e5-average": ["concept-e5-avg-01", "concept-e5-avg-02"],
+        # ── 중1 (초기 시드 구 ID) ──
+        "concept-001": ["concept-m1-eq-01"],        # 일차방정식 → 일차방정식 기초
+        "concept-002": ["concept-m1-int-01"],        # 사칙연산 → 정수의 사칙연산
+        "concept-003": ["concept-m1-expr-01"],       # 일차부등식 → 문자와 식 기초
+        "concept-004": ["concept-m1-coord-01"],      # 좌표와 그래프 → 좌표 기초
+        "concept-005": ["concept-m1-freq-01"],       # 통계 → 도수분포 기초
         # ── 중1 ──
         "concept-m1-prime": ["concept-m1-prime-01", "concept-m1-prime-02", "concept-m1-prime-03"],
         "concept-m1-integer": ["concept-m1-int-01", "concept-m1-int-02", "concept-m1-int-03"],
