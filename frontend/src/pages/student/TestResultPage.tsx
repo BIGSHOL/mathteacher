@@ -138,8 +138,8 @@ export function TestResultPage() {
   const accuracyRate = getAccuracyRate()
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white py-4 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4">
         {/* 결과 카드 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -148,7 +148,7 @@ export function TestResultPage() {
         >
           <div className="card overflow-hidden">
             {/* 헤더 */}
-            <div className="bg-gradient-to-r from-primary-500 to-primary-600 p-6 text-center text-white">
+            <div className="bg-gradient-to-r from-primary-500 to-primary-600 p-4 sm:p-6 text-center text-white">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -162,13 +162,13 @@ export function TestResultPage() {
             </div>
 
             {/* 점수 */}
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
               <div className="mb-6 text-center">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', delay: 0.4 }}
-                  className={`text-7xl font-black ${color}`}
+                  className={`text-5xl sm:text-7xl font-black ${color}`}
                 >
                   {grade}
                 </motion.div>
@@ -329,7 +329,7 @@ export function TestResultPage() {
               transition={{ delay: 0.8 }}
               className="mt-6"
             >
-              <div className="card p-6">
+              <div className="card p-4 sm:p-6">
                 <h2 className="mb-4 text-lg font-semibold text-gray-900">오답 노트</h2>
                 <div className="space-y-4">
                   {result.answers

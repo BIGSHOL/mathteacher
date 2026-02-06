@@ -1,5 +1,6 @@
 // 수학 텍스트 렌더링 컴포넌트
 // - 지수(^) → 윗첨자  (2^a → 2ᵃ, x^{10} → x¹⁰)
+// - 대분수: 2 3/5, 3(1/4) → 세로 분수 + 자연수 결합
 // - 분수(a/b) → 세로 분수 표시
 // - 단독 알파벳 → 이탤릭체(수학 변수)
 
@@ -11,8 +12,13 @@ interface MathTextProps {
 /** 지수 패턴: ^{그룹} 또는 ^숫자들 또는 ^알파벳 */
 const SUPERSCRIPT_REGEX = /\^(?:\{([^}]+)\}|(\d+)|([a-zA-Z]))/g
 
-/** 분수 패턴: 숫자/숫자 (예: 3/4, 12/5) */
-const FRACTION_REGEX = /(\d+)\/(\d+)/g
+/**
+ * 분수/대분수 통합 패턴 (우선순위 순):
+ *  1) 대분수 형태1: "2 3/4" (자연수 공백 분수)
+ *  2) 대분수 형태2: "2(3/4)" (자연수 괄호 분수)
+ *  3) 단순 분수: "3/4"
+ */
+const MIXED_AND_FRACTION_REGEX = /(\d+)\s+(\d+)\/(\d+)|(\d+)\((\d+)\/(\d+)\)|(\d+)\/(\d+)/g
 
 /** 단독 라틴 알파벳(수학 변수) */
 const MATH_VAR_REGEX = /(?<![a-zA-Z])([a-zA-Z])(?![a-zA-Z/^])/g
@@ -48,38 +54,64 @@ function parseSuperscripts(text: string, keyOffset: number): (string | JSX.Eleme
 function InlineFraction({ numerator, denominator }: { numerator: string; denominator: string }) {
   return (
     <span
-      className="inline-flex flex-col items-center mx-0.5 relative"
+      className="inline-flex flex-col items-center mx-[1px] relative"
       style={{
-        verticalAlign: 'middle',
-        transform: 'translateY(0.1em)',
-        display: 'inline-flex'
+        verticalAlign: '-0.4em',
+        lineHeight: 1,
       }}
     >
-      <span className="text-[0.7em] leading-none px-0.5">{numerator}</span>
-      <span className="w-full border-t border-current my-[1px]" />
-      <span className="text-[0.7em] leading-none px-0.5">{denominator}</span>
+      <span className="text-[0.75em] leading-none px-[2px] text-center min-w-[1.1em]">{numerator}</span>
+      <span className="w-full border-t border-current" style={{ margin: '1px 0' }} />
+      <span className="text-[0.75em] leading-none px-[2px] text-center min-w-[1.1em]">{denominator}</span>
     </span>
   )
 }
 
-/** 텍스트에서 분수를 파싱하여 렌더링 */
+/** 대분수 표시 (자연수 + 분수) */
+function MixedNumber({ whole, numerator, denominator, keyId }: { whole: string; numerator: string; denominator: string; keyId: string }) {
+  return (
+    <span key={keyId} className="inline-flex items-center">
+      <span>{whole}</span>
+      <InlineFraction numerator={numerator} denominator={denominator} />
+    </span>
+  )
+}
+
+/** 텍스트에서 분수(대분수 포함)를 파싱하여 렌더링 */
 function parseFractions(text: string): (string | JSX.Element)[] {
   const parts: (string | JSX.Element)[] = []
   let lastIndex = 0
 
-  FRACTION_REGEX.lastIndex = 0
+  MIXED_AND_FRACTION_REGEX.lastIndex = 0
   let match: RegExpExecArray | null
-  while ((match = FRACTION_REGEX.exec(text)) !== null) {
+  while ((match = MIXED_AND_FRACTION_REGEX.exec(text)) !== null) {
     if (match.index > lastIndex) {
       parts.push(text.slice(lastIndex, match.index))
     }
-    parts.push(
-      <InlineFraction
-        key={`frac-${match.index}`}
-        numerator={match[1]!}
-        denominator={match[2]!}
-      />
-    )
+
+    if (match[1] !== undefined) {
+      // 대분수 형태1: "2 3/4"
+      parts.push(
+        <MixedNumber key={`mix-${match.index}`} keyId={`mix-${match.index}`}
+          whole={match[1]} numerator={match[2]!} denominator={match[3]!} />
+      )
+    } else if (match[4] !== undefined) {
+      // 대분수 형태2: "2(3/4)"
+      parts.push(
+        <MixedNumber key={`mix-${match.index}`} keyId={`mix-${match.index}`}
+          whole={match[4]} numerator={match[5]!} denominator={match[6]!} />
+      )
+    } else {
+      // 단순 분수: "3/4"
+      parts.push(
+        <InlineFraction
+          key={`frac-${match.index}`}
+          numerator={match[7]!}
+          denominator={match[8]!}
+        />
+      )
+    }
+
     lastIndex = match.index + match[0].length
   }
 
@@ -124,7 +156,7 @@ export function MathText({ text, className }: MathTextProps) {
   let charOffset = 0
   const supParts = parseSuperscripts(text, 0)
 
-  // 2단계: 문자열 부분에서 분수 파싱
+  // 2단계: 문자열 부분에서 분수/대분수 파싱
   const fracParts = supParts.flatMap((part) => {
     if (typeof part === 'string') {
       const parsed = parseFractions(part)

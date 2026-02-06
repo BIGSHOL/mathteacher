@@ -4,17 +4,17 @@ import { motion } from 'framer-motion'
 export function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 sm:py-16">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
+          <h1 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-4">
             개념 연산 수학
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-base sm:text-xl text-gray-600 mb-8">
             개념부터 연산까지, 체계적인 수학 학습을 시작하세요!
           </p>
 

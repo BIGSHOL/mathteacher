@@ -86,7 +86,7 @@ export function TestStartPage() {
       >
         <div className="card overflow-hidden">
           {/* 헤더 */}
-          <div className="bg-primary-500 p-6 text-white">
+          <div className="bg-primary-500 p-4 sm:p-6 text-white">
             <div className="flex items-center gap-2 flex-wrap">
               <h1 className="text-2xl font-bold">{test.title}</h1>
               {test.category && (
@@ -104,7 +104,7 @@ export function TestStartPage() {
           </div>
 
           {/* 테스트 정보 */}
-          <div className="p-6">
+          <div className="p-4 sm:p-6">
             <div className="mb-6 grid grid-cols-2 gap-4">
               <InfoItem icon="📝" label="문제 수" value={`${test.question_count}문제`} />
               <InfoItem

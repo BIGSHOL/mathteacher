@@ -89,6 +89,7 @@ export function FillInBlankInput({
                     onChange={(e) => onChange(blankId, e.target.value)}
                     onKeyDown={(e) => handleKeyDown(e, blankId)}
                     disabled={disabled}
+                    autoComplete="off"
                     className={clsx(
                       'inline-block w-24 px-2 py-1 text-center border-b bg-transparent transition-colors',
                       'focus:outline-none',

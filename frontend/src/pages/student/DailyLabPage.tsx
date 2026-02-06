@@ -168,8 +168,8 @@ export function DailyLabPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto max-w-2xl px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+      <div className="container mx-auto max-w-2xl px-3 sm:px-4">
         {/* 헤더 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -441,7 +441,7 @@ function CategoryCard({
       <span className="text-sm font-semibold text-gray-800">{record.category_label}</span>
 
       {isEmpty ? (
-        <span className="mt-1 text-[10px] text-gray-400">단원 해금 필요</span>
+        <span className="mt-1 text-xs text-gray-400">단원 해금 필요</span>
       ) : isCompleted && accuracy !== null ? (
         <span
           className={`mt-1 text-lg font-bold ${accuracy >= 80 ? 'text-green-600' : accuracy >= 50 ? 'text-yellow-600' : 'text-red-500'}`}

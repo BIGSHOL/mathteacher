@@ -26,7 +26,7 @@ export function QuestionCard({
   onBlankChange = () => {},
 }: QuestionCardProps) {
   return (
-    <div className="card p-6">
+    <div className="card p-4 sm:p-6">
       {/* 문제 번호 & 카테고리 & 난이도 */}
       <div className="mb-4 flex items-center justify-between">
         <div className="flex items-center gap-2 flex-wrap">
@@ -87,6 +87,7 @@ export function QuestionCard({
           placeholder="정답을 입력하세요"
           className="input mt-4"
           disabled={disabled}
+          autoComplete="off"
           onChange={(e) => onSelectAnswer(e.target.value)}
         />
       )}
@@ -109,7 +110,7 @@ function AnswerOption({ option, isSelected, onSelect, disabled }: AnswerOptionPr
       onClick={onSelect}
       disabled={disabled}
       className={clsx(
-        'flex w-full items-center gap-4 rounded-xl border-2 p-4 text-left transition-all',
+        'flex w-full items-center gap-4 rounded-xl border-2 p-4 text-left transition-all min-h-[3.5rem]',
         isSelected
           ? 'border-primary-500 bg-primary-50'
           : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50',
@@ -118,13 +119,13 @@ function AnswerOption({ option, isSelected, onSelect, disabled }: AnswerOptionPr
     >
       <span
         className={clsx(
-          'flex h-10 w-10 items-center justify-center rounded-full text-lg font-bold',
+          'flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-lg font-bold',
           isSelected ? 'bg-primary-500 text-white' : 'bg-gray-100 text-gray-600'
         )}
       >
         {option.label}
       </span>
-      <span className="flex-1 text-gray-800">
+      <span className="flex-1 text-gray-800 leading-relaxed">
         <MathText text={option.text} />
       </span>
     </motion.button>

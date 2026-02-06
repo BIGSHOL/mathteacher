@@ -116,8 +116,8 @@ export function StudentsListPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4">
         {/* 헤더 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -168,6 +168,7 @@ export function StudentsListPage() {
               placeholder="이름으로 검색..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              autoComplete="off"
               className="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:w-64"
             />
             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">

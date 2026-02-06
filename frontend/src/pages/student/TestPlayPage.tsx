@@ -80,7 +80,7 @@ function DifficultyChangeToast({ change }: { change: DifficultyChange }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: isUp ? -20 : 20, scale: 0.8 }}
       transition={{ type: 'spring', damping: 15, stiffness: 300 }}
-      className="fixed left-1/2 top-20 z-[60] -translate-x-1/2"
+      className="fixed left-1/2 top-24 z-[60] -translate-x-1/2 sm:top-20"
     >
       <div
         className={`flex items-center gap-3 rounded-2xl px-6 py-4 shadow-2xl ${
@@ -488,31 +488,31 @@ export function TestPlayPage() {
     <div className="min-h-screen bg-gray-50">
       {/* 헤더 */}
       <header className="sticky top-0 z-10 bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+        <div className="container mx-auto px-3 py-2 sm:px-4 sm:py-3">
+          {/* 첫 줄: 닫기 + 제목 + 타이머 */}
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <button
                 onClick={() => setShowAbandonConfirm(true)}
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
                 title="시험 중지"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                 </svg>
               </button>
-              <h1 className="text-lg font-semibold text-gray-900">
+              <h1 className="truncate text-base sm:text-lg font-semibold text-gray-900">
                 {attemptDetail.test.title}
               </h1>
               {isAdaptive && (
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${getDifficultyColor(currentDifficulty)}`}
+                  className={`hidden sm:inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${getDifficultyColor(currentDifficulty)}`}
                 >
                   Lv.{currentDifficulty} {getDifficultyLabel(currentDifficulty)}
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-3">
-              {/* 카운트다운 타이머 */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
               {category && !isFetchingNext && (
                 <CountdownTimer
                   key={timerKey}
@@ -521,9 +521,29 @@ export function TestPlayPage() {
                   onTimeUp={handleTimeUp}
                 />
               )}
+              <div className="hidden sm:flex items-center gap-3">
+                <ComboDisplay combo={combo} />
+                <div className="text-sm font-medium text-gray-600">
+                  점수: <span className="text-primary-500">{score}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* 모바일 둘째 줄: 난이도 + 콤보 + 점수 */}
+          <div className="flex items-center justify-between mt-1 sm:hidden">
+            <div className="flex items-center gap-2">
+              {isAdaptive && (
+                <span
+                  className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${getDifficultyColor(currentDifficulty)}`}
+                >
+                  Lv.{currentDifficulty}
+                </span>
+              )}
+            </div>
+            <div className="flex items-center gap-3">
               <ComboDisplay combo={combo} />
               <div className="text-sm font-medium text-gray-600">
-                점수: <span className="text-primary-500">{score}</span>
+                <span className="text-primary-500">{score}</span>점
               </div>
             </div>
           </div>
@@ -532,7 +552,7 @@ export function TestPlayPage() {
       </header>
 
       {/* 문제 */}
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-3 py-4 sm:px-4 sm:py-6">
         {isFetchingNext ? (
           <div className="flex items-center justify-center py-20">
             <div className="text-center">

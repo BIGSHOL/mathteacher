@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import api from '../../lib/api'
 import type { Grade, QuestionCategory, QuestionType, ProblemPart, PaginatedResponse } from '../../types'
+import { MathText } from '../../components/common/MathText'
 
 interface QuestionItem {
   id: string
@@ -507,6 +508,7 @@ export function QuestionBankPage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="문제 내용으로 검색..."
+                autoComplete="off"
                 className="w-full rounded-lg border border-gray-200 px-3 py-1.5 text-sm focus:border-primary-400 focus:outline-none focus:ring-1 focus:ring-primary-400"
               />
             </div>
@@ -572,7 +574,7 @@ export function QuestionBankPage() {
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="line-clamp-2 text-gray-900">{q.content}</p>
+                        <p className="line-clamp-2 text-gray-900"><MathText text={q.content} /></p>
                       </td>
                       <td className="px-3 py-3">
                         <span className="text-xs text-gray-600">{q.concept_name || '-'}</span>
@@ -782,7 +784,7 @@ function QuestionDetailModal({
 
         {/* 문제 내용 */}
         <div className="mb-4 rounded-lg bg-gray-50 p-4">
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-900">{q.content}</p>
+          <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-900"><MathText text={q.content} /></p>
         </div>
 
         {/* 선택지 */}
@@ -799,7 +801,7 @@ function QuestionDetailModal({
                 }`}
               >
                 <span className="mr-2 font-bold">{opt.label}.</span>
-                {opt.text}
+                <MathText text={opt.text} />
                 {opt.id === q.correct_answer && (
                   <span className="ml-2 text-xs text-green-600">&#10003; 정답</span>
                 )}
@@ -813,7 +815,7 @@ function QuestionDetailModal({
           <div className="mb-4">
             <p className="text-xs font-medium text-gray-500 mb-1">정답</p>
             <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-sm font-medium text-green-800">
-              {q.correct_answer}
+              <MathText text={q.correct_answer} />
             </div>
           </div>
         )}
@@ -823,7 +825,7 @@ function QuestionDetailModal({
           <div className="mb-4">
             <p className="text-xs font-medium text-gray-500 mb-1">해설</p>
             <div className="rounded-lg bg-blue-50 px-3 py-2 text-sm text-gray-700 whitespace-pre-wrap">
-              {q.explanation}
+              <MathText text={q.explanation} />
             </div>
           </div>
         )}

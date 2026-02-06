@@ -128,13 +128,13 @@ export function QuickPracticeSetupPage() {
               <h3 className="mb-3 text-sm font-semibold text-gray-700">
                 시작 난이도: <span className="text-primary-600">Lv.{difficulty}</span>
               </h3>
-              <div className="grid grid-cols-5 gap-1.5">
+              <div className="grid grid-cols-5 gap-2">
                 {Array.from({ length: 10 }, (_, i) => i + 1).map((lv) => (
                   <button
                     key={lv}
                     onClick={() => setDifficulty(lv)}
                     className={clsx(
-                      'rounded-lg py-2 text-center text-sm font-medium transition-all',
+                      'rounded-lg py-2.5 text-center text-sm font-medium transition-all',
                       difficulty === lv
                         ? 'bg-primary-500 text-white shadow-sm'
                         : 'bg-gray-100 text-gray-600 hover:bg-gray-200'

@@ -256,8 +256,8 @@ export function StudentDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4">
         {/* 뒤로가기 */}
         <button
           onClick={() => navigate('/teacher/students')}
@@ -406,6 +406,7 @@ export function StudentDetailPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   placeholder="새 비밀번호 (6자 이상)"
+                  autoComplete="off"
                   className="mb-4 w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
                 />
                 <div className="flex justify-end gap-3">

@@ -18,7 +18,7 @@ function Section({ icon, title, isOpen, onToggle, children }: SectionProps) {
     <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
       <button
         onClick={onToggle}
-        className="flex w-full items-center justify-between px-6 py-5 text-left transition-colors hover:bg-gray-50"
+        className="flex w-full items-center justify-between px-4 py-4 sm:px-6 sm:py-5 text-left transition-colors hover:bg-gray-50"
       >
         <div className="flex items-center gap-3">
           <span className="text-2xl">{icon}</span>
@@ -42,7 +42,7 @@ function Section({ icon, title, isOpen, onToggle, children }: SectionProps) {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <div className="border-t border-gray-100 px-6 py-5 text-gray-700 leading-relaxed">
+            <div className="border-t border-gray-100 px-4 py-4 sm:px-6 sm:py-5 text-gray-700 leading-relaxed">
               {children}
             </div>
           </motion.div>

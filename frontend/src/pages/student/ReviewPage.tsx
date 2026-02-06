@@ -101,14 +101,14 @@ export function ReviewPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
+      <div className="container mx-auto px-3 sm:px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-6 sm:mb-8"
         >
-          <h1 className="text-2xl font-bold text-gray-900">복습하기</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">복습하기</h1>
           <p className="text-gray-600">
             틀렸던 문제를 다시 풀어보세요 ({data?.total ?? 0}문제)
           </p>
@@ -141,7 +141,7 @@ export function ReviewPage() {
                   className="overflow-hidden rounded-2xl bg-white shadow-sm"
                 >
                   {/* 문제 헤더 */}
-                  <div className="border-b border-gray-100 px-6 py-4">
+                  <div className="border-b border-gray-100 px-4 py-3 sm:px-6 sm:py-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-100 text-sm font-bold text-primary-600">
@@ -158,7 +158,7 @@ export function ReviewPage() {
                   </div>
 
                   {/* 문제 내용 */}
-                  <div className="px-6 py-4">
+                  <div className="px-4 py-3 sm:px-6 sm:py-4">
                     <p className="mb-4 text-lg font-medium text-gray-900">
                       <MathText text={item.question.content} />
                     </p>
@@ -190,12 +190,12 @@ export function ReviewPage() {
                               key={opt.id}
                               onClick={() => handleSelect(qId, opt.label)}
                               disabled={isRevealed}
-                              className={`flex w-full items-center gap-3 rounded-xl border-2 p-3 text-left transition-all ${optionClass}`}
+                              className={`flex w-full items-center gap-3 rounded-xl border-2 p-3 text-left transition-all min-h-[3rem] ${optionClass}`}
                             >
                               <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-sm font-bold text-gray-600">
                                 {opt.label}
                               </span>
-                              <span className="text-gray-800"><MathText text={opt.text} /></span>
+                              <span className="text-gray-800 leading-relaxed"><MathText text={opt.text} /></span>
                               {isRevealed && isThisCorrect && (
                                 <span className="ml-auto text-green-600 font-medium text-sm">정답</span>
                               )}
