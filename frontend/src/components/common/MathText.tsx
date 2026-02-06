@@ -152,9 +152,12 @@ function parseVars(text: string, keyOffset: number): (string | JSX.Element)[] {
 }
 
 export function MathText({ text, className }: MathTextProps) {
+  // 0단계: LaTeX $...$ 구분자 제거 (AI 생성 문제 호환)
+  const cleaned = text.replace(/\$/g, '')
+
   // 1단계: 지수(^) 파싱 → 윗첨자
   let charOffset = 0
-  const supParts = parseSuperscripts(text, 0)
+  const supParts = parseSuperscripts(cleaned, 0)
 
   // 2단계: 문자열 부분에서 분수/대분수 파싱
   const fracParts = supParts.flatMap((part) => {

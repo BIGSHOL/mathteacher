@@ -1710,14 +1710,17 @@ def _cleanup_today_daily_tests(db):
 
     for record in records:
         test_id = record.test_id
-        # 연결된 attempt와 answer_log 삭제
-        if record.attempt_id:
-            db.query(AnswerLog).filter(AnswerLog.attempt_id == record.attempt_id).delete()
-            db.query(TestAttempt).filter(TestAttempt.id == record.attempt_id).delete()
-        # DailyTestRecord 먼저 삭제 (FK 제약 해소)
+        attempt_id = record.attempt_id
+        # 1. DailyTestRecord 먼저 삭제 (test_id, attempt_id FK 해소)
         db.delete(record)
         db.flush()
-        # 일일 테스트 Test 레코드 삭제
+        # 2. AnswerLog 삭제 (attempt_id FK 해소)
+        if attempt_id:
+            db.query(AnswerLog).filter(AnswerLog.attempt_id == attempt_id).delete()
+        # 3. TestAttempt 삭제
+        if attempt_id:
+            db.query(TestAttempt).filter(TestAttempt.id == attempt_id).delete()
+        # 4. Test 삭제
         if test_id:
             db.query(Test).filter(Test.id == test_id).delete()
 
