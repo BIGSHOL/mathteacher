@@ -1698,6 +1698,97 @@ def update_chapter_concept_ids():
         db.close()
 
 
+def audit_question_categories():
+    """DB 문제의 category가 실제 내용과 맞는지 검토하고 자동 수정."""
+    from app.models.question import Question
+
+    # -- 1단계: computation → concept 패턴 (연산인데 개념형) --
+    COMP_TO_CONCEPT_PATTERNS = [
+        re.compile(r"몇\s*개|개수|몇\s*가지"),                          # 개수 세기
+        re.compile(r"정의|뜻[은이]|의미"),                               # 정의/용어
+        re.compile(r"라\s*한다|이라\s*한다"),                            # ~라 한다
+        re.compile(r"성질|특징|옳은\s*것|옳지\s*않은\s*것|바른\s*것"),   # 성질/특징
+        re.compile(r"분류|구별|판별"),                                    # 분류
+        re.compile(r"인\s*것[은을]|이\s*아닌\s*것"),                     # ~인 것은
+        re.compile(r"_{2,}[도를이]|_{2,}\s*(라고?\s*한다|이라)"),        # 용어 빈칸
+        re.compile(r"예\s*/\s*아니오|존재하는가|존재하지\s*않"),          # 판별형
+        re.compile(r"무엇인가\??$|무엇일까\??$"),                        # 암기형
+    ]
+
+    # -- 2단계: concept → computation 패턴 (개념인데 연산형) --
+    CALC_INSTRUCTION = re.compile(r"계산하[시여면]오?|구하[시여면]오?|값[은을]\s*구|얼마")
+    CALC_EXPRESSION = re.compile(r"[\d]+\s*[+\-×÷*/]\s*[\d]+")
+    CONCEPT_CONTEXT = re.compile(r"정의|성질|옳은|설명|이유|특징")
+
+    db = SyncSessionLocal()
+    try:
+        questions = db.query(Question).filter(
+            Question.is_active == True,  # noqa: E712
+        ).all()
+
+        recategorized = 0
+        deactivated = 0
+
+        for q in questions:
+            content = q.content or ""
+            original_cat = q.category
+
+            # 1단계: computation → concept
+            if q.category == "computation":
+                for pat in COMP_TO_CONCEPT_PATTERNS:
+                    if pat.search(content):
+                        q.category = "concept"
+                        recategorized += 1
+                        logger.info(
+                            "카테고리 변경 comp→concept: %s | %s",
+                            q.id, content[:60],
+                        )
+                        break
+
+            # 2단계: concept → computation
+            elif q.category == "concept":
+                if (CALC_INSTRUCTION.search(content)
+                        and CALC_EXPRESSION.search(content)
+                        and not CONCEPT_CONTEXT.search(content)):
+                    q.category = "computation"
+                    recategorized += 1
+                    logger.info(
+                        "카테고리 변경 concept→comp: %s | %s",
+                        q.id, content[:60],
+                    )
+
+            # 3단계: 재분류 후 연산 품질 검증 (AI 문제만 비활성화)
+            if q.category == "computation" and q.id.startswith("ai-"):
+                bad_comp = False
+                if re.search(r"_{2,}[도를이]|_{2,}\s*(라고?\s*한다|이라)", content):
+                    bad_comp = True
+                if re.search(r"예\s*/\s*아니오|존재하는가|존재하지\s*않", content):
+                    bad_comp = True
+                if re.search(r"무엇인가\??$|무엇일까\??$", content.strip()):
+                    bad_comp = True
+                if bad_comp:
+                    q.is_active = False
+                    deactivated += 1
+                    logger.info(
+                        "연산 부적합 AI 문제 비활성화: %s | %s",
+                        q.id, content[:60],
+                    )
+
+        db.commit()
+        if recategorized or deactivated:
+            logger.info(
+                "카테고리 감사 완료: %d개 재분류, %d개 비활성화",
+                recategorized, deactivated,
+            )
+        else:
+            logger.info("카테고리 감사 완료: 변경 없음")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"카테고리 감사 실패: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
 def fix_mc_answer_mismatch():
     """객관식 문제의 정답 라벨-해설 불일치를 자동 수정."""
     from app.models.question import Question
@@ -2377,6 +2468,7 @@ async def lifespan(app: FastAPI):
     await loop.run_in_executor(None, migrate_chapter_semester_numbering)
     await loop.run_in_executor(None, migrate_test_category)
     await loop.run_in_executor(None, fix_mc_answer_mismatch)
+    await loop.run_in_executor(None, audit_question_categories)
     await loop.run_in_executor(None, migrate_concept_sequential_unlock)
     await loop.run_in_executor(None, cleanup_bad_ai_questions)
     yield
