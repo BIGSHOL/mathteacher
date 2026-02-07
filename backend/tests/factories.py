@@ -114,3 +114,75 @@ class TestAttemptFactory(factory.Factory):
     total_count = 10
     xp_earned = 0
     combo_max = 0
+
+
+class ChapterFactory(factory.Factory):
+    """단원 팩토리."""
+
+    class Meta:
+        model = dict
+
+    id = Sequence(lambda n: f"chapter-{n:03d}")
+    name = Faker("sentence", nb_words=3)
+    grade = Grade.MIDDLE_1
+    semester = 1
+    chapter_number = Sequence(lambda n: n)
+    concept_ids = factory.LazyFunction(lambda: [])
+    is_active = True
+    prerequisite_chapter_ids = factory.LazyFunction(lambda: [])
+    description = Faker("paragraph")
+    mastery_threshold = 80
+    final_test_pass_score = 70
+    require_teacher_approval = False
+
+
+class ChapterProgressFactory(factory.Factory):
+    """단원 진행 상황 팩토리."""
+
+    class Meta:
+        model = dict
+
+    id = Sequence(lambda n: f"chapter-progress-{n:03d}")
+    student_id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
+    chapter_id = Sequence(lambda n: f"chapter-{n:03d}")
+    is_unlocked = False
+    is_completed = False
+    overall_progress = 0.0
+    teacher_approved = False
+    final_test_attempted = False
+    final_test_passed = False
+
+
+class ConceptMasteryFactory(factory.Factory):
+    """개념 숙련도 팩토리."""
+
+    class Meta:
+        model = dict
+
+    id = Sequence(lambda n: f"mastery-{n:03d}")
+    student_id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
+    concept_id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
+    is_unlocked = False
+    is_mastered = False
+    mastery_percentage = 0.0
+    total_attempts = 0
+    correct_count = 0
+    average_score = 0.0
+
+
+class AnswerLogFactory(factory.Factory):
+    """답안 기록 팩토리."""
+
+    class Meta:
+        model = dict
+
+    id = Sequence(lambda n: f"answer-log-{n:03d}")
+    attempt_id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
+    question_id = factory.LazyFunction(lambda: str(factory.Faker._get_faker().uuid4()))
+    selected_answer = "A"
+    is_correct = True
+    time_spent_seconds = 10
+    combo_count = 0
+    points_earned = 0
+    question_difficulty = 5
+    question_category = "concept"

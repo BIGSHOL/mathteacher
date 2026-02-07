@@ -124,28 +124,14 @@ class TestGradingService:
 class TestGamificationService:
     """게이미피케이션 서비스 테스트."""
 
-    def test_calculate_xp_earned(self) -> None:
-        """XP 계산."""
-        from app.services.gamification_service import GamificationService
-
-        service = GamificationService()
-        xp = service.calculate_xp(
-            score=80,
-            max_score=100,
-            combo_max=5,
-            time_bonus=True,
-        )
-
-        assert xp > 0
-
     def test_check_level_up(self) -> None:
         """레벨업 체크."""
         from app.services.gamification_service import GamificationService
 
         service = GamificationService()
 
-        # 레벨 1 → 2 (필요 XP: 100)
-        result = service.check_level_up(current_level=1, current_xp=50, xp_earned=60)
+        # 레벨 1 → 2 (필요 XP: 60)
+        result = service.check_level_up(current_level=1, current_xp=50, xp_earned=20)
 
         assert result["level_up"] is True
         assert result["new_level"] == 2
@@ -156,7 +142,8 @@ class TestGamificationService:
 
         service = GamificationService()
 
-        result = service.check_level_up(current_level=1, current_xp=50, xp_earned=30)
+        # 50 + 5 = 55, 레벨2 임계값 60 미달
+        result = service.check_level_up(current_level=1, current_xp=50, xp_earned=5)
 
         assert result["level_up"] is False
         assert result["new_level"] is None

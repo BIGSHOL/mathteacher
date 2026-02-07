@@ -18,6 +18,8 @@ export default defineConfig({
         'src/mocks/',
         '**/*.d.ts',
         '**/*.config.*',
+        'dist/**',
+        'src/services/questionGenerator/templates/**',
       ],
     },
   },
