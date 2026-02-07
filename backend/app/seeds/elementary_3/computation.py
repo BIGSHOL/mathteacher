@@ -243,7 +243,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-comp-008",
             concept_id="concept-e3-div1-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=5,
             content="다음 중 틀린 설명은?",
@@ -318,7 +318,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-comp-012",
             concept_id="concept-e3-mul2-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=7,
             content="다음 계산 과정에서 0을 쓰는 이유는?\n\n    3 4\n  × 1 2\n  -----\n    6 8  ← 34 × 2\n  3 4 0  ← 34 × 10\n  -----\n  4 0 8",

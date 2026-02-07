@@ -97,7 +97,7 @@ def get_computation_data() -> dict:
         mc(
             id="m3-comp-003",
             concept_id="concept-m3-sqrt-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=3,
             content="다음 중 옳은 것은?",
@@ -138,7 +138,7 @@ def get_computation_data() -> dict:
         mc(
             id="m3-comp-006",
             concept_id="concept-m3-sqrt-03",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=6,
             content="다음 중 옳은 것은?",

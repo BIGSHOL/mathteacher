@@ -119,7 +119,7 @@ def get_computation_data() -> dict:
         mc(
             id="m1-comp-001",
             concept_id="concept-m1-prime-01",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=2,
             content="다음 중 소수가 아닌 것은?",
@@ -131,7 +131,7 @@ def get_computation_data() -> dict:
         mc(
             id="m1-comp-002",
             concept_id="concept-m1-prime-01",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=4,
             content="다음 중 옳은 것은?",
@@ -173,7 +173,7 @@ def get_computation_data() -> dict:
         mc(
             id="m1-comp-005",
             concept_id="concept-m1-int-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=5,
             content="다음 중 옳지 않은 것은?",
