@@ -164,7 +164,7 @@ function VerticalCalculation({ content }: { content: string }) {
   // 줄 단위로 분리하여 각 줄을 우측 정렬된 텍스트로 표시
   const lines = content.trim().split('\n')
   return (
-    <div className="my-2 inline-block bg-gray-50 border border-gray-200 rounded-lg p-3 font-mono text-sm leading-relaxed shadow-sm">
+    <div className="my-4 block w-fit bg-gray-50 border border-gray-200 rounded-lg p-3 font-mono text-sm leading-relaxed shadow-sm">
       <div className="flex flex-col items-end">
         {lines.map((line, i) => {
           // 구분선(---)인 경우 실제 선으로 렌더링
