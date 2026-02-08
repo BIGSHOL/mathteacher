@@ -11,6 +11,8 @@ import {
 } from '../../services/questionService'
 import type { Grade } from '../../types'
 import { MathText } from '../../components/common/MathText'
+import { generateQuestions as generateRuleBasedQuestions } from '../../services/questionGenerator/engine'
+import { ALL_TEMPLATES } from '../../services/questionGenerator/templates'
 
 interface ChapterItem {
   id: string
@@ -28,7 +30,7 @@ interface ConceptItem {
   category?: string
 }
 
-type Strategy = 'ai' | 'fb_derive'
+type Strategy = 'ai' | 'fb_derive' | 'template'
 type Step = 'config' | 'generating' | 'review' | 'saving' | 'done'
 
 const GRADE_OPTIONS: { value: Grade; label: string }[] = [
@@ -227,6 +229,35 @@ export function QuestionGenerationPage() {
         })
         setGenerated(result.generated)
         setSelected(new Set(result.generated.map((_, i) => i)))
+      } else if (strategy === 'template') {
+        // 룰 베이스 템플릿 엔진 사용
+        const matchingTemplates = ALL_TEMPLATES.filter(t => t.conceptId === conceptId)
+        if (matchingTemplates.length === 0) {
+          throw new Error('이 개념에 대한 템플릿이 정의되지 않았습니다.')
+        }
+
+        const questions = generateRuleBasedQuestions(
+          {
+            grade: grade as Grade,
+            category: (isComputation ? 'computation' : 'concept') as any,
+            level: diffMin, // 현재는 단일 레벨 혹은 min 기준으로 생성
+            count: count
+          },
+          matchingTemplates
+        )
+
+        if (questions.length === 0) {
+          throw new Error('조건에 맞는 문제를 생성할 수 없습니다. (데이터 부족)')
+        }
+
+        // 백엔드 스키마와 호환되도록 필드명 보완 (AI 생성 결과와 맞춤)
+        const formatted = questions.map(q => ({
+          ...q,
+          _is_template: true
+        }))
+
+        setGenerated(formatted as any)
+        setSelected(new Set(formatted.map((_, i) => i)))
       } else {
         const result = await deriveFillBlank({
           concept_id: conceptId,
@@ -360,6 +391,22 @@ export function QuestionGenerationPage() {
                     className="hidden"
                   />
                   FB 파생
+                </label>
+                <label
+                  className={`flex cursor-pointer items-center gap-2 rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-colors ${strategy === 'template'
+                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                    }`}
+                >
+                  <input
+                    type="radio"
+                    name="strategy"
+                    value="template"
+                    checked={strategy === 'template'}
+                    onChange={() => setStrategy('template')}
+                    className="hidden"
+                  />
+                  템플릿 생성
                 </label>
               </div>
             </div>
@@ -592,7 +639,7 @@ export function QuestionGenerationPage() {
 
             {isComputation && strategy === 'ai' && (
               <p className="mt-2 text-sm text-amber-600">
-                연산 문제는 AI 생성 대상이 아닙니다. 템플릿 생성기를 사용하거나 FB 파생을 선택하세요.
+                연산 문제는 AI 생성보다 <strong>템플릿 생성</strong>을 권장합니다. (비용 절감 및 정확도 100%)
               </p>
             )}
 
@@ -790,7 +837,7 @@ export function QuestionGenerationPage() {
                                           : 'border-gray-200 bg-gray-50 text-gray-700'
                                           }`}
                                       >
-                                        <span className="font-medium">{opt.label}.</span> {opt.text}
+                                        <span className="font-medium">{opt.label}.</span> <MathText text={opt.text} />
                                       </div>
                                     ))}
                                   </div>
@@ -802,7 +849,7 @@ export function QuestionGenerationPage() {
                                 <div>
                                   <div className="mb-1 text-xs font-semibold text-gray-500">해설</div>
                                   <div className="rounded-lg bg-blue-50 px-3 py-2 text-sm text-gray-700">
-                                    {String(q.explanation)}
+                                    <MathText text={String(q.explanation)} />
                                   </div>
                                 </div>
                               ) : null}
