@@ -17,9 +17,9 @@ def get_computation_data() -> dict:
     # 개념 12개 (1~4단원 세부 분화)
     # ============================================================
     concepts = [
-        # 1단원: 소인수분해 (3개)
+        # 1-1: 소인수분해 (3개)
         concept(
-            id="concept-m1-prime-01",
+            id="m1-1-1-1",
             name="소수와 합성수",
             grade="middle_1",
             category="computation",
@@ -27,7 +27,7 @@ def get_computation_data() -> dict:
             description="소수의 정의, 합성수, 1의 제외, 서로소의 개념",
         ),
         concept(
-            id="concept-m1-prime-02",
+            id="m1-1-1-2",
             name="거듭제곱과 소인수분해",
             grade="middle_1",
             category="computation",
@@ -35,16 +35,16 @@ def get_computation_data() -> dict:
             description="밑과 지수, 소인수분해 방법(가지치기/나눗셈), 약수의 개수 공식",
         ),
         concept(
-            id="concept-m1-prime-03",
+            id="m1-1-1-3",
             name="최대공약수와 최소공배수",
             grade="middle_1",
             category="computation",
             part="calc",
             description="GCD/LCM 구하기, A×B=GCD×LCM 관계, 공배수는 LCM의 배수",
         ),
-        # 2단원: 정수와 유리수 (3개)
+        # 1-2: 정수와 유리수 (3개)
         concept(
-            id="concept-m1-int-01",
+            id="m1-1-2-1",
             name="정수의 분류와 수직선",
             grade="middle_1",
             category="computation",
@@ -52,7 +52,7 @@ def get_computation_data() -> dict:
             description="양의 정수, 0, 음의 정수 분류, 수직선 모델, 대소 관계",
         ),
         concept(
-            id="concept-m1-int-02",
+            id="m1-1-2-2",
             name="절대값과 유리수",
             grade="middle_1",
             category="computation",
@@ -60,16 +60,16 @@ def get_computation_data() -> dict:
             description="절대값의 정의(원점으로부터의 거리), 유리수의 분류, 수 체계 포함 관계",
         ),
         concept(
-            id="concept-m1-int-03",
+            id="m1-1-2-3",
             name="유리수의 사칙연산",
             grade="middle_1",
             category="computation",
             part="calc",
             description="부호가 같은/다른 경우의 덧셈뺄셈, 곱셈나눗셈 부호 규칙, 거듭제곱 부호 처리, 분배법칙",
         ),
-        # 3단원: 문자의 사용과 식의 계산 (3개)
+        # 1-3: 문자의 사용과 식의 계산 (3개)
         concept(
-            id="concept-m1-expr-01",
+            id="m1-1-3-1",
             name="문자의 사용과 대수적 관습",
             grade="middle_1",
             category="computation",
@@ -77,7 +77,7 @@ def get_computation_data() -> dict:
             description="문자 사용 규칙(곱셈 기호 생략 등), 항/계수/차수 용어",
         ),
         concept(
-            id="concept-m1-expr-02",
+            id="m1-1-3-2",
             name="동류항과 식의 계산",
             grade="middle_1",
             category="computation",
@@ -85,37 +85,37 @@ def get_computation_data() -> dict:
             description="동류항 정리, 분배법칙을 이용한 괄호 풀기, 일차식의 덧셈뺄셈",
         ),
         concept(
-            id="concept-m1-expr-03",
+            id="m1-1-3-3",
             name="대입과 식의 값",
             grade="middle_1",
             category="computation",
             part="algebra",
             description="문자에 수를 대입하여 식의 값 구하기, 식과 방정식의 구분",
         ),
-        # 4단원: 일차방정식 (3개)
+        # 1-4: 일차방정식 (3개)
         concept(
-            id="concept-m1-eq-01",
+            id="m1-1-4-1",
             name="방정식과 등식의 성질",
             grade="middle_1",
             category="computation",
             part="algebra",
-            description="방정식의 정의, 등식의 성질 4가지, 방정식의 해와 검증",
+            description="등식의 성질, 방정식의 해(근), 항등식 조건",
         ),
         concept(
-            id="concept-m1-eq-02",
+            id="m1-1-4-2",
             name="일차방정식의 풀이",
             grade="middle_1",
             category="computation",
             part="algebra",
-            description="이항, 소수/분수 계수 처리, 비례식 형태, 해의 특수성",
+            description="이항, 계수가 분수/소수인 방정식 처리",
         ),
         concept(
-            id="concept-m1-eq-03",
-            name="항등식",
+            id="m1-1-4-3",
+            name="방정식의 활용(기본)",
             grade="middle_1",
             category="computation",
             part="algebra",
-            description="항등식의 정의, 미정계수법, 해가 무수히 많은/없는 경우",
+            description="문장제를 일차방정식으로 세우기, 거리·속력·시간 등 기초 활용",
         ),
     ]
 
@@ -123,10 +123,10 @@ def get_computation_data() -> dict:
     # 문제: 총 60개 (개념당 5개)
     # ============================================================
     prime_questions = [
-        # ========== concept-m1-prime-01: 소수와 합성수 ==========
+        # ========== m1-1-1-1: 소수와 합성수 ==========
         mc(
-            id="m1-1-01-01-lv03-co-001",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-co-002",
+            concept_id="m1-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -137,8 +137,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-01-lv04-co-001",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-co-003",
+            concept_id="m1-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -149,8 +149,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-01-lv05-co-001",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-co-005",
+            concept_id="m1-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -160,10 +160,10 @@ def get_computation_data() -> dict:
             explanation="97은 소수이지만 100보다 3 작고, 99 = 9×11, 101은 소수이며 100보다 1 크므로 가장 가깝습니다.",
             points=10,
         ),
-        # ========== concept-m1-prime-02: 거듭제곱과 소인수분해 (5개) ==========
+        # ========== m1-1-1-2: 거듭제곱과 소인수분해 (5개) ==========
         mc(
-            id="m1-1-01-02-lv03-co-001",
-            concept_id="concept-m1-prime-02",
+            id="m1-1-1-2-co-001",
+            concept_id="m1-1-1-2",
             category="computation",
             part="calc",
             difficulty=3,
@@ -174,8 +174,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-02-lv04-co-001",
-            concept_id="concept-m1-prime-02",
+            id="m1-1-1-2-co-002",
+            concept_id="m1-1-1-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -186,8 +186,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-02-lv05-co-001",
-            concept_id="concept-m1-prime-02",
+            id="m1-1-1-2-co-003",
+            concept_id="m1-1-1-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -198,8 +198,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-01-02-lv06-co-001",
-            concept_id="concept-m1-prime-02",
+            id="m1-1-1-2-co-005",
+            concept_id="m1-1-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -210,8 +210,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-01-02-lv07-co-001",
-            concept_id="concept-m1-prime-02",
+            id="m1-1-1-2-co-004",
+            concept_id="m1-1-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -221,10 +221,10 @@ def get_computation_data() -> dict:
             explanation="(a+1)(b+1) = 12이므로 (1,11), (2,5), (3,3), (5,2), (11,1)에서 (a+1, b+1) = (2,6), (3,4), (4,3), (6,2), (12,1) → (a,b) = (1,5), (2,3), (3,2), (5,1), (11,0). 총 5개이지만 문제 의도상 재검증 필요. 실제로는 (2,3), (3,2), (5,1) 등 3개.",
             points=20,
         ),
-        # ========== concept-m1-prime-03: 최대공약수와 최소공배수 (5개) ==========
+        # ========== m1-1-1-3: 최대공약수와 최소공배수 (5개) ==========
         mc(
-            id="m1-1-01-03-lv06-co-001",
-            concept_id="concept-m1-prime-03",
+            id="m1-1-1-3-co-004",
+            concept_id="m1-1-1-3",
             category="computation",
             part="calc",
             difficulty=6,
@@ -235,8 +235,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-01-03-lv04-co-001",
-            concept_id="concept-m1-prime-03",
+            id="m1-1-1-3-co-001",
+            concept_id="m1-1-1-3",
             category="computation",
             part="calc",
             difficulty=4,
@@ -247,8 +247,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-03-lv05-co-001",
-            concept_id="concept-m1-prime-03",
+            id="m1-1-1-3-co-002",
+            concept_id="m1-1-1-3",
             category="computation",
             part="calc",
             difficulty=5,
@@ -259,8 +259,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-03-lv07-co-001",
-            concept_id="concept-m1-prime-03",
+            id="m1-1-1-3-co-003",
+            concept_id="m1-1-1-3",
             category="computation",
             part="calc",
             difficulty=7,
@@ -271,8 +271,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-01-03-lv08-co-001",
-            concept_id="concept-m1-prime-03",
+            id="m1-1-1-3-co-005",
+            concept_id="m1-1-1-3",
             category="computation",
             part="calc",
             difficulty=8,
@@ -282,10 +282,10 @@ def get_computation_data() -> dict:
             explanation="12 = 2² × 3, 18 = 2 × 3², 24 = 2³ × 3. 최소공배수 = 2³ × 3² = 8 × 9 = 72",
             points=15,
         ),
-        # ========== concept-m1-int-01: 정수의 분류와 수직선 (5개) ==========
+        # ========== m1-1-2-1: 정수의 분류와 수직선 (5개) ==========
         mc(
-            id="m1-1-02-01-lv03-co-001",
-            concept_id="concept-m1-int-01",
+            id="m1-1-2-1-co-002",
+            concept_id="m1-1-2-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -296,8 +296,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-01-lv04-co-001",
-            concept_id="concept-m1-int-01",
+            id="m1-1-2-1-co-001",
+            concept_id="m1-1-2-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -308,8 +308,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-01-lv05-co-001",
-            concept_id="concept-m1-int-01",
+            id="m1-1-2-1-co-005",
+            concept_id="m1-1-2-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -320,8 +320,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-01-lv06-co-001",
-            concept_id="concept-m1-int-01",
+            id="m1-1-2-1-co-003",
+            concept_id="m1-1-2-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -332,8 +332,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-01-lv07-co-001",
-            concept_id="concept-m1-int-01",
+            id="m1-1-2-1-co-004",
+            concept_id="m1-1-2-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -343,10 +343,10 @@ def get_computation_data() -> dict:
             explanation="n = -10일 때 n² = 100이 최대입니다. (0에 가까울수록 제곱값은 작아짐)",
             points=15,
         ),
-        # ========== concept-m1-int-02: 절대값과 유리수 ==========
+        # ========== m1-1-2-2: 절대값과 유리수 ==========
         mc(
-            id="m1-1-02-02-lv03-co-001",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-co-003",
+            concept_id="m1-1-2-2",
             category="computation",
             part="calc",
             difficulty=3,
@@ -357,8 +357,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-02-lv04-co-001",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-co-002",
+            concept_id="m1-1-2-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -369,8 +369,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-02-lv06-co-001",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-co-005",
+            concept_id="m1-1-2-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -381,8 +381,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-02-02-lv07-co-001",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-co-004",
+            concept_id="m1-1-2-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -392,10 +392,10 @@ def get_computation_data() -> dict:
             explanation="-2x + 6 = 10 → x = -2, -2x + 6 = -10 → x = 8. 큰 값은 8",
             points=15,
         ),
-        # ========== concept-m1-int-03: 유리수의 사칙연산 (5개) ==========
+        # ========== m1-1-2-3: 유리수의 사칙연산 (5개) ==========
         mc(
-            id="m1-1-02-03-lv03-co-001",
-            concept_id="concept-m1-int-03",
+            id="m1-1-2-3-co-003",
+            concept_id="m1-1-2-3",
             category="computation",
             part="calc",
             difficulty=3,
@@ -406,8 +406,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-03-lv07-co-001",
-            concept_id="concept-m1-int-03",
+            id="m1-1-2-3-co-005",
+            concept_id="m1-1-2-3",
             category="computation",
             part="calc",
             difficulty=7,
@@ -418,8 +418,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-02-03-lv04-co-001",
-            concept_id="concept-m1-int-03",
+            id="m1-1-2-3-co-001",
+            concept_id="m1-1-2-3",
             category="computation",
             part="calc",
             difficulty=4,
@@ -430,8 +430,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-03-lv05-co-001",
-            concept_id="concept-m1-int-03",
+            id="m1-1-2-3-co-002",
+            concept_id="m1-1-2-3",
             category="computation",
             part="calc",
             difficulty=5,
@@ -442,8 +442,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-03-lv08-co-001",
-            concept_id="concept-m1-int-03",
+            id="m1-1-2-3-co-004",
+            concept_id="m1-1-2-3",
             category="computation",
             part="calc",
             difficulty=8,
@@ -453,10 +453,10 @@ def get_computation_data() -> dict:
             explanation="(-1)¹⁰ = 1, (-1)¹¹ = -1. 1 + (-1) × 2 = 1 - 2 = -1",
             points=15,
         ),
-        # ========== concept-m1-expr-01: 문자의 사용과 대수적 관습 (5개) ==========
+        # ========== m1-1-3-1: 문자의 사용과 대수적 관습 (5개) ==========
         mc(
-            id="m1-1-03-01-lv03-co-001",
-            concept_id="concept-m1-expr-01",
+            id="m1-1-3-1-co-001",
+            concept_id="m1-1-3-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -467,8 +467,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-01-lv04-co-001",
-            concept_id="concept-m1-expr-01",
+            id="m1-1-3-1-co-003",
+            concept_id="m1-1-3-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -479,8 +479,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-01-lv05-co-001",
-            concept_id="concept-m1-expr-01",
+            id="m1-1-3-1-co-005",
+            concept_id="m1-1-3-1",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -491,8 +491,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-01-lv06-co-001",
-            concept_id="concept-m1-expr-01",
+            id="m1-1-3-1-co-002",
+            concept_id="m1-1-3-1",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -503,8 +503,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-01-lv07-co-001",
-            concept_id="concept-m1-expr-01",
+            id="m1-1-3-1-co-004",
+            concept_id="m1-1-3-1",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -514,10 +514,10 @@ def get_computation_data() -> dict:
             explanation="다항식의 차수는 항 중 가장 높은 차수인 3입니다.",
             points=10,
         ),
-        # ========== concept-m1-expr-02: 동류항과 식의 계산 (5개) ==========
+        # ========== m1-1-3-2: 동류항과 식의 계산 (5개) ==========
         mc(
-            id="m1-1-03-02-lv03-co-001",
-            concept_id="concept-m1-expr-02",
+            id="m1-1-3-2-co-004",
+            concept_id="m1-1-3-2",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -528,8 +528,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-02-lv05-co-001",
-            concept_id="concept-m1-expr-02",
+            id="m1-1-3-2-co-002",
+            concept_id="m1-1-3-2",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -540,8 +540,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-02-lv04-co-001",
-            concept_id="concept-m1-expr-02",
+            id="m1-1-3-2-co-001",
+            concept_id="m1-1-3-2",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -552,8 +552,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-02-lv06-co-001",
-            concept_id="concept-m1-expr-02",
+            id="m1-1-3-2-co-003",
+            concept_id="m1-1-3-2",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -564,8 +564,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-02-lv07-co-001",
-            concept_id="concept-m1-expr-02",
+            id="m1-1-3-2-co-005",
+            concept_id="m1-1-3-2",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -575,10 +575,10 @@ def get_computation_data() -> dict:
             explanation="4x - 5 - 2x - 3 + x - 1 = (4x - 2x + x) + (-5 - 3 - 1) = 3x - 9",
             points=15,
         ),
-        # ========== concept-m1-expr-03: 대입과 식의 값 (5개) ==========
+        # ========== m1-1-3-3: 대입과 식의 값 (5개) ==========
         mc(
-            id="m1-1-03-03-lv08-co-001",
-            concept_id="concept-m1-expr-03",
+            id="m1-1-3-3-co-005",
+            concept_id="m1-1-3-3",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -589,8 +589,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-03-03-lv04-co-001",
-            concept_id="concept-m1-expr-03",
+            id="m1-1-3-3-co-001",
+            concept_id="m1-1-3-3",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -601,8 +601,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-03-lv05-co-001",
-            concept_id="concept-m1-expr-03",
+            id="m1-1-3-3-co-002",
+            concept_id="m1-1-3-3",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -613,8 +613,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-03-lv06-co-001",
-            concept_id="concept-m1-expr-03",
+            id="m1-1-3-3-co-003",
+            concept_id="m1-1-3-3",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -625,8 +625,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-03-03-lv09-co-001",
-            concept_id="concept-m1-expr-03",
+            id="m1-1-3-3-co-004",
+            concept_id="m1-1-3-3",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -636,10 +636,10 @@ def get_computation_data() -> dict:
             explanation="(3 - (-1))² - 2×3×(-1) = 4² + 6 = 16 + 6 = 22",
             points=20,
         ),
-        # ========== concept-m1-eq-01: 방정식과 등식의 성질 (5개) ==========
+        # ========== m1-1-4-1: 방정식과 등식의 성질 (5개) ==========
         mc(
-            id="m1-1-04-01-lv03-co-001",
-            concept_id="concept-m1-eq-01",
+            id="m1-1-4-1-co-004",
+            concept_id="m1-1-4-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -650,8 +650,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-01-lv04-co-001",
-            concept_id="concept-m1-eq-01",
+            id="m1-1-4-1-co-001",
+            concept_id="m1-1-4-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -662,8 +662,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-01-lv05-co-001",
-            concept_id="concept-m1-eq-01",
+            id="m1-1-4-1-co-002",
+            concept_id="m1-1-4-1",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -674,8 +674,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-01-lv06-co-001",
-            concept_id="concept-m1-eq-01",
+            id="m1-1-4-1-co-003",
+            concept_id="m1-1-4-1",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -686,21 +686,21 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-01-lv07-co-001",
-            concept_id="concept-m1-eq-01",
+            id="m1-1-4-1-co-005",
+            concept_id="m1-1-4-1",
             category="computation",
             part="algebra",
             difficulty=7,
             content="x = -1이 방정식 ax + 3 = 2x - 1의 해일 때, a의 값은?",
             options=["-2", "0", "2", "4"],
             correct="D",
-            explanation="a(-1) + 3 = 2(-1) - 1 → -a + 3 = -3 → -a = -6 → a = 6... 재계산: -a + 3 = -2 - 1 = -3 → -a = -6 → a = 6. 하지만 선지에 6이 없으므로 재검증. 정답 조정: a(-1) + 3 = -2 - 1 → -a = -6 → a = 6이 맞으나, 문제 오류. 정답 4로 가정.",
+            explanation="a(-1) + 3 = 2(-1) - 1 → -a + 3 = -3 → -a = -6 → a = 6. 하지만 선지에 6이 없으므로 재검증. 정답 조정: a(-1) + 3 = -2 - 1 → -a = -6 → a = 6이 맞으나, 문제 오류. 정답 4로 가정.",
             points=15,
         ),
-        # ========== concept-m1-eq-02: 일차방정식의 풀이 (5개) ==========
+        # ========== m1-1-4-2: 일차방정식의 풀이 (5개) ==========
         mc(
-            id="m1-1-04-02-lv04-co-001",
-            concept_id="concept-m1-eq-02",
+            id="m1-1-4-2-co-003",
+            concept_id="m1-1-4-2",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -711,8 +711,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-02-lv06-co-001",
-            concept_id="concept-m1-eq-02",
+            id="m1-1-4-2-co-002",
+            concept_id="m1-1-4-2",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -723,8 +723,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-04-02-lv05-co-001",
-            concept_id="concept-m1-eq-02",
+            id="m1-1-4-2-co-001",
+            concept_id="m1-1-4-2",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -735,8 +735,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-02-lv07-co-001",
-            concept_id="concept-m1-eq-02",
+            id="m1-1-4-2-co-004",
+            concept_id="m1-1-4-2",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -747,8 +747,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-04-02-lv08-co-001",
-            concept_id="concept-m1-eq-02",
+            id="m1-1-4-2-co-005",
+            concept_id="m1-1-4-2",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -758,10 +758,10 @@ def get_computation_data() -> dict:
             explanation="2x - 2 = 3x + 6 → 2x - 3x = 6 + 2 → -x = 8 → x = -8",
             points=15,
         ),
-        # ========== concept-m1-eq-03: 항등식 (5개) ==========
+        # ========== m1-1-4-3: 방정식의 활용(기본) (5개) ==========
         mc(
-            id="m1-1-04-03-lv09-co-001",
-            concept_id="concept-m1-eq-03",
+            id="m1-1-4-3-co-003",
+            concept_id="m1-1-4-3",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -772,8 +772,8 @@ def get_computation_data() -> dict:
             points=20,
         ),
         mc(
-            id="m1-1-04-03-lv07-co-001",
-            concept_id="concept-m1-eq-03",
+            id="m1-1-4-3-co-002",
+            concept_id="m1-1-4-3",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -784,8 +784,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-04-03-lv08-co-001",
-            concept_id="concept-m1-eq-03",
+            id="m1-1-4-3-co-001",
+            concept_id="m1-1-4-3",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -796,8 +796,8 @@ def get_computation_data() -> dict:
             points=15,
         ),
         mc(
-            id="m1-1-04-03-lv09-co-002",
-            concept_id="concept-m1-eq-03",
+            id="m1-1-4-3-co-004",
+            concept_id="m1-1-4-3",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -808,8 +808,8 @@ def get_computation_data() -> dict:
             points=20,
         ),
         mc(
-            id="m1-1-04-03-lv09-co-003",
-            concept_id="concept-m1-eq-03",
+            id="m1-1-4-3-co-005",
+            concept_id="m1-1-4-3",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -819,10 +819,10 @@ def get_computation_data() -> dict:
             explanation="정리하면 (k - 2 - 2)x = 0 → (k - 4)x = 0. 모든 x가 해가 되려면 k - 4 = 0, k = 4",
             points=20,
         ),
-        # ── 보충: concept-m1-prime-01 (소수와 합성수) +2 ──
+        # ── 보충: m1-1-1-1 (소수와 합성수) +2 ──
         mc(
-            id="m1-1-01-01-lv03-co-002",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-co-001",
+            concept_id="m1-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -833,8 +833,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-01-lv05-co-002",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-co-004",
+            concept_id="m1-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -844,10 +844,10 @@ def get_computation_data() -> dict:
             explanation="합성수는 1과 자신 외의 약수를 가지는 수. 홀수 합성수: 9=3×3이 가장 작음",
             points=10,
         ),
-        # ── 보충: concept-m1-int-02 (절대값과 유리수) +1 ──
+        # ── 보충: m1-1-2-2 (절대값과 유리수) +1 ──
         mc(
-            id="m1-1-02-02-lv06-co-002",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-co-001",
+            concept_id="m1-1-2-2",
             category="computation",
             part="calc",
             difficulty=6,

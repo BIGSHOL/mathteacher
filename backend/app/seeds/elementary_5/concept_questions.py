@@ -8,7 +8,7 @@ def get_concept_data() -> dict:
     concepts = [
         # ── 3단원: 규칙과 대응 (2개) ──
         concept(
-            id="concept-e5-corresp-01",
+            id="e5-1-3-1",
             name="두 양의 대응 관계 파악",
             grade="elementary_5",
             category="concept",
@@ -16,7 +16,7 @@ def get_concept_data() -> dict:
             description="두 양 사이의 변하는 관계(비례·차이 일정)를 표에서 관찰하여 독립변수와 종속변수를 식별합니다.",
         ),
         concept(
-            id="concept-e5-corresp-02",
+            id="e5-1-3-2",
             name="대응 관계의 식 표현과 해석",
             grade="elementary_5",
             category="concept",
@@ -25,7 +25,7 @@ def get_concept_data() -> dict:
         ),
         # ── 6단원: 다각형의 둘레와 넓이 (2개) ──
         concept(
-            id="concept-e5-poly-area-01",
+            id="e5-1-6-1",
             name="평행사변형과 삼각형의 넓이",
             grade="elementary_5",
             category="concept",
@@ -33,7 +33,7 @@ def get_concept_data() -> dict:
             description="직사각형→평행사변형(밑변×높이), 평행사변형→삼각형(밑변×높이÷2)으로 등적 변형하여 넓이 공식을 유도합니다.",
         ),
         concept(
-            id="concept-e5-poly-area-02",
+            id="e5-1-6-2",
             name="사다리꼴·마름모의 넓이와 둘레",
             grade="elementary_5",
             category="concept",
@@ -42,7 +42,7 @@ def get_concept_data() -> dict:
         ),
         # ── 7단원: 수의 범위와 어림하기 (2개) ──
         concept(
-            id="concept-e5-range-01",
+            id="e5-2-1-1",
             name="수의 범위: 이상·이하·초과·미만",
             grade="elementary_5",
             category="concept",
@@ -50,7 +50,7 @@ def get_concept_data() -> dict:
             description="이상(≥)/이하(≤)는 경계값 포함, 초과(>)/미만(<)은 경계값 불포함임을 구별하고 수직선에 나타냅니다.",
         ),
         concept(
-            id="concept-e5-round-01",
+            id="e5-2-1-2",
             name="어림: 올림·버림·반올림",
             grade="elementary_5",
             category="concept",
@@ -59,15 +59,15 @@ def get_concept_data() -> dict:
         ),
         # ── 9단원: 합동과 대칭 (2개) ──
         concept(
-            id="concept-e5-congru-01",
+            id="e5-2-3-1",
             name="합동과 대응 관계",
             grade="elementary_5",
             category="concept",
             part="geo",
-            description="합동(모양과 크기가 같아 완전히 겹침)의 정의를 이해하고, 대응점·대응변·대응각을 찾습니다.",
+            description="합동(모양과 크기가 같어 완전히 겹침)의 정의를 이해하고, 대응점·대응변·대응각을 찾습니다.",
         ),
         concept(
-            id="concept-e5-congru-02",
+            id="e5-2-3-2",
             name="선대칭도형과 점대칭도형",
             grade="elementary_5",
             category="concept",
@@ -76,7 +76,7 @@ def get_concept_data() -> dict:
         ),
         # ── 11단원: 직육면체 (2개) ──
         concept(
-            id="concept-e5-cuboid-01",
+            id="e5-2-5-1",
             name="직육면체·정육면체의 구성 요소",
             grade="elementary_5",
             category="concept",
@@ -84,7 +84,7 @@ def get_concept_data() -> dict:
             description="직육면체(직사각형 6면)와 정육면체(정사각형 6면)의 면·모서리·꼭짓점 수와 평행/수직 관계를 이해합니다.",
         ),
         concept(
-            id="concept-e5-cuboid-02",
+            id="e5-2-5-2",
             name="전개도와 겨냥도",
             grade="elementary_5",
             category="concept",
@@ -93,7 +93,7 @@ def get_concept_data() -> dict:
         ),
         # ── 12단원: 평균과 가능성 (2개) ──
         concept(
-            id="concept-e5-avg-01",
+            id="e5-2-6-1",
             name="평균 구하기와 활용",
             grade="elementary_5",
             category="concept",
@@ -101,7 +101,7 @@ def get_concept_data() -> dict:
             description="평균=(자료의 합)÷(자료의 개수)를 이해하고, 0 포함 자료와 극단값이 평균에 미치는 영향을 파악합니다.",
         ),
         concept(
-            id="concept-e5-avg-02",
+            id="e5-2-6-2",
             name="가능성의 표현",
             grade="elementary_5",
             category="concept",
@@ -113,8 +113,8 @@ def get_concept_data() -> dict:
     questions = [
         # 3단원: 규칙과 대응 (3문제, 난이도 2-4)
         mc(
-            id="e5-1-3-1-lv02-cc-001",
-            concept_id="concept-e5-corresp-01",
+            id="e5-1-3-1-cc-001",
+            concept_id="e5-1-3-1",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -125,8 +125,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-3-1-lv03-cc-001",
-            concept_id="concept-e5-corresp-01",
+            id="e5-1-3-1-cc-002",
+            concept_id="e5-1-3-1",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -137,8 +137,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-3-2-lv04-cc-001",
-            concept_id="concept-e5-corresp-02",
+            id="e5-1-3-2-cc-001",
+            concept_id="e5-1-3-2",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -151,8 +151,8 @@ def get_concept_data() -> dict:
 
         # 6단원: 다각형의 둘레와 넓이 (3문제, 난이도 3-5)
         mc(
-            id="e5-1-6-1-lv03-cc-001",
-            concept_id="concept-e5-poly-area-01",
+            id="e5-1-6-1-cc-001",
+            concept_id="e5-1-6-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -163,8 +163,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-6-1-lv04-cc-001",
-            concept_id="concept-e5-poly-area-01",
+            id="e5-1-6-1-cc-002",
+            concept_id="e5-1-6-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -180,8 +180,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-6-2-lv05-cc-001",
-            concept_id="concept-e5-poly-area-02",
+            id="e5-1-6-2-cc-001",
+            concept_id="e5-1-6-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -199,8 +199,8 @@ def get_concept_data() -> dict:
 
         # 7단원: 수의 범위와 어림하기 (3문제, 난이도 3-5)
         mc(
-            id="e5-2-1-1-lv03-cc-001",
-            concept_id="concept-e5-range-01",
+            id="e5-2-1-1-cc-001",
+            concept_id="e5-2-1-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -211,8 +211,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-1-2-lv04-cc-001",
-            concept_id="concept-e5-round-01",
+            id="e5-2-1-2-cc-001",
+            concept_id="e5-2-1-2",
             category="concept",
             part="calc",
             difficulty=4,
@@ -223,8 +223,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-1-2-lv05-cc-001",
-            concept_id="concept-e5-round-01",
+            id="e5-2-1-2-cc-002",
+            concept_id="e5-2-1-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -237,8 +237,8 @@ def get_concept_data() -> dict:
 
         # 9단원: 합동과 대칭 (3문제, 난이도 3-5)
         mc(
-            id="e5-2-3-1-lv03-cc-001",
-            concept_id="concept-e5-congru-01",
+            id="e5-2-3-1-cc-001",
+            concept_id="e5-2-3-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -254,8 +254,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-3-2-lv04-cc-001",
-            concept_id="concept-e5-congru-02",
+            id="e5-2-3-2-cc-001",
+            concept_id="e5-2-3-2",
             category="concept",
             part="geo",
             difficulty=4,
@@ -271,8 +271,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-3-2-lv05-cc-001",
-            concept_id="concept-e5-congru-02",
+            id="e5-2-3-2-cc-002",
+            concept_id="e5-2-3-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -290,8 +290,8 @@ def get_concept_data() -> dict:
 
         # 11단원: 직육면체 (3문제, 난이도 3-5)
         mc(
-            id="e5-2-5-1-lv03-cc-001",
-            concept_id="concept-e5-cuboid-01",
+            id="e5-2-5-1-cc-001",
+            concept_id="e5-2-5-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -302,8 +302,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-5-1-lv04-cc-001",
-            concept_id="concept-e5-cuboid-01",
+            id="e5-2-5-1-cc-002",
+            concept_id="e5-2-5-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -314,8 +314,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-5-2-lv05-cc-001",
-            concept_id="concept-e5-cuboid-02",
+            id="e5-2-5-2-cc-001",
+            concept_id="e5-2-5-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -333,8 +333,8 @@ def get_concept_data() -> dict:
 
         # 12단원: 평균과 가능성 (3문제, 난이도 3-5)
         mc(
-            id="e5-2-6-1-lv03-cc-001",
-            concept_id="concept-e5-avg-01",
+            id="e5-2-6-1-cc-001",
+            concept_id="e5-2-6-1",
             category="concept",
             part="data",
             difficulty=3,
@@ -345,8 +345,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-6-1-lv04-cc-001",
-            concept_id="concept-e5-avg-01",
+            id="e5-2-6-1-cc-002",
+            concept_id="e5-2-6-1",
             category="concept",
             part="data",
             difficulty=4,
@@ -357,8 +357,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-6-2-lv05-cc-001",
-            concept_id="concept-e5-avg-02",
+            id="e5-2-6-2-cc-001",
+            concept_id="e5-2-6-2",
             category="concept",
             part="data",
             difficulty=5,
@@ -373,8 +373,8 @@ def get_concept_data() -> dict:
         # ────────────────────────────────────────────────────────
         # 1단원: 자연수의 혼합 계산 (3문제)
         mc(
-            id="e5-1-1-1-lv02-cc-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-cc-003",
+            concept_id="e5-1-1-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -390,8 +390,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-2-lv03-cc-001",
-            concept_id="concept-e5-mixed-calc-02",
+            id="e5-1-1-2-cc-001",
+            concept_id="e5-1-1-2",
             category="concept",
             part="calc",
             difficulty=3,
@@ -407,8 +407,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-1-lv04-cc-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-cc-004",
+            concept_id="e5-1-1-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -425,8 +425,8 @@ def get_concept_data() -> dict:
         ),
         # 2단원: 약수와 배수 (3문제)
         mc(
-            id="e5-1-2-1-lv02-cc-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-cc-001",
+            concept_id="e5-1-2-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -442,8 +442,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-1-lv03-cc-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-cc-002",
+            concept_id="e5-1-2-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -454,8 +454,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-2-lv05-cc-001",
-            concept_id="concept-e5-divisor-02",
+            id="e5-1-2-2-cc-001",
+            concept_id="e5-1-2-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -472,8 +472,8 @@ def get_concept_data() -> dict:
         ),
         # 4단원: 약분과 통분 (3문제)
         mc(
-            id="e5-1-4-1-lv02-cc-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-cc-001",
+            concept_id="e5-1-4-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -489,8 +489,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-2-lv03-cc-001",
-            concept_id="concept-e5-reduce-02",
+            id="e5-1-4-2-cc-001",
+            concept_id="e5-1-4-2",
             category="concept",
             part="calc",
             difficulty=3,
@@ -506,8 +506,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-1-lv04-cc-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-cc-002",
+            concept_id="e5-1-4-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -524,8 +524,8 @@ def get_concept_data() -> dict:
         ),
         # 5단원: 분수의 덧셈과 뺄셈 (3문제)
         mc(
-            id="e5-1-5-1-lv03-cc-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-cc-001",
+            concept_id="e5-1-5-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -541,8 +541,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-1-lv04-cc-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-cc-002",
+            concept_id="e5-1-5-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -558,8 +558,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-2-lv05-cc-001",
-            concept_id="concept-e5-frac-add-02",
+            id="e5-1-5-2-cc-001",
+            concept_id="e5-1-5-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -576,8 +576,8 @@ def get_concept_data() -> dict:
         ),
         # 8단원: 분수의 곱셈 (3문제)
         mc(
-            id="e5-2-2-2-lv03-cc-001",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-cc-001",
+            concept_id="e5-2-2-2",
             category="concept",
             part="calc",
             difficulty=3,
@@ -593,8 +593,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-2-lv04-cc-001",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-cc-002",
+            concept_id="e5-2-2-2",
             category="concept",
             part="calc",
             difficulty=4,
@@ -610,8 +610,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-1-lv05-cc-001",
-            concept_id="concept-e5-frac-mul-01",
+            id="e5-2-2-1-cc-001",
+            concept_id="e5-2-2-1",
             category="concept",
             part="calc",
             difficulty=5,
@@ -628,8 +628,8 @@ def get_concept_data() -> dict:
         ),
         # 10단원: 소수의 곱셈 (3문제)
         mc(
-            id="e5-2-4-1-lv03-cc-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-cc-001",
+            concept_id="e5-2-4-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -645,8 +645,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-2-lv04-cc-001",
-            concept_id="concept-e5-dec-mul-02",
+            id="e5-2-4-2-cc-001",
+            concept_id="e5-2-4-2",
             category="concept",
             part="calc",
             difficulty=4,
@@ -662,8 +662,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-1-lv05-cc-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-cc-002",
+            concept_id="e5-2-4-1",
             category="concept",
             part="calc",
             difficulty=5,
@@ -687,17 +687,17 @@ def get_concept_data() -> dict:
             description="규칙과 대응, 다각형 넓이, 합동과 대칭, 직육면체 (3,6,9,11단원)",
             grade="elementary_5",
             concept_ids=[
-                "concept-e5-corresp-01", "concept-e5-corresp-02",
-                "concept-e5-poly-area-01", "concept-e5-poly-area-02",
-                "concept-e5-congru-01", "concept-e5-congru-02",
-                "concept-e5-cuboid-01", "concept-e5-cuboid-02",
+                "e5-1-3-1", "e5-1-3-2",
+                "e5-1-6-1", "e5-1-6-2",
+                "e5-2-3-1", "e5-2-3-2",
+                "e5-2-5-1", "e5-2-5-2",
             ],
             question_ids=[
-                "e5-1-3-1-lv02-cc-001", "e5-1-3-1-lv03-cc-001", "e5-1-3-2-lv04-cc-001", 
-                "e5-1-6-1-lv03-cc-001", "e5-1-6-1-lv04-cc-001", "e5-1-6-2-lv05-cc-001", 
-                "e5-2-1-1-lv03-cc-001", "e5-2-1-2-lv04-cc-001", "e5-2-1-2-lv05-cc-001", 
-                "e5-2-3-1-lv03-cc-001", "e5-2-3-2-lv04-cc-001", "e5-2-3-2-lv05-cc-001", 
-                "e5-2-5-1-lv03-cc-001", "e5-2-5-1-lv04-cc-001", "e5-2-5-2-lv05-cc-001",
+                "e5-1-3-1-cc-001", "e5-1-3-1-cc-002", "e5-1-3-2-cc-001", 
+                "e5-1-6-1-cc-001", "e5-1-6-1-cc-002", "e5-1-6-2-cc-001", 
+                "e5-2-1-1-cc-001", "e5-2-1-2-cc-001", "e5-2-1-2-cc-002", 
+                "e5-2-3-1-cc-001", "e5-2-3-2-cc-001", "e5-2-3-2-cc-002", 
+                "e5-2-5-1-cc-001", "e5-2-5-1-cc-002", "e5-2-5-2-cc-001",
             ],
             time_limit_minutes=20,
             use_question_pool=True,
@@ -709,12 +709,12 @@ def get_concept_data() -> dict:
             description="수의 범위와 어림하기, 평균과 가능성 (7,12단원)",
             grade="elementary_5",
             concept_ids=[
-                "concept-e5-range-01", "concept-e5-round-01",
-                "concept-e5-avg-01", "concept-e5-avg-02",
+                "e5-2-1-1", "e5-2-1-2",
+                "e5-2-6-1", "e5-2-6-2",
             ],
             question_ids=[
-                "e5-2-1-1-lv03-cc-001", "e5-2-1-2-lv04-cc-001", "e5-2-1-2-lv05-cc-001", 
-                "e5-2-6-1-lv03-cc-001", "e5-2-6-1-lv04-cc-001", "e5-2-6-2-lv05-cc-001",
+                "e5-2-1-1-cc-001", "e5-2-1-2-cc-001", "e5-2-1-2-cc-002", 
+                "e5-2-6-1-cc-001", "e5-2-6-1-cc-002", "e5-2-6-2-cc-001",
             ],
             time_limit_minutes=15,
             use_question_pool=True,
@@ -726,20 +726,20 @@ def get_concept_data() -> dict:
             description="혼합 계산, 약수와 배수, 약분과 통분, 분수 덧뺄셈, 분수 곱셈, 소수 곱셈의 개념 이해",
             grade="elementary_5",
             concept_ids=[
-                "concept-e5-mixed-calc-01", "concept-e5-mixed-calc-02",
-                "concept-e5-divisor-01", "concept-e5-divisor-02",
-                "concept-e5-reduce-01", "concept-e5-reduce-02",
-                "concept-e5-frac-add-01", "concept-e5-frac-add-02",
-                "concept-e5-frac-mul-01", "concept-e5-frac-mul-02",
-                "concept-e5-dec-mul-01", "concept-e5-dec-mul-02",
+                "e5-1-1-1", "e5-1-1-2",
+                "e5-1-2-1", "e5-1-2-2",
+                "e5-1-4-1", "e5-1-4-2",
+                "e5-1-5-1", "e5-1-5-2",
+                "e5-2-2-1", "e5-2-2-2",
+                "e5-2-4-1", "e5-2-4-2",
             ],
             question_ids=[
-                "e5-1-1-1-lv02-cc-001", "e5-1-1-2-lv03-cc-001", "e5-1-1-1-lv04-cc-001", 
-                "e5-1-2-1-lv02-cc-001", "e5-1-2-1-lv03-cc-001", "e5-1-2-2-lv05-cc-001", 
-                "e5-1-4-1-lv02-cc-001", "e5-1-4-2-lv03-cc-001", "e5-1-4-1-lv04-cc-001", 
-                "e5-1-5-1-lv03-cc-001", "e5-1-5-1-lv04-cc-001", "e5-1-5-2-lv05-cc-001", 
-                "e5-2-2-2-lv03-cc-001", "e5-2-2-2-lv04-cc-001", "e5-2-2-1-lv05-cc-001", 
-                "e5-2-4-1-lv03-cc-001", "e5-2-4-2-lv04-cc-001", "e5-2-4-1-lv05-cc-001",
+                "e5-1-1-1-cc-003", "e5-1-1-2-cc-001", "e5-1-1-1-cc-004", 
+                "e5-1-2-1-cc-001", "e5-1-2-1-cc-002", "e5-1-2-2-cc-001", 
+                "e5-1-4-1-cc-001", "e5-1-4-2-cc-001", "e5-1-4-1-cc-002", 
+                "e5-1-5-1-cc-001", "e5-1-5-1-cc-002", "e5-1-5-2-cc-001", 
+                "e5-2-2-2-cc-001", "e5-2-2-2-cc-002", "e5-2-2-1-cc-001", 
+                "e5-2-4-1-cc-001", "e5-2-4-2-cc-001", "e5-2-4-1-cc-002",
             ],
             time_limit_minutes=20,
             use_question_pool=True,

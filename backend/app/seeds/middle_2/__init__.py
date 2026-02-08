@@ -11,8 +11,11 @@ def get_all_data() -> dict:
     concept = get_concept_data()
     fill_blank = get_fill_blank_data()
 
+    # 중복 개념 제거 (dict 사용)
+    concepts_dict = {c["id"]: c for c in computation["concepts"] + concept["concepts"]}
+    
     return {
-        "concepts": computation["concepts"] + concept["concepts"],
+        "concepts": list(concepts_dict.values()),
         "questions": computation["questions"] + concept["questions"] + fill_blank["questions"],
         "tests": computation["tests"] + concept["tests"] + fill_blank["tests"],
     }

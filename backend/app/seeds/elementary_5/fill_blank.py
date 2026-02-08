@@ -8,8 +8,8 @@ def get_fill_blank_data() -> dict:
     questions = [
         # 1단원: 자연수의 혼합 계산 (2문제)
         fb(
-            id="e5-1-1-1-lv03-fb-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-fb-001",
+            concept_id="e5-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -20,8 +20,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["17"],
         ),
         fb(
-            id="e5-1-1-1-lv05-fb-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-fb-002",
+            concept_id="e5-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -34,8 +34,8 @@ def get_fill_blank_data() -> dict:
 
         # 2단원: 약수와 배수 (2문제)
         fb(
-            id="e5-1-2-1-lv04-fb-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-fb-001",
+            concept_id="e5-1-2-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -46,8 +46,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["6"],
         ),
         fb(
-            id="e5-1-2-2-lv06-fb-001",
-            concept_id="concept-e5-divisor-02",
+            id="e5-1-2-2-fb-001",
+            concept_id="e5-1-2-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -60,8 +60,8 @@ def get_fill_blank_data() -> dict:
 
         # 3단원: 규칙과 대응 (2문제)
         fb(
-            id="e5-1-3-1-lv04-fb-001",
-            concept_id="concept-e5-corresp-01",
+            id="e5-1-3-1-fb-001",
+            concept_id="e5-1-3-1",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -72,8 +72,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["10"],
         ),
         fb(
-            id="e5-1-3-2-lv06-fb-001",
-            concept_id="concept-e5-corresp-02",
+            id="e5-1-3-2-fb-001",
+            concept_id="e5-1-3-2",
             category="concept",
             part="algebra",
             difficulty=6,
@@ -86,8 +86,8 @@ def get_fill_blank_data() -> dict:
 
         # 4단원: 약분과 통분 (2문제)
         fb(
-            id="e5-1-4-1-lv04-fb-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-fb-001",
+            concept_id="e5-1-4-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -98,8 +98,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["2/3"],
         ),
         fb(
-            id="e5-1-4-2-lv05-fb-001",
-            concept_id="concept-e5-reduce-02",
+            id="e5-1-4-2-fb-001",
+            concept_id="e5-1-4-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -112,8 +112,8 @@ def get_fill_blank_data() -> dict:
 
         # 5단원: 분수의 덧셈과 뺄셈 (2문제)
         fb(
-            id="e5-1-5-1-lv05-fb-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-fb-001",
+            concept_id="e5-1-5-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -124,8 +124,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["3/4"],
         ),
         fb(
-            id="e5-1-5-1-lv07-fb-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-fb-002",
+            concept_id="e5-1-5-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -138,8 +138,8 @@ def get_fill_blank_data() -> dict:
 
         # 6단원: 다각형의 둘레와 넓이 (2문제)
         fb(
-            id="e5-1-6-1-lv05-fb-001",
-            concept_id="concept-e5-poly-area-01",
+            id="e5-1-6-1-fb-001",
+            concept_id="e5-1-6-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -150,8 +150,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["40"],
         ),
         fb(
-            id="e5-1-6-1-lv06-fb-001",
-            concept_id="concept-e5-poly-area-01",
+            id="e5-1-6-1-fb-002",
+            concept_id="e5-1-6-1",
             category="concept",
             part="geo",
             difficulty=6,
@@ -164,8 +164,8 @@ def get_fill_blank_data() -> dict:
 
         # 7단원: 수의 범위와 어림하기 (2문제)
         fb(
-            id="e5-2-1-1-lv04-fb-001",
-            concept_id="concept-e5-range-01",
+            id="e5-2-1-1-fb-001",
+            concept_id="e5-2-1-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -176,8 +176,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["5"],
         ),
         fb(
-            id="e5-2-1-2-lv06-fb-001",
-            concept_id="concept-e5-round-01",
+            id="e5-2-1-2-fb-001",
+            concept_id="e5-2-1-2",
             category="concept",
             part="calc",
             difficulty=6,
@@ -190,8 +190,8 @@ def get_fill_blank_data() -> dict:
 
         # 8단원: 분수의 곱셈 (2문제)
         fb(
-            id="e5-2-2-2-lv05-fb-001",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-fb-001",
+            concept_id="e5-2-2-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -202,8 +202,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["1/6"],
         ),
         fb(
-            id="e5-2-2-1-lv07-fb-001",
-            concept_id="concept-e5-frac-mul-01",
+            id="e5-2-2-1-fb-001",
+            concept_id="e5-2-2-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -216,8 +216,8 @@ def get_fill_blank_data() -> dict:
 
         # 9단원: 합동과 대칭 (2문제)
         fb(
-            id="e5-2-5-1-lv05-fb-001",
-            concept_id="concept-e5-cuboid-01",
+            id="e5-2-5-1-fb-001",
+            concept_id="e5-2-5-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -228,8 +228,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["6"],
         ),
         fb(
-            id="e5-2-3-2-lv06-fb-001",
-            concept_id="concept-e5-congru-02",
+            id="e5-2-3-2-fb-001",
+            concept_id="e5-2-3-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -242,8 +242,8 @@ def get_fill_blank_data() -> dict:
 
         # 10단원: 소수의 곱셈 (2문제)
         fb(
-            id="e5-2-4-1-lv05-fb-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-fb-001",
+            concept_id="e5-2-4-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -254,8 +254,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["2", "2.0"],
         ),
         fb(
-            id="e5-2-4-2-lv07-fb-001",
-            concept_id="concept-e5-dec-mul-02",
+            id="e5-2-4-2-fb-001",
+            concept_id="e5-2-4-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -268,8 +268,8 @@ def get_fill_blank_data() -> dict:
 
         # 11단원: 직육면체 (2문제)
         fb(
-            id="e5-2-5-1-lv04-fb-001",
-            concept_id="concept-e5-cuboid-01",
+            id="e5-2-5-1-fb-002",
+            concept_id="e5-2-5-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -280,8 +280,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["8"],
         ),
         fb(
-            id="e5-2-5-1-lv06-fb-001",
-            concept_id="concept-e5-cuboid-01",
+            id="e5-2-5-1-fb-003",
+            concept_id="e5-2-5-1",
             category="concept",
             part="geo",
             difficulty=6,
@@ -294,8 +294,8 @@ def get_fill_blank_data() -> dict:
 
         # 12단원: 평균과 가능성 (2문제)
         fb(
-            id="e5-2-6-1-lv05-fb-001",
-            concept_id="concept-e5-avg-01",
+            id="e5-2-6-1-fb-001",
+            concept_id="e5-2-6-1",
             category="concept",
             part="data",
             difficulty=5,
@@ -306,8 +306,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["8"],
         ),
         fb(
-            id="e5-2-6-2-lv07-fb-001",
-            concept_id="concept-e5-avg-02",
+            id="e5-2-6-2-fb-001",
+            concept_id="e5-2-6-2",
             category="concept",
             part="data",
             difficulty=7,
@@ -326,28 +326,28 @@ def get_fill_blank_data() -> dict:
             description="전 12단원 빈칸 채우기 (연산/개념/도형/자료)",
             grade="elementary_5",
             concept_ids=[
-                "concept-e5-mixed-calc-01", "concept-e5-mixed-calc-02",
-                "concept-e5-divisor-01", "concept-e5-divisor-02",
-                "concept-e5-corresp-01", "concept-e5-corresp-02",
-                "concept-e5-reduce-01", "concept-e5-reduce-02",
-                "concept-e5-frac-add-01", "concept-e5-frac-add-02",
-                "concept-e5-poly-area-01", "concept-e5-poly-area-02",
-                "concept-e5-range-01", "concept-e5-round-01",
-                "concept-e5-frac-mul-01", "concept-e5-frac-mul-02",
-                "concept-e5-congru-01", "concept-e5-congru-02",
-                "concept-e5-dec-mul-01", "concept-e5-dec-mul-02",
-                "concept-e5-cuboid-01", "concept-e5-cuboid-02",
-                "concept-e5-avg-01", "concept-e5-avg-02",
+                "e5-1-1-1", "e5-1-1-2",
+                "e5-1-2-1", "e5-1-2-2",
+                "e5-1-3-1", "e5-1-3-2",
+                "e5-1-4-1", "e5-1-4-2",
+                "e5-1-5-1", "e5-1-5-2",
+                "e5-1-6-1", "e5-1-6-2",
+                "e5-2-1-1", "e5-2-1-2",
+                "e5-2-2-1", "e5-2-2-2",
+                "e5-2-3-1", "e5-2-3-2",
+                "e5-2-4-1", "e5-2-4-2",
+                "e5-2-5-1", "e5-2-5-2",
+                "e5-2-6-1", "e5-2-6-2",
             ],
             question_ids=[
-                "e5-1-1-1-lv03-fb-001", "e5-1-1-1-lv05-fb-001", "e5-1-2-1-lv04-fb-001", 
-                "e5-1-2-2-lv06-fb-001", "e5-1-3-1-lv04-fb-001", "e5-1-3-2-lv06-fb-001", 
-                "e5-1-4-1-lv04-fb-001", "e5-1-4-2-lv05-fb-001", "e5-1-5-1-lv05-fb-001", 
-                "e5-1-5-1-lv07-fb-001", "e5-1-6-1-lv05-fb-001", "e5-1-6-1-lv06-fb-001", 
-                "e5-2-1-1-lv04-fb-001", "e5-2-1-2-lv06-fb-001", "e5-2-2-2-lv05-fb-001", 
-                "e5-2-2-1-lv07-fb-001", "e5-2-5-1-lv05-fb-001", "e5-2-3-2-lv06-fb-001", 
-                "e5-2-4-1-lv05-fb-001", "e5-2-4-2-lv07-fb-001", "e5-2-5-1-lv04-fb-001", 
-                "e5-2-5-1-lv06-fb-001", "e5-2-6-1-lv05-fb-001", "e5-2-6-2-lv07-fb-001",
+                "e5-1-1-1-fb-001", "e5-1-1-1-fb-002", "e5-1-2-1-fb-001", 
+                "e5-1-2-2-fb-001", "e5-1-3-1-fb-001", "e5-1-3-2-fb-001", 
+                "e5-1-4-1-fb-001", "e5-1-4-2-fb-001", "e5-1-5-1-fb-001", 
+                "e5-1-5-1-fb-002", "e5-1-6-1-fb-001", "e5-1-6-1-fb-002", 
+                "e5-2-1-1-fb-001", "e5-2-1-2-fb-001", "e5-2-2-2-fb-001", 
+                "e5-2-2-1-fb-001", "e5-2-5-1-fb-001", "e5-2-3-2-fb-001", 
+                "e5-2-4-1-fb-001", "e5-2-4-2-fb-001", "e5-2-5-1-fb-002", 
+                "e5-2-5-1-fb-003", "e5-2-6-1-fb-001", "e5-2-6-2-fb-001",
             ],
             time_limit_minutes=30,
             use_question_pool=True,

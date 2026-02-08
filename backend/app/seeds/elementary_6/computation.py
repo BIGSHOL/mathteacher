@@ -7,7 +7,7 @@ def get_concepts() -> list[dict]:
     """연산 개념 5개 반환."""
     return [
         concept(
-            id="concept-e6-frac-div1",
+            id="e6-1-1-1",
             name="분수의 나눗셈 (자연수÷자연수, 분수÷자연수)",
             grade="elementary_6",
             category="computation",
@@ -15,7 +15,7 @@ def get_concepts() -> list[dict]:
             description="나눗셈의 몫을 분수로 표현하고, 분수를 자연수로 나누는 연산 원리 이해",
         ),
         concept(
-            id="concept-e6-dec-div1",
+            id="e6-1-3-1",
             name="소수의 나눗셈 (소수÷자연수)",
             grade="elementary_6",
             category="computation",
@@ -23,7 +23,7 @@ def get_concepts() -> list[dict]:
             description="소수를 자연수로 나누는 연산, 몫의 소수점 위치와 중간 0 처리",
         ),
         concept(
-            id="concept-e6-ratio",
+            id="e6-1-4-1",
             name="비와 비율",
             grade="elementary_6",
             category="computation",
@@ -31,7 +31,7 @@ def get_concepts() -> list[dict]:
             description="비의 구조 이해, 기준량 찾기, 비율과 백분율로 표현",
         ),
         concept(
-            id="concept-e6-frac-div2",
+            id="e6-1-1-2",
             name="분수의 나눗셈 (분수÷분수)",
             grade="elementary_6",
             category="computation",
@@ -39,7 +39,7 @@ def get_concepts() -> list[dict]:
             description="통분과 역수를 이용한 분수 나눗셈, 대분수 계산",
         ),
         concept(
-            id="concept-e6-dec-div2",
+            id="e6-1-3-2",
             name="소수의 나눗셈 (소수÷소수)",
             grade="elementary_6",
             category="computation",
@@ -52,10 +52,10 @@ def get_concepts() -> list[dict]:
 def get_questions() -> list[dict]:
     """연산 문제 25개 반환 (개념당 5개)."""
     return [
-        # 1학기 1단원: 분수의 나눗셈1 (e6-1-1-1-lv03-co-001 ~ 005)
+        # 1학기 1단원: 분수의 나눗셈1 (e6-1-1-1-co-001 ~ 005)
         mc(
-            id="e6-1-1-1-lv03-co-001",
-            concept_id="concept-e6-frac-div1",
+            id="e6-1-1-1-co-001",
+            concept_id="e6-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -70,8 +70,8 @@ def get_questions() -> list[dict]:
             explanation="2m를 5등분 → 2÷5 = 2/5m입니다. '작은 수÷큰 수' 상황에서 순서를 뒤바꾸는 오개념에 주의하세요. 정답은 2/5m입니다.",
         ),
         mc(
-            id="e6-1-1-1-lv05-co-001",
-            concept_id="concept-e6-frac-div1",
+            id="e6-1-1-1-co-002",
+            concept_id="e6-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -86,8 +86,8 @@ def get_questions() -> list[dict]:
             explanation="분수÷자연수는 분수 × (1/자연수)로 계산합니다. 3/4 ÷ 2 = 3/4 × 1/2 = 3/8입니다.",
         ),
         mc(
-            id="e6-1-1-1-lv04-co-001",
-            concept_id="concept-e6-frac-div1",
+            id="e6-1-1-1-co-003",
+            concept_id="e6-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -102,8 +102,8 @@ def get_questions() -> list[dict]:
             explanation="3L를 4명이 나눔 → 3÷4입니다. 숫자의 크기가 아니라 '전체를 인원수로 나눈다'는 의미에 집중하세요.",
         ),
         mc(
-            id="e6-1-1-1-lv04-co-002",
-            concept_id="concept-e6-frac-div1",
+            id="e6-1-1-1-co-004",
+            concept_id="e6-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -118,8 +118,8 @@ def get_questions() -> list[dict]:
             explanation="자연수의 나눗셈을 분수로 표현하면 5 ÷ 8 = 5/8입니다.",
         ),
         mc(
-            id="e6-1-1-1-lv06-co-001",
-            concept_id="concept-e6-frac-div1",
+            id="e6-1-1-1-co-005",
+            concept_id="e6-1-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -133,10 +133,10 @@ def get_questions() -> list[dict]:
             correct="A",
             explanation="분수÷자연수는 분자는 그대로, 분모에 자연수를 곱합니다. 5/6 ÷ 3 = 5/(6×3) = 5/18입니다.",
         ),
-        # 1학기 3단원: 소수의 나눗셈1 (e6-1-3-1-lv06-co-001 ~ 008)
+        # 1학기 3단원: 소수의 나눗셈1 (e6-1-3-1-co-001 ~ 008)
         mc(
-            id="e6-1-3-1-lv06-co-001",
-            concept_id="concept-e6-dec-div1",
+            id="e6-1-3-1-co-001",
+            concept_id="e6-1-3-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -151,8 +151,8 @@ def get_questions() -> list[dict]:
             explanation="612 ÷ 3 = 204이므로, 6.12 ÷ 3 = 2.04입니다. 몫의 중간에 0이 들어가는 것을 놓치지 마세요.",
         ),
         mc(
-            id="e6-1-3-1-lv05-co-001",
-            concept_id="concept-e6-dec-div1",
+            id="e6-1-3-1-co-002",
+            concept_id="e6-1-3-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -167,8 +167,8 @@ def get_questions() -> list[dict]:
             explanation="832 ÷ 4 = 208이므로, 8.32 ÷ 4 = 2.08입니다. 소수점 위치를 정확하게 유지하세요.",
         ),
         mc(
-            id="e6-1-3-1-lv04-co-001",
-            concept_id="concept-e6-dec-div1",
+            id="e6-1-3-1-co-003",
+            concept_id="e6-1-3-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -183,8 +183,8 @@ def get_questions() -> list[dict]:
             explanation="248 ÷ 4 = 62이므로, 24.8 ÷ 4 = 6.2입니다. 피제수의 소수점 위치를 그대로 올려 찍습니다.",
         ),
         mc(
-            id="e6-1-3-1-lv07-co-001",
-            concept_id="concept-e6-dec-div1",
+            id="e6-1-3-1-co-004",
+            concept_id="e6-1-3-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -199,8 +199,8 @@ def get_questions() -> list[dict]:
             explanation="375 ÷ 5 = 75이므로, 3.75 ÷ 5 = 0.75입니다. 소수 두 자리를 두 자리로 유지합니다.",
         ),
         mc(
-            id="e6-1-3-1-lv05-co-002",
-            concept_id="concept-e6-dec-div1",
+            id="e6-1-3-1-co-005",
+            concept_id="e6-1-3-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -214,10 +214,10 @@ def get_questions() -> list[dict]:
             correct="A",
             explanation="156 ÷ 6 = 26이므로, 15.6 ÷ 6 = 2.6입니다.",
         ),
-        # 1학기 4단원: 비와 비율 (e6-1-4-1-lv08-co-001 ~ 011)
+        # 1학기 4단원: 비와 비율 (e6-1-4-1-co-001 ~ 011)
         mc(
-            id="e6-1-4-1-lv08-co-001",
-            concept_id="concept-e6-ratio",
+            id="e6-1-4-1-co-001",
+            concept_id="e6-1-4-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -232,8 +232,8 @@ def get_questions() -> list[dict]:
             explanation="소금물 농도 = (소금 무게)/(전체 무게) × 100입니다. 전체 = 소금 + 물 = 25 + 100 = 125g이므로, 25/125 × 100 = 20%입니다. 분모를 '물'로 잡는 오개념에 주의하세요.",
         ),
         mc(
-            id="e6-1-4-1-lv07-co-001",
-            concept_id="concept-e6-ratio",
+            id="e6-1-4-1-co-002",
+            concept_id="e6-1-4-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -248,8 +248,8 @@ def get_questions() -> list[dict]:
             explanation="'배에 대한 사과'이므로 기준량은 배(4개)입니다. 비는 사과:배 = 3:4입니다. 문장 어순과 비의 순서가 반대임에 주의하세요.",
         ),
         mc(
-            id="e6-1-4-1-lv06-co-001",
-            concept_id="concept-e6-ratio",
+            id="e6-1-4-1-co-003",
+            concept_id="e6-1-4-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -264,8 +264,8 @@ def get_questions() -> list[dict]:
             explanation="비의 성질에 따라 전항과 후항에 같은 수를 곱하거나 나누어도 비의 값은 같습니다. 6:8 = 3:4입니다.",
         ),
         mc(
-            id="e6-1-4-1-lv07-co-002",
-            concept_id="concept-e6-ratio",
+            id="e6-1-4-1-co-004",
+            concept_id="e6-1-4-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -280,8 +280,8 @@ def get_questions() -> list[dict]:
             explanation="비율을 백분율로 바꾸려면 100을 곱합니다. 0.6 × 100 = 60%입니다.",
         ),
         mc(
-            id="e6-1-4-1-lv06-co-002",
-            concept_id="concept-e6-ratio",
+            id="e6-1-4-1-co-005",
+            concept_id="e6-1-4-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -295,10 +295,10 @@ def get_questions() -> list[dict]:
             correct="B",
             explanation="비율 = 비교하는 양 ÷ 기준량 = 5 ÷ 20 = 0.25입니다.",
         ),
-        # 2학기 1단원: 분수의 나눗셈2 (e6-2-1-1-lv07-co-001 ~ 014)
+        # 2학기 1단원: 분수의 나눗셈2 (e6-2-1-1-co-001 ~ 014)
         mc(
-            id="e6-2-1-1-lv07-co-001",
-            concept_id="concept-e6-frac-div2",
+            id="e6-2-1-1-co-001",
+            concept_id="e6-1-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -313,8 +313,8 @@ def get_questions() -> list[dict]:
             explanation="대분수는 가분수로 변환 후 계산합니다. 2 1/2 = 5/2, 1 1/3 = 4/3이므로, 5/2 ÷ 4/3 = 5/2 × 3/4 = 15/8입니다.",
         ),
         mc(
-            id="e6-2-1-1-lv06-co-001",
-            concept_id="concept-e6-frac-div2",
+            id="e6-2-1-1-co-002",
+            concept_id="e6-1-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -329,8 +329,8 @@ def get_questions() -> list[dict]:
             explanation="분수 나눗셈은 나누는 수의 역수를 곱합니다. 3/4 ÷ 2/5 = 3/4 × 5/2 = 15/8입니다.",
         ),
         mc(
-            id="e6-2-1-1-lv05-co-001",
-            concept_id="concept-e6-frac-div2",
+            id="e6-2-1-1-co-003",
+            concept_id="e6-1-1-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -345,8 +345,8 @@ def get_questions() -> list[dict]:
             explanation="5/6 ÷ 5/12 = 5/6 × 12/5 = 60/30 = 2입니다. 통분 방법으로도 계산 가능: 분모를 12로 통일하면 10/12 ÷ 5/12 = 10÷5 = 2입니다.",
         ),
         mc(
-            id="e6-2-1-1-lv08-co-001",
-            concept_id="concept-e6-frac-div2",
+            id="e6-2-1-1-co-004",
+            concept_id="e6-1-1-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -361,8 +361,8 @@ def get_questions() -> list[dict]:
             explanation="7/9 ÷ 2/3 = 7/9 × 3/2 = 21/18 = 7/6입니다. 계산 후 약분을 잊지 마세요.",
         ),
         mc(
-            id="e6-2-1-1-lv07-co-002",
-            concept_id="concept-e6-frac-div2",
+            id="e6-2-1-1-co-005",
+            concept_id="e6-1-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -376,10 +376,10 @@ def get_questions() -> list[dict]:
             correct="B",
             explanation="4/5 ÷ 3/10 = 4/5 × 10/3 = 40/15 = 8/3입니다. 기약분수로 나타내는 것이 중요합니다.",
         ),
-        # 2학기 2단원: 소수의 나눗셈2 (e6-2-2-1-lv07-co-001 ~ 015, 024 ~ 025)
+        # 2학기 2단원: 소수의 나눗셈2 (e6-2-2-1-co-001 ~ 015, 024 ~ 025)
         mc(
-            id="e6-2-2-1-lv07-co-001",
-            concept_id="concept-e6-dec-div2",
+            id="e6-2-2-1-co-001",
+            concept_id="e6-1-3-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -394,8 +394,8 @@ def get_questions() -> list[dict]:
             explanation="나누는 수와 나누어지는 수에 10을 곱하면 78 ÷ 12 = 6.5입니다. 소수점 이동의 동치성을 활용하세요.",
         ),
         mc(
-            id="e6-2-2-1-lv08-co-001",
-            concept_id="concept-e6-dec-div2",
+            id="e6-2-2-1-co-002",
+            concept_id="e6-1-3-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -410,8 +410,8 @@ def get_questions() -> list[dict]:
             explanation="50 ÷ 8 = 6.25입니다. '소수 둘째 자리까지 구하시오'는 둘째 자리까지 표기하라는 의미입니다. '소수 둘째 자리에서 반올림'과 혼동하지 마세요.",
         ),
         mc(
-            id="e6-2-2-1-lv09-co-001",
-            concept_id="concept-e6-dec-div2",
+            id="e6-2-2-1-co-003",
+            concept_id="e6-1-3-2",
             category="computation",
             part="calc",
             difficulty=9,
@@ -426,8 +426,8 @@ def get_questions() -> list[dict]:
             explanation="83 ÷ 24 = 3.458...이므로 소수 첫째 자리에서 반올림하면 3입니다. 반올림 조건을 정확히 읽어야 합니다.",
         ),
         mc(
-            id="e6-2-2-1-lv06-co-001",
-            concept_id="concept-e6-dec-div2",
+            id="e6-2-2-1-co-004",
+            concept_id="e6-1-3-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -442,8 +442,8 @@ def get_questions() -> list[dict]:
             explanation="양쪽에 10을 곱하면 42 ÷ 6 = 7입니다. 소수점 이동 후 자연수 나눗셈으로 간단히 계산할 수 있습니다.",
         ),
         mc(
-            id="e6-2-2-1-lv08-co-002",
-            concept_id="concept-e6-dec-div2",
+            id="e6-2-2-1-co-005",
+            concept_id="e6-1-3-2",
             category="computation",
             part="calc",
             difficulty=8,

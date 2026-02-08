@@ -10,10 +10,10 @@ def get_fill_blank_data() -> dict:
     # 빈칸 채우기 문제 (12단원 × 2개씩)
     # ============================================================
     questions = [
-        # 1. 소인수분해 (2문제)
+        # [m1-1-1-2] 거듭제곱과 소인수분해
         fb(
-            id="m1-1-01-02-lv03-fb-001",
-            concept_id="concept-m1-prime-02",
+            id="m1-1-1-2-fb-001",
+            concept_id="m1-1-1-2",
             category="computation",
             part="calc",
             difficulty=3,
@@ -23,9 +23,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["5"],
         ),
+        # [m1-1-1-3] 최대공약수와 최소공배수
         fb(
-            id="m1-1-01-03-lv05-fb-001",
-            concept_id="concept-m1-prime-03",
+            id="m1-1-1-3-fb-001",
+            concept_id="m1-1-1-3",
             category="computation",
             part="calc",
             difficulty=5,
@@ -35,10 +36,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["12"],
         ),
-        # 2. 정수와 유리수 (2문제)
+        # [m1-1-2-3] 유리수의 사칙연산
         fb(
-            id="m1-1-02-03-lv04-fb-001",
-            concept_id="concept-m1-int-03",
+            id="m1-1-2-3-fb-001",
+            concept_id="m1-1-2-3",
             category="computation",
             part="calc",
             difficulty=4,
@@ -48,9 +49,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["0"],
         ),
+        # [m1-1-2-2] 절대값과 유리수
         fb(
-            id="m1-1-02-02-lv06-fb-001",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-fb-001",
+            concept_id="m1-1-2-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -60,10 +62,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["10"],
         ),
-        # 3. 문자의 사용과 식의 계산 (2문제)
+        # [m1-1-3-2] 동류항과 식의 계산
         fb(
-            id="m1-1-03-02-lv04-fb-001",
-            concept_id="concept-m1-expr-02",
+            id="m1-1-3-2-fb-001",
+            concept_id="m1-1-3-2",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -73,9 +75,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["8"],
         ),
+        # [m1-1-3-3] 대입과 식의 값
         fb(
-            id="m1-1-03-03-lv07-fb-001",
-            concept_id="concept-m1-expr-03",
+            id="m1-1-3-3-fb-001",
+            concept_id="m1-1-3-3",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -85,10 +88,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["8"],
         ),
-        # 4. 일차방정식 (2문제)
+        # [m1-1-4-2] 일차방정식의 풀이
         fb(
-            id="m1-1-04-02-lv04-fb-001",
-            concept_id="concept-m1-eq-02",
+            id="m1-1-4-2-fb-001",
+            concept_id="m1-1-4-2",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -99,8 +102,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["-2"],
         ),
         fb(
-            id="m1-1-04-02-lv07-fb-001",
-            concept_id="concept-m1-eq-02",
+            id="m1-1-4-2-fb-002",
+            concept_id="m1-1-4-2",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -110,10 +113,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["6"],
         ),
-        # 5. 좌표평면과 그래프 (2문제)
+        # [m1-2-1-1] 순서쌍과 좌표평면
         fb(
-            id="m1-2-05-01-lv03-fb-001",
-            concept_id="concept-m1-coord-01",
+            id="m1-2-1-1-fb-001",
+            concept_id="m1-2-1-1",
             category="concept",
             part="func",
             difficulty=3,
@@ -124,8 +127,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["2"],
         ),
         fb(
-            id="m1-2-05-01-lv05-fb-001",
-            concept_id="concept-m1-coord-01",
+            id="m1-2-1-1-fb-002",
+            concept_id="m1-2-1-1",
             category="concept",
             part="func",
             difficulty=5,
@@ -135,10 +138,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["+", "양수", "positive"],
         ),
-        # 6. 정비례와 반비례 (2문제)
+        # [m1-2-2-1] 정비례 관계
         fb(
-            id="m1-2-06-01-lv04-fb-001",
-            concept_id="concept-m1-prop-01",
+            id="m1-2-2-1-fb-001",
+            concept_id="m1-2-2-1",
             category="concept",
             part="func",
             difficulty=4,
@@ -148,9 +151,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["20"],
         ),
+        # [m1-2-2-2] 반비례 관계
         fb(
-            id="m1-2-06-02-lv06-fb-001",
-            concept_id="concept-m1-prop-02",
+            id="m1-2-2-2-fb-001",
+            concept_id="m1-2-2-2",
             category="concept",
             part="func",
             difficulty=6,
@@ -160,10 +164,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["4"],
         ),
-        # 7. 기본 도형과 작도 (2문제)
+        # [m1-2-3-2] 평행선의 성질
         fb(
-            id="m1-2-07-02-lv04-fb-001",
-            concept_id="concept-m1-geo-02",
+            id="m1-2-3-2-fb-001",
+            concept_id="m1-2-3-2",
             category="concept",
             part="geo",
             difficulty=4,
@@ -173,9 +177,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["65", "65도"],
         ),
+        # [m1-2-3-1] 점/선/면과 위치관계
         fb(
-            id="m1-2-07-01-lv06-fb-001",
-            concept_id="concept-m1-geo-01",
+            id="m1-2-3-1-fb-001",
+            concept_id="m1-2-3-1",
             category="concept",
             part="geo",
             difficulty=6,
@@ -185,10 +190,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["120", "120도"],
         ),
-        # 8. 평면도형의 성질 (2문제)
+        # [m1-2-4-1] 다각형의 내각과 외각
         fb(
-            id="m1-2-08-01-lv04-fb-001",
-            concept_id="concept-m1-plane-01",
+            id="m1-2-4-1-fb-001",
+            concept_id="m1-2-4-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -198,9 +203,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["720", "720도"],
         ),
+        # [m1-2-4-2] 원과 부채꼴의 성질
         fb(
-            id="m1-2-08-02-lv07-fb-001",
-            concept_id="concept-m1-plane-02",
+            id="m1-2-4-2-fb-001",
+            concept_id="m1-2-4-2",
             category="concept",
             part="geo",
             difficulty=7,
@@ -210,10 +216,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["2π", "2pi"],
         ),
-        # 9. 입체도형의 성질 (2문제)
+        # [m1-2-5-2] 겉넓이와 부피
         fb(
-            id="m1-2-09-02-lv05-fb-001",
-            concept_id="concept-m1-solid-02",
+            id="m1-2-5-2-fb-001",
+            concept_id="m1-2-5-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -223,9 +229,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["24π", "24pi"],
         ),
+        # [m1-2-5-3] 구
         fb(
-            id="m1-2-09-03-lv07-fb-001",
-            concept_id="concept-m1-solid-03",
+            id="m1-2-5-3-fb-001",
+            concept_id="m1-2-5-3",
             category="concept",
             part="geo",
             difficulty=7,
@@ -235,10 +242,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["36π", "36pi"],
         ),
-        # 10. 자료의 정리와 해석 (2문제)
+        # [m1-2-6-1] 줄기와 잎 그림/도수분포표
         fb(
-            id="m1-2-10-01-lv04-fb-001",
-            concept_id="concept-m1-freq-01",
+            id="m1-2-6-1-fb-001",
+            concept_id="m1-2-6-1",
             category="concept",
             part="data",
             difficulty=4,
@@ -248,9 +255,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["25"],
         ),
+        # [m1-2-6-3] 상대도수
         fb(
-            id="m1-2-10-03-lv06-fb-001",
-            concept_id="concept-m1-freq-03",
+            id="m1-2-6-3-fb-001",
+            concept_id="m1-2-6-3",
             category="concept",
             part="data",
             difficulty=6,
@@ -260,10 +268,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["10"],
         ),
-        # 11. 대푯값 (2문제) - NEW
+        # [m1-2-7-1] 평균/중앙값/최빈값
         fb(
-            id="m1-2-11-01-lv04-fb-001",
-            concept_id="concept-m1-repr-01",
+            id="m1-2-7-1-fb-001",
+            concept_id="m1-2-7-1",
             category="concept",
             part="data",
             difficulty=4,
@@ -274,8 +282,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["4"],
         ),
         fb(
-            id="m1-2-11-01-lv06-fb-001",
-            concept_id="concept-m1-repr-01",
+            id="m1-2-7-1-fb-002",
+            concept_id="m1-2-7-1",
             category="concept",
             part="data",
             difficulty=6,
@@ -285,10 +293,10 @@ def get_fill_blank_data() -> dict:
             points=15,
             accept_formats=["5"],
         ),
-        # 12. 산점도와 상관관계 (2문제) - NEW
+        # [m1-2-8-1] 산점도
         fb(
-            id="m1-2-12-01-lv04-fb-001",
-            concept_id="concept-m1-scat-01",
+            id="m1-2-8-1-fb-001",
+            concept_id="m1-2-8-1",
             category="concept",
             part="data",
             difficulty=4,
@@ -298,9 +306,10 @@ def get_fill_blank_data() -> dict:
             points=10,
             accept_formats=["음의상관관계", "음의 상관관계", "음의 상관", "음의상관"],
         ),
+        # [m1-2-8-1] 산점도
         fb(
-            id="m1-2-12-01-lv07-fb-001",
-            concept_id="concept-m1-scat-01",
+            id="m1-2-8-1-fb-002",
+            concept_id="m1-2-8-1",
             category="concept",
             part="data",
             difficulty=7,

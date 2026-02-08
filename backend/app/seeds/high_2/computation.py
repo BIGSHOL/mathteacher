@@ -11,11 +11,9 @@ def get_computation_data() -> dict:
     }
 
 
-def _get_concepts():
-    """연산 개념 정의 (4개)."""
     return [
         concept(
-            id="concept-h2-plane-coord",
+            id="h1-2-1-1",
             name="평면좌표",
             grade="high_1",
             category="computation",
@@ -23,7 +21,7 @@ def _get_concepts():
             description="두 점 사이의 거리, 내분점, 무게중심 (2022 개정: 외분점 삭제)"
         ),
         concept(
-            id="concept-h2-line",
+            id="h1-2-1-2",
             name="직선의 방정식",
             grade="high_1",
             category="computation",
@@ -31,7 +29,7 @@ def _get_concepts():
             description="직선의 결정조건, 평행과 수직, 점과 직선 사이의 거리"
         ),
         concept(
-            id="concept-h2-circle",
+            id="h1-2-1-3",
             name="원의 방정식",
             grade="high_1",
             category="computation",
@@ -39,7 +37,7 @@ def _get_concepts():
             description="원의 방정식(표준형·일반형), 원과 직선의 위치 관계, 접선의 방정식"
         ),
         concept(
-            id="concept-h2-transform",
+            id="h1-2-1-4",
             name="도형의 이동",
             grade="high_1",
             category="computation",
@@ -56,8 +54,8 @@ def _get_questions():
 
         # 두 점 사이의 거리 - 기본
         mc(
-            id="h2-2-1-1-lv03-co-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-co-001",
+            concept_id="h1-2-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -70,8 +68,8 @@ def _get_questions():
 
         # 내분점 - 기본
         mc(
-            id="h2-2-1-1-lv05-co-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-co-002",
+            concept_id="h1-2-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -84,8 +82,8 @@ def _get_questions():
 
         # 무게중심
         mc(
-            id="h2-2-1-1-lv07-co-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-co-003",
+            concept_id="h1-2-1-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -100,8 +98,8 @@ def _get_questions():
 
         # 직선의 방정식 - 기본
         mc(
-            id="h2-2-1-2-lv03-co-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-co-001",
+            concept_id="h1-2-1-2",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -114,8 +112,8 @@ def _get_questions():
 
         # 평행과 수직
         mc(
-            id="h2-2-1-2-lv05-co-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-co-002",
+            concept_id="h1-2-1-2",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -128,8 +126,8 @@ def _get_questions():
 
         # 점과 직선 사이의 거리
         mc(
-            id="h2-2-1-2-lv08-co-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-co-003",
+            concept_id="h1-2-1-2",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -144,8 +142,8 @@ def _get_questions():
 
         # 원의 방정식 - 표준형
         mc(
-            id="h2-2-1-3-lv04-co-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-co-001",
+            concept_id="h1-2-1-3",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -163,8 +161,8 @@ def _get_questions():
 
         # 원의 방정식 - 일반형 → 표준형 변환
         mc(
-            id="h2-2-1-3-lv06-co-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-co-002",
+            concept_id="h1-2-1-3",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -182,8 +180,8 @@ def _get_questions():
 
         # 원의 접선
         mc(
-            id="h2-2-1-3-lv08-co-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-co-003",
+            concept_id="h1-2-1-3",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -198,8 +196,8 @@ def _get_questions():
 
         # 평행이동 - 점
         mc(
-            id="h2-2-1-4-lv03-co-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-co-001",
+            concept_id="h1-2-1-4",
             category="computation",
             part="geo",
             difficulty=3,
@@ -212,8 +210,8 @@ def _get_questions():
 
         # 평행이동 - 직선
         mc(
-            id="h2-2-1-4-lv06-co-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-co-002",
+            concept_id="h1-2-1-4",
             category="computation",
             part="geo",
             difficulty=6,
@@ -226,8 +224,8 @@ def _get_questions():
 
         # 대칭이동 - y = x
         mc(
-            id="h2-2-1-4-lv08-co-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-co-003",
+            concept_id="h1-2-1-4",
             category="computation",
             part="geo",
             difficulty=8,
@@ -242,8 +240,8 @@ def _get_questions():
 
         # 평면좌표 - 거리 응용
         mc(
-            id="h2-2-1-1-lv06-co-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-co-004",
+            concept_id="h1-2-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -256,8 +254,8 @@ def _get_questions():
 
         # 평면좌표 - 내분점 응용
         mc(
-            id="h2-2-1-1-lv08-co-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-co-005",
+            concept_id="h1-2-1-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -270,8 +268,8 @@ def _get_questions():
 
         # 직선 - 두 점을 지나는 직선
         mc(
-            id="h2-2-1-2-lv06-co-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-co-004",
+            concept_id="h1-2-1-2",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -284,8 +282,8 @@ def _get_questions():
 
         # 직선 - 일반형 → 기울기-절편 형식
         mc(
-            id="h2-2-1-2-lv07-co-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-co-005",
+            concept_id="h1-2-1-2",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -298,8 +296,8 @@ def _get_questions():
 
         # 원 - 원과 직선의 위치 관계
         mc(
-            id="h2-2-1-3-lv09-co-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-co-004",
+            concept_id="h1-2-1-3",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -312,8 +310,8 @@ def _get_questions():
 
         # 원 - 중심을 지나는 현의 길이
         mc(
-            id="h2-2-1-3-lv10-co-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-co-005",
+            concept_id="h1-2-1-3",
             category="computation",
             part="algebra",
             difficulty=10,
@@ -326,8 +324,8 @@ def _get_questions():
 
         # 도형의 이동 - x축 대칭
         mc(
-            id="h2-2-1-4-lv05-co-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-co-004",
+            concept_id="h1-2-1-4",
             category="computation",
             part="geo",
             difficulty=5,
@@ -340,8 +338,8 @@ def _get_questions():
 
         # 도형의 이동 - 원점 대칭
         mc(
-            id="h2-2-1-4-lv07-co-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-co-005",
+            concept_id="h1-2-1-4",
             category="computation",
             part="geo",
             difficulty=7,
@@ -358,17 +356,22 @@ def _get_tests():
     """연산 카테고리 테스트 (1개)."""
     return [
         test(
-            id="test-h2-geometry-eq",
+            id="test-h1-geometry-eq",
             title="공통수학2 도형의 방정식",
             description="평면좌표, 직선, 원, 도형의 이동",
             grade="high_1",
             concept_ids=[
-                "concept-h2-plane-coord",
-                "concept-h2-line",
-                "concept-h2-circle",
-                "concept-h2-transform"
+                "h1-2-1-1",
+                "h1-2-1-2",
+                "h1-2-1-3",
+                "h1-2-1-4"
             ],
-            question_ids=['h2-2-1-1-lv03-co-001', 'h2-2-1-1-lv05-co-001', 'h2-2-1-1-lv07-co-001', 'h2-2-1-2-lv03-co-001', 'h2-2-1-2-lv05-co-001', 'h2-2-1-2-lv08-co-001', 'h2-2-1-3-lv04-co-001', 'h2-2-1-3-lv06-co-001', 'h2-2-1-3-lv08-co-001', 'h2-2-1-4-lv03-co-001', 'h2-2-1-4-lv06-co-001', 'h2-2-1-4-lv08-co-001', 'h2-2-1-1-lv06-co-001', 'h2-2-1-1-lv08-co-001', 'h2-2-1-2-lv06-co-001', 'h2-2-1-2-lv07-co-001', 'h2-2-1-3-lv09-co-001', 'h2-2-1-3-lv10-co-001', 'h2-2-1-4-lv05-co-001', 'h2-2-1-4-lv07-co-001'],
+            question_ids=[
+                "h1-2-1-1-co-001", "h1-2-1-1-co-002", "h1-2-1-1-co-003", "h1-2-1-1-co-004", "h1-2-1-1-co-005",
+                "h1-2-1-2-co-001", "h1-2-1-2-co-002", "h1-2-1-2-co-003", "h1-2-1-2-co-004", "h1-2-1-2-co-005",
+                "h1-2-1-3-co-001", "h1-2-1-3-co-002", "h1-2-1-3-co-003", "h1-2-1-3-co-004", "h1-2-1-3-co-005",
+                "h1-2-1-4-co-001", "h1-2-1-4-co-002", "h1-2-1-4-co-003", "h1-2-1-4-co-004", "h1-2-1-4-co-005"
+            ],
             time_limit_minutes=30,
             use_question_pool=True,
             questions_per_attempt=10,

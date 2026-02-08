@@ -11,7 +11,7 @@ def get_computation_data() -> dict:
     concepts = [
         # ── 1단원: 자연수의 혼합 계산 (2개) ──
         concept(
-            id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1",
             name="연산 우선순위와 좌결합성",
             grade="elementary_5",
             category="computation",
@@ -19,7 +19,7 @@ def get_computation_data() -> dict:
             description="곱셈·나눗셈을 덧셈·뺄셈보다 먼저 계산하는 우선순위 규칙과, 동순위 연산을 왼쪽부터 처리하는 좌결합성을 이해합니다.",
         ),
         concept(
-            id="concept-e5-mixed-calc-02",
+            id="e5-1-1-2",
             name="괄호가 있는 식과 문장제 모델링",
             grade="elementary_5",
             category="computation",
@@ -28,7 +28,7 @@ def get_computation_data() -> dict:
         ),
         # ── 2단원: 약수와 배수 (2개) ──
         concept(
-            id="concept-e5-divisor-01",
+            id="e5-1-2-1",
             name="약수와 배수의 정의",
             grade="elementary_5",
             category="computation",
@@ -36,7 +36,7 @@ def get_computation_data() -> dict:
             description="A=B×C일 때 B,C는 A의 약수, A는 B,C의 배수라는 정의를 이해하고, 주어진 수의 약수를 빠짐없이 구합니다.",
         ),
         concept(
-            id="concept-e5-divisor-02",
+            id="e5-1-2-2",
             name="최대공약수와 최소공배수",
             grade="elementary_5",
             category="computation",
@@ -45,7 +45,7 @@ def get_computation_data() -> dict:
         ),
         # ── 4단원: 약분과 통분 (2개) ──
         concept(
-            id="concept-e5-reduce-01",
+            id="e5-1-4-1",
             name="약분과 기약분수",
             grade="elementary_5",
             category="computation",
@@ -53,7 +53,7 @@ def get_computation_data() -> dict:
             description="분수의 기본 성질(분모·분자에 0이 아닌 같은 수를 곱/나눠도 크기 불변)을 이용하여 공약수로 약분하고 기약분수까지 나타냅니다.",
         ),
         concept(
-            id="concept-e5-reduce-02",
+            id="e5-1-4-2",
             name="통분과 크기 비교",
             grade="elementary_5",
             category="computation",
@@ -62,7 +62,7 @@ def get_computation_data() -> dict:
         ),
         # ── 5단원: 분수의 덧셈과 뺄셈 (2개) ──
         concept(
-            id="concept-e5-frac-add-01",
+            id="e5-1-5-1",
             name="이분모 분수의 덧셈과 뺄셈",
             grade="elementary_5",
             category="computation",
@@ -70,16 +70,16 @@ def get_computation_data() -> dict:
             description="분모가 다른 분수를 통분하여 분모를 같게 만든 후 분자끼리 더하거나 빼는 원리를 이해합니다.",
         ),
         concept(
-            id="concept-e5-frac-add-02",
+            id="e5-1-5-2",
             name="대분수 혼합 계산과 받아내림",
             grade="elementary_5",
             category="computation",
             part="calc",
             description="대분수의 자연수 부분과 분수 부분을 분리하여 계산하며, 분수 부분이 부족할 때 자연수에서 1을 빌려 받아내림 처리합니다.",
         ),
-        # ── 8단원: 분수의 곱셈 (2개) ──
+        # ── 2학기 2단원: 분수의 곱셈 (2개) ──
         concept(
-            id="concept-e5-frac-mul-01",
+            id="e5-2-2-1",
             name="분수와 자연수의 곱셈",
             grade="elementary_5",
             category="computation",
@@ -87,16 +87,16 @@ def get_computation_data() -> dict:
             description="(분수)×(자연수), (자연수)×(분수) 계산을 수행하며, 진분수를 곱하면 원래 수보다 작아지는 축소 변환을 이해합니다.",
         ),
         concept(
-            id="concept-e5-frac-mul-02",
+            id="e5-2-2-2",
             name="분수끼리의 곱셈과 대분수 변환",
             grade="elementary_5",
             category="computation",
             part="calc",
             description="분자끼리·분모끼리 곱하는 원리로 (분수)×(분수)를 계산하고, 대분수는 반드시 가분수로 변환한 후 곱셈합니다.",
         ),
-        # ── 10단원: 소수의 곱셈 (2개) ──
+        # ── 2학기 4단원: 소수의 곱셈 (2개) ──
         concept(
-            id="concept-e5-dec-mul-01",
+            id="e5-2-4-1",
             name="소수와 자연수의 곱셈",
             grade="elementary_5",
             category="computation",
@@ -104,7 +104,7 @@ def get_computation_data() -> dict:
             description="(소수)×(자연수) 계산에서 자연수처럼 곱한 후 소수점을 찍는 원리를 이해하고 어림으로 결과를 검증합니다.",
         ),
         concept(
-            id="concept-e5-dec-mul-02",
+            id="e5-2-4-2",
             name="소수끼리의 곱셈과 소수점 위치",
             grade="elementary_5",
             category="computation",
@@ -115,10 +115,10 @@ def get_computation_data() -> dict:
 
     questions = [
         # ========== 1단원: 자연수의 혼합 계산 ==========
-        # concept-e5-mixed-calc-01: 연산 우선순위와 좌결합성 (5문제)
+        # e5-1-1-1: 연산 우선순위와 좌결합성 (5문제)
         mc(
-            id="e5-1-1-1-lv02-co-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-co-001",
+            concept_id="e5-1-1-1",
             category="computation",
             part="calc",
             difficulty=2,
@@ -129,8 +129,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-1-lv03-co-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-co-002",
+            concept_id="e5-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -141,8 +141,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-1-lv04-co-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-co-003",
+            concept_id="e5-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -153,8 +153,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-1-lv05-co-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-co-004",
+            concept_id="e5-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -165,8 +165,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-1-lv06-co-001",
-            concept_id="concept-e5-mixed-calc-01",
+            id="e5-1-1-1-co-005",
+            concept_id="e5-1-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -177,10 +177,10 @@ def get_computation_data() -> dict:
             points=10,
         ),
 
-        # concept-e5-mixed-calc-02: 괄호가 있는 식 (5문제)
+        # e5-1-1-2: 괄호가 있는 식 (5문제)
         mc(
-            id="e5-1-1-2-lv03-co-001",
-            concept_id="concept-e5-mixed-calc-02",
+            id="e5-1-1-2-co-001",
+            concept_id="e5-1-1-2",
             category="computation",
             part="calc",
             difficulty=3,
@@ -191,8 +191,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-2-lv04-co-001",
-            concept_id="concept-e5-mixed-calc-02",
+            id="e5-1-1-2-co-002",
+            concept_id="e5-1-1-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -203,8 +203,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-2-lv05-co-001",
-            concept_id="concept-e5-mixed-calc-02",
+            id="e5-1-1-2-co-003",
+            concept_id="e5-1-1-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -215,8 +215,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-2-lv06-co-001",
-            concept_id="concept-e5-mixed-calc-02",
+            id="e5-1-1-2-co-004",
+            concept_id="e5-1-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -227,8 +227,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-1-2-lv07-co-001",
-            concept_id="concept-e5-mixed-calc-02",
+            id="e5-1-1-2-co-005",
+            concept_id="e5-1-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -240,10 +240,10 @@ def get_computation_data() -> dict:
         ),
 
         # ========== 2단원: 약수와 배수 ==========
-        # concept-e5-divisor-01: 약수와 배수의 정의 (5문제)
+        # e5-1-2-1: 약수와 배수의 정의 (5문제)
         mc(
-            id="e5-1-2-1-lv03-co-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-co-001",
+            concept_id="e5-1-2-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -254,8 +254,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-1-lv04-co-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-co-002",
+            concept_id="e5-1-2-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -266,8 +266,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-1-lv05-co-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-co-003",
+            concept_id="e5-1-2-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -278,8 +278,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-1-lv06-co-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-co-004",
+            concept_id="e5-1-2-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -290,8 +290,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-1-lv07-co-001",
-            concept_id="concept-e5-divisor-01",
+            id="e5-1-2-1-co-005",
+            concept_id="e5-1-2-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -302,10 +302,10 @@ def get_computation_data() -> dict:
             points=10,
         ),
 
-        # concept-e5-divisor-02: 최대공약수와 최소공배수 (5문제)
+        # e5-1-2-2: 최대공약수와 최소공배수 (5문제)
         mc(
-            id="e5-1-2-2-lv04-co-001",
-            concept_id="concept-e5-divisor-02",
+            id="e5-1-2-2-co-001",
+            concept_id="e5-1-2-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -316,8 +316,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-2-lv05-co-001",
-            concept_id="concept-e5-divisor-02",
+            id="e5-1-2-2-co-002",
+            concept_id="e5-1-2-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -328,8 +328,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-2-lv06-co-001",
-            concept_id="concept-e5-divisor-02",
+            id="e5-1-2-2-co-003",
+            concept_id="e5-1-2-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -340,8 +340,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-2-lv07-co-001",
-            concept_id="concept-e5-divisor-02",
+            id="e5-1-2-2-co-004",
+            concept_id="e5-1-2-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -352,8 +352,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-2-2-lv08-co-001",
-            concept_id="concept-e5-divisor-02",
+            id="e5-1-2-2-co-005",
+            concept_id="e5-1-2-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -365,10 +365,10 @@ def get_computation_data() -> dict:
         ),
 
         # ========== 4단원: 약분과 통분 ==========
-        # concept-e5-reduce-01: 약분과 기약분수 (5문제)
+        # e5-1-4-1: 약분과 기약분수 (5문제)
         mc(
-            id="e5-1-4-1-lv03-co-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-co-001",
+            concept_id="e5-1-4-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -379,8 +379,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-1-lv04-co-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-co-002",
+            concept_id="e5-1-4-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -391,8 +391,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-1-lv05-co-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-co-003",
+            concept_id="e5-1-4-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -403,8 +403,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-1-lv06-co-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-co-004",
+            concept_id="e5-1-4-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -415,8 +415,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-1-lv07-co-001",
-            concept_id="concept-e5-reduce-01",
+            id="e5-1-4-1-co-005",
+            concept_id="e5-1-4-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -427,10 +427,10 @@ def get_computation_data() -> dict:
             points=10,
         ),
 
-        # concept-e5-reduce-02: 통분과 크기 비교 (5문제)
+        # e5-1-4-2: 통분과 크기 비교 (5문제)
         mc(
-            id="e5-1-4-2-lv04-co-001",
-            concept_id="concept-e5-reduce-02",
+            id="e5-1-4-2-co-001",
+            concept_id="e5-1-4-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -441,8 +441,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-2-lv05-co-001",
-            concept_id="concept-e5-reduce-02",
+            id="e5-1-4-2-co-002",
+            concept_id="e5-1-4-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -453,8 +453,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-2-lv06-co-001",
-            concept_id="concept-e5-reduce-02",
+            id="e5-1-4-2-co-003",
+            concept_id="e5-1-4-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -465,8 +465,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-2-lv07-co-001",
-            concept_id="concept-e5-reduce-02",
+            id="e5-1-4-2-co-004",
+            concept_id="e5-1-4-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -477,8 +477,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-4-2-lv08-co-001",
-            concept_id="concept-e5-reduce-02",
+            id="e5-1-4-2-co-005",
+            concept_id="e5-1-4-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -490,10 +490,10 @@ def get_computation_data() -> dict:
         ),
 
         # ========== 5단원: 분수의 덧셈과 뺄셈 ==========
-        # concept-e5-frac-add-01: 이분모 분수의 덧셈과 뺄셈 (5문제)
+        # e5-1-5-1: 이분모 분수의 덧셈과 뺄셈 (5문제)
         mc(
-            id="e5-1-5-1-lv04-co-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-co-001",
+            concept_id="e5-1-5-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -504,8 +504,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-1-lv05-co-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-co-002",
+            concept_id="e5-1-5-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -516,8 +516,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-1-lv06-co-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-co-003",
+            concept_id="e5-1-5-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -528,8 +528,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-1-lv07-co-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-co-004",
+            concept_id="e5-1-5-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -540,8 +540,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-1-lv08-co-001",
-            concept_id="concept-e5-frac-add-01",
+            id="e5-1-5-1-co-005",
+            concept_id="e5-1-5-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -552,10 +552,10 @@ def get_computation_data() -> dict:
             points=10,
         ),
 
-        # concept-e5-frac-add-02: 대분수 혼합 계산과 받아내림 (5문제)
+        # e5-1-5-2: 대분수 혼합 계산과 받아내림 (5문제)
         mc(
-            id="e5-1-5-2-lv06-co-001",
-            concept_id="concept-e5-frac-add-02",
+            id="e5-1-5-2-co-001",
+            concept_id="e5-1-5-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -566,8 +566,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-2-lv07-co-001",
-            concept_id="concept-e5-frac-add-02",
+            id="e5-1-5-2-co-002",
+            concept_id="e5-1-5-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -578,8 +578,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-2-lv08-co-001",
-            concept_id="concept-e5-frac-add-02",
+            id="e5-1-5-2-co-003",
+            concept_id="e5-1-5-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -590,8 +590,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-2-lv07-co-002",
-            concept_id="concept-e5-frac-add-02",
+            id="e5-1-5-2-co-004",
+            concept_id="e5-1-5-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -602,8 +602,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-1-5-2-lv08-co-002",
-            concept_id="concept-e5-frac-add-02",
+            id="e5-1-5-2-co-005",
+            concept_id="e5-1-5-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -615,10 +615,10 @@ def get_computation_data() -> dict:
         ),
 
         # ========== 8단원: 분수의 곱셈 ==========
-        # concept-e5-frac-mul-01: 분수와 자연수의 곱셈 (5문제)
+        # e5-2-2-1: 분수와 자연수의 곱셈 (5문제)
         mc(
-            id="e5-2-2-1-lv05-co-001",
-            concept_id="concept-e5-frac-mul-01",
+            id="e5-2-2-1-co-001",
+            concept_id="e5-2-2-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -629,8 +629,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-1-lv06-co-001",
-            concept_id="concept-e5-frac-mul-01",
+            id="e5-2-2-1-co-002",
+            concept_id="e5-2-2-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -641,8 +641,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-1-lv07-co-001",
-            concept_id="concept-e5-frac-mul-01",
+            id="e5-2-2-1-co-003",
+            concept_id="e5-2-2-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -653,8 +653,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-1-lv08-co-001",
-            concept_id="concept-e5-frac-mul-01",
+            id="e5-2-2-1-co-004",
+            concept_id="e5-2-2-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -665,8 +665,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-1-lv07-co-002",
-            concept_id="concept-e5-frac-mul-01",
+            id="e5-2-2-1-co-005",
+            concept_id="e5-2-2-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -677,10 +677,10 @@ def get_computation_data() -> dict:
             points=10,
         ),
 
-        # concept-e5-frac-mul-02: 분수끼리의 곱셈 (5문제)
+        # e5-2-2-2: 분수끼리의 곱셈 (5문제)
         mc(
-            id="e5-2-2-2-lv04-co-001",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-co-001",
+            concept_id="e5-2-2-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -691,8 +691,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-2-lv06-co-001",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-co-002",
+            concept_id="e5-2-2-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -703,8 +703,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-2-lv07-co-001",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-co-003",
+            concept_id="e5-2-2-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -715,8 +715,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-2-lv08-co-001",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-co-004",
+            concept_id="e5-2-2-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -727,8 +727,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-2-2-lv07-co-002",
-            concept_id="concept-e5-frac-mul-02",
+            id="e5-2-2-2-co-005",
+            concept_id="e5-2-2-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -740,10 +740,10 @@ def get_computation_data() -> dict:
         ),
 
         # ========== 10단원: 소수의 곱셈 ==========
-        # concept-e5-dec-mul-01: 소수와 자연수의 곱셈 (5문제)
+        # e5-2-4-1: 소수와 자연수의 곱셈 (5문제)
         mc(
-            id="e5-2-4-1-lv04-co-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-co-001",
+            concept_id="e5-2-4-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -754,8 +754,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-1-lv05-co-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-co-002",
+            concept_id="e5-2-4-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -766,8 +766,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-1-lv06-co-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-co-003",
+            concept_id="e5-2-4-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -778,8 +778,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-1-lv07-co-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-co-004",
+            concept_id="e5-2-4-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -790,8 +790,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-1-lv08-co-001",
-            concept_id="concept-e5-dec-mul-01",
+            id="e5-2-4-1-co-005",
+            concept_id="e5-2-4-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -802,10 +802,10 @@ def get_computation_data() -> dict:
             points=10,
         ),
 
-        # concept-e5-dec-mul-02: 소수끼리의 곱셈 (5문제)
+        # e5-2-4-2: 소수가끼리의 곱셈 (5문제)
         mc(
-            id="e5-2-4-2-lv05-co-001",
-            concept_id="concept-e5-dec-mul-02",
+            id="e5-2-4-2-co-001",
+            concept_id="e5-2-4-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -816,8 +816,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-2-lv06-co-001",
-            concept_id="concept-e5-dec-mul-02",
+            id="e5-2-4-2-co-002",
+            concept_id="e5-2-4-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -828,8 +828,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-2-lv07-co-001",
-            concept_id="concept-e5-dec-mul-02",
+            id="e5-2-4-2-co-003",
+            concept_id="e5-2-4-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -840,8 +840,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-2-lv08-co-001",
-            concept_id="concept-e5-dec-mul-02",
+            id="e5-2-4-2-co-004",
+            concept_id="e5-2-4-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -852,8 +852,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="e5-2-4-2-lv08-co-002",
-            concept_id="concept-e5-dec-mul-02",
+            id="e5-2-4-2-co-005",
+            concept_id="e5-2-4-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -872,34 +872,34 @@ def get_computation_data() -> dict:
             description="혼합 계산, 약수/배수, 약분/통분, 분수 덧뺄셈/곱셈, 소수 곱셈 (1,2,4,5,8,10단원)",
             grade="elementary_5",
             concept_ids=[
-                "concept-e5-mixed-calc-01", "concept-e5-mixed-calc-02",
-                "concept-e5-divisor-01", "concept-e5-divisor-02",
-                "concept-e5-reduce-01", "concept-e5-reduce-02",
-                "concept-e5-frac-add-01", "concept-e5-frac-add-02",
-                "concept-e5-frac-mul-01", "concept-e5-frac-mul-02",
-                "concept-e5-dec-mul-01", "concept-e5-dec-mul-02",
+                "e5-1-1-1", "e5-1-1-2",
+                "e5-1-2-1", "e5-1-2-2",
+                "e5-1-4-1", "e5-1-4-2",
+                "e5-1-5-1", "e5-1-5-2",
+                "e5-2-2-1", "e5-2-2-2",
+                "e5-2-4-1", "e5-2-4-2",
             ],
             question_ids=[
-                "e5-1-1-1-lv02-co-001", "e5-1-1-1-lv03-co-001", "e5-1-1-1-lv04-co-001", 
-                "e5-1-1-1-lv05-co-001", "e5-1-1-1-lv06-co-001", "e5-1-1-2-lv03-co-001", 
-                "e5-1-1-2-lv04-co-001", "e5-1-1-2-lv05-co-001", "e5-1-1-2-lv06-co-001", 
-                "e5-1-1-2-lv07-co-001", "e5-1-2-1-lv03-co-001", "e5-1-2-1-lv04-co-001", 
-                "e5-1-2-1-lv05-co-001", "e5-1-2-1-lv06-co-001", "e5-1-2-1-lv07-co-001", 
-                "e5-1-2-2-lv04-co-001", "e5-1-2-2-lv05-co-001", "e5-1-2-2-lv06-co-001", 
-                "e5-1-2-2-lv07-co-001", "e5-1-2-2-lv08-co-001", "e5-1-4-1-lv03-co-001", 
-                "e5-1-4-1-lv04-co-001", "e5-1-4-1-lv05-co-001", "e5-1-4-1-lv06-co-001", 
-                "e5-1-4-1-lv07-co-001", "e5-1-4-2-lv04-co-001", "e5-1-4-2-lv05-co-001", 
-                "e5-1-4-2-lv06-co-001", "e5-1-4-2-lv07-co-001", "e5-1-4-2-lv08-co-001", 
-                "e5-1-5-1-lv04-co-001", "e5-1-5-1-lv05-co-001", "e5-1-5-1-lv06-co-001", 
-                "e5-1-5-1-lv07-co-001", "e5-1-5-1-lv08-co-001", "e5-1-5-2-lv06-co-001", 
-                "e5-1-5-2-lv07-co-001", "e5-1-5-2-lv08-co-001", "e5-1-5-2-lv07-co-002", 
-                "e5-1-5-2-lv08-co-002", "e5-2-2-1-lv05-co-001", "e5-2-2-1-lv06-co-001", 
-                "e5-2-2-1-lv07-co-001", "e5-2-2-1-lv08-co-001", "e5-2-2-1-lv07-co-002", 
-                "e5-2-2-2-lv04-co-001", "e5-2-2-2-lv06-co-001", "e5-2-2-2-lv07-co-001", 
-                "e5-2-2-2-lv08-co-001", "e5-2-2-2-lv07-co-002", "e5-2-4-1-lv04-co-001", 
-                "e5-2-4-1-lv05-co-001", "e5-2-4-1-lv06-co-001", "e5-2-4-1-lv07-co-001", 
-                "e5-2-4-1-lv08-co-001", "e5-2-4-2-lv05-co-001", "e5-2-4-2-lv06-co-001", 
-                "e5-2-4-2-lv07-co-001", "e5-2-4-2-lv08-co-001", "e5-2-4-2-lv08-co-002",
+                "e5-1-1-1-co-001", "e5-1-1-1-co-002", "e5-1-1-1-co-003", 
+                "e5-1-1-1-co-004", "e5-1-1-1-co-005", "e5-1-1-2-co-001", 
+                "e5-1-1-2-co-002", "e5-1-1-2-co-003", "e5-1-1-2-co-004", 
+                "e5-1-1-2-co-005", "e5-1-2-1-co-001", "e5-1-2-1-co-002", 
+                "e5-1-2-1-co-003", "e5-1-2-1-co-004", "e5-1-2-1-co-005", 
+                "e5-1-2-2-co-001", "e5-1-2-2-co-002", "e5-1-2-2-co-003", 
+                "e5-1-2-2-co-004", "e5-1-2-2-co-005", "e5-1-4-1-co-001", 
+                "e5-1-4-1-co-002", "e5-1-4-1-co-003", "e5-1-4-1-co-004", 
+                "e5-1-4-1-co-005", "e5-1-4-2-co-001", "e5-1-4-2-co-002", 
+                "e5-1-4-2-co-003", "e5-1-4-2-co-004", "e5-1-4-2-co-005", 
+                "e5-1-5-1-co-001", "e5-1-5-1-co-002", "e5-1-5-1-co-003", 
+                "e5-1-5-1-co-004", "e5-1-5-1-co-005", "e5-1-5-2-co-001", 
+                "e5-1-5-2-co-002", "e5-1-5-2-co-003", "e5-1-5-2-co-004", 
+                "e5-1-5-2-co-005", "e5-2-2-1-co-001", "e5-2-2-1-co-002", 
+                "e5-2-2-1-co-003", "e5-2-2-1-co-004", "e5-2-2-1-co-005", 
+                "e5-2-2-2-co-001", "e5-2-2-2-co-002", "e5-2-2-2-co-003", 
+                "e5-2-2-2-co-004", "e5-2-2-2-co-005", "e5-2-4-1-co-001", 
+                "e5-2-4-1-co-002", "e5-2-4-1-co-003", "e5-2-4-1-co-004", 
+                "e5-2-4-1-co-005", "e5-2-4-2-co-001", "e5-2-4-2-co-002", 
+                "e5-2-4-2-co-003", "e5-2-4-2-co-004", "e5-2-4-2-co-005",
             ],
             time_limit_minutes=40,
             use_question_pool=True,

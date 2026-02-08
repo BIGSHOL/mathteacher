@@ -13,8 +13,8 @@ def get_fill_blank_data() -> dict:
     questions = [
         # 1. 평면좌표 (concept-h2-plane-coord, 2문항)
         fb(
-            id="h2-2-1-1-lv04-fb-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-fb-001",
+            concept_id="h1-2-1-1",
             content="두 점 A(0, 0), B(3, 4) 사이의 거리는?",
             answer="5",
             accept_formats=["5", "5.0"],
@@ -24,8 +24,8 @@ def get_fill_blank_data() -> dict:
             part="calc"
         ),
         fb(
-            id="h2-2-1-1-lv06-fb-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-fb-002",
+            concept_id="h1-2-1-1",
             content="두 점 A(2, 1), B(6, 9)의 중점의 좌표에서 x좌표는?",
             answer="4",
             accept_formats=["4", "4.0"],
@@ -37,8 +37,8 @@ def get_fill_blank_data() -> dict:
 
         # 2. 직선의 방정식 (concept-h2-line, 2문항)
         fb(
-            id="h2-2-1-2-lv04-fb-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-fb-001",
+            concept_id="h1-2-1-2",
             content="두 점 (1, 2), (3, 6)을 지나는 직선의 기울기는?",
             answer="2",
             accept_formats=["2", "2.0"],
@@ -48,8 +48,8 @@ def get_fill_blank_data() -> dict:
             part="algebra"
         ),
         fb(
-            id="h2-2-1-2-lv07-fb-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-fb-002",
+            concept_id="h1-2-1-2",
             content="점 (1, 2)와 직선 3x - 4y + 5 = 0 사이의 거리는?",
             answer="0",
             accept_formats=["0", "0.0"],
@@ -61,8 +61,8 @@ def get_fill_blank_data() -> dict:
 
         # 3. 원의 방정식 (concept-h2-circle, 2문항)
         fb(
-            id="h2-2-1-3-lv05-fb-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-fb-001",
+            concept_id="h1-2-1-3",
             content="원 (x-1)² + (y+2)² = 9의 반지름은?",
             answer="3",
             accept_formats=["3", "3.0"],
@@ -72,8 +72,8 @@ def get_fill_blank_data() -> dict:
             part="algebra"
         ),
         fb(
-            id="h2-2-1-3-lv07-fb-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-fb-002",
+            concept_id="h1-2-1-3",
             content="원 x² + y² = 10과 직선 y = 3x의 교점 개수는?",
             answer="2",
             accept_formats=["2", "2.0"],
@@ -85,8 +85,8 @@ def get_fill_blank_data() -> dict:
 
         # 4. 도형의 이동 (concept-h2-transform, 2문항)
         fb(
-            id="h2-2-1-4-lv04-fb-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-fb-001",
+            concept_id="h1-2-1-4",
             content="점 (3, 5)를 x축에 대해 대칭이동한 점의 y좌표는?",
             answer="-5",
             accept_formats=["-5", "-5.0"],
@@ -96,8 +96,8 @@ def get_fill_blank_data() -> dict:
             part="geo"
         ),
         fb(
-            id="h2-2-1-4-lv06-fb-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-fb-002",
+            concept_id="h1-2-1-4",
             content="점 (2, -3)를 원점에 대해 대칭이동한 점의 x좌표는?",
             answer="-2",
             accept_formats=["-2", "-2.0"],
@@ -109,8 +109,8 @@ def get_fill_blank_data() -> dict:
 
         # 5. 집합 (concept-h2-set, 2문항)
         fb(
-            id="h2-2-2-1-lv04-fb-001",
-            concept_id="concept-h2-set",
+            id="h1-2-2-1-fb-001",
+            concept_id="h1-2-2-1",
             content="집합 A = {1, 2, 3}의 부분집합의 개수는?",
             answer="8",
             accept_formats=["8", "8.0"],
@@ -120,8 +120,8 @@ def get_fill_blank_data() -> dict:
             part="data"
         ),
         fb(
-            id="h2-2-2-1-lv06-fb-001",
-            concept_id="concept-h2-set",
+            id="h1-2-2-1-fb-002",
+            concept_id="h1-2-2-1",
             content="n(A) = 5, n(B) = 4, n(A∩B) = 2일 때 n(A∪B)는?",
             answer="7",
             accept_formats=["7", "7.0"],
@@ -133,8 +133,8 @@ def get_fill_blank_data() -> dict:
 
         # 6. 명제 (concept-h2-proposition, 2문항)
         fb(
-            id="h2-2-2-2-lv05-fb-001",
-            concept_id="concept-h2-proposition",
+            id="h1-2-2-2-fb-001",
+            concept_id="h1-2-2-2",
             content="집합 A = {1, 2}의 진부분집합의 개수는?",
             answer="3",
             accept_formats=["3", "3.0"],
@@ -144,8 +144,8 @@ def get_fill_blank_data() -> dict:
             part="data"
         ),
         fb(
-            id="h2-2-2-2-lv07-fb-001",
-            concept_id="concept-h2-proposition",
+            id="h1-2-2-2-fb-002",
+            concept_id="h1-2-2-2",
             content="명제 'p이면 q이다'가 참일 때, 반드시 참인 것은 '¬q이면 ¬p이다'이므로, 이를 무엇이라 하는가? (2글자)",
             answer="대우",
             accept_formats=["대우"],
@@ -157,8 +157,8 @@ def get_fill_blank_data() -> dict:
 
         # 7. 절대부등식 (concept-h2-abs-inequality, 2문항)
         fb(
-            id="h2-2-2-3-lv05-fb-001",
-            concept_id="concept-h2-abs-inequality",
+            id="h1-2-2-3-fb-001",
+            concept_id="h1-2-2-3",
             content="x > 0일 때 x + 9/x의 최솟값은?",
             answer="6",
             accept_formats=["6", "6.0"],
@@ -168,8 +168,8 @@ def get_fill_blank_data() -> dict:
             part="algebra"
         ),
         fb(
-            id="h2-2-2-3-lv08-fb-001",
-            concept_id="concept-h2-abs-inequality",
+            id="h1-2-2-3-fb-002",
+            concept_id="h1-2-2-3",
             content="a > 0, b > 0, a + b = 6일 때 ab의 최댓값은?",
             answer="9",
             accept_formats=["9", "9.0"],
@@ -181,8 +181,8 @@ def get_fill_blank_data() -> dict:
 
         # 8. 함수의 뜻과 그래프 (concept-h2-function, 2문항)
         fb(
-            id="h2-2-3-1-lv04-fb-001",
-            concept_id="concept-h2-function",
+            id="h1-2-3-1-fb-001",
+            concept_id="h1-2-3-1",
             content="집합 X = {1, 2, 3}에서 Y = {a, b}로의 함수의 개수는?",
             answer="8",
             accept_formats=["8", "8.0"],
@@ -192,8 +192,8 @@ def get_fill_blank_data() -> dict:
             part="func"
         ),
         fb(
-            id="h2-2-3-1-lv06-fb-001",
-            concept_id="concept-h2-function",
+            id="h1-2-3-1-fb-002",
+            concept_id="h1-2-3-1",
             content="f(x) = x² + 1에서 f(3)의 값은?",
             answer="10",
             accept_formats=["10", "10.0"],
@@ -205,8 +205,8 @@ def get_fill_blank_data() -> dict:
 
         # 9. 합성함수와 역함수 (concept-h2-composite, 2문항)
         fb(
-            id="h2-2-3-2-lv05-fb-001",
-            concept_id="concept-h2-composite",
+            id="h1-2-3-2-fb-001",
+            concept_id="h1-2-3-2",
             content="f(x) = 2x - 3의 역함수 f⁻¹(x)에서 f⁻¹(5)의 값은?",
             answer="4",
             accept_formats=["4", "4.0"],
@@ -216,8 +216,8 @@ def get_fill_blank_data() -> dict:
             part="func"
         ),
         fb(
-            id="h2-2-3-2-lv07-fb-001",
-            concept_id="concept-h2-composite",
+            id="h1-2-3-2-fb-002",
+            concept_id="h1-2-3-2",
             content="f(x) = x + 2, g(x) = 3x일 때 (g∘f)(1)의 값은?",
             answer="9",
             accept_formats=["9", "9.0"],
@@ -229,8 +229,8 @@ def get_fill_blank_data() -> dict:
 
         # 10. 유리함수와 무리함수 (concept-h2-rational-irrational, 2문항)
         fb(
-            id="h2-2-3-3-lv05-fb-001",
-            concept_id="concept-h2-rational-irrational",
+            id="h1-2-3-3-fb-001",
+            concept_id="h1-2-3-3",
             content="함수 y = 2/(x-3) + 1의 수직점근선의 x값은?",
             answer="3",
             accept_formats=["3", "3.0"],
@@ -240,8 +240,8 @@ def get_fill_blank_data() -> dict:
             part="func"
         ),
         fb(
-            id="h2-2-3-3-lv08-fb-001",
-            concept_id="concept-h2-rational-irrational",
+            id="h1-2-3-3-fb-002",
+            concept_id="h1-2-3-3",
             content="무리함수 y = √(3x-6)의 정의역에서 x의 최솟값은?",
             answer="2",
             accept_formats=["2", "2.0"],

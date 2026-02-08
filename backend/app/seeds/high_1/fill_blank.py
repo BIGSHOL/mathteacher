@@ -16,8 +16,8 @@ def _get_questions():
         # ========== 1단원: 다항식 (3문제) ==========
 
         fb(
-            id="h1-1-1-1-lv03-fb-001",
-            concept_id="concept-h1-polynomial-01",
+            id="h1-1-1-1-fb-001",
+            concept_id="h1-1-1-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -29,8 +29,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-1-1-lv04-fb-001",
-            concept_id="concept-h1-polynomial-01",
+            id="h1-1-1-1-fb-002",
+            concept_id="h1-1-1-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -42,8 +42,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-1-2-lv05-fb-001",
-            concept_id="concept-h1-polynomial-02",
+            id="h1-1-1-2-fb-001",
+            concept_id="h1-1-1-2",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -57,8 +57,8 @@ def _get_questions():
         # ========== 2단원: 방정식과 부등식 (3문제) ==========
 
         fb(
-            id="h1-1-2-1-lv03-fb-001",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-fb-001",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -70,8 +70,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-2-1-lv04-fb-001",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-fb-002",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -83,8 +83,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-2-1-lv05-fb-001",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-fb-003",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -98,8 +98,8 @@ def _get_questions():
         # ========== 3단원: 경우의 수 (3문제) ==========
 
         fb(
-            id="h1-1-3-2-lv03-fb-001",
-            concept_id="concept-h1-counting-02",
+            id="h1-1-3-2-fb-001",
+            concept_id="h1-1-3-2",
             category="concept",
             part="data",
             difficulty=3,
@@ -111,8 +111,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-3-2-lv04-fb-001",
-            concept_id="concept-h1-counting-02",
+            id="h1-1-3-2-fb-002",
+            concept_id="h1-1-3-2",
             category="concept",
             part="data",
             difficulty=4,
@@ -124,8 +124,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-3-2-lv05-fb-001",
-            concept_id="concept-h1-counting-02",
+            id="h1-1-3-2-fb-003",
+            concept_id="h1-1-3-2",
             category="concept",
             part="data",
             difficulty=5,
@@ -139,8 +139,8 @@ def _get_questions():
         # ========== 4단원: 행렬 (3문제) ==========
 
         fb(
-            id="h1-1-4-1-lv03-fb-001",
-            concept_id="concept-h1-matrix-01",
+            id="h1-1-4-1-fb-001",
+            concept_id="h1-1-4-1",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -152,8 +152,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-4-2-lv04-fb-001",
-            concept_id="concept-h1-matrix-02",
+            id="h1-1-4-2-fb-001",
+            concept_id="h1-1-4-2",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -165,8 +165,8 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-1-4-2-lv05-fb-001",
-            concept_id="concept-h1-matrix-02",
+            id="h1-1-4-2-fb-002",
+            concept_id="h1-1-4-2",
             category="concept",
             part="algebra",
             difficulty=5,

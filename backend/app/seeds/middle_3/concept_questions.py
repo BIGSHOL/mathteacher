@@ -19,7 +19,7 @@ def get_concept_data() -> dict:
     concepts = [
         # ── 3단원: 이차방정식 (3개) ──
         concept(
-            id="concept-m3-quadeq-01",
+            id="m3-1-3-1",
             name="이차방정식의 풀이",
             grade="middle_3",
             category="concept",
@@ -27,7 +27,7 @@ def get_concept_data() -> dict:
             description="인수분해, 완전제곱식, 근의 공식을 이용한 이차방정식 풀이, 이차방정식의 정의(a≠0 조건)",
         ),
         concept(
-            id="concept-m3-quadeq-02",
+            id="m3-1-3-2",
             name="판별식과 근의 성질",
             grade="middle_3",
             category="concept",
@@ -35,7 +35,7 @@ def get_concept_data() -> dict:
             description="판별식 D=b²-4ac, 근의 개수 판별(D>0/D=0/D<0), 중근 조건, 계수 결정",
         ),
         concept(
-            id="concept-m3-quadeq-03",
+            id="m3-1-3-3",
             name="이차방정식의 활용",
             grade="middle_3",
             category="concept",
@@ -44,7 +44,7 @@ def get_concept_data() -> dict:
         ),
         # ── 4단원: 이차함수 (3개) ──
         concept(
-            id="concept-m3-quadfn-01",
+            id="m3-1-4-1",
             name="이차함수의 그래프",
             grade="middle_3",
             category="concept",
@@ -52,7 +52,7 @@ def get_concept_data() -> dict:
             description="기본형 y=ax², 표준형 y=a(x-p)²+q, 꼭짓점과 축, 평행이동, 그래프의 볼록성과 폭",
         ),
         concept(
-            id="concept-m3-quadfn-02",
+            id="m3-1-4-2",
             name="이차함수의 식 구하기와 계수 판별",
             grade="middle_3",
             category="concept",
@@ -60,7 +60,7 @@ def get_concept_data() -> dict:
             description="일반형 y=ax²+bx+c, 그래프에서 a·b·c의 부호 결정, 축 x=-b/(2a)의 위치 추론",
         ),
         concept(
-            id="concept-m3-quadfn-03",
+            id="m3-1-4-3",
             name="이차함수의 최대·최소",
             grade="middle_3",
             category="concept",
@@ -69,7 +69,7 @@ def get_concept_data() -> dict:
         ),
         # ── 5단원: 삼각비 (2개) ──
         concept(
-            id="concept-m3-trig-01",
+            id="m3-2-1-1",
             name="삼각비의 정의와 특수각",
             grade="middle_3",
             category="concept",
@@ -77,7 +77,7 @@ def get_concept_data() -> dict:
             description="sin·cos·tan 정의, 특수각(30°·45°·60°) 값 유도, 사분원에서의 삼각비",
         ),
         concept(
-            id="concept-m3-trig-02",
+            id="m3-2-1-2",
             name="삼각비의 활용",
             grade="middle_3",
             category="concept",
@@ -86,7 +86,7 @@ def get_concept_data() -> dict:
         ),
         # ── 6단원: 원의 성질 (3개) ──
         concept(
-            id="concept-m3-circle-01",
+            id="m3-2-2-1",
             name="원주각과 중심각",
             grade="middle_3",
             category="concept",
@@ -94,7 +94,7 @@ def get_concept_data() -> dict:
             description="같은 호에 대한 원주각=½×중심각, 같은 호의 원주각은 동일, 반원의 원주각=90°",
         ),
         concept(
-            id="concept-m3-circle-02",
+            id="m3-2-2-2",
             name="원에 내접하는 사각형",
             grade="middle_3",
             category="concept",
@@ -102,7 +102,7 @@ def get_concept_data() -> dict:
             description="원에 내접하는 사각형의 대각의 합=180°, 내접 조건 판별",
         ),
         concept(
-            id="concept-m3-circle-03",
+            id="m3-2-2-3",
             name="원과 접선",
             grade="middle_3",
             category="concept",
@@ -111,7 +111,7 @@ def get_concept_data() -> dict:
         ),
         # ── 7단원: 통계 (3개) ──
         concept(
-            id="concept-m3-stat-01",
+            id="m3-2-3-1",
             name="대푯값과 산포도",
             grade="middle_3",
             category="concept",
@@ -119,7 +119,7 @@ def get_concept_data() -> dict:
             description="평균·중앙값·최빈값 비교, 분산과 표준편차, 편차의 총합=0",
         ),
         concept(
-            id="concept-m3-stat-02",
+            id="m3-2-3-2",
             name="상자그림과 이상치",
             grade="middle_3",
             category="concept",
@@ -127,7 +127,7 @@ def get_concept_data() -> dict:
             description="사분위수(Q1·Q2·Q3), IQR, 상자그림 작성과 해석, 이상치 판별(1.5×IQR), 수염의 범위",
         ),
         concept(
-            id="concept-m3-stat-03",
+            id="m3-2-3-3",
             name="산점도와 상관관계",
             grade="middle_3",
             category="concept",
@@ -141,8 +141,8 @@ def get_concept_data() -> dict:
     # ============================================================
     quad_eq_questions = [
         mc(
-            id="m3-1-3-1-lv02-cc-001",
-            concept_id="concept-m3-quadeq-01",
+            id="m3-1-3-1-cc-001",
+            concept_id="m3-1-3-1",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -153,8 +153,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-3-1-lv04-cc-001",
-            concept_id="concept-m3-quadeq-01",
+            id="m3-1-3-1-cc-002",
+            concept_id="m3-1-3-1",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -165,8 +165,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-3-1-lv06-cc-001",
-            concept_id="concept-m3-quadeq-01",
+            id="m3-1-3-1-cc-003",
+            concept_id="m3-1-3-1",
             category="concept",
             part="algebra",
             difficulty=6,
@@ -177,8 +177,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-3-2-lv07-cc-001",
-            concept_id="concept-m3-quadeq-02",
+            id="m3-1-3-2-cc-001",
+            concept_id="m3-1-3-2",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -189,8 +189,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-3-2-lv08-cc-001",
-            concept_id="concept-m3-quadeq-02",
+            id="m3-1-3-2-cc-002",
+            concept_id="m3-1-3-2",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -201,8 +201,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-3-1-lv09-cc-001",
-            concept_id="concept-m3-quadeq-01",
+            id="m3-1-3-1-cc-004",
+            concept_id="m3-1-3-1",
             category="concept",
             part="algebra",
             difficulty=9,
@@ -219,8 +219,8 @@ def get_concept_data() -> dict:
     # ============================================================
     quad_func_questions = [
         mc(
-            id="m3-1-4-1-lv02-cc-001",
-            concept_id="concept-m3-quadfn-01",
+            id="m3-1-4-1-cc-001",
+            concept_id="m3-1-4-1",
             category="concept",
             part="func",
             difficulty=2,
@@ -231,8 +231,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-4-1-lv04-cc-001",
-            concept_id="concept-m3-quadfn-01",
+            id="m3-1-4-1-cc-002",
+            concept_id="m3-1-4-1",
             category="concept",
             part="func",
             difficulty=4,
@@ -243,8 +243,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-4-1-lv05-cc-001",
-            concept_id="concept-m3-quadfn-01",
+            id="m3-1-4-1-cc-003",
+            concept_id="m3-1-4-1",
             category="concept",
             part="func",
             difficulty=5,
@@ -255,8 +255,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-4-3-lv07-cc-001",
-            concept_id="concept-m3-quadfn-03",
+            id="m3-1-4-3-cc-001",
+            concept_id="m3-1-4-3",
             category="concept",
             part="func",
             difficulty=7,
@@ -267,8 +267,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-4-3-lv08-cc-001",
-            concept_id="concept-m3-quadfn-03",
+            id="m3-1-4-3-cc-002",
+            concept_id="m3-1-4-3",
             category="concept",
             part="func",
             difficulty=8,
@@ -279,8 +279,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-4-2-lv09-cc-001",
-            concept_id="concept-m3-quadfn-02",
+            id="m3-1-4-2-cc-001",
+            concept_id="m3-1-4-2",
             category="concept",
             part="func",
             difficulty=9,
@@ -297,8 +297,8 @@ def get_concept_data() -> dict:
     # ============================================================
     trig_questions = [
         mc(
-            id="m3-2-1-1-lv02-cc-001",
-            concept_id="concept-m3-trig-01",
+            id="m3-2-1-1-cc-001",
+            concept_id="m3-2-1-1",
             category="concept",
             part="geo",
             difficulty=2,
@@ -314,8 +314,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-1-1-lv03-cc-001",
-            concept_id="concept-m3-trig-01",
+            id="m3-2-1-1-cc-002",
+            concept_id="m3-2-1-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -326,8 +326,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-1-1-lv04-cc-001",
-            concept_id="concept-m3-trig-01",
+            id="m3-2-1-1-cc-003",
+            concept_id="m3-2-1-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -338,8 +338,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-1-1-lv05-cc-001",
-            concept_id="concept-m3-trig-01",
+            id="m3-2-1-1-cc-004",
+            concept_id="m3-2-1-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -350,8 +350,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-1-2-lv07-cc-001",
-            concept_id="concept-m3-trig-02",
+            id="m3-2-1-2-cc-001",
+            concept_id="m3-2-1-2",
             category="concept",
             part="geo",
             difficulty=7,
@@ -367,8 +367,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-1-2-lv08-cc-001",
-            concept_id="concept-m3-trig-02",
+            id="m3-2-1-2-cc-002",
+            concept_id="m3-2-1-2",
             category="concept",
             part="geo",
             difficulty=8,
@@ -385,8 +385,8 @@ def get_concept_data() -> dict:
     # ============================================================
     circle_questions = [
         mc(
-            id="m3-2-2-1-lv03-cc-001",
-            concept_id="concept-m3-circle-01",
+            id="m3-2-2-1-cc-001",
+            concept_id="m3-2-2-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -402,8 +402,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-2-1-lv04-cc-001",
-            concept_id="concept-m3-circle-01",
+            id="m3-2-2-1-cc-002",
+            concept_id="m3-2-2-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -414,8 +414,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-2-1-lv05-cc-001",
-            concept_id="concept-m3-circle-01",
+            id="m3-2-2-1-cc-003",
+            concept_id="m3-2-2-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -426,8 +426,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-2-2-lv06-cc-001",
-            concept_id="concept-m3-circle-02",
+            id="m3-2-2-2-cc-001",
+            concept_id="m3-2-2-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -438,8 +438,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-2-3-lv07-cc-001",
-            concept_id="concept-m3-circle-03",
+            id="m3-2-2-3-cc-001",
+            concept_id="m3-2-2-3",
             category="concept",
             part="geo",
             difficulty=7,
@@ -450,8 +450,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-2-3-lv08-cc-001",
-            concept_id="concept-m3-circle-03",
+            id="m3-2-2-3-cc-002",
+            concept_id="m3-2-2-3",
             category="concept",
             part="geo",
             difficulty=8,
@@ -468,8 +468,8 @@ def get_concept_data() -> dict:
     # ============================================================
     stat_questions = [
         mc(
-            id="m3-2-3-1-lv02-cc-001",
-            concept_id="concept-m3-stat-01",
+            id="m3-2-3-1-cc-001",
+            concept_id="m3-2-3-1",
             category="concept",
             part="data",
             difficulty=2,
@@ -480,8 +480,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-3-1-lv04-cc-001",
-            concept_id="concept-m3-stat-01",
+            id="m3-2-3-1-cc-002",
+            concept_id="m3-2-3-1",
             category="concept",
             part="data",
             difficulty=4,
@@ -492,8 +492,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-3-2-lv05-cc-001",
-            concept_id="concept-m3-stat-02",
+            id="m3-2-3-2-cc-001",
+            concept_id="m3-2-3-2",
             category="concept",
             part="data",
             difficulty=5,
@@ -504,8 +504,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-3-2-lv06-cc-001",
-            concept_id="concept-m3-stat-02",
+            id="m3-2-3-2-cc-002",
+            concept_id="m3-2-3-2",
             category="concept",
             part="data",
             difficulty=6,
@@ -516,8 +516,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-3-2-lv07-cc-001",
-            concept_id="concept-m3-stat-02",
+            id="m3-2-3-2-cc-003",
+            concept_id="m3-2-3-2",
             category="concept",
             part="data",
             difficulty=7,
@@ -533,8 +533,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-2-3-3-lv08-cc-001",
-            concept_id="concept-m3-stat-03",
+            id="m3-2-3-3-cc-001",
+            concept_id="m3-2-3-3",
             category="concept",
             part="data",
             difficulty=8,
@@ -557,8 +557,8 @@ def get_concept_data() -> dict:
     ch1_concept_questions = [
         # 실수와 그 연산 (3문제)
         mc(
-            id="m3-1-1-1-lv03-cc-001",
-            concept_id="concept-m3-sqrt-01",
+            id="m3-1-1-1-cc-001",
+            concept_id="m3-1-1-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -574,8 +574,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-2-lv05-cc-001",
-            concept_id="concept-m3-sqrt-02",
+            id="m3-1-1-2-cc-001",
+            concept_id="m3-1-1-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -586,8 +586,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-2-lv07-cc-001",
-            concept_id="concept-m3-sqrt-02",
+            id="m3-1-1-2-cc-002",
+            concept_id="m3-1-1-2",
             category="concept",
             part="calc",
             difficulty=7,
@@ -604,8 +604,8 @@ def get_concept_data() -> dict:
         ),
         # 다항식의 곱셈과 인수분해 (3문제)
         mc(
-            id="m3-1-2-2-lv03-cc-001",
-            concept_id="concept-m3-factor-02",
+            id="m3-1-2-2-cc-001",
+            concept_id="m3-1-2-2",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -621,8 +621,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-3-lv05-cc-001",
-            concept_id="concept-m3-factor-03",
+            id="m3-1-2-3-cc-001",
+            concept_id="m3-1-2-3",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -633,8 +633,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-1-lv07-cc-001",
-            concept_id="concept-m3-factor-01",
+            id="m3-1-2-1-cc-001",
+            concept_id="m3-1-2-1",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -662,7 +662,7 @@ def get_concept_data() -> dict:
             title="중3 이차방정식·이차함수 테스트",
             description="이차방정식(인수분해, 근의 공식, 판별식)과 이차함수(꼭짓점, 최대·최소)",
             grade="middle_3",
-            concept_ids=["concept-m3-quadeq-01", "concept-m3-quadeq-02", "concept-m3-quadeq-03", "concept-m3-quadfn-01", "concept-m3-quadfn-02", "concept-m3-quadfn-03"],
+            concept_ids=["m3-1-3-1", "m3-1-3-2", "m3-1-3-3", "m3-1-4-1", "m3-1-4-2", "m3-1-4-3"],
             question_ids=[q["id"] for q in quad_eq_questions + quad_func_questions],
             time_limit_minutes=35,
         ),
@@ -671,7 +671,7 @@ def get_concept_data() -> dict:
             title="중3 삼각비·원·통계 테스트",
             description="삼각비, 원의 성질, 통계(상자그림 포함)",
             grade="middle_3",
-            concept_ids=["concept-m3-trig-01", "concept-m3-trig-02", "concept-m3-circle-01", "concept-m3-circle-02", "concept-m3-circle-03", "concept-m3-stat-01", "concept-m3-stat-02", "concept-m3-stat-03"],
+            concept_ids=["m3-2-1-1", "m3-2-1-2", "m3-2-2-1", "m3-2-2-2", "m3-2-2-3", "m3-2-3-1", "m3-2-3-2", "m3-2-3-3"],
             question_ids=[q["id"] for q in trig_questions + circle_questions + stat_questions],
             time_limit_minutes=40,
         ),
@@ -680,7 +680,7 @@ def get_concept_data() -> dict:
             title="중3 실수·인수분해 개념",
             description="제곱근과 실수, 다항식의 곱셈과 인수분해의 개념 이해",
             grade="middle_3",
-            concept_ids=["concept-m3-sqrt-01", "concept-m3-sqrt-02", "concept-m3-sqrt-03", "concept-m3-factor-01", "concept-m3-factor-02", "concept-m3-factor-03"],
+            concept_ids=["m3-1-1-1", "m3-1-1-2", "m3-1-1-3", "m3-1-2-1", "m3-1-2-2", "m3-1-2-3"],
             question_ids=[q["id"] for q in ch1_concept_questions],
             time_limit_minutes=10,
             use_question_pool=True,

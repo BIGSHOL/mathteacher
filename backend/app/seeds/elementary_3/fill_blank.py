@@ -15,8 +15,8 @@ def get_questions() -> list[dict]:
         # 1학기 1단원: 덧셈과 뺄셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-1-1-1-lv03-fb-001",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-fb-004",
+            concept_id="e3-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -27,8 +27,8 @@ def get_questions() -> list[dict]:
             accept_formats=["743"],
         ),
         fb(
-            id="e3-1-1-2-lv04-fb-001",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-fb-004",
+            concept_id="e3-1-1-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -42,8 +42,8 @@ def get_questions() -> list[dict]:
         # 1학기 2단원: 평면도형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-1-2-2-lv04-fb-001",
-            concept_id="concept-e3-plane-02",
+            id="e3-1-2-2-fb-001",
+            concept_id="e3-1-2-2",
             category="concept",
             part="geo",
             difficulty=4,
@@ -53,8 +53,8 @@ def get_questions() -> list[dict]:
             accept_formats=["직각"],
         ),
         fb(
-            id="e3-1-2-2-lv05-fb-001",
-            concept_id="concept-e3-plane-02",
+            id="e3-1-2-2-fb-002",
+            concept_id="e3-1-2-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -67,8 +67,8 @@ def get_questions() -> list[dict]:
         # 1학기 3단원: 나눗셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-1-3-1-lv03-fb-001",
-            concept_id="concept-e3-div1-01",
+            id="e3-1-3-1-fb-001",
+            concept_id="e3-1-3-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -78,8 +78,8 @@ def get_questions() -> list[dict]:
             accept_formats=["6"],
         ),
         fb(
-            id="e3-1-3-1-lv05-fb-001",
-            concept_id="concept-e3-div1-01",
+            id="e3-1-3-1-fb-002",
+            concept_id="e3-1-3-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -92,8 +92,8 @@ def get_questions() -> list[dict]:
         # 1학기 4단원: 곱셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-1-4-1-lv03-fb-001",
-            concept_id="concept-e3-mul1-01",
+            id="e3-1-4-1-fb-001",
+            concept_id="e3-1-4-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -103,8 +103,8 @@ def get_questions() -> list[dict]:
             accept_formats=["68"],
         ),
         fb(
-            id="e3-1-4-2-lv04-fb-001",
-            concept_id="concept-e3-mul1-02",
+            id="e3-1-4-2-fb-001",
+            concept_id="e3-1-4-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -117,8 +117,8 @@ def get_questions() -> list[dict]:
         # 1학기 5단원: 길이와 시간
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-1-5-1-lv04-fb-001",
-            concept_id="concept-e3-length-time-01",
+            id="e3-1-5-1-fb-001",
+            concept_id="e3-1-5-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -128,8 +128,8 @@ def get_questions() -> list[dict]:
             accept_formats=["10"],
         ),
         fb(
-            id="e3-1-5-2-lv05-fb-001",
-            concept_id="concept-e3-length-time-02",
+            id="e3-1-5-2-fb-001",
+            concept_id="e3-1-5-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -143,8 +143,8 @@ def get_questions() -> list[dict]:
         # 1학기 6단원: 분수와 소수
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-1-6-1-lv04-fb-001",
-            concept_id="concept-e3-frac-dec-01",
+            id="e3-1-6-1-fb-001",
+            concept_id="e3-1-6-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -154,8 +154,8 @@ def get_questions() -> list[dict]:
             accept_formats=["1/5"],
         ),
         fb(
-            id="e3-1-6-2-lv06-fb-001",
-            concept_id="concept-e3-frac-dec-02",
+            id="e3-1-6-2-fb-001",
+            concept_id="e3-1-6-2",
             category="concept",
             part="calc",
             difficulty=6,
@@ -168,8 +168,8 @@ def get_questions() -> list[dict]:
         # 2학기 7단원: 곱셈 (2)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-2-1-1-lv05-fb-001",
-            concept_id="concept-e3-mul2-01",
+            id="e3-2-1-1-fb-001",
+            concept_id="e3-2-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -179,8 +179,8 @@ def get_questions() -> list[dict]:
             accept_formats=["492"],
         ),
         fb(
-            id="e3-2-1-2-lv07-fb-001",
-            concept_id="concept-e3-mul2-02",
+            id="e3-2-1-2-fb-001",
+            concept_id="e3-2-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -194,8 +194,8 @@ def get_questions() -> list[dict]:
         # 2학기 8단원: 나눗셈 (2)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-2-2-1-lv04-fb-001",
-            concept_id="concept-e3-div2-01",
+            id="e3-2-2-1-fb-001",
+            concept_id="e3-2-2-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -205,8 +205,8 @@ def get_questions() -> list[dict]:
             accept_formats=["2"],
         ),
         fb(
-            id="e3-2-2-1-lv06-fb-001",
-            concept_id="concept-e3-div2-01",
+            id="e3-2-2-1-fb-002",
+            concept_id="e3-2-2-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -220,8 +220,8 @@ def get_questions() -> list[dict]:
         # 2학기 9단원: 원
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-2-3-1-lv03-fb-001",
-            concept_id="concept-e3-circle-01",
+            id="e3-2-3-1-fb-001",
+            concept_id="e3-2-3-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -231,8 +231,8 @@ def get_questions() -> list[dict]:
             accept_formats=["반지름"],
         ),
         fb(
-            id="e3-2-3-2-lv05-fb-001",
-            concept_id="concept-e3-circle-02",
+            id="e3-2-3-2-fb-001",
+            concept_id="e3-2-3-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -245,8 +245,8 @@ def get_questions() -> list[dict]:
         # 2학기 10단원: 분수 (2)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-2-4-2-lv04-fb-001",
-            concept_id="concept-e3-frac2-02",
+            id="e3-2-4-2-fb-001",
+            concept_id="e3-2-4-2",
             category="concept",
             part="calc",
             difficulty=4,
@@ -257,8 +257,8 @@ def get_questions() -> list[dict]:
             accept_formats=["5/8"],
         ),
         fb(
-            id="e3-2-4-1-lv06-fb-001",
-            concept_id="concept-e3-frac2-01",
+            id="e3-2-4-1-fb-001",
+            concept_id="e3-2-4-1",
             category="concept",
             part="calc",
             difficulty=6,
@@ -271,8 +271,8 @@ def get_questions() -> list[dict]:
         # 2학기 11단원: 들이와 무게
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-2-5-1-lv03-fb-001",
-            concept_id="concept-e3-vol-wt-01",
+            id="e3-2-5-1-fb-001",
+            concept_id="e3-2-5-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -282,8 +282,8 @@ def get_questions() -> list[dict]:
             accept_formats=["1000"],
         ),
         fb(
-            id="e3-2-5-1-lv04-fb-001",
-            concept_id="concept-e3-vol-wt-01",
+            id="e3-2-5-1-fb-002",
+            concept_id="e3-2-5-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -296,8 +296,8 @@ def get_questions() -> list[dict]:
         # 2학기 12단원: 자료의 정리
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e3-2-6-2-lv05-fb-001",
-            concept_id="concept-e3-data-02",
+            id="e3-2-6-2-fb-001",
+            concept_id="e3-2-6-2",
             category="concept",
             part="data",
             difficulty=5,
@@ -308,8 +308,8 @@ def get_questions() -> list[dict]:
             accept_formats=["범례"],
         ),
         fb(
-            id="e3-2-6-2-lv06-fb-001",
-            concept_id="concept-e3-data-02",
+            id="e3-2-6-2-fb-002",
+            concept_id="e3-2-6-2",
             category="concept",
             part="data",
             difficulty=6,

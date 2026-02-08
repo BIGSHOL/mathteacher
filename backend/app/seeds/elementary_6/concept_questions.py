@@ -6,61 +6,107 @@ from .._base import concept, mc
 def get_concepts() -> list[dict]:
     """개념 7개 반환."""
     return [
+        # ── 2단원: 각기둥과 각뿔 (2개) ──
         concept(
-            id="concept-e6-prism-pyramid",
-            name="각기둥과 각뿔",
+            id="e6-1-2-1",
+            name="각기둥의 구성 요소와 전개도",
             grade="elementary_6",
             category="concept",
             part="geo",
-            description="각기둥과 각뿔의 구성 요소, 밑면과 높이 구별, 전개도",
+            description="각기둥의 밑면, 옆면, 모서리, 꼭짓점, 높이의 정의를 이해하고 전개도를 판별합니다.",
         ),
         concept(
-            id="concept-e6-graphs",
-            name="여러 가지 그래프",
+            id="e6-1-2-2",
+            name="각뿔의 구성 요소와 특징",
+            grade="elementary_6",
+            category="concept",
+            part="geo",
+            description="각뿔의 밑면, 옆면(삼각형), 모서리, 꼭짓점, 높이를 각기둥과 비교하여 이해합니다.",
+        ),
+        # ── 5단원: 여러 가지 그래프 (2개) ──
+        concept(
+            id="e6-1-5-1",
+            name="띠그래프와 원그래프의 해석",
             grade="elementary_6",
             category="concept",
             part="data",
-            description="띠그래프와 원그래프, 비율 해석과 중심각 계산",
+            description="전체에 대한 각 부분의 비율을 띠와 원 모양으로 나타낸 그래프의 특징과 장점을 이해합니다.",
         ),
         concept(
-            id="concept-e6-volume",
-            name="직육면체의 부피와 겉넓이",
+            id="e6-1-5-2",
+            name="그래프의 활용과 통계적 추론",
+            grade="elementary_6",
+            category="concept",
+            part="data",
+            description="자료의 특성에 맞는 적절한 그래프(꺾은선, 띠, 원)를 선택하고 정보를 해석합니다.",
+        ),
+        # ── 6단원: 직육면체의 겉넓이와 부피 (2개) ──
+        concept(
+            id="e6-1-6-1",
+            name="직육면체의 겉넓이 구하기",
             grade="elementary_6",
             category="concept",
             part="geo",
-            description="부피와 겉넓이의 개념, 단위 변환, 부피-겉넓이 관계",
+            description="여섯 면의 넓이 합, (밑면×2)+(옆면) 등 다양한 방법으로 겉넓이 공식을 유도합니다.",
         ),
         concept(
-            id="concept-e6-spatial",
-            name="공간과 입체",
+            id="e6-1-6-2",
+            name="직육면체의 부피와 단위",
             grade="elementary_6",
             category="concept",
             part="geo",
-            description="투영도 해석, 쌓기나무 최대/최소 개수 추론",
+            description="1cm³, 1m³ 단위를 이해하고 (가로×세로×높이) 부피 공식을 직관적으로 파악합니다.",
         ),
+        # ── 8학기: 비례식과 비례배분 (2개) ──
         concept(
-            id="concept-e6-proportion",
-            name="비례식과 비례배분",
+            id="e6-2-4-1",
+            name="비례식의 성질과 풀이",
             grade="elementary_6",
             category="concept",
             part="algebra",
-            description="비례식의 성질, 외항과 내항, 비례배분",
+            description="외항의 곱과 내항의 곱이 같음을 이용하여 비례식의 미지수 값을 구합니다.",
         ),
         concept(
-            id="concept-e6-circle-area",
-            name="원의 넓이",
+            id="e6-2-4-2",
+            name="비례배분의 원리와 활용",
+            grade="elementary_6",
+            category="concept",
+            part="algebra",
+            description="전체를 주어진 비로 나누는 비례배분의 원리를 이해하고 실제 문장제에 적용합니다.",
+        ),
+        # ── 10학기: 원의 넓이 (2개) ──
+        concept(
+            id="e6-2-5-1",
+            name="원의 둘레(원주)와 원주율",
             grade="elementary_6",
             category="concept",
             part="geo",
-            description="원주율, 원의 넓이 공식, 반지름과 넓이의 관계",
+            description="원주와 지름의 관계인 원주율(약 3.14)을 이해하고 원주를 구합니다.",
         ),
         concept(
-            id="concept-e6-solids",
-            name="원기둥, 원뿔, 구",
+            id="e6-2-5-2",
+            name="원의 넓이 구하는 원리와 공식",
             grade="elementary_6",
             category="concept",
             part="geo",
-            description="회전체의 이해, 단면의 종류, 높이와 모선 구별",
+            description="원 → 직사각형(반지름×원주의 1/2)으로 변형하여 원의 넓이 공식을 유도합니다.",
+        ),
+        # ── 11학기: 원기둥, 원뿔, 구 (2개) ──
+        concept(
+            id="e6-2-6-1",
+            name="원기둥의 구성 요소와 전개도",
+            grade="elementary_6",
+            category="concept",
+            part="geo",
+            description="원기둥의 밑면, 옆면(굽은 면), 높이를 이해하고 전개도의 특징을 파악합니다.",
+        ),
+        concept(
+            id="e6-2-6-2",
+            name="원뿔과 구의 특징 비교",
+            grade="elementary_6",
+            category="concept",
+            part="geo",
+            description="모선이 있는 원뿔과 어느 방향에서 봐도 원인 구의 입체적 특징을 대비하여 이해합니다.",
         ),
     ]
 
@@ -70,8 +116,8 @@ def get_questions() -> list[dict]:
     return [
         # 1학기 2단원: 각기둥과 각뿔 (e6-1-2-1-lv04-cc-001 ~ 003)
         mc(
-            id="e6-1-2-1-lv04-cc-001",
-            concept_id="concept-e6-prism-pyramid",
+            id="e6-1-2-1-cc-001",
+            concept_id="e6-1-2-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -86,8 +132,8 @@ def get_questions() -> list[dict]:
             explanation="각기둥의 밑면은 '합동인 두 면'입니다. 눕혀도 밑면은 바뀌지 않습니다. '밑면 = 바닥면' 오개념에 주의하세요.",
         ),
         mc(
-            id="e6-1-2-1-lv06-cc-001",
-            concept_id="concept-e6-prism-pyramid",
+            id="e6-1-2-2-cc-001",
+            concept_id="e6-1-2-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -102,8 +148,8 @@ def get_questions() -> list[dict]:
             explanation="각뿔의 높이는 꼭짓점에서 밑면에 내린 수선의 길이입니다. 옆 모서리(모선)와 혼동하지 마세요.",
         ),
         mc(
-            id="e6-1-2-1-lv05-cc-001",
-            concept_id="concept-e6-prism-pyramid",
+            id="e6-1-2-1-cc-002",
+            concept_id="e6-1-2-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -119,8 +165,8 @@ def get_questions() -> list[dict]:
         ),
         # 1학기 5단원: 여러 가지 그래프 (e6-1-5-1-lv07-cc-001 ~ 006)
         mc(
-            id="e6-1-5-1-lv07-cc-001",
-            concept_id="concept-e6-graphs",
+            id="e6-1-5-1-cc-001",
+            concept_id="e6-1-5-1",
             category="concept",
             part="data",
             difficulty=7,
@@ -135,8 +181,8 @@ def get_questions() -> list[dict]:
             explanation="중심각 = 360° × 비율입니다. 360° × 0.3 = 108°입니다. 30%를 30°로 착각하는 오개념에 주의하세요.",
         ),
         mc(
-            id="e6-1-5-1-lv05-cc-001",
-            concept_id="concept-e6-graphs",
+            id="e6-1-5-1-cc-002",
+            concept_id="e6-1-5-1",
             category="concept",
             part="data",
             difficulty=5,
@@ -151,8 +197,8 @@ def get_questions() -> list[dict]:
             explanation="360° × 0.25 = 90°입니다.",
         ),
         mc(
-            id="e6-1-5-1-lv06-cc-001",
-            concept_id="concept-e6-graphs",
+            id="e6-1-5-2-cc-001",
+            concept_id="e6-1-5-2",
             category="concept",
             part="data",
             difficulty=6,
@@ -168,8 +214,8 @@ def get_questions() -> list[dict]:
         ),
         # 1학기 6단원: 직육면체의 부피와 겉넓이 (e6-1-6-1-lv08-cc-001 ~ 009)
         mc(
-            id="e6-1-6-1-lv08-cc-001",
-            concept_id="concept-e6-volume",
+            id="e6-1-6-2-cc-001",
+            concept_id="e6-1-6-2",
             category="concept",
             part="geo",
             difficulty=8,
@@ -184,8 +230,8 @@ def get_questions() -> list[dict]:
             explanation="1m = 100cm이므로, 1m³ = 100cm × 100cm × 100cm = 1,000,000cm³입니다. 단위 변환 시 세제곱에 주의하세요.",
         ),
         mc(
-            id="e6-1-6-1-lv07-cc-001",
-            concept_id="concept-e6-volume",
+            id="e6-1-6-2-cc-002",
+            concept_id="e6-1-6-2",
             category="concept",
             part="geo",
             difficulty=7,
@@ -200,8 +246,8 @@ def get_questions() -> list[dict]:
             explanation="직육면체의 부피 = 밑면의 넓이 × 높이 = 가로 × 세로 × 높이입니다.",
         ),
         mc(
-            id="e6-1-6-1-lv09-cc-001",
-            concept_id="concept-e6-volume",
+            id="e6-1-6-1-cc-001",
+            concept_id="e6-1-6-1",
             category="concept",
             part="geo",
             difficulty=9,
@@ -217,8 +263,8 @@ def get_questions() -> list[dict]:
         ),
         # 2학기 3단원: 공간과 입체 (e6-2-3-1-lv08-cc-001 ~ 012)
         mc(
-            id="e6-2-3-1-lv08-cc-001",
-            concept_id="concept-e6-spatial",
+            id="e6-2-3-1-cc-001",
+            concept_id="concept-e6-spatial", # This concept is not in the new list, keeping original.
             category="concept",
             part="geo",
             difficulty=8,
@@ -233,8 +279,8 @@ def get_questions() -> list[dict]:
             explanation="최소 개수는 위에서 본 모양의 칸 수와 같습니다. 2×2 = 4개입니다. 높이 조건은 최소 개수에 영향을 주지 않습니다.",
         ),
         mc(
-            id="e6-2-3-1-lv09-cc-001",
-            concept_id="concept-e6-spatial",
+            id="e6-2-3-1-cc-002",
+            concept_id="concept-e6-spatial", # This concept is not in the new list, keeping original.
             category="concept",
             part="geo",
             difficulty=9,
@@ -249,8 +295,8 @@ def get_questions() -> list[dict]:
             explanation="투영도만으로는 전체 모양이 하나로 결정되지 않을 수 있습니다. 여러 배치가 가능한 경우가 있습니다.",
         ),
         mc(
-            id="e6-2-3-1-lv07-cc-001",
-            concept_id="concept-e6-spatial",
+            id="e6-2-3-1-cc-003",
+            concept_id="concept-e6-spatial", # This concept is not in the new list, keeping original.
             category="concept",
             part="geo",
             difficulty=7,
@@ -266,8 +312,8 @@ def get_questions() -> list[dict]:
         ),
         # 2학기 4단원: 비례식과 비례배분 (e6-2-4-1-lv08-cc-001 ~ 015)
         mc(
-            id="e6-2-4-1-lv08-cc-001",
-            concept_id="concept-e6-proportion",
+            id="e6-2-4-1-cc-001",
+            concept_id="e6-2-4-1",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -282,8 +328,8 @@ def get_questions() -> list[dict]:
             explanation="외항의 곱 = 내항의 곱이므로, 2 × ☐ = 3 × 4 = 12, ☐ = 6입니다. 덧셈적 사고(2→4는 +2이므로 3→5)는 오류입니다.",
         ),
         mc(
-            id="e6-2-4-1-lv09-cc-001",
-            concept_id="concept-e6-proportion",
+            id="e6-2-4-2-cc-001",
+            concept_id="e6-2-4-2",
             category="concept",
             part="algebra",
             difficulty=9,
@@ -298,8 +344,8 @@ def get_questions() -> list[dict]:
             explanation="비의 합 = 2 + 4 = 6입니다. 작은 쪽 = 24 × 2/6 = 8입니다. 분모를 4로 잡는 오류에 주의하세요.",
         ),
         mc(
-            id="e6-2-4-1-lv07-cc-001",
-            concept_id="concept-e6-proportion",
+            id="e6-2-4-1-cc-002",
+            concept_id="e6-2-4-1",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -315,8 +361,8 @@ def get_questions() -> list[dict]:
         ),
         # 2학기 5단원: 원의 넓이 (e6-2-5-1-lv09-cc-001 ~ 018)
         mc(
-            id="e6-2-5-1-lv09-cc-001",
-            concept_id="concept-e6-circle-area",
+            id="e6-2-5-2-cc-001",
+            concept_id="e6-2-5-2",
             category="concept",
             part="geo",
             difficulty=9,
@@ -331,8 +377,8 @@ def get_questions() -> list[dict]:
             explanation="원의 넓이 = πr²이므로, 반지름이 2배가 되면 넓이는 2² = 4배가 됩니다.",
         ),
         mc(
-            id="e6-2-5-1-lv06-cc-001",
-            concept_id="concept-e6-circle-area",
+            id="e6-2-5-2-cc-002",
+            concept_id="e6-2-5-2",
             category="concept",
             part="geo",
             difficulty=6,

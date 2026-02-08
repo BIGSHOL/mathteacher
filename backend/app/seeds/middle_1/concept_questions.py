@@ -10,9 +10,9 @@ def get_concept_data() -> dict:
     # 개념 20개 (5~12단원 세부 분화)
     # ============================================================
     concepts = [
-        # 5단원: 좌표평면과 그래프 (2개)
+        # 2-1: 좌표평면과 그래프 (2개)
         concept(
-            id="concept-m1-coord-01",
+            id="m1-2-1-1",
             name="순서쌍과 좌표평면",
             grade="middle_1",
             category="concept",
@@ -20,16 +20,16 @@ def get_concept_data() -> dict:
             description="좌표평면, 사분면의 부호 특성, 대칭인 점(x축/y축/원점 대칭)",
         ),
         concept(
-            id="concept-m1-coord-02",
+            id="m1-2-1-2",
             name="그래프 해석",
             grade="middle_1",
             category="concept",
             part="func",
             description="변화의 경향 읽기(증가/감소/일정), 정성적 추론, 실생활 그래프 해석",
         ),
-        # 6단원: 정비례와 반비례 (3개)
+        # 2-2: 정비례와 반비례 (3개)
         concept(
-            id="concept-m1-prop-01",
+            id="m1-2-2-1",
             name="정비례 관계",
             grade="middle_1",
             category="concept",
@@ -37,7 +37,7 @@ def get_concept_data() -> dict:
             description="정비례(y = ax), 비례상수 구하기, 그래프가 원점을 지나는 직선",
         ),
         concept(
-            id="concept-m1-prop-02",
+            id="m1-2-2-2",
             name="반비례 관계",
             grade="middle_1",
             category="concept",
@@ -45,16 +45,16 @@ def get_concept_data() -> dict:
             description="반비례(y = a/x), xy = a(일정한 곱), 그래프가 쌍곡선",
         ),
         concept(
-            id="concept-m1-prop-03",
+            id="m1-2-2-3",
             name="정비례/반비례 그래프",
             grade="middle_1",
             category="concept",
             part="func",
             description="식만 보고 그래프 개형 유추, 반비례 직사각형 넓이 일정, 실생활 활용",
         ),
-        # 7단원: 기본 도형과 작도 (3개)
+        # 2-3: 기본 도형과 작도 (3개)
         concept(
-            id="concept-m1-geo-01",
+            id="m1-2-3-1",
             name="점/선/면과 위치관계",
             grade="middle_1",
             category="concept",
@@ -62,7 +62,7 @@ def get_concept_data() -> dict:
             description="직선/반직선/선분 구분, 맞꼭지각, 꼬인 위치(공간)",
         ),
         concept(
-            id="concept-m1-geo-02",
+            id="m1-2-3-2",
             name="평행선의 성질",
             grade="middle_1",
             category="concept",
@@ -70,16 +70,16 @@ def get_concept_data() -> dict:
             description="동위각과 엇각, 평행할 때만 크기가 같음, 꺾인 선 문제(보조선)",
         ),
         concept(
-            id="concept-m1-geo-03",
+            id="m1-2-3-3",
             name="작도와 삼각형 합동",
             grade="middle_1",
             category="concept",
             part="geo",
             description="기본 작도(눈금 없는 자+컴퍼스), 삼각형 합동 조건(SSS, SAS, ASA)",
         ),
-        # 8단원: 평면도형의 성질 (2개)
+        # 2-4: 평면도형의 성질 (2개)
         concept(
-            id="concept-m1-plane-01",
+            id="m1-2-4-1",
             name="다각형의 내각과 외각",
             grade="middle_1",
             category="concept",
@@ -87,16 +87,16 @@ def get_concept_data() -> dict:
             description="대각선의 개수, 내각의 합 (n-2)×180, 외각의 합 항상 360도",
         ),
         concept(
-            id="concept-m1-plane-02",
+            id="m1-2-4-2",
             name="원과 부채꼴의 성질",
             grade="middle_1",
             category="concept",
             part="geo",
             description="원주와 넓이(2πr, πr²), 부채꼴 호의 길이와 넓이, S=½rl 공식",
         ),
-        # 9단원: 입체도형의 성질 (3개)
+        # 2-5: 입체도형의 성질 (3개)
         concept(
-            id="concept-m1-solid-01",
+            id="m1-2-5-1",
             name="다면체와 회전체",
             grade="middle_1",
             category="concept",
@@ -104,7 +104,7 @@ def get_concept_data() -> dict:
             description="오일러 다면체 정리(V-E+F=2), 회전체의 단면 성질",
         ),
         concept(
-            id="concept-m1-solid-02",
+            id="m1-2-5-2",
             name="겉넓이와 부피",
             grade="middle_1",
             category="concept",
@@ -112,16 +112,16 @@ def get_concept_data() -> dict:
             description="기둥/뿔의 겉넓이와 부피, 원뿔 전개도(부채꼴 호=밑면 둘레)",
         ),
         concept(
-            id="concept-m1-solid-03",
+            id="m1-2-5-3",
             name="구",
             grade="middle_1",
             category="concept",
             part="geo",
             description="구의 겉넓이(4πr²), 부피(4/3πr³), 반지름 배수와 부피/겉넓이 관계",
         ),
-        # 10단원: 자료의 정리와 해석 (3개)
+        # 2-6: 자료의 정리와 해석 (3개)
         concept(
-            id="concept-m1-freq-01",
+            id="m1-2-6-1",
             name="줄기와 잎 그림/도수분포표",
             grade="middle_1",
             category="concept",
@@ -129,7 +129,7 @@ def get_concept_data() -> dict:
             description="줄기와 잎 그림, 도수분포표(계급/계급값/도수)",
         ),
         concept(
-            id="concept-m1-freq-02",
+            id="m1-2-6-2",
             name="히스토그램과 도수분포다각형",
             grade="middle_1",
             category="concept",
@@ -137,16 +137,16 @@ def get_concept_data() -> dict:
             description="히스토그램 막대 높이=도수, 도수분포다각형 넓이=히스토그램 넓이",
         ),
         concept(
-            id="concept-m1-freq-03",
+            id="m1-2-6-3",
             name="상대도수",
             grade="middle_1",
             category="concept",
             part="data",
             description="상대도수=계급도수/전체도수, 총합=1, 두 집단 분포 비교",
         ),
-        # 11단원: 대푯값 (2개)
+        # 2-7: 대푯값 (2개)
         concept(
-            id="concept-m1-repr-01",
+            id="m1-2-7-1",
             name="평균/중앙값/최빈값",
             grade="middle_1",
             category="concept",
@@ -154,16 +154,16 @@ def get_concept_data() -> dict:
             description="평균(총합/개수), 중앙값(크기순 가운데), 최빈값(최빈 관측값)",
         ),
         concept(
-            id="concept-m1-repr-02",
+            id="m1-2-7-2",
             name="상황별 대푯값 선택",
             grade="middle_1",
             category="concept",
             part="data",
             description="극단값 있을 때 중앙값 선호, 맥락적 판단, 데이터 리터러시",
         ),
-        # 12단원: 산점도와 상관관계 (2개)
+        # 2-8: 산점도와 상관관계 (2개)
         concept(
-            id="concept-m1-scat-01",
+            id="m1-2-8-1",
             name="산점도",
             grade="middle_1",
             category="concept",
@@ -171,7 +171,7 @@ def get_concept_data() -> dict:
             description="산점도 작성, 양/음/무 상관관계 판별, 분포 경향 파악",
         ),
         concept(
-            id="concept-m1-scat-02",
+            id="m1-2-8-2",
             name="상관관계와 인과관계",
             grade="middle_1",
             category="concept",
@@ -184,10 +184,10 @@ def get_concept_data() -> dict:
     # 문제: 8개 개념 × 3문제 = 24개
     # ============================================================
     questions = [
-        # ========== 1단원: 소인수분해 (개념) ==========
+        # [m1-1-1-1] 소수와 합성수
         mc(
-            id="m1-1-01-01-lv02-cc-001",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-cc-001",
+            concept_id="m1-1-1-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -198,8 +198,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-01-lv04-cc-001",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-cc-002",
+            concept_id="m1-1-1-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -214,10 +214,10 @@ def get_concept_data() -> dict:
             explanation="4와 9는 공약수가 1뿐이므로 서로소입니다. 서로소는 '관계'를 나타내며 두 수 모두 소수일 필요는 없습니다. 1은 소수도 합성수도 아닙니다.",
             points=10,
         ),
-        # ========== 2단원: 정수와 유리수 (개념) ==========
+        # [m1-1-2-2] 절대값과 유리수
         mc(
-            id="m1-1-02-02-lv05-cc-001",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-cc-001",
+            concept_id="m1-1-2-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -232,10 +232,10 @@ def get_concept_data() -> dict:
             explanation="-a가 양수인지 음수인지는 a의 값에 따라 달라집니다. 예를 들어 a = -3이면 -a = 3으로 양수입니다.",
             points=10,
         ),
-        # 좌표평면과 그래프 (3문제)
+        # [m1-2-1-1] 순서쌍과 좌표평면
         mc(
-            id="m1-2-05-01-lv02-cc-001",
-            concept_id="concept-m1-coord-01",
+            id="m1-2-1-1-cc-001",
+            concept_id="m1-2-1-1",
             category="concept",
             part="func",
             difficulty=2,
@@ -246,8 +246,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-2-05-01-lv04-cc-001",
-            concept_id="concept-m1-coord-01",
+            id="m1-2-1-1-cc-002",
+            concept_id="m1-2-1-1",
             category="concept",
             part="func",
             difficulty=4,
@@ -262,9 +262,10 @@ def get_concept_data() -> dict:
             explanation="좌표축(x축, y축) 위의 점은 어느 사분면에도 속하지 않습니다. (0, 5)는 y축 위, (-3, 0)은 x축 위의 점입니다.",
             points=10,
         ),
+        # [m1-2-1-2] 그래프 해석
         mc(
-            id="m1-2-05-02-lv06-cc-001",
-            concept_id="concept-m1-coord-02",
+            id="m1-2-1-2-cc-001",
+            concept_id="m1-2-1-2",
             category="concept",
             part="func",
             difficulty=6,
@@ -279,10 +280,10 @@ def get_concept_data() -> dict:
             explanation="밑면이 좁고 위가 넓은 물통은 처음에는 수면이 빠르게 올라가다가 위로 갈수록 부피가 커져 수면 상승 속도가 느려집니다.",
             points=15,
         ),
-        # 정비례와 반비례 (3문제)
+        # [m1-2-2-1] 정비례 관계
         mc(
-            id="m1-2-06-01-lv03-cc-001",
-            concept_id="concept-m1-prop-01",
+            id="m1-2-2-1-cc-001",
+            concept_id="m1-2-2-1",
             category="concept",
             part="func",
             difficulty=3,
@@ -292,9 +293,10 @@ def get_concept_data() -> dict:
             explanation="y = ax에서 6 = 2a이므로 a = 3. 따라서 y = 3x. x = 5일 때 y = 3 × 5 = 15",
             points=10,
         ),
+        # [m1-2-2-2] 반비례 관계
         mc(
-            id="m1-2-06-02-lv05-cc-001",
-            concept_id="concept-m1-prop-02",
+            id="m1-2-2-2-cc-001",
+            concept_id="m1-2-2-2",
             category="concept",
             part="func",
             difficulty=5,
@@ -304,9 +306,10 @@ def get_concept_data() -> dict:
             explanation="y = a/x에서 3 = a/4이므로 a = 12. 따라서 y = 12/x. x = -6일 때 y = 12/(-6) = -2",
             points=10,
         ),
+        # [m1-2-2-3] 정비례/반비례 그래프
         mc(
-            id="m1-2-06-03-lv07-cc-001",
-            concept_id="concept-m1-prop-03",
+            id="m1-2-2-3-cc-001",
+            concept_id="m1-2-2-3",
             category="concept",
             part="func",
             difficulty=7,
@@ -321,10 +324,10 @@ def get_concept_data() -> dict:
             explanation="반비례 그래프는 x = 0에서 정의되지 않으므로 불연속입니다. x > 0 구간과 x < 0 구간이 분리되어 있습니다.",
             points=15,
         ),
-        # 기본 도형과 작도 (3문제)
+        # [m1-2-3-2] 평행선의 성질
         mc(
-            id="m1-2-07-02-lv03-cc-001",
-            concept_id="concept-m1-geo-02",
+            id="m1-2-3-2-cc-001",
+            concept_id="m1-2-3-2",
             category="concept",
             part="geo",
             difficulty=3,
@@ -334,9 +337,10 @@ def get_concept_data() -> dict:
             explanation="평행선에서 동위각과 엇각은 모두 같으므로 40°입니다.",
             points=10,
         ),
+        # [m1-2-3-1] 점/선/면과 위치관계
         mc(
-            id="m1-2-07-01-lv05-cc-001",
-            concept_id="concept-m1-geo-01",
+            id="m1-2-3-1-cc-001",
+            concept_id="m1-2-3-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -351,9 +355,10 @@ def get_concept_data() -> dict:
             explanation="꼬인 위치는 만나지도 않고 평행하지도 않은 위치 관계로, 공간(입체)에서만 나타납니다.",
             points=10,
         ),
+        # [m1-2-3-3] 작도와 삼각형 합동
         mc(
-            id="m1-2-07-03-lv08-cc-001",
-            concept_id="concept-m1-geo-03",
+            id="m1-2-3-3-cc-001",
+            concept_id="m1-2-3-3",
             category="concept",
             part="geo",
             difficulty=8,
@@ -368,22 +373,10 @@ def get_concept_data() -> dict:
             explanation="SSA는 삼각형 합동 조건이 아닙니다. 끼인각이 아닌 다른 각의 경우 두 개의 서로 다른 삼각형이 만들어질 수 있습니다.",
             points=15,
         ),
-        # 평면도형의 성질 (3문제)
+        # [m1-2-4-1] 다각형의 내각과 외각
         mc(
-            id="m1-2-08-01-lv03-cc-001",
-            concept_id="concept-m1-plane-01",
-            category="concept",
-            part="geo",
-            difficulty=3,
-            content="칠각형의 내각의 합은?",
-            options=["720°", "900°", "1080°", "1260°"],
-            correct="B",
-            explanation="n각형 내각의 합 = (n-2) × 180°. 칠각형(n=7): (7-2) × 180° = 5 × 180° = 900°",
-            points=10,
-        ),
-        mc(
-            id="m1-2-08-01-lv05-cc-001",
-            concept_id="concept-m1-plane-01",
+            id="m1-2-4-1-cc-001",
+            concept_id="m1-2-4-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -394,8 +387,21 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-2-08-02-lv07-cc-001",
-            concept_id="concept-m1-plane-02",
+            id="m1-2-4-1-cc-002",
+            concept_id="m1-2-4-1",
+            category="concept",
+            part="geo",
+            difficulty=3,
+            content="칠각형의 내각의 합은?",
+            options=["720°", "900°", "1080°", "1260°"],
+            correct="B",
+            explanation="n각형 내각의 합 = (n-2) × 180°. 칠각형(n=7): (7-2) × 180° = 5 × 180° = 900°",
+            points=10,
+        ),
+        # [m1-2-4-2] 원과 부채꼴의 성질
+        mc(
+            id="m1-2-4-2-cc-001",
+            concept_id="m1-2-4-2",
             category="concept",
             part="geo",
             difficulty=7,
@@ -405,10 +411,10 @@ def get_concept_data() -> dict:
             explanation="부채꼴 넓이 = πr² × (중심각/360°) = π × 6² × (60/360) = 36π × (1/6) = 6π cm²",
             points=15,
         ),
-        # 입체도형의 성질 (3문제)
+        # [m1-2-5-2] 겉넓이와 부피
         mc(
-            id="m1-2-09-02-lv04-cc-001",
-            concept_id="concept-m1-solid-02",
+            id="m1-2-5-2-cc-001",
+            concept_id="m1-2-5-2",
             category="concept",
             part="geo",
             difficulty=4,
@@ -419,8 +425,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-2-09-02-lv06-cc-001",
-            concept_id="concept-m1-solid-02",
+            id="m1-2-5-2-cc-002",
+            concept_id="m1-2-5-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -431,8 +437,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-2-09-02-lv08-cc-001",
-            concept_id="concept-m1-solid-02",
+            id="m1-2-5-2-cc-003",
+            concept_id="m1-2-5-2",
             category="concept",
             part="geo",
             difficulty=8,
@@ -447,10 +453,10 @@ def get_concept_data() -> dict:
             explanation="원뿔 전개도의 부채꼴 호의 길이는 밑면 원의 둘레와 같습니다. 이는 전개도를 접었을 때 호가 밑면 둘레와 정확히 맞닿기 때문입니다.",
             points=15,
         ),
-        # 자료의 정리와 해석 (3문제)
+        # [m1-2-6-1] 줄기와 잎 그림/도수분포표
         mc(
-            id="m1-2-10-01-lv03-cc-001",
-            concept_id="concept-m1-freq-01",
+            id="m1-2-6-1-cc-001",
+            concept_id="m1-2-6-1",
             category="concept",
             part="data",
             difficulty=3,
@@ -460,9 +466,10 @@ def get_concept_data() -> dict:
             explanation="계급값 = (계급의 양 끝값의 합) ÷ 2 = (10 + 20) ÷ 2 = 15",
             points=10,
         ),
+        # [m1-2-6-3] 상대도수
         mc(
-            id="m1-2-10-03-lv05-cc-001",
-            concept_id="concept-m1-freq-03",
+            id="m1-2-6-3-cc-001",
+            concept_id="m1-2-6-3",
             category="concept",
             part="data",
             difficulty=5,
@@ -472,9 +479,10 @@ def get_concept_data() -> dict:
             explanation="상대도수 = (계급의 도수) ÷ (전체 도수). 0.25 = (도수) ÷ 40이므로 도수 = 0.25 × 40 = 10",
             points=10,
         ),
+        # [m1-2-6-2] 히스토그램과 도수분포다각형
         mc(
-            id="m1-2-10-02-lv07-cc-001",
-            concept_id="concept-m1-freq-02",
+            id="m1-2-6-2-cc-001",
+            concept_id="m1-2-6-2",
             category="concept",
             part="data",
             difficulty=7,
@@ -484,10 +492,10 @@ def get_concept_data() -> dict:
             explanation="히스토그램의 막대 높이는 각 계급의 도수(빈도)를 나타냅니다.",
             points=15,
         ),
-        # 대푯값 (3문제) - NEW
+        # [m1-2-7-1] 평균/중앙값/최빈값
         mc(
-            id="m1-2-11-01-lv04-cc-001",
-            concept_id="concept-m1-repr-01",
+            id="m1-2-7-1-cc-001",
+            concept_id="m1-2-7-1",
             category="concept",
             part="data",
             difficulty=4,
@@ -497,9 +505,10 @@ def get_concept_data() -> dict:
             explanation="크기순으로 정렬: 2, 2, 3, 5, 8. 가운데 값인 3이 중앙값입니다.",
             points=10,
         ),
+        # [m1-2-7-2] 상황별 대푯값 선택
         mc(
-            id="m1-2-11-02-lv06-cc-001",
-            concept_id="concept-m1-repr-02",
+            id="m1-2-7-2-cc-001",
+            concept_id="m1-2-7-2",
             category="concept",
             part="data",
             difficulty=6,
@@ -515,8 +524,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-2-11-01-lv08-cc-001",
-            concept_id="concept-m1-repr-01",
+            id="m1-2-7-1-cc-002",
+            concept_id="m1-2-7-1",
             category="concept",
             part="data",
             difficulty=8,
@@ -531,10 +540,10 @@ def get_concept_data() -> dict:
             explanation="자료가 짝수 개일 때는 크기순 정렬 후 가운데 두 값의 평균을 중앙값으로 합니다.",
             points=15,
         ),
-        # 산점도와 상관관계 (3문제) - NEW
+        # [m1-2-8-1] 산점도
         mc(
-            id="m1-2-12-01-lv04-cc-001",
-            concept_id="concept-m1-scat-01",
+            id="m1-2-8-1-cc-001",
+            concept_id="m1-2-8-1",
             category="concept",
             part="data",
             difficulty=4,
@@ -545,8 +554,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-2-12-01-lv06-cc-001",
-            concept_id="concept-m1-scat-01",
+            id="m1-2-8-1-cc-002",
+            concept_id="m1-2-8-1",
             category="concept",
             part="data",
             difficulty=6,
@@ -561,9 +570,10 @@ def get_concept_data() -> dict:
             explanation="기온이 올라가면 난방비는 감소하므로 음의 상관관계입니다.",
             points=10,
         ),
+        # [m1-2-8-2] 상관관계와 인과관계를
         mc(
-            id="m1-2-12-02-lv09-cc-001",
-            concept_id="concept-m1-scat-02",
+            id="m1-2-8-2-cc-001",
+            concept_id="m1-2-8-2",
             category="concept",
             part="data",
             difficulty=9,
@@ -581,10 +591,10 @@ def get_concept_data() -> dict:
         # ────────────────────────────────────────────────────────
         # 1단원 개념 문제 (소인수분해, 정수와 유리수, 문자와 식, 일차방정식)
         # ────────────────────────────────────────────────────────
-        # 소인수분해 (3문제)
+        # [m1-1-1-1] 소수와 합성수
         mc(
-            id="m1-1-01-01-lv02-cc-002",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-cc-003",
+            concept_id="m1-1-1-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -600,8 +610,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-01-01-lv05-cc-001",
-            concept_id="concept-m1-prime-01",
+            id="m1-1-1-1-cc-004",
+            concept_id="m1-1-1-1",
             category="concept",
             part="calc",
             difficulty=5,
@@ -616,9 +626,10 @@ def get_concept_data() -> dict:
             explanation="1은 약수가 자기 자신뿐(1개)이므로 소수(약수 2개)에도 합성수(약수 3개 이상)에도 해당하지 않습니다.",
             points=10,
         ),
+        # [m1-1-1-3] 최대공약수와 최소공배수
         mc(
-            id="m1-1-01-03-lv07-cc-001",
-            concept_id="concept-m1-prime-03",
+            id="m1-1-1-3-cc-001",
+            concept_id="m1-1-1-3",
             category="concept",
             part="calc",
             difficulty=7,
@@ -628,10 +639,10 @@ def get_concept_data() -> dict:
             explanation="두 자연수의 곱은 최대공약수와 최소공배수의 곱과 같습니다. 예: 12 × 18 = 216, GCD(12,18) = 6, LCM(12,18) = 36, 6 × 36 = 216",
             points=15,
         ),
-        # 정수와 유리수 (3문제)
+        # [m1-1-2-1] 정수의 분류와 수직선
         mc(
-            id="m1-1-02-01-lv02-cc-001",
-            concept_id="concept-m1-int-01",
+            id="m1-1-2-1-cc-001",
+            concept_id="m1-1-2-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -646,9 +657,10 @@ def get_concept_data() -> dict:
             explanation="정수는 양의 정수(자연수), 0, 음의 정수의 세 종류로 분류됩니다. 0은 양의 정수도 음의 정수도 아닙니다.",
             points=10,
         ),
+        # [m1-1-2-2] 절대값과 유리수
         mc(
-            id="m1-1-02-02-lv05-cc-002",
-            concept_id="concept-m1-int-02",
+            id="m1-1-2-2-cc-002",
+            concept_id="m1-1-2-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -664,8 +676,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-02-01-lv07-cc-001",
-            concept_id="concept-m1-int-01",
+            id="m1-1-2-1-cc-002",
+            concept_id="m1-1-2-1",
             category="concept",
             part="calc",
             difficulty=7,
@@ -675,10 +687,10 @@ def get_concept_data() -> dict:
             explanation="음수끼리는 절대값이 작은 수가 더 큽니다. |-3| = 3 < |-5| = 5이므로 -3 > -5, 즉 -5 < -3입니다. 수직선에서 오른쪽에 있는 수가 더 큽니다.",
             points=15,
         ),
-        # 문자의 사용과 식의 계산 (3문제)
+        # [m1-1-3-1] 문자의 사용과 대수적 관습
         mc(
-            id="m1-1-03-01-lv02-cc-001",
-            concept_id="concept-m1-expr-01",
+            id="m1-1-3-1-cc-001",
+            concept_id="m1-1-3-1",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -688,9 +700,10 @@ def get_concept_data() -> dict:
             explanation="문자를 사용한 식에서 숫자와 문자의 곱은 곱셈 기호를 생략하고 숫자를 문자 앞에 씁니다. 사과 5개 × a원 = 5a원",
             points=10,
         ),
+        # [m1-1-3-2] 동류항과 식의 계산
         mc(
-            id="m1-1-03-02-lv05-cc-001",
-            concept_id="concept-m1-expr-02",
+            id="m1-1-3-2-cc-001",
+            concept_id="m1-1-3-2",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -700,9 +713,10 @@ def get_concept_data() -> dict:
             explanation="동류항은 문자와 차수가 같은 항입니다. 3x와 -5x는 둘 다 x에 대한 일차항이므로 동류항입니다. 3x와 3y는 문자가 다르고, 2x²와 2x는 차수가 다릅니다.",
             points=10,
         ),
+        # [m1-1-3-3] 대입과 식의 값
         mc(
-            id="m1-1-03-03-lv07-cc-001",
-            concept_id="concept-m1-expr-03",
+            id="m1-1-3-3-cc-001",
+            concept_id="m1-1-3-3",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -712,10 +726,10 @@ def get_concept_data() -> dict:
             explanation="문자에 특정 수를 넣어 식의 값을 구하는 것을 '대입'이라고 합니다. 예: x = 3일 때 2x + 1의 값은 2(3) + 1 = 7",
             points=15,
         ),
-        # 일차방정식 (3문제)
+        # [m1-1-4-1] 방정식과 등식의 성질
         mc(
-            id="m1-1-04-01-lv02-cc-001",
-            concept_id="concept-m1-eq-01",
+            id="m1-1-4-1-cc-001",
+            concept_id="m1-1-4-1",
             category="concept",
             part="algebra",
             difficulty=2,
@@ -726,7 +740,6 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-01-lv05-cc-001",
             concept_id="concept-m1-eq-01",
             category="concept",
             part="algebra",

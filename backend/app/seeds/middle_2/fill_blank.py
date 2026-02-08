@@ -11,8 +11,8 @@ def get_fill_blank_data() -> dict:
     questions = [
         # ── 유리수와 순환소수 (2문제) ──
         fb(
-            id="m2-1-1-01-lv05-fb-001",
-            concept_id="concept-m2-rational-01",
+            id="m2-1-1-1-fb-001",
+            concept_id="m2-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -23,8 +23,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["3"],
         ),
         fb(
-            id="m2-1-1-02-lv07-fb-001",
-            concept_id="concept-m2-rational-02",
+            id="m2-1-1-2-fb-001",
+            concept_id="m2-1-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -37,8 +37,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 식의 계산 (2문제) ──
         fb(
-            id="m2-1-2-01-lv04-fb-001",
-            concept_id="concept-m2-expr-01",
+            id="m2-1-2-1-fb-001",
+            concept_id="m2-1-2-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -49,8 +49,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["7", "^7"],
         ),
         fb(
-            id="m2-1-2-02-lv08-fb-001",
-            concept_id="concept-m2-expr-02",
+            id="m2-1-2-2-fb-001",
+            concept_id="m2-1-2-2",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -63,8 +63,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 일차부등식 (2문제) ──
         fb(
-            id="m2-1-3-01-lv06-fb-001",
-            concept_id="concept-m2-ineq-01",
+            id="m2-1-3-1-fb-001",
+            concept_id="m2-1-3-1",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -75,8 +75,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["≤|-3", "<=|-3"],
         ),
         fb(
-            id="m2-1-3-01-lv05-fb-001",
-            concept_id="concept-m2-ineq-01",
+            id="m2-1-3-1-fb-002",
+            concept_id="m2-1-3-1",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -89,8 +89,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 연립일차방정식 (2문제) ──
         fb(
-            id="m2-1-4-01-lv07-fb-001",
-            concept_id="concept-m2-simul-01",
+            id="m2-1-4-1-fb-001",
+            concept_id="m2-1-4-1",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -101,8 +101,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["4|3"],
         ),
         fb(
-            id="m2-1-4-02-lv09-fb-001",
-            concept_id="concept-m2-simul-02",
+            id="m2-1-4-2-fb-001",
+            concept_id="m2-1-4-2",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -115,8 +115,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 일차함수 (2문제) ──
         fb(
-            id="m2-2-1-01-lv05-fb-001",
-            concept_id="concept-m2-linfn-01",
+            id="m2-1-5-1-fb-001",
+            concept_id="m2-1-5-1",
             category="concept",
             part="func",
             difficulty=5,
@@ -127,8 +127,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["-4|7"],
         ),
         fb(
-            id="m2-2-1-02-lv08-fb-001",
-            concept_id="concept-m2-linfn-02",
+            id="m2-1-5-2-fb-001",
+            concept_id="m2-1-5-2",
             category="concept",
             part="func",
             difficulty=8,
@@ -141,8 +141,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 삼각형의 성질 (2문제) ──
         fb(
-            id="m2-2-2-02-lv06-fb-001",
-            concept_id="concept-m2-tri-02",
+            id="m2-2-1-2-fb-001",
+            concept_id="m2-2-1-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -153,8 +153,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["수직이등분선|이등분선"],
         ),
         fb(
-            id="m2-2-2-01-lv07-fb-001",
-            concept_id="concept-m2-tri-01",
+            id="m2-2-1-1-fb-001",
+            concept_id="m2-2-1-1",
             category="concept",
             part="geo",
             difficulty=7,
@@ -167,8 +167,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 사각형의 성질 (2문제) ──
         fb(
-            id="m2-2-3-01-lv05-fb-001",
-            concept_id="concept-m2-quad-01",
+            id="m2-2-2-1-fb-001",
+            concept_id="m2-2-2-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -179,8 +179,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["이등분"],
         ),
         fb(
-            id="m2-2-3-02-lv07-fb-001",
-            concept_id="concept-m2-quad-02",
+            id="m2-2-2-2-fb-001",
+            concept_id="m2-2-2-2",
             category="concept",
             part="geo",
             difficulty=7,
@@ -193,8 +193,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 도형의 닮음 (2문제) ──
         fb(
-            id="m2-2-4-01-lv06-fb-001",
-            concept_id="concept-m2-simil-01",
+            id="m2-2-3-1-fb-001",
+            concept_id="m2-2-3-1",
             category="concept",
             part="geo",
             difficulty=6,
@@ -205,8 +205,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["AA"],
         ),
         fb(
-            id="m2-2-4-02-lv09-fb-001",
-            concept_id="concept-m2-simil-02",
+            id="m2-2-3-2-fb-001",
+            concept_id="m2-2-3-2",
             category="concept",
             part="geo",
             difficulty=9,
@@ -219,8 +219,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 피타고라스 정리 (2문제) ──
         fb(
-            id="m2-2-5-01-lv05-fb-001",
-            concept_id="concept-m2-pytha-01",
+            id="m2-2-4-1-fb-001",
+            concept_id="m2-2-4-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -231,8 +231,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["c"],
         ),
         fb(
-            id="m2-2-5-02-lv08-fb-001",
-            concept_id="concept-m2-pytha-02",
+            id="m2-2-4-2-fb-001",
+            concept_id="m2-2-4-2",
             category="concept",
             part="geo",
             difficulty=8,
@@ -245,8 +245,8 @@ def get_fill_blank_data() -> dict:
 
         # ── 확률 (2문제) ──
         fb(
-            id="m2-2-6-01-lv07-fb-001",
-            concept_id="concept-m2-prob-01",
+            id="m2-2-5-1-fb-001",
+            concept_id="m2-2-5-1",
             category="concept",
             part="data",
             difficulty=7,
@@ -257,8 +257,8 @@ def get_fill_blank_data() -> dict:
             accept_formats=["m+n|m×n", "m+n|m*n", "m+n|mn"],
         ),
         fb(
-            id="m2-2-6-02-lv10-fb-001",
-            concept_id="concept-m2-prob-02",
+            id="m2-2-5-2-fb-001",
+            concept_id="m2-2-5-2",
             category="concept",
             part="data",
             difficulty=10,
@@ -277,16 +277,16 @@ def get_fill_blank_data() -> dict:
             description="10개 단원 빈칸 채우기",
             grade="middle_2",
             concept_ids=[
-                "concept-m2-rational-01", "concept-m2-rational-02",
-                "concept-m2-expr-01", "concept-m2-expr-02",
-                "concept-m2-ineq-01", "concept-m2-ineq-02",
-                "concept-m2-simul-01", "concept-m2-simul-02",
-                "concept-m2-linfn-01", "concept-m2-linfn-02",
-                "concept-m2-tri-01", "concept-m2-tri-02",
-                "concept-m2-quad-01", "concept-m2-quad-02",
-                "concept-m2-simil-01", "concept-m2-simil-02",
-                "concept-m2-pytha-01", "concept-m2-pytha-02",
-                "concept-m2-prob-01", "concept-m2-prob-02",
+                "m2-1-1-1", "m2-1-1-2",
+                "m2-1-2-1", "m2-1-2-2",
+                "m2-1-3-1", "m2-1-3-2",
+                "m2-1-4-1", "m2-1-4-2",
+                "m2-1-5-1", "m2-1-5-2",
+                "m2-2-1-1", "m2-2-1-2",
+                "m2-2-2-1", "m2-2-2-2",
+                "m2-2-3-1", "m2-2-3-2",
+                "m2-2-4-1", "m2-2-4-2",
+                "m2-2-5-1", "m2-2-5-2",
             ],
             question_ids=[q["id"] for q in questions],
             time_limit_minutes=30,

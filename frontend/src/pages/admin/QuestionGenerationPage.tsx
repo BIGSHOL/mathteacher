@@ -44,6 +44,20 @@ const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 'high_1', label: '고1' },
 ]
 
+/** 레가시 템플릿 ID 매핑 (DB ID -> Template ID) */
+const LEGACY_ID_MAP: Record<string, string[]> = {
+  'concept-e3-add-sub-01': ['E3-NUM-01'], // 덧셈
+  'concept-e3-add-sub-02': ['E3-NUM-01'], // 뺄셈
+  'concept-e3-mul1-01': ['E3-NUM-06'],
+  'concept-e3-mul1-02': ['E3-NUM-06'],
+  'concept-e3-div1-01': ['E3-NUM-04'],
+  'concept-e3-div1-02': ['E3-NUM-05'],
+  'concept-e3-mul2-01': ['E3-NUM-06'],
+  'concept-e3-mul2-02': ['E3-NUM-06'],
+  'concept-e3-div2-01': ['E3-NUM-05'],
+  'concept-e3-div2-02': ['E3-NUM-05'],
+}
+
 export function QuestionGenerationPage() {
   const navigate = useNavigate()
 
@@ -231,9 +245,11 @@ export function QuestionGenerationPage() {
         setSelected(new Set(result.generated.map((_, i) => i)))
       } else if (strategy === 'template') {
         // 룰 베이스 템플릿 엔진 사용
-        const matchingTemplates = ALL_TEMPLATES.filter(t => t.conceptId === conceptId)
+        const mappedIds = LEGACY_ID_MAP[conceptId] || [conceptId]
+        const matchingTemplates = ALL_TEMPLATES.filter(t => mappedIds.includes(t.conceptId))
+
         if (matchingTemplates.length === 0) {
-          throw new Error('이 개념에 대한 템플릿이 정의되지 않았습니다.')
+          throw new Error(`이 개념(${conceptId})에 대한 템플릿이 정의되지 않았습니다.`)
         }
 
         const questions = generateRuleBasedQuestions(

@@ -29,10 +29,10 @@ def get_questions() -> list[dict]:
             explanation="2/3 ÷ 4 = 2/3 × 1/4 = 2/12 = 1/6입니다.",
             accept_formats=["1/6"],
         ),
-        # 1학기 2단원: 각기둥과 각뿔 (e6-1-2-1-lv06-fb-001 ~ 004)
+        # 1학기 2단원: 각기둥과 각뿔 (e6-1-2-1-fb-001 ~ 004)
         fb(
-            id="e6-1-2-1-lv06-fb-001",
-            concept_id="concept-e6-prism-pyramid",
+            id="e6-1-2-1-fb-001",
+            concept_id="e6-1-2-1",
             category="concept",
             part="geo",
             difficulty=6,
@@ -42,8 +42,8 @@ def get_questions() -> list[dict]:
             accept_formats=["12"],
         ),
         fb(
-            id="e6-1-2-1-lv07-fb-001",
-            concept_id="concept-e6-prism-pyramid",
+            id="e6-1-2-1-fb-002",
+            concept_id="e6-1-2-1",
             category="concept",
             part="geo",
             difficulty=7,
@@ -98,10 +98,10 @@ def get_questions() -> list[dict]:
             explanation="소금물 농도 = (소금)/(전체) × 100 = 50/(50+200) × 100 = 50/250 × 100 = 20%입니다.",
             accept_formats=["20"],
         ),
-        # 1학기 5단원: 여러 가지 그래프 (e6-1-5-1-lv07-fb-001 ~ 010)
+        # 1학기 5단원: 여러 가지 그래프 (e6-1-5-1-fb-001 ~ 005)
         fb(
-            id="e6-1-5-1-lv07-fb-001",
-            concept_id="concept-e6-graphs",
+            id="e6-1-5-1-fb-001",
+            concept_id="e6-1-5-1",
             category="concept",
             part="data",
             difficulty=7,
@@ -111,8 +111,8 @@ def get_questions() -> list[dict]:
             accept_formats=["72"],
         ),
         fb(
-            id="e6-1-5-1-lv08-fb-001",
-            concept_id="concept-e6-graphs",
+            id="e6-1-5-1-fb-002",
+            concept_id="e6-1-5-1",
             category="concept",
             part="data",
             difficulty=8,
@@ -121,10 +121,10 @@ def get_questions() -> list[dict]:
             explanation="90° ÷ 360° = 0.25 = 25%입니다.",
             accept_formats=["25"],
         ),
-        # 1학기 6단원: 직육면체의 부피와 겉넓이 (e6-1-6-1-lv08-fb-001 ~ 012)
+        # 1학기 6단원: 직육면체의 부피와 겉넓이 (e6-1-6-2-fb-001 ~ 008)
         fb(
-            id="e6-1-6-1-lv08-fb-001",
-            concept_id="concept-e6-volume",
+            id="e6-1-6-2-fb-001",
+            concept_id="e6-1-6-2",
             category="concept",
             part="geo",
             difficulty=8,
@@ -134,8 +134,8 @@ def get_questions() -> list[dict]:
             accept_formats=["60"],
         ),
         fb(
-            id="e6-1-6-1-lv09-fb-001",
-            concept_id="concept-e6-volume",
+            id="e6-1-6-2-fb-002",
+            concept_id="e6-1-6-2",
             category="concept",
             part="geo",
             difficulty=9,
@@ -190,10 +190,10 @@ def get_questions() -> list[dict]:
             explanation="60 ÷ 15 = 4입니다.",
             accept_formats=["4"],
         ),
-        # 2학기 3단원: 공간과 입체 (e6-2-3-1-lv08-fb-001 ~ 018)
+        # 2학기 3단원: 공간과 입체 (e6-2-3-1-fb-001 ~ 006)
         fb(
-            id="e6-2-3-1-lv08-fb-001",
-            concept_id="concept-e6-spatial",
+            id="e6-2-3-1-fb-001",
+            concept_id="e6-2-3-1",
             category="concept",
             part="geo",
             difficulty=8,
@@ -203,8 +203,8 @@ def get_questions() -> list[dict]:
             accept_formats=["9"],
         ),
         fb(
-            id="e6-2-3-1-lv09-fb-001",
-            concept_id="concept-e6-spatial",
+            id="e6-2-3-1-fb-002",
+            concept_id="e6-2-3-1",
             category="concept",
             part="geo",
             difficulty=9,
@@ -213,10 +213,10 @@ def get_questions() -> list[dict]:
             explanation="각 칸에 쌓인 높이를 모두 더하면 전체 개수가 됩니다.",
             accept_formats=["높이", "수"],
         ),
-        # 2학기 4단원: 비례식과 비례배분 (e6-2-4-1-lv09-fb-001 ~ 020)
+        # 2학기 4단원: 비례식과 비례배분 (e6-2-4-1-fb-001 ~ 010)
         fb(
-            id="e6-2-4-1-lv09-fb-001",
-            concept_id="concept-e6-proportion",
+            id="e6-2-4-1-fb-001",
+            concept_id="e6-2-4-1",
             category="concept",
             part="algebra",
             difficulty=9,
@@ -226,8 +226,8 @@ def get_questions() -> list[dict]:
             accept_formats=["12"],
         ),
         fb(
-            id="e6-2-4-1-lv10-fb-001",
-            concept_id="concept-e6-proportion",
+            id="e6-2-4-1-fb-002",
+            concept_id="e6-2-4-1",
             category="concept",
             part="algebra",
             difficulty=10,
@@ -236,10 +236,10 @@ def get_questions() -> list[dict]:
             explanation="비의 합 = 3 + 2 = 5입니다. 큰 쪽 = 30 × 3/5 = 18입니다.",
             accept_formats=["18"],
         ),
-        # 2학기 5단원: 원의 넓이 (e6-2-5-1-lv08-fb-001 ~ 022)
+        # 2학기 5단원: 원의 넓이 (e6-2-5-1-fb-001 ~ 015)
         fb(
-            id="e6-2-5-1-lv08-fb-001",
-            concept_id="concept-e6-circle-area",
+            id="e6-2-5-1-fb-001",
+            concept_id="e6-2-5-1",
             category="concept",
             part="geo",
             difficulty=8,
@@ -249,8 +249,8 @@ def get_questions() -> list[dict]:
             accept_formats=["78.5"],
         ),
         fb(
-            id="e6-2-5-1-lv09-fb-001",
-            concept_id="concept-e6-circle-area",
+            id="e6-2-5-2-fb-001",
+            concept_id="e6-2-5-2",
             category="concept",
             part="geo",
             difficulty=9,

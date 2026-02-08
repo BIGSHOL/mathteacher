@@ -15,7 +15,7 @@ def _get_concepts():
     """연산 개념 정의 (4개: 2단원 × 2)."""
     return [
         concept(
-            id="concept-h1-polynomial-01",
+            id="h1-1-1-1",
             name="다항식의 연산과 항등식",
             grade="high_1",
             category="computation",
@@ -23,7 +23,7 @@ def _get_concepts():
             description="다항식 덧셈·뺄셈·곱셈, 곱셈 공식, 항등식, 미정계수법(수치대입법·계수비교법)"
         ),
         concept(
-            id="concept-h1-polynomial-02",
+            id="h1-1-1-2",
             name="나머지정리와 인수분해",
             grade="high_1",
             category="computation",
@@ -31,7 +31,7 @@ def _get_concepts():
             description="다항식 나눗셈, 나머지정리 P(α), 인수정리 P(α)=0, 조립제법, 고차 인수분해"
         ),
         concept(
-            id="concept-h1-equation-01",
+            id="h1-1-2-1",
             name="복소수와 이차방정식",
             grade="high_1",
             category="computation",
@@ -39,7 +39,7 @@ def _get_concepts():
             description="복소수 i²=-1, 켤레복소수, 이차방정식 풀이, 판별식 D, 근과 계수의 관계"
         ),
         concept(
-            id="concept-h1-equation-02",
+            id="h1-1-2-2",
             name="이차함수와 이차부등식",
             grade="high_1",
             category="computation",
@@ -56,8 +56,8 @@ def _get_questions():
 
         # 다항식 연산 - 기본
         mc(
-            id="h1-1-1-1-lv02-co-001",
-            concept_id="concept-h1-polynomial-01",
+            id="h1-1-1-1-co-001",
+            concept_id="h1-1-1-1",
             category="computation",
             part="algebra",
             difficulty=2,
@@ -70,8 +70,8 @@ def _get_questions():
 
         # 항등식 - 미정계수법
         mc(
-            id="h1-1-1-1-lv03-co-001",
-            concept_id="concept-h1-polynomial-01",
+            id="h1-1-1-1-co-002",
+            concept_id="h1-1-1-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -84,8 +84,8 @@ def _get_questions():
 
         # 나머지정리 - 기본
         mc(
-            id="h1-1-1-2-lv03-co-001",
-            concept_id="concept-h1-polynomial-02",
+            id="h1-1-1-2-co-001",
+            concept_id="h1-1-1-2",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -98,8 +98,8 @@ def _get_questions():
 
         # 인수분해 - 인수정리 활용
         mc(
-            id="h1-1-1-2-lv04-co-001",
-            concept_id="concept-h1-polynomial-02",
+            id="h1-1-1-2-co-002",
+            concept_id="h1-1-1-2",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -117,8 +117,8 @@ def _get_questions():
 
         # 항등식 응용 - 미정계수법
         mc(
-            id="h1-1-1-1-lv04-co-001",
-            concept_id="concept-h1-polynomial-01",
+            id="h1-1-1-1-co-003",
+            concept_id="h1-1-1-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -131,8 +131,8 @@ def _get_questions():
 
         # 나머지정리 응용
         mc(
-            id="h1-1-1-2-lv05-co-001",
-            concept_id="concept-h1-polynomial-02",
+            id="h1-1-1-2-co-003",
+            concept_id="h1-1-1-2",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -147,8 +147,8 @@ def _get_questions():
 
         # 복소수 - 기본
         mc(
-            id="h1-1-2-1-lv02-co-001",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-co-001",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=2,
@@ -161,8 +161,8 @@ def _get_questions():
 
         # 이차방정식 판별식
         mc(
-            id="h1-1-2-1-lv03-co-001",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-co-002",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -175,8 +175,8 @@ def _get_questions():
 
         # 근과 계수의 관계
         mc(
-            id="h1-1-2-1-lv03-co-002",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-co-003",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -189,8 +189,8 @@ def _get_questions():
 
         # 판별식 응용 - 이차항 계수 조건 체크 ★★★
         mc(
-            id="h1-1-2-1-lv04-co-001",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-co-004",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -203,8 +203,8 @@ def _get_questions():
 
         # 이차함수 최대·최소 (제한 범위)
         mc(
-            id="h1-1-2-2-lv04-co-001",
-            concept_id="concept-h1-equation-02",
+            id="h1-1-2-2-co-001",
+            concept_id="h1-1-2-2",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -217,8 +217,8 @@ def _get_questions():
 
         # 이차부등식
         mc(
-            id="h1-1-2-2-lv05-co-001",
-            concept_id="concept-h1-equation-02",
+            id="h1-1-2-2-co-002",
+            concept_id="h1-1-2-2",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -233,8 +233,8 @@ def _get_questions():
 
         # 다항식 연산 - 곱셈 공식
         mc(
-            id="h1-1-1-1-lv05-co-001",
-            concept_id="concept-h1-polynomial-01",
+            id="h1-1-1-1-co-004",
+            concept_id="h1-1-1-1",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -247,8 +247,8 @@ def _get_questions():
 
         # 다항식 연산 - 곱셈 공식 응용
         mc(
-            id="h1-1-1-1-lv06-co-001",
-            concept_id="concept-h1-polynomial-01",
+            id="h1-1-1-1-co-005",
+            concept_id="h1-1-1-1",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -261,8 +261,8 @@ def _get_questions():
 
         # 나머지정리 - 이차식으로 나눈 나머지
         mc(
-            id="h1-1-1-2-lv07-co-001",
-            concept_id="concept-h1-polynomial-02",
+            id="h1-1-1-2-co-004",
+            concept_id="h1-1-1-2",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -275,8 +275,8 @@ def _get_questions():
 
         # 나머지정리와 인수정리 종합
         mc(
-            id="h1-1-1-2-lv08-co-001",
-            concept_id="concept-h1-polynomial-02",
+            id="h1-1-1-2-co-005",
+            concept_id="h1-1-1-2",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -289,8 +289,8 @@ def _get_questions():
 
         # 복소수 - 곱셈
         mc(
-            id="h1-1-2-1-lv06-co-001",
-            concept_id="concept-h1-equation-01",
+            id="h1-1-2-1-co-005",
+            concept_id="h1-1-2-1",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -303,8 +303,8 @@ def _get_questions():
 
         # 이차함수 최대·최소 - 축이 범위 밖
         mc(
-            id="h1-1-2-2-lv07-co-001",
-            concept_id="concept-h1-equation-02",
+            id="h1-1-2-2-co-003",
+            concept_id="h1-1-2-2",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -317,8 +317,8 @@ def _get_questions():
 
         # 이차부등식 - 판별식 활용
         mc(
-            id="h1-1-2-2-lv08-co-001",
-            concept_id="concept-h1-equation-02",
+            id="h1-1-2-2-co-004",
+            concept_id="h1-1-2-2",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -331,8 +331,8 @@ def _get_questions():
 
         # 이차부등식 - 절댓값
         mc(
-            id="h1-1-2-2-lv10-co-001",
-            concept_id="concept-h1-equation-02",
+            id="h1-1-2-2-co-005",
+            concept_id="h1-1-2-2",
             category="computation",
             part="algebra",
             difficulty=10,
@@ -353,18 +353,18 @@ def _get_tests():
             title="고1 연산 종합 테스트",
             description="다항식의 연산·항등식·나머지정리·인수분해, 복소수·이차방정식·판별식·이차부등식",
             grade="high_1",
-            concept_ids=["concept-h1-polynomial-01", "concept-h1-polynomial-02", "concept-h1-equation-01", "concept-h1-equation-02"],
+            concept_ids=["h1-1-1-1", "h1-1-1-2", "h1-1-2-1", "h1-1-2-2"],
             question_ids=[
-                "h1-1-1-1-lv02-co-001", "h1-1-1-1-lv03-co-001",
-                "h1-1-1-2-lv03-co-001", "h1-1-1-2-lv04-co-001",
-                "h1-1-1-1-lv04-co-001", "h1-1-1-2-lv05-co-001",
-                "h1-1-2-1-lv02-co-001", "h1-1-2-1-lv03-co-001",
-                "h1-1-2-1-lv03-co-002", "h1-1-2-1-lv04-co-001",
-                "h1-1-2-2-lv04-co-001", "h1-1-2-2-lv05-co-001",
-                "h1-1-1-1-lv05-co-001", "h1-1-1-1-lv06-co-001",
-                "h1-1-1-2-lv07-co-001", "h1-1-1-2-lv08-co-001",
-                "h1-1-2-1-lv06-co-001", "h1-1-2-2-lv07-co-001",
-                "h1-1-2-2-lv08-co-001", "h1-1-2-2-lv10-co-001",
+                "h1-1-1-1-co-001", "h1-1-1-1-co-002",
+                "h1-1-1-2-co-001", "h1-1-1-2-co-002",
+                "h1-1-1-1-co-003", "h1-1-1-2-co-003",
+                "h1-1-2-1-co-001", "h1-1-2-1-co-002",
+                "h1-1-2-1-co-003", "h1-1-2-1-co-004",
+                "h1-1-2-2-co-001", "h1-1-2-2-co-002",
+                "h1-1-1-1-co-004", "h1-1-1-1-co-005",
+                "h1-1-1-2-co-004", "h1-1-1-2-co-005",
+                "h1-1-2-1-co-005", "h1-1-2-2-co-003",
+                "h1-1-2-2-co-004", "h1-1-2-2-co-005",
             ],
             time_limit_minutes=40,
             use_question_pool=True,

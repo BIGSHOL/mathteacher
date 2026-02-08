@@ -17,7 +17,7 @@ def get_concepts():
     """개념 관련 개념 반환."""
     return [
         concept(
-            id="concept-e4-angle-01",
+            id="e4-1-2-1",
             name="각도 - 각의 크기와 분류",
             grade="elementary_4",
             category="concept",
@@ -25,7 +25,7 @@ def get_concepts():
             description="각의 크기(예각·직각·둔각)를 이해하고, 각도기로 측정하며, 변의 길이와 각의 크기가 무관함을 압니다.",
         ),
         concept(
-            id="concept-e4-angle-02",
+            id="e4-1-2-2",
             name="각도 - 내각의 합",
             grade="elementary_4",
             category="concept",
@@ -33,7 +33,7 @@ def get_concepts():
             description="삼각형 내각의 합(180°)과 사각형 내각의 합(360°)을 이해하고 활용합니다.",
         ),
         concept(
-            id="concept-e4-transform-01",
+            id="e4-1-4-1",
             name="평면도형의 이동 - 밀기",
             grade="elementary_4",
             category="concept",
@@ -41,7 +41,7 @@ def get_concepts():
             description="밀기(평행이동)에서 위치만 변하고 모양·크기·방향은 불변임을 이해합니다.",
         ),
         concept(
-            id="concept-e4-transform-02",
+            id="e4-1-4-2",
             name="평면도형의 이동 - 뒤집기와 돌리기",
             grade="elementary_4",
             category="concept",
@@ -49,7 +49,7 @@ def get_concepts():
             description="뒤집기(대칭)와 돌리기(회전)의 차이를 이해하고, 시계/반시계 방향 관계를 압니다.",
         ),
         concept(
-            id="concept-e4-bar-graph-01",
+            id="e4-1-5-1",
             name="막대그래프 - 읽기와 해석",
             grade="elementary_4",
             category="concept",
@@ -57,7 +57,7 @@ def get_concepts():
             description="막대그래프의 구성 요소를 알고, 눈금을 읽어 값을 파악하며 항목 간 비교를 합니다.",
         ),
         concept(
-            id="concept-e4-bar-graph-02",
+            id="e4-1-5-2",
             name="막대그래프 - 그리기와 눈금 설정",
             grade="elementary_4",
             category="concept",
@@ -65,7 +65,7 @@ def get_concepts():
             description="자료에 적절한 눈금 크기를 정하여 막대그래프를 그릴 수 있습니다.",
         ),
         concept(
-            id="concept-e4-pattern-01",
+            id="e4-1-6-1",
             name="규칙 찾기 - 수 배열 규칙",
             grade="elementary_4",
             category="concept",
@@ -73,7 +73,7 @@ def get_concepts():
             description="수의 배열에서 덧셈, 곱셈 등의 규칙을 찾고 다음 수를 예측합니다.",
         ),
         concept(
-            id="concept-e4-pattern-02",
+            id="e4-1-6-2",
             name="규칙 찾기 - 도형과 계산식 패턴",
             grade="elementary_4",
             category="concept",
@@ -81,7 +81,7 @@ def get_concepts():
             description="도형 배열의 규칙과 계산식의 패턴을 발견하여 수학적 언어로 표현합니다.",
         ),
         concept(
-            id="concept-e4-triangle-01",
+            id="e4-2-2-1",
             name="삼각형 - 변에 의한 분류",
             grade="elementary_4",
             category="concept",
@@ -89,7 +89,7 @@ def get_concepts():
             description="이등변삼각형·정삼각형의 성질과 포함 관계(정삼각형 ⊂ 이등변삼각형)를 이해합니다.",
         ),
         concept(
-            id="concept-e4-triangle-02",
+            id="e4-2-2-2",
             name="삼각형 - 각에 의한 분류",
             grade="elementary_4",
             category="concept",
@@ -97,7 +97,7 @@ def get_concepts():
             description="예각삼각형·직각삼각형·둔각삼각형의 분류 기준을 이해합니다.",
         ),
         concept(
-            id="concept-e4-quad-01",
+            id="e4-2-4-1",
             name="사각형 - 수직과 평행",
             grade="elementary_4",
             category="concept",
@@ -105,7 +105,7 @@ def get_concepts():
             description="수직(90° 만남)과 평행(만나지 않음)의 개념을 이해합니다.",
         ),
         concept(
-            id="concept-e4-quad-02",
+            id="e4-2-4-2",
             name="사각형 - 사각형 분류와 포함 관계",
             grade="elementary_4",
             category="concept",
@@ -113,7 +113,7 @@ def get_concepts():
             description="사다리꼴·평행사변형·마름모·직사각형·정사각형의 분류 체계와 포함 관계를 이해합니다.",
         ),
         concept(
-            id="concept-e4-line-graph-01",
+            id="e4-2-5-1",
             name="꺾은선그래프 - 읽기와 해석",
             grade="elementary_4",
             category="concept",
@@ -121,7 +121,7 @@ def get_concepts():
             description="꺾은선그래프에서 변화 추이를 읽고, 기울기로 변화 크기를 판단합니다.",
         ),
         concept(
-            id="concept-e4-line-graph-02",
+            id="e4-2-5-2",
             name="꺾은선그래프 - 그리기와 물결선",
             grade="elementary_4",
             category="concept",
@@ -129,7 +129,7 @@ def get_concepts():
             description="적절한 그래프 유형을 선택하고, 물결선으로 불필요한 구간을 생략하여 그래프를 그립니다.",
         ),
         concept(
-            id="concept-e4-polygon-01",
+            id="e4-2-6-1",
             name="다각형 - 다각형 정의와 대각선",
             grade="elementary_4",
             category="concept",
@@ -137,7 +137,7 @@ def get_concepts():
             description="다각형의 정의(선분으로만 둘러싸인 닫힌 도형)와 대각선의 개념을 이해합니다.",
         ),
         concept(
-            id="concept-e4-polygon-02",
+            id="e4-2-6-2",
             name="다각형 - 정다각형의 조건",
             grade="elementary_4",
             category="concept",
@@ -154,8 +154,8 @@ def get_questions():
         # 1학기 2단원: 각도
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-1-2-1-lv01-cc-001",
-            concept_id="concept-e4-angle-01",
+            id="e4-1-2-1-cc-001",
+            concept_id="e4-1-2-1",
             category="concept",
             part="geo",
             difficulty=1,
@@ -171,8 +171,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-2-1-lv04-cc-001",
-            concept_id="concept-e4-angle-01",
+            id="e4-1-2-1-cc-002",
+            concept_id="e4-1-2-1",
             category="concept",
             part="geo",
             difficulty=4,
@@ -188,8 +188,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-2-2-lv07-cc-001",
-            concept_id="concept-e4-angle-02",
+            id="e4-1-2-2-cc-001",
+            concept_id="e4-1-2-2",
             category="concept",
             part="geo",
             difficulty=7,
@@ -209,8 +209,8 @@ def get_questions():
         # 1학기 4단원: 평면도형의 이동
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-1-4-1-lv02-cc-001",
-            concept_id="concept-e4-transform-01",
+            id="e4-1-4-1-cc-001",
+            concept_id="e4-1-4-1",
             category="concept",
             part="geo",
             difficulty=2,
@@ -226,8 +226,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-4-2-lv05-cc-001",
-            concept_id="concept-e4-transform-02",
+            id="e4-1-4-2-cc-001",
+            concept_id="e4-1-4-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -243,8 +243,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-4-2-lv07-cc-001",
-            concept_id="concept-e4-transform-02",
+            id="e4-1-4-2-cc-002",
+            concept_id="e4-1-4-2",
             category="concept",
             part="geo",
             difficulty=7,
@@ -264,8 +264,8 @@ def get_questions():
         # 1학기 5단원: 막대그래프
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-1-5-1-lv02-cc-001",
-            concept_id="concept-e4-bar-graph-01",
+            id="e4-1-5-1-cc-001",
+            concept_id="e4-1-5-1",
             category="concept",
             part="data",
             difficulty=2,
@@ -281,8 +281,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-5-2-lv05-cc-001",
-            concept_id="concept-e4-bar-graph-02",
+            id="e4-1-5-2-cc-001",
+            concept_id="e4-1-5-2",
             category="concept",
             part="data",
             difficulty=5,
@@ -298,8 +298,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-5-1-lv07-cc-001",
-            concept_id="concept-e4-bar-graph-01",
+            id="e4-1-5-1-cc-002",
+            concept_id="e4-1-5-1",
             category="concept",
             part="data",
             difficulty=7,
@@ -319,8 +319,8 @@ def get_questions():
         # 1학기 6단원: 규칙 찾기
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-1-6-1-lv01-cc-001",
-            concept_id="concept-e4-pattern-01",
+            id="e4-1-6-1-cc-001",
+            concept_id="e4-1-6-1",
             category="concept",
             part="algebra",
             difficulty=1,
@@ -336,8 +336,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-6-1-lv05-cc-001",
-            concept_id="concept-e4-pattern-01",
+            id="e4-1-6-1-cc-002",
+            concept_id="e4-1-6-1",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -353,8 +353,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-6-2-lv08-cc-001",
-            concept_id="concept-e4-pattern-02",
+            id="e4-1-6-2-cc-001",
+            concept_id="e4-1-6-2",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -374,8 +374,8 @@ def get_questions():
         # 2학기 2단원: 삼각형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-2-2-1-lv03-cc-001",
-            concept_id="concept-e4-triangle-01",
+            id="e4-2-2-1-cc-001",
+            concept_id="e4-2-2-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -391,8 +391,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-2-2-lv06-cc-001",
-            concept_id="concept-e4-triangle-02",
+            id="e4-2-2-2-cc-001",
+            concept_id="e4-2-2-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -408,8 +408,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-2-1-lv08-cc-001",
-            concept_id="concept-e4-triangle-01",
+            id="e4-2-2-1-cc-002",
+            concept_id="e4-2-2-1",
             category="concept",
             part="geo",
             difficulty=8,
@@ -429,8 +429,8 @@ def get_questions():
         # 2학기 4단원: 사각형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-2-4-1-lv02-cc-001",
-            concept_id="concept-e4-quad-01",
+            id="e4-2-4-1-cc-001",
+            concept_id="e4-2-4-1",
             category="concept",
             part="geo",
             difficulty=2,
@@ -446,8 +446,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-4-2-lv06-cc-001",
-            concept_id="concept-e4-quad-02",
+            id="e4-2-4-2-cc-001",
+            concept_id="e4-2-4-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -463,8 +463,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-4-2-lv09-cc-001",
-            concept_id="concept-e4-quad-02",
+            id="e4-2-4-2-cc-002",
+            concept_id="e4-2-4-2",
             category="concept",
             part="geo",
             difficulty=9,
@@ -484,8 +484,8 @@ def get_questions():
         # 2학기 5단원: 꺾은선그래프
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-2-5-1-lv03-cc-001",
-            concept_id="concept-e4-line-graph-01",
+            id="e4-2-5-1-cc-001",
+            concept_id="e4-2-5-1",
             category="concept",
             part="data",
             difficulty=3,
@@ -501,8 +501,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-5-1-lv05-cc-001",
-            concept_id="concept-e4-line-graph-01",
+            id="e4-2-5-1-cc-002",
+            concept_id="e4-2-5-1",
             category="concept",
             part="data",
             difficulty=5,
@@ -518,8 +518,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-5-2-lv07-cc-001",
-            concept_id="concept-e4-line-graph-02",
+            id="e4-2-5-2-cc-001",
+            concept_id="e4-2-5-2",
             category="concept",
             part="data",
             difficulty=7,
@@ -539,8 +539,8 @@ def get_questions():
         # 2학기 6단원: 다각형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e4-2-6-1-lv02-cc-001",
-            concept_id="concept-e4-polygon-01",
+            id="e4-2-6-1-cc-001",
+            concept_id="e4-2-6-1",
             category="concept",
             part="geo",
             difficulty=2,
@@ -556,8 +556,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-6-2-lv06-cc-001",
-            concept_id="concept-e4-polygon-02",
+            id="e4-2-6-2-cc-001",
+            concept_id="e4-2-6-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -573,8 +573,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-6-2-lv09-cc-001",
-            concept_id="concept-e4-polygon-02",
+            id="e4-2-6-2-cc-002",
+            concept_id="e4-2-6-2",
             category="concept",
             part="geo",
             difficulty=9,

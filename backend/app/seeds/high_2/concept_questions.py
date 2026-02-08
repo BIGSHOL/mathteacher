@@ -11,12 +11,10 @@ def get_concept_data() -> dict:
     }
 
 
-def _get_concepts():
-    """개념 정의 (6개)."""
     return [
         # 2단원: 집합과 명제
         concept(
-            id="concept-h2-set",
+            id="h1-2-2-1",
             name="집합",
             grade="high_1",
             category="concept",
@@ -24,7 +22,7 @@ def _get_concepts():
             description="집합의 정의, ∈과 ⊂ 구분, 교집합/합집합/여집합/차집합, 드 모르간의 법칙, 포함-배제 원리"
         ),
         concept(
-            id="concept-h2-proposition",
+            id="h1-2-2-2",
             name="명제",
             grade="high_1",
             category="concept",
@@ -32,7 +30,7 @@ def _get_concepts():
             description="명제, 조건과 진리집합, 역/대우, 충분조건/필요조건"
         ),
         concept(
-            id="concept-h2-abs-inequality",
+            id="h1-2-2-3",
             name="절대부등식",
             grade="high_1",
             category="concept",
@@ -42,7 +40,7 @@ def _get_concepts():
 
         # 3단원: 함수
         concept(
-            id="concept-h2-function",
+            id="h1-2-3-1",
             name="함수의 뜻과 그래프",
             grade="high_1",
             category="concept",
@@ -50,7 +48,7 @@ def _get_concepts():
             description="함수의 정의, 일대일 함수, 일대일 대응"
         ),
         concept(
-            id="concept-h2-composite",
+            id="h1-2-3-2",
             name="합성함수와 역함수",
             grade="high_1",
             category="concept",
@@ -58,7 +56,7 @@ def _get_concepts():
             description="합성함수 교환법칙 불성립, 역함수 존재 조건(일대일 대응), y=x 대칭"
         ),
         concept(
-            id="concept-h2-rational-irrational",
+            id="h1-2-3-3",
             name="유리함수와 무리함수",
             grade="high_1",
             category="concept",
@@ -75,8 +73,8 @@ def _get_questions():
 
         # 집합 (3문제)
         mc(
-            id="h2-2-2-1-lv03-cc-001",
-            concept_id="concept-h2-set",
+            id="h1-2-2-1-cc-001",
+            concept_id="h1-2-2-1",
             category="concept",
             part="data",
             difficulty=3,
@@ -88,8 +86,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-2-1-lv06-cc-001",
-            concept_id="concept-h2-set",
+            id="h1-2-2-1-cc-002",
+            concept_id="h1-2-2-1",
             category="concept",
             part="data",
             difficulty=6,
@@ -101,8 +99,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-2-1-lv08-cc-001",
-            concept_id="concept-h2-set",
+            id="h1-2-2-1-cc-003",
+            concept_id="h1-2-2-1",
             category="concept",
             part="data",
             difficulty=8,
@@ -115,8 +113,8 @@ def _get_questions():
 
         # 명제 (3문제)
         mc(
-            id="h2-2-2-2-lv04-cc-001",
-            concept_id="concept-h2-proposition",
+            id="h1-2-2-2-cc-001",
+            concept_id="h1-2-2-2",
             category="concept",
             part="data",
             difficulty=4,
@@ -128,8 +126,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-2-2-lv06-cc-001",
-            concept_id="concept-h2-proposition",
+            id="h1-2-2-2-cc-002",
+            concept_id="h1-2-2-2",
             category="concept",
             part="data",
             difficulty=6,
@@ -141,8 +139,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-2-2-lv08-cc-001",
-            concept_id="concept-h2-proposition",
+            id="h1-2-2-2-cc-003",
+            concept_id="h1-2-2-2",
             category="concept",
             part="data",
             difficulty=8,
@@ -155,8 +153,8 @@ def _get_questions():
 
         # 절대부등식 (3문제)
         mc(
-            id="h2-2-2-3-lv04-cc-001",
-            concept_id="concept-h2-abs-inequality",
+            id="h1-2-2-3-cc-001",
+            concept_id="h1-2-2-3",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -168,8 +166,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-2-3-lv07-cc-001",
-            concept_id="concept-h2-abs-inequality",
+            id="h1-2-2-3-cc-002",
+            concept_id="h1-2-2-3",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -181,8 +179,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-2-3-lv09-cc-001",
-            concept_id="concept-h2-abs-inequality",
+            id="h1-2-2-3-cc-003",
+            concept_id="h1-2-2-3",
             category="concept",
             part="algebra",
             difficulty=9,
@@ -197,8 +195,8 @@ def _get_questions():
 
         # 함수의 뜻과 그래프 (3문제)
         mc(
-            id="h2-2-3-1-lv03-cc-001",
-            concept_id="concept-h2-function",
+            id="h1-2-3-1-cc-001",
+            concept_id="h1-2-3-1",
             category="concept",
             part="func",
             difficulty=3,
@@ -210,8 +208,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-3-1-lv05-cc-001",
-            concept_id="concept-h2-function",
+            id="h1-2-3-1-cc-002",
+            concept_id="h1-2-3-1",
             category="concept",
             part="func",
             difficulty=5,
@@ -223,8 +221,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-3-1-lv07-cc-001",
-            concept_id="concept-h2-function",
+            id="h1-2-3-1-cc-003",
+            concept_id="h1-2-3-1",
             category="concept",
             part="func",
             difficulty=7,
@@ -237,8 +235,8 @@ def _get_questions():
 
         # 합성함수와 역함수 (3문제)
         mc(
-            id="h2-2-3-2-lv04-cc-001",
-            concept_id="concept-h2-composite",
+            id="h1-2-3-2-cc-001",
+            concept_id="h1-2-3-2",
             category="concept",
             part="func",
             difficulty=4,
@@ -250,8 +248,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-3-2-lv06-cc-001",
-            concept_id="concept-h2-composite",
+            id="h1-2-3-2-cc-002",
+            concept_id="h1-2-3-2",
             category="concept",
             part="func",
             difficulty=6,
@@ -263,8 +261,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-3-2-lv08-cc-001",
-            concept_id="concept-h2-composite",
+            id="h1-2-3-2-cc-003",
+            concept_id="h1-2-3-2",
             category="concept",
             part="func",
             difficulty=8,
@@ -277,8 +275,8 @@ def _get_questions():
 
         # 유리함수와 무리함수 (3문제)
         mc(
-            id="h2-2-3-3-lv04-cc-001",
-            concept_id="concept-h2-rational-irrational",
+            id="h1-2-3-3-cc-001",
+            concept_id="h1-2-3-3",
             category="concept",
             part="func",
             difficulty=4,
@@ -290,8 +288,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-3-3-lv07-cc-001",
-            concept_id="concept-h2-rational-irrational",
+            id="h1-2-3-3-cc-002",
+            concept_id="h1-2-3-3",
             category="concept",
             part="func",
             difficulty=7,
@@ -303,8 +301,8 @@ def _get_questions():
         ),
 
         mc(
-            id="h2-2-3-3-lv09-cc-001",
-            concept_id="concept-h2-rational-irrational",
+            id="h1-2-3-3-cc-003",
+            concept_id="h1-2-3-3",
             category="concept",
             part="func",
             difficulty=9,
@@ -319,8 +317,8 @@ def _get_questions():
 
         # 평면좌표 (3문제)
         mc(
-            id="h2-2-1-1-lv03-cc-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-cc-001",
+            concept_id="h1-2-1-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -331,8 +329,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-1-lv05-cc-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-cc-002",
+            concept_id="h1-2-1-1",
             category="concept",
             part="calc",
             difficulty=5,
@@ -348,8 +346,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-1-lv07-cc-001",
-            concept_id="concept-h2-plane-coord",
+            id="h1-2-1-1-cc-003",
+            concept_id="h1-2-1-1",
             category="concept",
             part="calc",
             difficulty=7,
@@ -366,8 +364,8 @@ def _get_questions():
         ),
         # 직선의 방정식 (3문제)
         mc(
-            id="h2-2-1-2-lv03-cc-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-cc-001",
+            concept_id="h1-2-1-2",
             category="concept",
             part="algebra",
             difficulty=3,
@@ -383,8 +381,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-2-lv05-cc-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-cc-002",
+            concept_id="h1-2-1-2",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -400,8 +398,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-2-lv07-cc-001",
-            concept_id="concept-h2-line",
+            id="h1-2-1-2-cc-003",
+            concept_id="h1-2-1-2",
             category="concept",
             part="algebra",
             difficulty=7,
@@ -418,8 +416,8 @@ def _get_questions():
         ),
         # 원의 방정식 (3문제)
         mc(
-            id="h2-2-1-3-lv04-cc-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-cc-001",
+            concept_id="h1-2-1-3",
             category="concept",
             part="algebra",
             difficulty=4,
@@ -435,8 +433,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-3-lv06-cc-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-cc-002",
+            concept_id="h1-2-1-3",
             category="concept",
             part="algebra",
             difficulty=6,
@@ -452,8 +450,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-3-lv08-cc-001",
-            concept_id="concept-h2-circle",
+            id="h1-2-1-3-cc-003",
+            concept_id="h1-2-1-3",
             category="concept",
             part="algebra",
             difficulty=8,
@@ -470,8 +468,8 @@ def _get_questions():
         ),
         # 도형의 이동 (3문제)
         mc(
-            id="h2-2-1-4-lv03-cc-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-cc-001",
+            concept_id="h1-2-1-4",
             category="concept",
             part="geo",
             difficulty=3,
@@ -487,8 +485,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-4-lv05-cc-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-cc-002",
+            concept_id="h1-2-1-4",
             category="concept",
             part="geo",
             difficulty=5,
@@ -499,8 +497,8 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h2-2-1-4-lv07-cc-001",
-            concept_id="concept-h2-transform",
+            id="h1-2-1-4-cc-003",
+            concept_id="h1-2-1-4",
             category="concept",
             part="geo",
             difficulty=7,
@@ -522,39 +520,52 @@ def _get_tests():
     """개념 카테고리 테스트 (3개)."""
     return [
         test(
-            id="test-h2-set-proposition",
+            id="test-h1-set-proposition",
             title="공통수학2 집합과 명제",
             description="집합(교집합/합집합/여집합), 명제(역/대우/충분조건), 절대부등식(AM-GM)",
             grade="high_1",
-            concept_ids=["concept-h2-set", "concept-h2-proposition", "concept-h2-abs-inequality"],
-            question_ids=['h2-2-2-1-lv03-cc-001', 'h2-2-2-1-lv06-cc-001', 'h2-2-2-1-lv08-cc-001', 'h2-2-2-2-lv04-cc-001', 'h2-2-2-2-lv06-cc-001', 'h2-2-2-2-lv08-cc-001', 'h2-2-2-3-lv04-cc-001', 'h2-2-2-3-lv07-cc-001', 'h2-2-2-3-lv09-cc-001'],
+            concept_ids=["h1-2-2-1", "h1-2-2-2", "h1-2-2-3"],
+            question_ids=[
+                "h1-2-2-1-cc-001", "h1-2-2-1-cc-002", "h1-2-2-1-cc-003",
+                "h1-2-2-2-cc-001", "h1-2-2-2-cc-002", "h1-2-2-2-cc-003",
+                "h1-2-2-3-cc-001", "h1-2-2-3-cc-002", "h1-2-2-3-cc-003"
+            ],
             time_limit_minutes=15,
             use_question_pool=True,
             questions_per_attempt=7,
         ),
         test(
-            id="test-h2-function",
+            id="test-h1-function",
             title="공통수학2 함수",
             description="함수의 정의와 그래프, 합성함수와 역함수, 유리함수와 무리함수",
             grade="high_1",
-            concept_ids=["concept-h2-function", "concept-h2-composite", "concept-h2-rational-irrational"],
-            question_ids=['h2-2-3-1-lv03-cc-001', 'h2-2-3-1-lv05-cc-001', 'h2-2-3-1-lv07-cc-001', 'h2-2-3-2-lv04-cc-001', 'h2-2-3-2-lv06-cc-001', 'h2-2-3-2-lv08-cc-001', 'h2-2-3-3-lv04-cc-001', 'h2-2-3-3-lv07-cc-001', 'h2-2-3-3-lv09-cc-001'],
+            concept_ids=["h1-2-3-1", "h1-2-3-2", "h1-2-3-3"],
+            question_ids=[
+                "h1-2-3-1-cc-001", "h1-2-3-1-cc-002", "h1-2-3-1-cc-003",
+                "h1-2-3-2-cc-001", "h1-2-3-2-cc-002", "h1-2-3-2-cc-003",
+                "h1-2-3-3-cc-001", "h1-2-3-3-cc-002", "h1-2-3-3-cc-003"
+            ],
             time_limit_minutes=15,
             use_question_pool=True,
             questions_per_attempt=7,
         ),
         test(
-            id="test-h2-ch1-concept",
+            id="test-h1-ch2-concept",
             title="공통수학2 도형의 방정식 개념",
             description="평면좌표, 직선, 원, 도형의 이동의 개념 이해",
             grade="high_1",
             concept_ids=[
-                "concept-h2-plane-coord",
-                "concept-h2-line",
-                "concept-h2-circle",
-                "concept-h2-transform",
+                "h1-2-1-1",
+                "h1-2-1-2",
+                "h1-2-1-3",
+                "h1-2-1-4"
             ],
-            question_ids=['h2-2-1-1-lv03-cc-001', 'h2-2-1-1-lv05-cc-001', 'h2-2-1-1-lv07-cc-001', 'h2-2-1-2-lv03-cc-001', 'h2-2-1-2-lv05-cc-001', 'h2-2-1-2-lv07-cc-001', 'h2-2-1-3-lv04-cc-001', 'h2-2-1-3-lv06-cc-001', 'h2-2-1-3-lv08-cc-001', 'h2-2-1-4-lv03-cc-001', 'h2-2-1-4-lv05-cc-001', 'h2-2-1-4-lv07-cc-001'],
+            question_ids=[
+                "h1-2-1-1-cc-001", "h1-2-1-1-cc-002", "h1-2-1-1-cc-003",
+                "h1-2-1-2-cc-001", "h1-2-1-2-cc-002", "h1-2-1-2-cc-003",
+                "h1-2-1-3-cc-001", "h1-2-1-3-cc-002", "h1-2-1-3-cc-003",
+                "h1-2-1-4-cc-001", "h1-2-1-4-cc-002", "h1-2-1-4-cc-003"
+            ],
             time_limit_minutes=15,
             use_question_pool=True,
             questions_per_attempt=8,

@@ -16,7 +16,7 @@ def get_concepts() -> list[dict]:
     return [
         # ━━ 1학기 1단원: 덧셈과 뺄셈 ━━
         concept(
-            id="concept-e3-add-sub-01",
+            id="e3-1-1-1",
             name="덧셈과 뺄셈 - 받아올림 있는 덧셈",
             grade="elementary_3",
             category="computation",
@@ -24,33 +24,16 @@ def get_concepts() -> list[dict]:
             description="세 자리 수의 덧셈에서 각 자리의 합이 10 이상일 때 상위 자릿수로 1을 올리는 받아올림 원리를 이해합니다.",
         ),
         concept(
-            id="concept-e3-add-sub-02",
+            id="e3-1-1-2",
             name="덧셈과 뺄셈 - 받아내림 있는 뺄셈",
             grade="elementary_3",
             category="computation",
             part="calc",
             description="세 자리 수의 뺄셈에서 상위 자리에서 1을 빌려 10으로 바꾸는 받아내림(재구조화) 원리를 이해합니다.",
         ),
-        # ━━ 1학기 4단원: 곱셈 ━━
-        concept(
-            id="concept-e3-mul1-01",
-            name="곱셈 (1) - (몇십몇)×(몇) 기본 계산",
-            grade="elementary_3",
-            category="computation",
-            part="calc",
-            description="(몇십몇)×(몇) 계산에서 십의 자리와 일의 자리를 분리하여 각각 곱하는 원리를 이해합니다.",
-        ),
-        concept(
-            id="concept-e3-mul1-02",
-            name="곱셈 (1) - 분배법칙의 기초와 올림",
-            grade="elementary_3",
-            category="computation",
-            part="calc",
-            description="분배법칙의 기초(23×4=20×4+3×4)를 이해하고, 올림이 있는 곱셈을 정확히 계산합니다.",
-        ),
         # ━━ 1학기 3단원: 나눗셈 ━━
         concept(
-            id="concept-e3-div1-01",
+            id="e3-1-3-1",
             name="나눗셈 (1) - 등분제와 포함제",
             grade="elementary_3",
             category="computation",
@@ -58,16 +41,33 @@ def get_concepts() -> list[dict]:
             description="등분제(똑같이 나누기)와 포함제(몇 묶음인지 구하기) 두 가지 나눗셈 의미를 이해합니다.",
         ),
         concept(
-            id="concept-e3-div1-02",
+            id="e3-1-3-2",
             name="나눗셈 (1) - 곱셈과 나눗셈의 관계",
             grade="elementary_3",
             category="computation",
             part="calc",
             description="12÷3=4 ↔ 3×4=12와 같이 곱셈과 나눗셈의 역연산 관계를 이해하고, 나눗셈의 교환법칙 불성립을 알아봅니다.",
         ),
+        # ━━ 1학기 4단원: 곱셈 ━━
+        concept(
+            id="e3-1-4-1",
+            name="곱셈 (1) - (몇십몇)×(몇) 기본 계산",
+            grade="elementary_3",
+            category="computation",
+            part="calc",
+            description="(몇십몇)×(몇) 계산에서 십의 자리와 일의 자리를 분리하여 각각 곱하는 원리를 이해합니다.",
+        ),
+        concept(
+            id="e3-1-4-2",
+            name="곱셈 (1) - 분배법칙의 기초와 올림",
+            grade="elementary_3",
+            category="computation",
+            part="calc",
+            description="분배법칙의 기초(23×4=20×4+3×4)를 이해하고, 올림이 있는 곱셈을 정확히 계산합니다.",
+        ),
         # ━━ 2학기 7단원: 곱셈 (2) ━━
         concept(
-            id="concept-e3-mul2-01",
+            id="e3-2-1-1",
             name="곱셈 (2) - (세 자리 수)×(한 자리 수)",
             grade="elementary_3",
             category="computation",
@@ -75,7 +75,7 @@ def get_concepts() -> list[dict]:
             description="(세 자리 수)×(한 자리 수) 세로셈에서 받아올림을 정확히 처리하여 계산합니다.",
         ),
         concept(
-            id="concept-e3-mul2-02",
+            id="e3-2-1-2",
             name="곱셈 (2) - (두 자리 수)×(두 자리 수)",
             grade="elementary_3",
             category="computation",
@@ -84,7 +84,7 @@ def get_concepts() -> list[dict]:
         ),
         # ━━ 2학기 8단원: 나눗셈 (2) ━━
         concept(
-            id="concept-e3-div2-01",
+            id="e3-2-2-1",
             name="나눗셈 (2) - 나머지가 있는 나눗셈과 검산",
             grade="elementary_3",
             category="computation",
@@ -92,7 +92,7 @@ def get_concepts() -> list[dict]:
             description="나머지가 있는 나눗셈을 계산하고, 검산(A=B×Q+R)과 나머지<나누는 수 조건을 확인합니다.",
         ),
         concept(
-            id="concept-e3-div2-02",
+            id="e3-2-2-2",
             name="나눗셈 (2) - 나머지의 맥락적 해석",
             grade="elementary_3",
             category="computation",
@@ -109,8 +109,8 @@ def get_questions() -> list[dict]:
         # 1학기 1단원: 덧셈과 뺄셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-1-1-2-lv03-co-001",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-cc-001",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=3,
@@ -126,8 +126,8 @@ def get_questions() -> list[dict]:
             "13-7=6이 되어야 하는데, 큰 수-작은 수 규칙을 잘못 적용해 7-3=4로 계산한 오류입니다. (정답: 266)",
         ),
         mc(
-            id="e3-1-1-2-lv04-co-001",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-cc-002",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=4,
@@ -144,8 +144,8 @@ def get_questions() -> list[dict]:
             "이것이 자릿값의 핵심 원리입니다.",
         ),
         mc(
-            id="e3-1-1-1-lv05-co-001",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-cc-001",
+            concept_id="e3-1-1-1",
             category="concept",
             part="calc",
             difficulty=5,
@@ -166,8 +166,8 @@ def get_questions() -> list[dict]:
         # 1학기 4단원: 곱셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-1-4-2-lv03-co-001",
-            concept_id="concept-e3-mul1-02",
+            id="e3-1-4-2-cc-001",
+            concept_id="e3-1-4-2",
             category="concept",
             part="calc",
             difficulty=3,
@@ -183,8 +183,8 @@ def get_questions() -> list[dict]:
             "이것이 분배법칙의 기초로, 23을 20과 3으로 나누어 각각 곱한 후 더하는 원리입니다.",
         ),
         mc(
-            id="e3-1-4-1-lv04-co-001",
-            concept_id="concept-e3-mul1-01",
+            id="e3-1-4-1-cc-001",
+            concept_id="e3-1-4-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -201,8 +201,8 @@ def get_questions() -> list[dict]:
             "'4 × 2 = 8'로 계산하는 것은 자릿수를 무시한 오류입니다.",
         ),
         mc(
-            id="e3-1-4-2-lv06-co-001",
-            concept_id="concept-e3-mul1-02",
+            id="e3-1-4-2-cc-002",
+            concept_id="e3-1-4-2",
             category="concept",
             part="calc",
             difficulty=6,
@@ -223,8 +223,8 @@ def get_questions() -> list[dict]:
         # 1학기 3단원: 나눗셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-1-3-1-lv03-co-001",
-            concept_id="concept-e3-div1-01",
+            id="e3-1-3-1-cc-001",
+            concept_id="e3-1-3-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -241,8 +241,8 @@ def get_questions() -> list[dict]:
             "12 = 3 × 4로 확인할 수 있습니다.",
         ),
         mc(
-            id="e3-1-3-1-lv06-co-001",
-            concept_id="concept-e3-div1-01",
+            id="e3-1-3-1-cc-002",
+            concept_id="e3-1-3-1",
             category="concept",
             part="calc",
             difficulty=6,
@@ -262,8 +262,8 @@ def get_questions() -> list[dict]:
         # 2학기 7단원: 곱셈 (2)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-2-1-2-lv05-co-001",
-            concept_id="concept-e3-mul2-02",
+            id="e3-2-1-2-cc-001",
+            concept_id="e3-2-1-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -280,8 +280,8 @@ def get_questions() -> list[dict]:
             "'34 × 1 = 34'로 계산하는 것은 자릿수를 무시한 오류입니다.",
         ),
         mc(
-            id="e3-2-1-1-lv06-co-001",
-            concept_id="concept-e3-mul2-01",
+            id="e3-2-1-1-co-001",
+            concept_id="e3-2-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -301,8 +301,8 @@ def get_questions() -> list[dict]:
         # 2학기 8단원: 나눗셈 (2)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-2-2-1-lv04-co-001",
-            concept_id="concept-e3-div2-01",
+            id="e3-2-2-1-co-001",
+            concept_id="e3-2-2-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -320,8 +320,8 @@ def get_questions() -> list[dict]:
             "나머지는 항상 나누는 수보다 작아야 합니다 (2 < 3).",
         ),
         mc(
-            id="e3-2-2-1-lv06-co-001",
-            concept_id="concept-e3-div2-01",
+            id="e3-2-2-1-cc-001",
+            concept_id="e3-2-2-1",
             category="concept",
             part="calc",
             difficulty=6,
@@ -338,8 +338,8 @@ def get_questions() -> list[dict]:
             "나머지 < 나누는 수 (R < B) 조건을 항상 확인해야 합니다.",
         ),
         mc(
-            id="e3-2-2-2-lv08-co-001",
-            concept_id="concept-e3-div2-02",
+            id="e3-2-2-2-cc-001",
+            concept_id="e3-2-2-2",
             category="concept",
             part="calc",
             difficulty=8,
@@ -361,8 +361,8 @@ def get_questions() -> list[dict]:
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # ── 받아올림 있는 덧셈 (concept-e3-add-sub-01) ──
         mc(
-            id="e3-1-1-1-lv03-co-001",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-co-002",
+            concept_id="e3-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -373,8 +373,8 @@ def get_questions() -> list[dict]:
             "십의 자리: 4+7+1=12 → 2 쓰고 1 올림. 백의 자리: 3+2+1=6. 답: 623",
         ),
         mc(
-            id="e3-1-1-1-lv04-co-001",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-co-003",
+            concept_id="e3-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -385,8 +385,8 @@ def get_questions() -> list[dict]:
             "십의 자리: 6+5+1=12 → 2 쓰고 1 올림. 백의 자리: 1+4+1=6. 답: 625",
         ),
         mc(
-            id="e3-1-1-1-lv05-co-002",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-co-004",
+            concept_id="e3-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -397,8 +397,8 @@ def get_questions() -> list[dict]:
             "십의 자리: 8+4+1=13 → 3 쓰고 1 올림. 백의 자리: 5+3+1=9. 답: 936",
         ),
         mc(
-            id="e3-1-1-1-lv06-co-001",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-co-005",
+            concept_id="e3-1-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -410,8 +410,8 @@ def get_questions() -> list[dict]:
         ),
         # ── 받아내림 있는 뺄셈 (concept-e3-add-sub-02) ──
         mc(
-            id="e3-1-1-2-lv03-co-002",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-co-003",
+            concept_id="e3-1-1-2",
             category="computation",
             part="calc",
             difficulty=3,
@@ -421,8 +421,8 @@ def get_questions() -> list[dict]:
             explanation="500에서 빌려오기: 일의 자리 10-3=7, 십의 자리 9-6=3, 백의 자리 4-2=2. 답: 237",
         ),
         mc(
-            id="e3-1-1-2-lv05-co-001",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-co-004",
+            concept_id="e3-1-1-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -433,8 +433,8 @@ def get_questions() -> list[dict]:
             "십의 자리: 11-5=6(받아내림). 백의 자리: 6-3=3. 답: 366",
         ),
         mc(
-            id="e3-1-1-2-lv06-co-001",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-co-005",
+            concept_id="e3-1-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -446,8 +446,8 @@ def get_questions() -> list[dict]:
         ),
         # ── (몇십몇)×(몇) 기본 계산 (concept-e3-mul1-01) ──
         mc(
-            id="e3-1-4-1-lv03-co-001",
-            concept_id="concept-e3-mul1-01",
+            id="e3-1-4-1-co-002",
+            concept_id="e3-1-4-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -457,8 +457,8 @@ def get_questions() -> list[dict]:
             explanation="30×3=90, 2×3=6. 90+6=96",
         ),
         mc(
-            id="e3-1-4-1-lv04-co-002",
-            concept_id="concept-e3-mul1-01",
+            id="e3-1-4-1-co-003",
+            concept_id="e3-1-4-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -468,8 +468,8 @@ def get_questions() -> list[dict]:
             explanation="20×3=60, 7×3=21. 60+21=81",
         ),
         mc(
-            id="e3-1-4-1-lv05-co-001",
-            concept_id="concept-e3-mul1-01",
+            id="e3-1-4-1-co-004",
+            concept_id="e3-1-4-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -479,8 +479,8 @@ def get_questions() -> list[dict]:
             explanation="10×6=60, 5×6=30. 60+30=90",
         ),
         mc(
-            id="e3-1-4-1-lv06-co-001",
-            concept_id="concept-e3-mul1-01",
+            id="e3-1-4-1-co-005",
+            concept_id="e3-1-4-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -491,8 +491,8 @@ def get_questions() -> list[dict]:
         ),
         # ── 분배법칙의 기초와 올림 (concept-e3-mul1-02) ──
         mc(
-            id="e3-1-4-2-lv04-co-001",
-            concept_id="concept-e3-mul1-02",
+            id="e3-1-4-2-co-003",
+            concept_id="e3-1-4-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -502,8 +502,8 @@ def get_questions() -> list[dict]:
             explanation="30×5=150, 7×5=35. 150+35=185",
         ),
         mc(
-            id="e3-1-4-2-lv05-co-001",
-            concept_id="concept-e3-mul1-02",
+            id="e3-1-4-2-co-004",
+            concept_id="e3-1-4-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -513,8 +513,8 @@ def get_questions() -> list[dict]:
             explanation="40×6=240, 8×6=48. 240+48=288",
         ),
         mc(
-            id="e3-1-4-2-lv07-co-001",
-            concept_id="concept-e3-mul1-02",
+            id="e3-1-4-2-co-005",
+            concept_id="e3-1-4-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -525,8 +525,8 @@ def get_questions() -> list[dict]:
         ),
         # ── 등분제와 포함제 (concept-e3-div1-01) ──
         mc(
-            id="e3-1-3-1-lv03-co-002",
-            concept_id="concept-e3-div1-01",
+            id="e3-1-3-1-co-003",
+            concept_id="e3-1-3-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -536,8 +536,8 @@ def get_questions() -> list[dict]:
             explanation="4 × 9 = 36이므로 36 ÷ 4 = 9",
         ),
         mc(
-            id="e3-1-3-1-lv04-co-001",
-            concept_id="concept-e3-div1-01",
+            id="e3-1-3-1-co-004",
+            concept_id="e3-1-3-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -547,8 +547,8 @@ def get_questions() -> list[dict]:
             explanation="8 × 7 = 56이므로 56 ÷ 8 = 7",
         ),
         mc(
-            id="e3-1-3-1-lv05-co-001",
-            concept_id="concept-e3-div1-01",
+            id="e3-1-3-1-co-005",
+            concept_id="e3-1-3-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -559,8 +559,8 @@ def get_questions() -> list[dict]:
         ),
         # ── 곱셈과 나눗셈의 관계 (concept-e3-div1-02) ──
         mc(
-            id="e3-1-3-2-lv03-co-001",
-            concept_id="concept-e3-div1-02",
+            id="e3-1-3-2-co-001",
+            concept_id="e3-1-3-2",
             category="computation",
             part="calc",
             difficulty=3,
@@ -570,8 +570,8 @@ def get_questions() -> list[dict]:
             explanation="42 ÷ 6 = 7. 곱셈의 빈칸은 나눗셈으로 구합니다.",
         ),
         mc(
-            id="e3-1-3-2-lv04-co-001",
-            concept_id="concept-e3-div1-02",
+            id="e3-1-3-2-co-002",
+            concept_id="e3-1-3-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -581,8 +581,8 @@ def get_questions() -> list[dict]:
             explanation="□ × 9 = 63이므로 □ = 63 ÷ 9 = 7",
         ),
         mc(
-            id="e3-1-3-2-lv05-co-001",
-            concept_id="concept-e3-div1-02",
+            id="e3-1-3-2-co-003",
+            concept_id="e3-1-3-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -592,8 +592,8 @@ def get_questions() -> list[dict]:
             explanation="□ = 8 × 5 = 40. 나눗셈의 나뉨수는 나누는 수 × 몫으로 구합니다.",
         ),
         mc(
-            id="e3-1-3-2-lv06-co-001",
-            concept_id="concept-e3-div1-02",
+            id="e3-1-3-2-co-004",
+            concept_id="e3-1-3-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -603,8 +603,8 @@ def get_questions() -> list[dict]:
             explanation="54 ÷ 6 = 9, 9 × 4 = 36",
         ),
         mc(
-            id="e3-1-3-2-lv07-co-001",
-            concept_id="concept-e3-div1-02",
+            id="e3-1-3-2-co-005",
+            concept_id="e3-1-3-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -615,8 +615,8 @@ def get_questions() -> list[dict]:
         ),
         # ── (세 자리 수)×(한 자리 수) (concept-e3-mul2-01) ──
         mc(
-            id="e3-2-1-1-lv04-co-001",
-            concept_id="concept-e3-mul2-01",
+            id="e3-2-1-1-co-002",
+            concept_id="e3-2-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -626,8 +626,8 @@ def get_questions() -> list[dict]:
             explanation="100×4=400, 20×4=80, 3×4=12. 400+80+12=492",
         ),
         mc(
-            id="e3-2-1-1-lv05-co-001",
-            concept_id="concept-e3-mul2-01",
+            id="e3-2-1-1-co-003",
+            concept_id="e3-2-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -637,8 +637,8 @@ def get_questions() -> list[dict]:
             explanation="200×3=600, 50×3=150, 6×3=18. 600+150+18=768",
         ),
         mc(
-            id="e3-2-1-1-lv06-co-002",
-            concept_id="concept-e3-mul2-01",
+            id="e3-2-1-1-co-004",
+            concept_id="e3-2-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -648,8 +648,8 @@ def get_questions() -> list[dict]:
             explanation="300×7=2100, 10×7=70, 5×7=35. 2100+70+35=2205",
         ),
         mc(
-            id="e3-2-1-1-lv07-co-001",
-            concept_id="concept-e3-mul2-01",
+            id="e3-2-1-1-co-005",
+            concept_id="e3-2-1-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -660,8 +660,8 @@ def get_questions() -> list[dict]:
         ),
         # ── (두 자리 수)×(두 자리 수) (concept-e3-mul2-02) ──
         mc(
-            id="e3-2-1-2-lv05-co-002",
-            concept_id="concept-e3-mul2-02",
+            id="e3-2-1-2-co-002",
+            concept_id="e3-2-1-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -671,8 +671,8 @@ def get_questions() -> list[dict]:
             explanation="25×3=75, 25×10=250. 75+250=325",
         ),
         mc(
-            id="e3-2-1-2-lv06-co-001",
-            concept_id="concept-e3-mul2-02",
+            id="e3-2-1-2-co-003",
+            concept_id="e3-2-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -682,8 +682,8 @@ def get_questions() -> list[dict]:
             explanation="34×1=34, 34×20=680. 34+680=714",
         ),
         mc(
-            id="e3-2-1-2-lv07-co-001",
-            concept_id="concept-e3-mul2-02",
+            id="e3-2-1-2-co-004",
+            concept_id="e3-2-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -693,8 +693,8 @@ def get_questions() -> list[dict]:
             explanation="42×5=210, 42×10=420. 210+420=630",
         ),
         mc(
-            id="e3-2-1-2-lv08-co-001",
-            concept_id="concept-e3-mul2-02",
+            id="e3-2-1-2-co-005",
+            concept_id="e3-2-1-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -705,8 +705,8 @@ def get_questions() -> list[dict]:
         ),
         # ── 나머지가 있는 나눗셈과 검산 (concept-e3-div2-01) ──
         mc(
-            id="e3-2-2-1-lv04-co-002",
-            concept_id="concept-e3-div2-01",
+            id="e3-2-2-1-co-003",
+            concept_id="e3-2-2-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -721,8 +721,8 @@ def get_questions() -> list[dict]:
             explanation="6 × 4 = 24, 29 - 24 = 5. 검산: 6 × 4 + 5 = 29 ✓",
         ),
         mc(
-            id="e3-2-2-1-lv05-co-001",
-            concept_id="concept-e3-div2-01",
+            id="e3-2-2-1-co-004",
+            concept_id="e3-2-2-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -732,8 +732,8 @@ def get_questions() -> list[dict]:
             explanation="8 × 5 = 40, 47 - 40 = 7. 검산: 8 × 5 + 7 = 47 ✓",
         ),
         mc(
-            id="e3-2-2-1-lv06-co-002",
-            concept_id="concept-e3-div2-01",
+            id="e3-2-2-1-co-005",
+            concept_id="e3-2-2-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -744,8 +744,8 @@ def get_questions() -> list[dict]:
         ),
         # ── 나머지의 맥락적 해석 (concept-e3-div2-02) ──
         mc(
-            id="e3-2-2-2-lv05-co-001",
-            concept_id="concept-e3-div2-02",
+            id="e3-2-2-2-cc-002",
+            concept_id="e3-2-2-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -755,8 +755,8 @@ def get_questions() -> list[dict]:
             explanation="25 ÷ 4 = 6 ... 1. 남은 1명도 보트가 필요하므로 6+1=7대 (올림 상황)",
         ),
         mc(
-            id="e3-2-2-2-lv05-co-002",
-            concept_id="concept-e3-div2-02",
+            id="e3-2-2-2-cc-003",
+            concept_id="e3-2-2-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -766,8 +766,8 @@ def get_questions() -> list[dict]:
             explanation="23 ÷ 5 = 4 ... 3. 나머지 3개는 더 나눌 수 없으므로 한 명당 4개 (버림 상황)",
         ),
         mc(
-            id="e3-2-2-2-lv06-co-001",
-            concept_id="concept-e3-div2-02",
+            id="e3-2-2-2-cc-004",
+            concept_id="e3-2-2-2",
             category="concept",
             part="calc",
             difficulty=6,
@@ -777,8 +777,8 @@ def get_questions() -> list[dict]:
             explanation="38 ÷ 7 = 5 ... 3. 남은 3cm로는 7cm 도막을 만들 수 없으므로 5도막 (버림 상황)",
         ),
         mc(
-            id="e3-2-2-2-lv07-co-001",
-            concept_id="concept-e3-div2-02",
+            id="e3-2-2-2-cc-005",
+            concept_id="e3-2-2-2",
             category="concept",
             part="calc",
             difficulty=7,
@@ -792,8 +792,8 @@ def get_questions() -> list[dict]:
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         # 1. 덧셈 (받아올림 없음)
         mc(
-            id="e3-1-1-1-lv01-co-new01",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-cc-002",
+            concept_id="e3-1-1-1",
             category="concept",
             part="calc",
             difficulty=1,
@@ -809,8 +809,8 @@ def get_questions() -> list[dict]:
             hint="일의 자리는 일의 자리끼리 더해야 해요.",
         ),
         fb(
-            id="e3-1-1-1-lv01-co-new02",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-fb-001",
+            concept_id="e3-1-1-1",
             category="concept",
             part="calc",
             difficulty=1,
@@ -821,8 +821,8 @@ def get_questions() -> list[dict]:
         ),
         # 2. 덧셈 (받아올림 1번)
         mc(
-            id="e3-1-1-1-lv02-co-new03",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-cc-003",
+            concept_id="e3-1-1-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -838,8 +838,8 @@ def get_questions() -> list[dict]:
             hint="14는 10과 4로 나눌 수 있어요.",
         ),
         fb(
-            id="e3-1-1-1-lv02-co-new04",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-fb-002",
+            concept_id="e3-1-1-1",
             category="concept",
             part="calc",
             difficulty=2,
@@ -850,8 +850,8 @@ def get_questions() -> list[dict]:
         ),
         # 3. 덧셈 (받아올림 여러 번)
         mc(
-            id="e3-1-1-1-lv03-co-new05",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-cc-004",
+            concept_id="e3-1-1-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -867,8 +867,8 @@ def get_questions() -> list[dict]:
             hint="십의 자리 13개는 100이 1개, 10이 3개인 것과 같아요.",
         ),
         fb(
-            id="e3-1-1-1-lv03-co-new06",
-            concept_id="concept-e3-add-sub-01",
+            id="e3-1-1-1-fb-003",
+            concept_id="e3-1-1-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -880,8 +880,8 @@ def get_questions() -> list[dict]:
         ),
         # 4. 뺄셈 (받아내림 없음)
         mc(
-            id="e3-1-1-2-lv01-co-new07",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-cc-003",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=1,
@@ -897,8 +897,8 @@ def get_questions() -> list[dict]:
             hint="덧셈과 순서가 같아요.",
         ),
         fb(
-            id="e3-1-1-2-lv01-co-new08",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-fb-001",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=1,
@@ -909,8 +909,8 @@ def get_questions() -> list[dict]:
         ),
         # 5. 뺄셈 (받아내림 1번)
         mc(
-            id="e3-1-1-2-lv02-co-new09",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-cc-004",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=2,
@@ -926,8 +926,8 @@ def get_questions() -> list[dict]:
             hint="작은 수에서 큰 수를 뺄 수 없을 때는 옆집에서 빌려와야 해요.",
         ),
         fb(
-            id="e3-1-1-2-lv02-co-new10",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-fb-002",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=2,
@@ -938,8 +938,8 @@ def get_questions() -> list[dict]:
         ),
         # 6. 뺄셈 (받아내림 2번)
         mc(
-            id="e3-1-1-2-lv03-co-new11",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-cc-005",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=3,
@@ -955,8 +955,8 @@ def get_questions() -> list[dict]:
             hint="계산 순서대로 차근차근 빌려와요.",
         ),
         fb(
-            id="e3-1-1-2-lv03-co-new12",
-            concept_id="concept-e3-add-sub-02",
+            id="e3-1-1-2-fb-003",
+            concept_id="e3-1-1-2",
             category="concept",
             part="calc",
             difficulty=3,

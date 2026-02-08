@@ -15,7 +15,7 @@ def get_concepts():
     """연산 관련 개념 반환."""
     return [
         concept(
-            id="concept-e4-big-num-01",
+            id="e4-1-1-1",
             name="큰 수 - 십진기수법과 자릿값",
             grade="elementary_4",
             category="computation",
@@ -23,7 +23,7 @@ def get_concepts():
             description="만, 억, 조 단위의 큰 수를 읽고 쓸 수 있으며, 10배의 원리와 자릿값을 이해합니다.",
         ),
         concept(
-            id="concept-e4-big-num-02",
+            id="e4-1-1-2",
             name="큰 수 - 수의 크기 비교",
             grade="elementary_4",
             category="computation",
@@ -31,7 +31,7 @@ def get_concepts():
             description="자릿수가 같은 큰 수의 크기를 최상위 자릿수부터 비교하여 대소를 판단합니다.",
         ),
         concept(
-            id="concept-e4-mul-div-01",
+            id="e4-1-3-1",
             name="곱셈과 나눗셈 - 곱셈 알고리즘",
             grade="elementary_4",
             category="computation",
@@ -39,7 +39,7 @@ def get_concepts():
             description="(세 자리 수)×(두 자리 수) 세로셈을 이해하고 정확히 계산할 수 있습니다.",
         ),
         concept(
-            id="concept-e4-mul-div-02",
+            id="e4-1-3-2",
             name="곱셈과 나눗셈 - 나눗셈과 검산",
             grade="elementary_4",
             category="computation",
@@ -47,7 +47,7 @@ def get_concepts():
             description="(세 자리 수)÷(두 자리 수) 계산과 검산(나누는 수×몫+나머지=나누어지는 수), 나머지의 맥락적 해석을 할 수 있습니다.",
         ),
         concept(
-            id="concept-e4-frac-op-01",
+            id="e4-2-1-1",
             name="분수의 덧셈과 뺄셈 - 동분모 진분수 연산",
             grade="elementary_4",
             category="computation",
@@ -55,7 +55,7 @@ def get_concepts():
             description="분모가 같은 분수의 덧셈·뺄셈에서 분모는 그대로 두고 분자끼리 연산합니다.",
         ),
         concept(
-            id="concept-e4-frac-op-02",
+            id="e4-2-1-2",
             name="분수의 덧셈과 뺄셈 - 대분수와 받아내림",
             grade="elementary_4",
             category="computation",
@@ -63,7 +63,7 @@ def get_concepts():
             description="대분수의 덧셈·뺄셈(받아내림 포함)을 이해하고, 자연수에서 분수를 빼는 계산을 할 수 있습니다.",
         ),
         concept(
-            id="concept-e4-dec-op-01",
+            id="e4-2-3-1",
             name="소수의 덧셈과 뺄셈 - 소수 구조와 크기 비교",
             grade="elementary_4",
             category="computation",
@@ -71,7 +71,7 @@ def get_concepts():
             description="소수의 자릿값(0.01, 0.001)을 이해하고, 소수점 아래 같은 자리부터 크기를 비교합니다.",
         ),
         concept(
-            id="concept-e4-dec-op-02",
+            id="e4-2-3-2",
             name="소수의 덧셈과 뺄셈 - 소수 덧뺄셈 계산",
             grade="elementary_4",
             category="computation",
@@ -90,8 +90,8 @@ def get_questions():
 
         # concept-e4-big-num-01: 큰 수 - 십진기수법과 자릿값 (5개)
         mc(
-            id="e4-1-1-1-lv02-co-001",
-            concept_id="concept-e4-big-num-01",
+            id="e4-1-1-1-co-001",
+            concept_id="e4-1-1-1",
             category="computation",
             part="calc",
             difficulty=2,
@@ -107,8 +107,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-1-lv04-co-001",
-            concept_id="concept-e4-big-num-01",
+            id="e4-1-1-1-co-002",
+            concept_id="e4-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -124,8 +124,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-1-lv03-co-001",
-            concept_id="concept-e4-big-num-01",
+            id="e4-1-1-1-co-003",
+            concept_id="e4-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -141,8 +141,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-1-lv05-co-001",
-            concept_id="concept-e4-big-num-01",
+            id="e4-1-1-1-co-004",
+            concept_id="e4-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -158,8 +158,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-1-lv06-co-001",
-            concept_id="concept-e4-big-num-01",
+            id="e4-1-1-1-co-005",
+            concept_id="e4-1-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -177,8 +177,8 @@ def get_questions():
 
         # concept-e4-big-num-02: 큰 수 - 수의 크기 비교 (5개)
         mc(
-            id="e4-1-1-2-lv06-co-001",
-            concept_id="concept-e4-big-num-02",
+            id="e4-1-1-2-co-001",
+            concept_id="e4-1-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -194,8 +194,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-2-lv04-co-001",
-            concept_id="concept-e4-big-num-02",
+            id="e4-1-1-2-co-002",
+            concept_id="e4-1-1-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -211,8 +211,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-2-lv05-co-001",
-            concept_id="concept-e4-big-num-02",
+            id="e4-1-1-2-co-003",
+            concept_id="e4-1-1-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -228,8 +228,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-2-lv07-co-001",
-            concept_id="concept-e4-big-num-02",
+            id="e4-1-1-2-co-004",
+            concept_id="e4-1-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -245,8 +245,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-2-lv08-co-001",
-            concept_id="concept-e4-big-num-02",
+            id="e4-1-1-2-co-005",
+            concept_id="e4-1-1-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -268,8 +268,8 @@ def get_questions():
 
         # concept-e4-mul-div-01: 곱셈 알고리즘 (5개)
         mc(
-            id="e4-1-3-1-lv03-co-001",
-            concept_id="concept-e4-mul-div-01",
+            id="e4-1-3-1-co-001",
+            concept_id="e4-1-3-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -285,8 +285,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-1-lv04-co-001",
-            concept_id="concept-e4-mul-div-01",
+            id="e4-1-3-1-co-002",
+            concept_id="e4-1-3-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -302,8 +302,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-1-lv05-co-001",
-            concept_id="concept-e4-mul-div-01",
+            id="e4-1-3-1-co-003",
+            concept_id="e4-1-3-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -319,8 +319,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-1-lv06-co-001",
-            concept_id="concept-e4-mul-div-01",
+            id="e4-1-3-1-co-004",
+            concept_id="e4-1-3-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -336,8 +336,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-1-lv07-co-001",
-            concept_id="concept-e4-mul-div-01",
+            id="e4-1-3-1-co-005",
+            concept_id="e4-1-3-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -355,8 +355,8 @@ def get_questions():
 
         # concept-e4-mul-div-02: 나눗셈과 검산 (5개)
         mc(
-            id="e4-1-3-2-lv05-co-001",
-            concept_id="concept-e4-mul-div-02",
+            id="e4-1-3-2-co-001",
+            concept_id="e4-1-3-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -372,8 +372,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-2-lv08-co-001",
-            concept_id="concept-e4-mul-div-02",
+            id="e4-1-3-2-co-002",
+            concept_id="e4-1-3-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -389,8 +389,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-2-lv04-co-001",
-            concept_id="concept-e4-mul-div-02",
+            id="e4-1-3-2-co-003",
+            concept_id="e4-1-3-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -406,8 +406,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-2-lv06-co-001",
-            concept_id="concept-e4-mul-div-02",
+            id="e4-1-3-2-co-004",
+            concept_id="e4-1-3-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -423,8 +423,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-2-lv07-co-001",
-            concept_id="concept-e4-mul-div-02",
+            id="e4-1-3-2-co-005",
+            concept_id="e4-1-3-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -446,8 +446,8 @@ def get_questions():
 
         # concept-e4-frac-op-01: 동분모 진분수 연산 (5개)
         mc(
-            id="e4-2-1-1-lv02-co-001",
-            concept_id="concept-e4-frac-op-01",
+            id="e4-2-1-1-co-001",
+            concept_id="e4-2-1-1",
             category="computation",
             part="calc",
             difficulty=2,
@@ -463,8 +463,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-1-lv05-co-001",
-            concept_id="concept-e4-frac-op-01",
+            id="e4-2-1-1-co-002",
+            concept_id="e4-2-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -480,8 +480,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-1-lv03-co-001",
-            concept_id="concept-e4-frac-op-01",
+            id="e4-2-1-1-co-003",
+            concept_id="e4-2-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -497,8 +497,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-1-lv04-co-001",
-            concept_id="concept-e4-frac-op-01",
+            id="e4-2-1-1-co-004",
+            concept_id="e4-2-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -514,8 +514,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-1-lv06-co-001",
-            concept_id="concept-e4-frac-op-01",
+            id="e4-2-1-1-co-005",
+            concept_id="e4-2-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -533,8 +533,8 @@ def get_questions():
 
         # concept-e4-frac-op-02: 대분수와 받아내림 (5개)
         mc(
-            id="e4-2-1-2-lv08-co-001",
-            concept_id="concept-e4-frac-op-02",
+            id="e4-2-1-2-co-001",
+            concept_id="e4-2-1-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -550,8 +550,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-2-lv06-co-001",
-            concept_id="concept-e4-frac-op-02",
+            id="e4-2-1-2-co-002",
+            concept_id="e4-2-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -567,8 +567,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-2-lv07-co-001",
-            concept_id="concept-e4-frac-op-02",
+            id="e4-2-1-2-co-003",
+            concept_id="e4-2-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -584,8 +584,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-2-lv08-co-002",
-            concept_id="concept-e4-frac-op-02",
+            id="e4-2-1-2-co-004",
+            concept_id="e4-2-1-2",
             category="computation",
             part="calc",
             difficulty=8,
@@ -601,8 +601,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-2-lv07-co-002",
-            concept_id="concept-e4-frac-op-02",
+            id="e4-2-1-2-co-005",
+            concept_id="e4-2-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -624,8 +624,8 @@ def get_questions():
 
         # concept-e4-dec-op-01: 소수 구조와 크기 비교 (5개)
         mc(
-            id="e4-2-3-1-lv03-co-001",
-            concept_id="concept-e4-dec-op-01",
+            id="e4-2-3-1-co-001",
+            concept_id="e4-2-3-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -641,8 +641,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-1-lv05-co-001",
-            concept_id="concept-e4-dec-op-01",
+            id="e4-2-3-1-co-002",
+            concept_id="e4-2-3-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -658,8 +658,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-1-lv04-co-001",
-            concept_id="concept-e4-dec-op-01",
+            id="e4-2-3-1-co-003",
+            concept_id="e4-2-3-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -675,8 +675,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-1-lv06-co-001",
-            concept_id="concept-e4-dec-op-01",
+            id="e4-2-3-1-co-004",
+            concept_id="e4-2-3-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -692,8 +692,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-1-lv07-co-001",
-            concept_id="concept-e4-dec-op-01",
+            id="e4-2-3-1-co-005",
+            concept_id="e4-2-3-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -711,8 +711,8 @@ def get_questions():
 
         # concept-e4-dec-op-02: 소수 덧뺄셈 계산 (5개)
         mc(
-            id="e4-2-3-2-lv02-co-001",
-            concept_id="concept-e4-dec-op-02",
+            id="e4-2-3-2-co-001",
+            concept_id="e4-2-3-2",
             category="computation",
             part="calc",
             difficulty=2,
@@ -728,8 +728,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-2-lv07-co-001",
-            concept_id="concept-e4-dec-op-02",
+            id="e4-2-3-2-co-002",
+            concept_id="e4-2-3-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -745,8 +745,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-2-lv04-co-001",
-            concept_id="concept-e4-dec-op-02",
+            id="e4-2-3-2-co-003",
+            concept_id="e4-2-3-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -762,8 +762,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-2-lv05-co-001",
-            concept_id="concept-e4-dec-op-02",
+            id="e4-2-3-2-co-004",
+            concept_id="e4-2-3-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -779,8 +779,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-2-lv06-co-001",
-            concept_id="concept-e4-dec-op-02",
+            id="e4-2-3-2-co-005",
+            concept_id="e4-2-3-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -796,8 +796,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-2-lv08-co-001",
-            concept_id="concept-e4-dec-op-02",
+            id="e4-2-3-2-co-006",
+            concept_id="e4-2-3-2",
             category="computation",
             part="calc",
             difficulty=8,

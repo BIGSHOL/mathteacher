@@ -18,7 +18,7 @@ def get_computation_data() -> dict:
     concepts = [
         # ── 1단원: 실수와 그 연산 (3개) ──
         concept(
-            id="concept-m3-sqrt-01",
+            id="m3-1-1-1",
             name="제곱근의 정의와 성질",
             grade="middle_3",
             category="computation",
@@ -26,7 +26,7 @@ def get_computation_data() -> dict:
             description="제곱근의 정의(x²=a의 해), √a²=|a|, 완전제곱수 판별",
         ),
         concept(
-            id="concept-m3-sqrt-02",
+            id="m3-1-1-2",
             name="무리수와 실수의 분류",
             grade="middle_3",
             category="computation",
@@ -34,7 +34,7 @@ def get_computation_data() -> dict:
             description="무리수(순환하지 않는 무한소수), 실수=유리수+무리수, 실수의 대소 비교, 수직선 위의 무리수",
         ),
         concept(
-            id="concept-m3-sqrt-03",
+            id="m3-1-1-3",
             name="근호를 포함한 식의 계산",
             grade="middle_3",
             category="computation",
@@ -43,7 +43,7 @@ def get_computation_data() -> dict:
         ),
         # ── 2단원: 다항식의 곱셈과 인수분해 (3개) ──
         concept(
-            id="concept-m3-factor-01",
+            id="m3-1-2-1",
             name="다항식의 곱셈과 곱셈 공식",
             grade="middle_3",
             category="computation",
@@ -51,7 +51,7 @@ def get_computation_data() -> dict:
             description="분배법칙, 완전제곱식 (a±b)², 합차 공식 (a+b)(a-b), 곱셈 공식의 수 계산 활용",
         ),
         concept(
-            id="concept-m3-factor-02",
+            id="m3-1-2-2",
             name="인수분해 기본",
             grade="middle_3",
             category="computation",
@@ -59,7 +59,7 @@ def get_computation_data() -> dict:
             description="공통인수 묶기, X자형 분리법(합과 곱 조건), 완전제곱식 인수분해, 합차 인수분해",
         ),
         concept(
-            id="concept-m3-factor-03",
+            id="m3-1-2-3",
             name="완전제곱식과 인수분해 심화",
             grade="middle_3",
             category="computation",
@@ -74,8 +74,8 @@ def get_computation_data() -> dict:
     real_questions = [
         # concept-m3-sqrt-01: 제곱근의 정의와 성질 (5개)
         mc(
-            id="m3-1-1-1-lv01-co-001",
-            concept_id="concept-m3-sqrt-01",
+            id="m3-1-1-1-co-001",
+            concept_id="m3-1-1-1",
             category="computation",
             part="calc",
             difficulty=1,
@@ -86,8 +86,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-1-lv02-co-001",
-            concept_id="concept-m3-sqrt-01",
+            id="m3-1-1-1-co-002",
+            concept_id="m3-1-1-1",
             category="computation",
             part="calc",
             difficulty=2,
@@ -98,8 +98,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-1-lv03-co-001",
-            concept_id="concept-m3-sqrt-01",
+            id="m3-1-1-1-co-003",
+            concept_id="m3-1-1-1",
             category="computation",
             part="calc",
             difficulty=3,
@@ -110,8 +110,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-1-lv04-co-001",
-            concept_id="concept-m3-sqrt-01",
+            id="m3-1-1-1-co-004",
+            concept_id="m3-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -122,8 +122,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-1-lv05-co-001",
-            concept_id="concept-m3-sqrt-01",
+            id="m3-1-1-1-co-005",
+            concept_id="m3-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -135,8 +135,8 @@ def get_computation_data() -> dict:
         ),
         # concept-m3-sqrt-02: 무리수와 실수의 분류 (5개)
         mc(
-            id="m3-1-1-2-lv03-co-001",
-            concept_id="concept-m3-sqrt-02",
+            id="m3-1-1-2-co-001",
+            concept_id="m3-1-1-2",
             category="computation",
             part="calc",
             difficulty=3,
@@ -147,8 +147,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-2-lv04-co-001",
-            concept_id="concept-m3-sqrt-02",
+            id="m3-1-1-2-co-002",
+            concept_id="m3-1-1-2",
             category="computation",
             part="calc",
             difficulty=4,
@@ -159,8 +159,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-2-lv05-co-001",
-            concept_id="concept-m3-sqrt-02",
+            id="m3-1-1-2-co-003",
+            concept_id="m3-1-1-2",
             category="computation",
             part="calc",
             difficulty=5,
@@ -171,8 +171,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-2-lv06-co-001",
-            concept_id="concept-m3-sqrt-02",
+            id="m3-1-1-2-co-004",
+            concept_id="m3-1-1-2",
             category="computation",
             part="calc",
             difficulty=6,
@@ -183,8 +183,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-2-lv07-co-001",
-            concept_id="concept-m3-sqrt-02",
+            id="m3-1-1-2-co-005",
+            concept_id="m3-1-1-2",
             category="computation",
             part="calc",
             difficulty=7,
@@ -196,8 +196,8 @@ def get_computation_data() -> dict:
         ),
         # concept-m3-sqrt-03: 근호 계산 (5개) - 기존 4개 + 1개 추가
         mc(
-            id="m3-1-1-3-lv04-co-001",
-            concept_id="concept-m3-sqrt-03",
+            id="m3-1-1-3-co-001",
+            concept_id="m3-1-1-3",
             category="computation",
             part="calc",
             difficulty=4,
@@ -208,8 +208,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-3-lv05-co-001",
-            concept_id="concept-m3-sqrt-03",
+            id="m3-1-1-3-co-002",
+            concept_id="m3-1-1-3",
             category="computation",
             part="calc",
             difficulty=5,
@@ -220,8 +220,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-3-lv07-co-001",
-            concept_id="concept-m3-sqrt-03",
+            id="m3-1-1-3-co-003",
+            concept_id="m3-1-1-3",
             category="computation",
             part="calc",
             difficulty=7,
@@ -232,8 +232,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-3-lv09-co-001",
-            concept_id="concept-m3-sqrt-03",
+            id="m3-1-1-3-co-004",
+            concept_id="m3-1-1-3",
             category="computation",
             part="calc",
             difficulty=9,
@@ -244,8 +244,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-1-3-lv06-co-001",
-            concept_id="concept-m3-sqrt-03",
+            id="m3-1-1-3-co-005",
+            concept_id="m3-1-1-3",
             category="computation",
             part="calc",
             difficulty=6,
@@ -263,8 +263,8 @@ def get_computation_data() -> dict:
     factor_questions = [
         # concept-m3-factor-01: 곱셈 공식 (5개) - 기존 2개 + 3개 추가
         mc(
-            id="m3-1-2-1-lv02-co-001",
-            concept_id="concept-m3-factor-01",
+            id="m3-1-2-1-co-001",
+            concept_id="m3-1-2-1",
             category="computation",
             part="algebra",
             difficulty=2,
@@ -275,8 +275,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-1-lv03-co-001",
-            concept_id="concept-m3-factor-01",
+            id="m3-1-2-1-co-002",
+            concept_id="m3-1-2-1",
             category="computation",
             part="algebra",
             difficulty=3,
@@ -287,8 +287,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-1-lv04-co-001",
-            concept_id="concept-m3-factor-01",
+            id="m3-1-2-1-co-003",
+            concept_id="m3-1-2-1",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -299,8 +299,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-1-lv05-co-001",
-            concept_id="concept-m3-factor-01",
+            id="m3-1-2-1-co-004",
+            concept_id="m3-1-2-1",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -311,8 +311,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-1-lv06-co-001",
-            concept_id="concept-m3-factor-01",
+            id="m3-1-2-1-co-005",
+            concept_id="m3-1-2-1",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -324,8 +324,8 @@ def get_computation_data() -> dict:
         ),
         # concept-m3-factor-02: 인수분해 기본 (5개) - 기존 4개 + 1개 추가
         mc(
-            id="m3-1-2-2-lv04-co-001",
-            concept_id="concept-m3-factor-02",
+            id="m3-1-2-2-co-001",
+            concept_id="m3-1-2-2",
             category="computation",
             part="algebra",
             difficulty=4,
@@ -336,8 +336,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-2-lv05-co-001",
-            concept_id="concept-m3-factor-02",
+            id="m3-1-2-2-co-002",
+            concept_id="m3-1-2-2",
             category="computation",
             part="algebra",
             difficulty=5,
@@ -348,8 +348,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-2-lv06-co-001",
-            concept_id="concept-m3-factor-02",
+            id="m3-1-2-2-co-003",
+            concept_id="m3-1-2-2",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -360,8 +360,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-2-lv08-co-001",
-            concept_id="concept-m3-factor-02",
+            id="m3-1-2-2-co-004",
+            concept_id="m3-1-2-2",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -372,8 +372,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-2-lv07-co-001",
-            concept_id="concept-m3-factor-02",
+            id="m3-1-2-2-co-005",
+            concept_id="m3-1-2-2",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -385,8 +385,8 @@ def get_computation_data() -> dict:
         ),
         # concept-m3-factor-03: 인수분해 심화 (5개) - 기존 2개 + 3개 추가
         mc(
-            id="m3-1-2-3-lv07-co-001",
-            concept_id="concept-m3-factor-03",
+            id="m3-1-2-3-co-001",
+            concept_id="m3-1-2-3",
             category="computation",
             part="algebra",
             difficulty=7,
@@ -397,8 +397,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-3-lv09-co-001",
-            concept_id="concept-m3-factor-03",
+            id="m3-1-2-3-co-002",
+            concept_id="m3-1-2-3",
             category="computation",
             part="algebra",
             difficulty=9,
@@ -409,8 +409,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-3-lv06-co-001",
-            concept_id="concept-m3-factor-03",
+            id="m3-1-2-3-co-003",
+            concept_id="m3-1-2-3",
             category="computation",
             part="algebra",
             difficulty=6,
@@ -421,8 +421,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-3-lv08-co-001",
-            concept_id="concept-m3-factor-03",
+            id="m3-1-2-3-co-004",
+            concept_id="m3-1-2-3",
             category="computation",
             part="algebra",
             difficulty=8,
@@ -433,8 +433,8 @@ def get_computation_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-1-2-3-lv09-co-002",
-            concept_id="concept-m3-factor-03",
+            id="m3-1-2-3-co-005",
+            concept_id="m3-1-2-3",
             category="computation",
             part="algebra",
             difficulty=9,

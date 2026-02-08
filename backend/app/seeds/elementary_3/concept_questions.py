@@ -18,7 +18,7 @@ def get_concepts() -> list[dict]:
     return [
         # ━━ 1학기 2단원: 평면도형 ━━
         concept(
-            id="concept-e3-plane-01",
+            id="e3-1-2-1",
             name="평면도형 - 선분·반직선·직선",
             grade="elementary_3",
             category="concept",
@@ -26,7 +26,7 @@ def get_concepts() -> list[dict]:
             description="선분(두 점 사이 가장 짧은 선), 반직선(시작점+방향), 직선(양쪽 무한)의 정의와 성질을 이해합니다.",
         ),
         concept(
-            id="concept-e3-plane-02",
+            id="e3-1-2-2",
             name="평면도형 - 각과 직각",
             grade="elementary_3",
             category="concept",
@@ -35,7 +35,7 @@ def get_concepts() -> list[dict]:
         ),
         # ━━ 1학기 5단원: 길이와 시간 ━━
         concept(
-            id="concept-e3-length-time-01",
+            id="e3-1-5-1",
             name="길이와 시간 - 길이 단위와 변환",
             grade="elementary_3",
             category="concept",
@@ -43,7 +43,7 @@ def get_concepts() -> list[dict]:
             description="mm, cm, m, km 단위 변환(10mm=1cm, 100cm=1m, 1000m=1km)과 자 눈금 읽기를 이해합니다.",
         ),
         concept(
-            id="concept-e3-length-time-02",
+            id="e3-1-5-2",
             name="길이와 시간 - 시각과 시간, 60진법",
             grade="elementary_3",
             category="concept",
@@ -52,7 +52,7 @@ def get_concepts() -> list[dict]:
         ),
         # ━━ 1학기 6단원: 분수와 소수 ━━
         concept(
-            id="concept-e3-frac-dec-01",
+            id="e3-1-6-1",
             name="분수와 소수 - 분수의 개념과 단위분수",
             grade="elementary_3",
             category="concept",
@@ -60,7 +60,7 @@ def get_concepts() -> list[dict]:
             description="분수의 정의(전체를 '똑같이' 나눈 것 중 일부), 단위분수(분자가 1인 분수), 단위분수의 크기 비교를 이해합니다.",
         ),
         concept(
-            id="concept-e3-frac-dec-02",
+            id="e3-1-6-2",
             name="분수와 소수 - 소수의 개념과 분수-소수 관계",
             grade="elementary_3",
             category="concept",
@@ -69,15 +69,15 @@ def get_concepts() -> list[dict]:
         ),
         # ━━ 2학기 9단원: 원 ━━
         concept(
-            id="concept-e3-circle-01",
+            id="e3-2-3-1",
             name="원 - 중심·반지름·지름의 정의",
             grade="elementary_3",
             category="concept",
             part="geo",
-            description="원의 중심, 반지름(중심→원 위), 지름(중심을 지나는 선분)의 정의를 이해하고, 한 원에서 모든 반지름의 길이가 같음을 압니다.",
+            description="원의중심, 반지름(중심→원 위), 지름(중심을 지나는 선분)의 정의를 이해하고, 한 원에서 모든 반지름의 길이가 같음을 압니다.",
         ),
         concept(
-            id="concept-e3-circle-02",
+            id="e3-2-3-2",
             name="원 - 반지름과 지름의 관계·활용",
             grade="elementary_3",
             category="concept",
@@ -86,7 +86,7 @@ def get_concepts() -> list[dict]:
         ),
         # ━━ 2학기 10단원: 분수 (2) ━━
         concept(
-            id="concept-e3-frac2-01",
+            id="e3-2-4-1",
             name="분수 (2) - 진분수·가분수·대분수 분류",
             grade="elementary_3",
             category="concept",
@@ -94,7 +94,7 @@ def get_concepts() -> list[dict]:
             description="진분수(분자<분모), 가분수(분자≥분모), 대분수(자연수+진분수)를 분류하고 상호 변환합니다.",
         ),
         concept(
-            id="concept-e3-frac2-02",
+            id="e3-2-4-2",
             name="분수 (2) - 동분모 분수의 비교와 연산",
             grade="elementary_3",
             category="concept",
@@ -103,7 +103,7 @@ def get_concepts() -> list[dict]:
         ),
         # ━━ 2학기 11단원: 들이와 무게 ━━
         concept(
-            id="concept-e3-vol-wt-01",
+            id="e3-2-5-1",
             name="들이와 무게 - 단위(L, mL, kg, g)와 변환",
             grade="elementary_3",
             category="concept",
@@ -111,7 +111,7 @@ def get_concepts() -> list[dict]:
             description="들이(L, mL)와 무게(kg, g) 단위를 알고, 1L=1000mL, 1kg=1000g 변환을 정확히 합니다.",
         ),
         concept(
-            id="concept-e3-vol-wt-02",
+            id="e3-2-5-2",
             name="들이와 무게 - 부피와 무게의 구별, 덧뺄셈",
             grade="elementary_3",
             category="concept",
@@ -120,7 +120,7 @@ def get_concepts() -> list[dict]:
         ),
         # ━━ 2학기 12단원: 자료의 정리 ━━
         concept(
-            id="concept-e3-data-01",
+            id="e3-2-6-1",
             name="자료의 정리 - 자료 수집과 표 정리",
             grade="elementary_3",
             category="concept",
@@ -128,7 +128,7 @@ def get_concepts() -> list[dict]:
             description="자료를 수집하고 표로 체계적으로 정리하여 한눈에 비교·파악하는 방법을 이해합니다.",
         ),
         concept(
-            id="concept-e3-data-02",
+            id="e3-2-6-2",
             name="자료의 정리 - 그림그래프와 범례",
             grade="elementary_3",
             category="concept",
@@ -145,8 +145,8 @@ def get_questions() -> list[dict]:
         # 1학기 2단원: 평면도형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-1-2-1-lv03-cc-001",
-            concept_id="concept-e3-plane-01",
+            id="e3-1-2-1-cc-001",
+            concept_id="e3-1-2-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -164,8 +164,8 @@ def get_questions() -> list[dict]:
             "선분 AB = 선분 BA와 혼동하지 않도록 주의하세요!",
         ),
         mc(
-            id="e3-1-2-2-lv04-cc-001",
-            concept_id="concept-e3-plane-02",
+            id="e3-1-2-2-cc-001",
+            concept_id="e3-1-2-2",
             category="concept",
             part="geo",
             difficulty=4,
@@ -182,8 +182,8 @@ def get_questions() -> list[dict]:
             "수평/수직 방향으로만 놓인 각만 직각이라고 생각하는 것은 오개념입니다.",
         ),
         mc(
-            id="e3-1-2-2-lv05-cc-001",
-            concept_id="concept-e3-plane-02",
+            id="e3-1-2-2-cc-002",
+            concept_id="e3-1-2-2",
             category="concept",
             part="geo",
             difficulty=5,
@@ -203,8 +203,8 @@ def get_questions() -> list[dict]:
         # 1학기 3단원: 나눗셈 (개념)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-1-3-2-lv05-cc-001",
-            concept_id="concept-e3-div1-02",
+            id="e3-1-3-2-cc-001",
+            concept_id="e3-1-3-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -224,8 +224,8 @@ def get_questions() -> list[dict]:
         # 1학기 5단원: 길이와 시간
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-1-5-1-lv04-cc-001",
-            concept_id="concept-e3-length-time-01",
+            id="e3-1-5-1-cc-001",
+            concept_id="e3-1-5-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -242,8 +242,8 @@ def get_questions() -> list[dict]:
             "자가 항상 0에서 시작한다고 착각하면 틀립니다.",
         ),
         mc(
-            id="e3-1-5-2-lv05-cc-001",
-            concept_id="concept-e3-length-time-02",
+            id="e3-1-5-2-cc-001",
+            concept_id="e3-1-5-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -261,8 +261,8 @@ def get_questions() -> list[dict]:
             "'1시간 70분'이나 '1.7시간'은 틀린 표현입니다.",
         ),
         mc(
-            id="e3-1-5-1-lv06-cc-001",
-            concept_id="concept-e3-length-time-01",
+            id="e3-1-5-1-cc-002",
+            concept_id="e3-1-5-1",
             category="concept",
             part="calc",
             difficulty=6,
@@ -281,8 +281,8 @@ def get_questions() -> list[dict]:
         # 1학기 6단원: 분수와 소수
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-1-6-1-lv04-cc-001",
-            concept_id="concept-e3-frac-dec-01",
+            id="e3-1-6-1-cc-001",
+            concept_id="e3-1-6-1",
             category="concept",
             part="calc",
             difficulty=4,
@@ -299,8 +299,8 @@ def get_questions() -> list[dict]:
             "등분(똑같이 나누기) ≠ 비등분(크기가 다르게 나누기)",
         ),
         mc(
-            id="e3-1-6-1-lv06-cc-001",
-            concept_id="concept-e3-frac-dec-01",
+            id="e3-1-6-1-cc-002",
+            concept_id="e3-1-6-1",
             category="concept",
             part="calc",
             difficulty=6,
@@ -317,8 +317,8 @@ def get_questions() -> list[dict]:
             "'3이 2보다 크니까 1/3이 더 크다'는 자연수 지식의 간섭으로 인한 오개념입니다.",
         ),
         mc(
-            id="e3-1-6-2-lv07-cc-001",
-            concept_id="concept-e3-frac-dec-02",
+            id="e3-1-6-2-cc-001",
+            concept_id="e3-1-6-2",
             category="concept",
             part="calc",
             difficulty=7,
@@ -338,8 +338,8 @@ def get_questions() -> list[dict]:
         # 2학기 7단원: 곱셈 (2) (개념)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-2-1-2-lv07-cc-001",
-            concept_id="concept-e3-mul2-02",
+            id="e3-2-1-2-cc-002",
+            concept_id="e3-2-1-2",
             category="concept",
             part="calc",
             difficulty=7,
@@ -359,8 +359,8 @@ def get_questions() -> list[dict]:
         # 2학기 9단원: 원
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-2-3-1-lv03-cc-001",
-            concept_id="concept-e3-circle-01",
+            id="e3-2-3-1-cc-001",
+            concept_id="e3-2-3-1",
             category="concept",
             part="geo",
             difficulty=3,
@@ -377,8 +377,8 @@ def get_questions() -> list[dict]:
             "시각적으로 어떤 반지름이 더 길어 보여도 실제로는 모두 같습니다.",
         ),
         mc(
-            id="e3-2-3-1-lv05-cc-001",
-            concept_id="concept-e3-circle-01",
+            id="e3-2-3-1-cc-002",
+            concept_id="e3-2-3-1",
             category="concept",
             part="geo",
             difficulty=5,
@@ -395,8 +395,8 @@ def get_questions() -> list[dict]:
             "지름 = 반지름 × 2",
         ),
         mc(
-            id="e3-2-3-2-lv06-cc-001",
-            concept_id="concept-e3-circle-02",
+            id="e3-2-3-2-cc-001",
+            concept_id="e3-2-3-2",
             category="concept",
             part="geo",
             difficulty=6,
@@ -414,8 +414,8 @@ def get_questions() -> list[dict]:
         # 2학기 10단원: 분수 (2)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-2-4-2-lv04-cc-001",
-            concept_id="concept-e3-frac2-02",
+            id="e3-2-4-2-cc-001",
+            concept_id="e3-2-4-2",
             category="concept",
             part="calc",
             difficulty=4,
@@ -432,8 +432,8 @@ def get_questions() -> list[dict]:
             "'2/7 + 3/7 = 5/14'는 분모까지 더한 오류입니다!",
         ),
         mc(
-            id="e3-2-4-1-lv05-cc-001",
-            concept_id="concept-e3-frac2-01",
+            id="e3-2-4-1-cc-001",
+            concept_id="e3-2-4-1",
             category="concept",
             part="calc",
             difficulty=5,
@@ -450,8 +450,8 @@ def get_questions() -> list[dict]:
             "진분수: 분자 < 분모 (예: 3/5), 대분수: 자연수 + 진분수 (예: 1와 2/5)",
         ),
         mc(
-            id="e3-2-4-2-lv07-cc-001",
-            concept_id="concept-e3-frac2-02",
+            id="e3-2-4-2-cc-002",
+            concept_id="e3-2-4-2",
             category="concept",
             part="calc",
             difficulty=7,
@@ -471,8 +471,8 @@ def get_questions() -> list[dict]:
         # 2학기 11단원: 들이와 무게
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-2-5-1-lv03-cc-001",
-            concept_id="concept-e3-vol-wt-01",
+            id="e3-2-5-1-cc-001",
+            concept_id="e3-2-5-1",
             category="concept",
             part="calc",
             difficulty=3,
@@ -488,8 +488,8 @@ def get_questions() -> list[dict]:
             "들이 단위 변환: 1L = 1000mL",
         ),
         mc(
-            id="e3-2-5-2-lv05-cc-001",
-            concept_id="concept-e3-vol-wt-02",
+            id="e3-2-5-2-cc-001",
+            concept_id="e3-2-5-2",
             category="concept",
             part="calc",
             difficulty=5,
@@ -506,8 +506,8 @@ def get_questions() -> list[dict]:
             "'부피가 크면 무게도 크다'는 오개념입니다.",
         ),
         mc(
-            id="e3-2-5-1-lv06-cc-001",
-            concept_id="concept-e3-vol-wt-01",
+            id="e3-2-5-1-cc-002",
+            concept_id="e3-2-5-1",
             category="concept",
             part="calc",
             difficulty=6,
@@ -526,8 +526,8 @@ def get_questions() -> list[dict]:
         # 2학기 12단원: 자료의 정리
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         mc(
-            id="e3-2-6-2-lv04-cc-001",
-            concept_id="concept-e3-data-02",
+            id="e3-2-6-2-cc-001",
+            concept_id="e3-2-6-2",
             category="concept",
             part="data",
             difficulty=4,
@@ -544,8 +544,8 @@ def get_questions() -> list[dict]:
             "'그림 개수 = 사람 수'로 착각하면 틀립니다.",
         ),
         mc(
-            id="e3-2-6-2-lv06-cc-001",
-            concept_id="concept-e3-data-02",
+            id="e3-2-6-2-cc-002",
+            concept_id="e3-2-6-2",
             category="concept",
             part="data",
             difficulty=6,
@@ -563,8 +563,8 @@ def get_questions() -> list[dict]:
             "범례를 무시하고 그림 개수만 세면 틀립니다.",
         ),
         mc(
-            id="e3-2-6-1-lv07-cc-001",
-            concept_id="concept-e3-data-01",
+            id="e3-2-6-1-cc-001",
+            concept_id="e3-2-6-1",
             category="concept",
             part="data",
             difficulty=7,
