@@ -2,6 +2,7 @@
 // - 지수(^) → 윗첨자  (2^a → 2ᵃ, x^{10} → x¹⁰)
 // - 대분수: 2 3/5, 3(1/4) → 세로 분수 + 자연수 결합
 // - 분수(a/b) → 세로 분수 표시
+// - 세로 계산식: 숫자와 연산자가 여러 줄로 나열된 패턴 → 전용 박스 레이아웃
 // - 단독 알파벳 → 이탤릭체(수학 변수)
 
 interface MathTextProps {
@@ -22,6 +23,13 @@ const MIXED_AND_FRACTION_REGEX = /(\d+)\s+(\d+)\/(\d+)|(\d+)\((\d+)\/(\d+)\)|(\d
 
 /** 단독 라틴 알파벳(수학 변수) */
 const MATH_VAR_REGEX = /(?<![a-zA-Z])([a-zA-Z])(?![a-zA-Z/^])/g
+
+/** 
+ * 세로 계산식 패턴 감지: 
+ * - 숫자, [ ], +, -, ×, ÷, =, ( ), 공백, 줄바꿈, 대시(-)가 포함된 
+ * - 최소 2줄 이상의 블록
+ */
+const VERTICAL_CALC_REGEX = /((?:(?:\d|[\s\+\-×÷=\[\]\(\)])+\n?){2,}(?:(?:\-{3,})+(?:\n?))+(?:(?:\d|[\s\+\-×÷=\[\]\(\)])+\n?)*)/g
 
 /** 지수(^)를 윗첨자로 변환 */
 function parseSuperscripts(text: string, keyOffset: number): (string | JSX.Element)[] {
@@ -151,16 +159,74 @@ function parseVars(text: string, keyOffset: number): (string | JSX.Element)[] {
   return parts
 }
 
-export function MathText({ text, className }: MathTextProps) {
-  // 0단계: LaTeX $...$ 구분자 제거 (AI 생성 문제 호환)
-  const cleaned = text.replace(/\$/g, '')
+/** 세로 계산식을 깔끔하게 렌더링하는 컴포넌트 */
+function VerticalCalculation({ content }: { content: string }) {
+  // 줄 단위로 분리하여 각 줄을 우측 정렬된 텍스트로 표시
+  const lines = content.trim().split('\n')
+  return (
+    <div className="my-2 inline-block bg-gray-50 border border-gray-200 rounded-lg p-3 font-mono text-sm leading-relaxed shadow-sm">
+      <div className="flex flex-col items-end">
+        {lines.map((line, i) => {
+          // 구분선(---)인 경우 실제 선으로 렌더링
+          if (line.includes('---')) {
+            return <div key={i} className="w-full border-t border-gray-400 my-1" />
+          }
+          return (
+            <div key={i} className="whitespace-pre">
+              {line}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 
-  // 1단계: 지수(^) 파싱 → 윗첨자
+/** 텍스트에서 세로 계산식 블록을 파싱 */
+function parseVerticalCalcs(text: string): (string | JSX.Element)[] {
+  const parts: (string | JSX.Element)[] = []
+  let lastIndex = 0
+
+  VERTICAL_CALC_REGEX.lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = VERTICAL_CALC_REGEX.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index))
+    }
+    parts.push(
+      <VerticalCalculation
+        key={`vcalc-${match.index}`}
+        content={match[1]!}
+      />
+    )
+    lastIndex = match.index + match[0].length
+  }
+
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex))
+  }
+
+  return parts
+}
+
+export function MathText({ text, className }: MathTextProps) {
+  // 0단계: LaTeX $...$ 구분자 제거 및 [ ]를 □로 변환
+  const cleaned = text.replace(/\$/g, '').replace(/\[\s*\]/g, '□')
+
+  // 1단계: 세로 계산식 패턴 선제적 추출 (줄바꿈이 보존되어야 하므로 가장 먼저 실행)
+  const vcalcParts = parseVerticalCalcs(cleaned)
+
+  // 1.5단계: 지수(^) 파싱 → 윗첨자
   let charOffset = 0
-  const supParts = parseSuperscripts(cleaned, 0)
+  const supParts = vcalcParts.flatMap((part: string | JSX.Element) => {
+    if (typeof part === 'string') {
+      return parseSuperscripts(part, 0)
+    }
+    return [part]
+  })
 
   // 2단계: 문자열 부분에서 분수/대분수 파싱
-  const fracParts = supParts.flatMap((part) => {
+  const fracParts = supParts.flatMap((part: string | JSX.Element) => {
     if (typeof part === 'string') {
       const parsed = parseFractions(part)
       return parsed
@@ -170,7 +236,7 @@ export function MathText({ text, className }: MathTextProps) {
 
   // 3단계: 문자열 부분에서 변수 파싱
   charOffset = 0
-  const result = fracParts.flatMap((part) => {
+  const result = fracParts.flatMap((part: string | JSX.Element) => {
     if (typeof part === 'string') {
       const varParsed = parseVars(part, charOffset)
       charOffset += part.length
@@ -180,28 +246,28 @@ export function MathText({ text, className }: MathTextProps) {
   })
 
   // 4단계: **강조** 파싱 (Visual Decoding)
-  const finalResult = result.flatMap((part) => {
+  const finalResult = result.flatMap((part: string | JSX.Element) => {
     if (typeof part === 'string') {
-      const parts: (string | JSX.Element)[] = []
+      const subParts: (string | JSX.Element)[] = []
       const regex = /\*\*(.*?)\*\*/g
-      let lastIndex = 0
-      let match
+      let last = 0
+      let m
 
-      while ((match = regex.exec(part)) !== null) {
-        if (match.index > lastIndex) {
-          parts.push(part.slice(lastIndex, match.index))
+      while ((m = regex.exec(part)) !== null) {
+        if (m.index > last) {
+          subParts.push(part.slice(last, m.index))
         }
-        parts.push(
-          <span key={`bold-${match.index}`} className="font-bold text-red-600 bg-red-50 px-1 rounded">
-            {match[1]}
+        subParts.push(
+          <span key={`bold-${m.index}`} className="font-bold text-red-600 bg-red-50 px-1 rounded">
+            {m[1]}
           </span>
         )
-        lastIndex = match.index + match[0].length
+        last = m.index + m[0].length
       }
-      if (lastIndex < part.length) {
-        parts.push(part.slice(lastIndex))
+      if (last < part.length) {
+        subParts.push(part.slice(last))
       }
-      return parts
+      return subParts
     }
     return [part]
   })

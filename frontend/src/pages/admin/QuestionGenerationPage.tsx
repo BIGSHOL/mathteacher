@@ -700,9 +700,9 @@ export function QuestionGenerationPage() {
                     const warnings = (q._warnings as string[] | undefined) || []
                     const options = q.options as { label: string; text: string }[] | null | undefined
                     return (
-                      <tr key={idx} className="border-t border-gray-100">
+                      <tr key={idx} className={`border-t border-gray-100 ${selected.has(idx) ? 'bg-indigo-50/30' : 'hover:bg-gray-50/50'}`}>
                         {/* 메인 행 */}
-                        <td className="px-3 py-2 align-top" rowSpan={isExpanded ? 2 : 1}>
+                        <td className="px-3 py-3 align-top">
                           <input
                             type="checkbox"
                             checked={selected.has(idx)}
@@ -711,9 +711,7 @@ export function QuestionGenerationPage() {
                           />
                         </td>
                         <td
-                          className={`cursor-pointer px-3 py-2 align-top text-gray-400 ${selected.has(idx) ? 'bg-indigo-50/50' : 'hover:bg-gray-50'
-                            }`}
-                          colSpan={5}
+                          className="cursor-pointer px-3 py-3 align-top"
                           onClick={() => setExpandedIdx(isExpanded ? null : idx)}
                         >
                           <div className="flex items-start gap-3">
