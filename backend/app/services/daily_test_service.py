@@ -18,7 +18,7 @@ from app.models.question import Question
 from app.models.test import Test
 from app.models.test_attempt import TestAttempt
 from app.models.user import User
-from app.schemas.common import QuestionCategory, QuestionType
+from app.schemas.common import QuestionCategory, QuestionType, ConceptMethod
 from app.services.ai_service import AIService
 from app.services.template_generator import TemplateGenerator
 from app.services.review_service import ReviewService
@@ -782,6 +782,8 @@ class DailyTestService:
                         part=concept.part.value if hasattr(concept.part, "value") else str(concept.part),
                         question_type=q_type,
                         count=batch,
+                        # [Phase 6] 학년군별 차등 비율 적용 (Phase 6 보완)
+                        concept_method=self._pick_random_concept_method(grade_str) if category == "concept" else None,
                         existing_contents=list(existing_set)[:20],
                         id_prefix=id_prefix,
                         start_seq=current_seq,
@@ -821,6 +823,7 @@ class DailyTestService:
                         explanation=q_dict.get("explanation", ""),
                         points=q_dict.get("points", 10),
                         blank_config=q_dict.get("blank_config"),
+                        concept_method=q_dict.get("concept_method"), # DB 저장
                         is_active=True,
                     )
                     self.db.add(q)
@@ -843,3 +846,31 @@ class DailyTestService:
             )
 
         return generated_ids
+
+    def _pick_random_concept_method(self, grade: str) -> str:
+        """학년군별 차등 비율이 적용된 개념 문항 생성 방식 선택 (Phase 6 보완)."""
+        r = random.random()
+        
+        # 기본 비율 (Default)
+        # Standard: 40%, Type A: 20%, Type B: 20%, Type C: 20%
+        
+        # 1. 1-2학년군: 시각적 이해(Type C) 우선
+        if grade in ["elementary_1", "elementary_2"]:
+            if r < 0.4: return ConceptMethod.STANDARD
+            if r < 0.5: return ConceptMethod.GRADUAL_FADING  # 10%
+            if r < 0.7: return ConceptMethod.ERROR_ANALYSIS # 20%
+            return ConceptMethod.VISUAL_DECODING            # 30%
+            
+        # 2. 3-4학년군: 오개념 분석(Type B) 우선
+        elif grade in ["elementary_3", "elementary_4"]:
+            if r < 0.4: return ConceptMethod.STANDARD
+            if r < 0.5: return ConceptMethod.GRADUAL_FADING  # 10%
+            if r < 0.8: return ConceptMethod.ERROR_ANALYSIS # 30%
+            return ConceptMethod.VISUAL_DECODING            # 20%
+            
+        # 3. 5-6학년 및 중등: 논리/빈칸(Type A) 우선
+        else:
+            if r < 0.4: return ConceptMethod.STANDARD
+            if r < 0.7: return ConceptMethod.GRADUAL_FADING  # 30%
+            if r < 0.85: return ConceptMethod.ERROR_ANALYSIS # 15%
+            return ConceptMethod.VISUAL_DECODING            # 15%

@@ -13,7 +13,23 @@ class ConceptPromptContext(TypedDict, total=False):
     core_concepts: str  # 핵심 개념·공식
     misconceptions: str  # 주요 오개념
     design_guidelines: str  # 출제 포인트
-    difficulty_guide: str  # 난이도별 기준 (선택)
+    key_summary: str  # [Phase 3] 핵심 요약 문장 (빈칸 소거용)
+
+CONCEPT_QUESTION_PROTOCOL = """
+## [중요] 개념 문항 개발 프로토콜 (3단 변환 필터)
+
+모든 개념 문제는 출제 전 반드시 아래 3단계를 거쳐 변형해야 합니다. 교과서 정의를 그대로 베끼지 마세요.
+
+1단계 [Extract]: 해당 개념에서 학생들이 가장 많이 틀리는 핵심 포인트나 시각 자료를 추출하세요.
+2단계 [Invert]: "답을 구하시오"를 "왜 이것이 답입니까?" 또는 "이 과정은 무엇을 의미합니까?"로 질문을 뒤집으세요.
+3단계 [Context]: 가상의 학생(민수, 지혜 등)을 등장시켜 오답 상황이나 대화 상황으로 포장하세요.
+
+### 품질 검증 (모든 문제 필수 통과)
+- [NO CALC] 계산을 하지 않아도 개념만으로 풀 수 있는가? (단순 연산 문제 금지)
+- [WHY] "왜?"라는 질문에 답을 요구하거나, 과정의 의미를 묻고 있는가?
+- [LEVEL] 난이도가 자연스럽게 이어지는가?
+"""
+
 
 
 # ─────────────────────────────────────────────
@@ -106,6 +122,7 @@ PROMPT_CONTEXTS: dict[str, ConceptPromptContext] = {
             "• 중간 계산 과정 빈칸으로 받아올림 표기 강제\n"
             "• 연속 받아올림 문제 출제"
         ),
+        "key_summary": "각 자리 수의 합이 10 이상이면 윗자리로 1을 받아올림한다.",
     },
     "concept-e3-add-sub-02": {
         "core_concepts": (

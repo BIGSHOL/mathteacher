@@ -111,6 +111,7 @@ export interface Question {
   options?: QuestionOption[]
   correct_answer: string
   explanation: string
+  hint?: string
   points: number
   prerequisite_concept_ids?: string[]
   blank_config?: BlankConfig

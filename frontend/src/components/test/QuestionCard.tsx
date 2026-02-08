@@ -1,7 +1,8 @@
 // 문제 카드 컴포넌트
 
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { clsx } from 'clsx'
+import { useState } from 'react'
 import type { Question, QuestionCategory, QuestionOption } from '../../types'
 import { MathText } from '../common/MathText'
 import { FillInBlankInput } from './FillInBlankInput'
@@ -14,6 +15,10 @@ interface QuestionCardProps {
   disabled?: boolean
   blankValues?: Record<string, string>
   onBlankChange?: (blankId: string, value: string) => void
+  showExplanation?: boolean
+  isCorrect?: boolean
+  previousAnswer?: string
+  headerRight?: React.ReactNode
 }
 
 export function QuestionCard({
@@ -24,7 +29,13 @@ export function QuestionCard({
   disabled = false,
   blankValues = {},
   onBlankChange = () => { },
+  showExplanation = false,
+  isCorrect = false,
+  previousAnswer,
+  headerRight,
 }: QuestionCardProps) {
+  const [showHint, setShowHint] = useState(false)
+
   return (
     <div className="card p-4 sm:p-6">
       {/* 문제 번호 & 카테고리 & 난이도 */}
@@ -42,7 +53,10 @@ export function QuestionCard({
             </span>
           )}
         </div>
-        <DifficultyBadge difficulty={question.difficulty} />
+        <div className="flex items-center gap-2">
+          {headerRight}
+          <DifficultyBadge difficulty={question.difficulty} />
+        </div>
       </div>
 
       {/* 문제 내용 (blank_config 있으면 FillInBlankInput이 텍스트를 대체 표시) */}
@@ -72,6 +86,7 @@ export function QuestionCard({
               key={option.id}
               option={option}
               isSelected={selectedAnswer === option.label}
+              isPreviousAnswer={previousAnswer === option.label}
               onSelect={() => onSelectAnswer(option.label)}
               disabled={disabled}
             />
@@ -91,6 +106,85 @@ export function QuestionCard({
             onChange={(e) => onSelectAnswer(e.target.value)}
           />
         )}
+
+      {/* 힌트 토글 (hint가 존재할 때만 표시) */}
+      {question.hint && (
+        <div className="mt-4">
+          <button
+            onClick={() => setShowHint(!showHint)}
+            className="flex items-center gap-2 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors"
+          >
+            <span className="text-lg">💡</span>
+            {showHint ? '힌트 숨기기' : '힌트 보기'}
+            <svg
+              className={`h-4 w-4 transition-transform ${showHint ? 'rotate-180' : ''}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <AnimatePresence>
+            {showHint && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-2 rounded-xl bg-amber-50 p-4 text-sm text-amber-900 border border-amber-100">
+                  <div className="flex gap-2">
+                    <span className="shrink-0">💡</span>
+                    <span><MathText text={question.hint} /></span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* 정답 및 해설 표시 (외부에서 제어) */}
+      {showExplanation && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-6"
+        >
+          <div className={clsx(
+            "rounded-xl p-5 border",
+            isCorrect ? "bg-green-50 border-green-100" : "bg-red-50 border-red-100"
+          )}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className={clsx(
+                "flex h-6 w-6 items-center justify-center rounded-full text-white text-xs font-bold",
+                isCorrect ? "bg-green-500" : "bg-red-500"
+              )}>
+                {isCorrect ? '✓' : '✕'}
+              </span>
+              <span className={clsx(
+                "font-bold",
+                isCorrect ? "text-green-700" : "text-red-700"
+              )}>
+                {isCorrect ? '정답입니다!' : '오답입니다'}
+              </span>
+            </div>
+
+            <div className="text-gray-700 leading-relaxed">
+              {!isCorrect && question.correct_answer && (
+                <div className="mb-2 text-sm">
+                  <span className="font-semibold text-gray-500 mr-2">정답:</span>
+                  <span className="font-bold text-gray-900">{question.correct_answer}</span>
+                </div>
+              )}
+              <div className="text-sm sm:text-base">
+                <MathText text={question.explanation} />
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   )
 }
@@ -98,11 +192,12 @@ export function QuestionCard({
 interface AnswerOptionProps {
   option: QuestionOption
   isSelected: boolean
+  isPreviousAnswer?: boolean
   onSelect: () => void
   disabled: boolean
 }
 
-function AnswerOption({ option, isSelected, onSelect, disabled }: AnswerOptionProps) {
+function AnswerOption({ option, isSelected, isPreviousAnswer, onSelect, disabled }: AnswerOptionProps) {
   return (
     <motion.button
       whileHover={!disabled ? { scale: 1.01 } : undefined}
@@ -114,7 +209,7 @@ function AnswerOption({ option, isSelected, onSelect, disabled }: AnswerOptionPr
         isSelected
           ? 'border-primary-500 bg-primary-50'
           : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50',
-        disabled && 'cursor-not-allowed opacity-70'
+        disabled && 'cursor-default opacity-80'
       )}
     >
       <span
@@ -128,6 +223,9 @@ function AnswerOption({ option, isSelected, onSelect, disabled }: AnswerOptionPr
       <span className="flex-1 text-gray-800 leading-relaxed">
         <MathText text={option.text} />
       </span>
+      {isPreviousAnswer && !isSelected && (
+        <span className="ml-2 text-xs text-gray-400 font-medium">지난번 선택</span>
+      )}
     </motion.button>
   )
 }

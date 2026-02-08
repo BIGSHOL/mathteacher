@@ -11,6 +11,7 @@ def mc(
     options: list[tuple[str, str]],
     correct: str,
     explanation: str,
+    hint: str | None = None,
     points: int = 10,
 ) -> dict:
     """객관식 문제 dict 생성."""
@@ -29,6 +30,7 @@ def mc(
         ],
         "correct_answer": correct,
         "explanation": explanation,
+        "hint": hint,
         "points": points,
     }
 
@@ -42,6 +44,7 @@ def fb(
     content: str,
     answer: str,
     explanation: str,
+    hint: str | None = None,
     points: int = 10,
     accept_formats: list[str] | None = None,
 ) -> dict:
@@ -57,6 +60,7 @@ def fb(
         "options": None,
         "correct_answer": answer,
         "explanation": explanation,
+        "hint": hint,
         "points": points,
         "blank_config": {
             "blank_count": 1,

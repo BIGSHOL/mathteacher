@@ -151,6 +151,7 @@ export async function generateQuestionsAI(params: {
   question_type?: string
   difficulty_min?: number
   difficulty_max?: number
+  concept_method?: string // 신규 (Phase 5)
   granular_config?: { question_type: string; difficulty: number; count: number }[]
 }): Promise<{ generated: Record<string, unknown>[]; count: number }> {
   const { data } = await api.post<
@@ -186,5 +187,16 @@ export async function deriveFillBlank(params: {
       derived_questions: Record<string, unknown>[]
     }>
   >('/api/v1/admin/derive-fill-blank', params)
+  return data.data
+}
+
+/** 문항 유형별 통계 (QC Dashboard) */
+export async function getConceptMethodStats(): Promise<{
+  total: number
+  distribution: Record<string, number>
+}> {
+  const { data } = await api.get<
+    ApiResponse<{ total: number; distribution: Record<string, number> }>
+  >('/api/v1/admin/stats/concept-methods')
   return data.data
 }

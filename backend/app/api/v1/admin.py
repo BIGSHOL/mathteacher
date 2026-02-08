@@ -12,7 +12,7 @@ from sqlalchemy import text, select, func
 
 from app.core.database import get_db, sync_engine
 from app.api.v1.auth import require_role
-from app.schemas.common import ApiResponse, PaginatedResponse, UserRole
+from app.schemas.common import ApiResponse, PaginatedResponse, UserRole, ConceptMethod
 from app.schemas.auth import UserResponse, UpdateUserRequest
 from app.models.user import User
 from app.services.auth_service import AuthService
@@ -35,6 +35,7 @@ class GranularConfigItem(BaseModel):
     question_type: str = Field(..., description="multiple_choice 또는 fill_in_blank")
     difficulty: int = Field(..., ge=1, le=10)
     count: int = Field(..., ge=1, le=50)
+    category: Optional[str] = Field(None, description="concept 또는 computation (기본값: 개념의 카테고리)")
 
 
 class AIGenerateRequest(BaseModel):
@@ -418,7 +419,7 @@ async def admin_generate_questions(
 
     concept_name = concept.name
     grade = concept.grade.value if hasattr(concept.grade, "value") else str(concept.grade)
-    category = concept.category.value if hasattr(concept.category, "value") else str(concept.category)
+    default_category = concept.category.value if hasattr(concept.category, "value") else str(concept.category)
     part = concept.part.value if hasattr(concept.part, "value") else str(concept.part)
 
     # 연산 트랙에 대해서도 AI 생성을 허용합니다. 
@@ -440,7 +441,8 @@ async def admin_generate_questions(
                 "type": config.question_type,
                 "count": config.count,
                 "diff_min": config.difficulty,
-                "diff_max": config.difficulty
+                "diff_max": config.difficulty,
+                "category": config.category or default_category
             })
     else:
         # 기존 방식 하위 호환
@@ -452,7 +454,8 @@ async def admin_generate_questions(
             "type": q_type,
             "count": count,
             "diff_min": d_min,
-            "diff_max": d_max
+            "diff_max": d_max,
+            "category": default_category
         })
 
     all_generated: list[dict] = []
@@ -466,7 +469,7 @@ async def admin_generate_questions(
                 concept_name=concept_name,
                 concept_id=request.concept_id,
                 grade=grade,
-                category=category,
+                category=task["category"],
                 part=part,
                 question_type=task["type"],
                 count=batch_count,
@@ -646,4 +649,49 @@ async def admin_derive_fill_blank(
             "derived_questions": all_derived,
         },
         message=f"MC {len(mc_questions)}개에서 FB {len(all_derived)}개 파생. 검토 후 저장하세요.",
+    )
+
+
+@router.get("/stats/concept-methods", response_model=ApiResponse[dict])
+async def get_concept_method_stats(
+    current_user: UserResponse = Depends(require_role(UserRole.ADMIN, UserRole.MASTER)),
+    db: AsyncSession = Depends(get_db),
+):
+    """문항 유형별(ConceptMethod) 통계 조회."""
+    # 전체 문항 수
+    total = await db.scalar(select(func.count(Question.id)).where(Question.is_active.is_(True)))
+    
+    # Method별 그룹핑
+    stmt = (
+        select(
+            Question.concept_method,
+            func.count(Question.id).label("count")
+        )
+        .where(Question.is_active.is_(True))
+        .group_by(Question.concept_method)
+    )
+    rows = (await db.execute(stmt)).all()
+    
+    stats = {}
+    
+    # Initialize with 0 for known methods
+    for m in ConceptMethod:
+        stats[m.value] = 0
+    stats["none"] = 0
+
+    for r in rows:
+        method = r[0]
+        count = r[1]
+        if method is None:
+            stats["none"] += count
+        else:
+            m_str = method.value if hasattr(method, "value") else str(method)
+            stats[m_str] = count
+
+    return ApiResponse(
+        success=True,
+        data={
+            "total": total,
+            "distribution": stats
+        }
     )

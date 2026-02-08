@@ -179,5 +179,32 @@ export function MathText({ text, className }: MathTextProps) {
     return [part]
   })
 
-  return <span className={className}>{result}</span>
+  // 4단계: **강조** 파싱 (Visual Decoding)
+  const finalResult = result.flatMap((part) => {
+    if (typeof part === 'string') {
+      const parts: (string | JSX.Element)[] = []
+      const regex = /\*\*(.*?)\*\*/g
+      let lastIndex = 0
+      let match
+
+      while ((match = regex.exec(part)) !== null) {
+        if (match.index > lastIndex) {
+          parts.push(part.slice(lastIndex, match.index))
+        }
+        parts.push(
+          <span key={`bold-${match.index}`} className="font-bold text-red-600 bg-red-50 px-1 rounded">
+            {match[1]}
+          </span>
+        )
+        lastIndex = match.index + match[0].length
+      }
+      if (lastIndex < part.length) {
+        parts.push(part.slice(lastIndex))
+      }
+      return parts
+    }
+    return [part]
+  })
+
+  return <span className={className}>{finalResult}</span>
 }

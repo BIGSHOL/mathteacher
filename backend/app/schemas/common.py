@@ -47,6 +47,15 @@ class QuestionCategory(str, Enum):
     FILL_IN_BLANK = "fill_in_blank"  # 빈칸
 
 
+class ConceptMethod(str, Enum):
+    """개념 문항 생성 방식 (Sub-type)."""
+
+    GRADUAL_FADING = "gradual_fading"   # TYPE A: 점진적 빈칸 소거
+    ERROR_ANALYSIS = "error_analysis"   # TYPE B: 오개념 분석 (틀린 곳 찾기)
+    VISUAL_DECODING = "visual_decoding" # TYPE C: 시각적 해체 (확대/강조)
+    STANDARD = "standard"               # 일반 개념 문항
+
+
 class ProblemPart(str, Enum):
     """문제 파트 (6개 영역).
 

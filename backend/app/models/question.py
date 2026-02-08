@@ -8,7 +8,8 @@ from sqlalchemy import JSON, DateTime, Enum, ForeignKey, Index, Integer, String,
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.schemas.common import ProblemPart, QuestionCategory, QuestionType
+from app.core.database import Base
+from app.schemas.common import ConceptMethod, ProblemPart, QuestionCategory, QuestionType
 
 if TYPE_CHECKING:
     from app.models.concept import Concept
@@ -42,6 +43,16 @@ class Question(Base):
     options: Mapped[list[dict] | None] = mapped_column(JSON, nullable=True)
     correct_answer: Mapped[str] = mapped_column(String(500))
     explanation: Mapped[str] = mapped_column(Text, default="")
+    hint: Mapped[str] = mapped_column(Text, nullable=True, comment="문제 힌트")
+    
+    # 개념 문항 확장 (Phase 2)
+    concept_method: Mapped[ConceptMethod | None] = mapped_column(
+        Enum(ConceptMethod), nullable=True, comment="개념 문항 생성 방식 (Gradual Fading 등)"
+    )
+    fading_level: Mapped[int | None] = mapped_column(
+        Integer, nullable=True, comment="빈칸 레벨 (1~4)"
+    )
+
     points: Mapped[int] = mapped_column(Integer, default=10)
 
     # 계통수학: 선수 개념 연결

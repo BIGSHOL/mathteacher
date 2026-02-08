@@ -8,7 +8,7 @@
   2학기 8단원 - 나눗셈 (2)
 """
 
-from .._base import concept, mc
+from .._base import concept, mc, fb, fb
 
 
 def get_concepts() -> list[dict]:
@@ -786,5 +786,183 @@ def get_questions() -> list[dict]:
             options=["5대", "4대", "3대", "6대"],
             correct="A",
             explanation="33 ÷ 8 = 4 ... 1. 남은 1명도 차가 필요하므로 4+1=5대 (올림 상황)",
+        ),
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # [NEW] 1학기 1단원 추가 문제 (User Provided)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1. 덧셈 (받아올림 없음)
+        mc(
+            id="e3-1-1-1-lv01-co-new01",
+            concept_id="concept-e3-add-sub-01",
+            category="concept",
+            part="calc",
+            difficulty=1,
+            content="$234 + 5$를 세로셈으로 계산하려고 합니다. 숫자 5는 어느 자리 숫자 밑에 써야 하나요?",
+            options=[
+                "백의 자리 (2 밑에)",
+                "십의 자리 (3 밑에)",
+                "일의 자리 (4 밑에)",
+                "아무 곳이나",
+            ],
+            correct="C",
+            explanation="덧셈은 같은 자리 수끼리 계산해야 하므로, 일의 자리 숫자인 5는 234의 일의 자리인 4 밑에 맞춰 써야 합니다.",
+            hint="일의 자리는 일의 자리끼리 더해야 해요.",
+        ),
+        fb(
+            id="e3-1-1-1-lv01-co-new02",
+            concept_id="concept-e3-add-sub-01",
+            category="concept",
+            part="calc",
+            difficulty=1,
+            content="덧셈을 할 때는 자릿수를 맞추어 쓰고, **( )**의 자리부터 순서대로 계산합니다.",
+            answer="일",
+            explanation="덧셈의 계산 순서는 일의 자리 → 십의 자리 → 백의 자리 순서입니다.",
+            hint="가장 작은 자릿수부터 계산해요.",
+        ),
+        # 2. 덧셈 (받아올림 1번)
+        mc(
+            id="e3-1-1-1-lv02-co-new03",
+            concept_id="concept-e3-add-sub-01",
+            category="concept",
+            part="calc",
+            difficulty=2,
+            content="일의 자리끼리의 합이 14가 되었습니다. 올바른 계산 방법은?",
+            options=[
+                "일의 자리에 14를 다 쓴다.",
+                "4는 일의 자리에, 10은 십의 자리로 올린다.",
+                "1은 일의 자리에, 4는 십의 자리로 올린다.",
+                "그냥 4만 쓴다.",
+            ],
+            correct="B",
+            explanation="합이 10이 넘으면 10을 바로 윗자리(십의 자리)로 1만큼 받아올림하고, 나머지(4)만 해당 자리에 씁니다.",
+            hint="14는 10과 4로 나눌 수 있어요.",
+        ),
+        fb(
+            id="e3-1-1-1-lv02-co-new04",
+            concept_id="concept-e3-add-sub-01",
+            category="concept",
+            part="calc",
+            difficulty=2,
+            content="각 자리의 합이 **( )**이거나 그보다 크면 바로 윗자리로 1을 받아올림합니다.",
+            answer="10",
+            explanation="받아올림의 기준이 되는 수는 10입니다.",
+            hint="우리는 십진법을 사용해요.",
+        ),
+        # 3. 덧셈 (받아올림 여러 번)
+        mc(
+            id="e3-1-1-1-lv03-co-new05",
+            concept_id="concept-e3-add-sub-01",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="$587 + 346$에서 십의 자리 계산 $(1+8+4)$의 합이 13입니다. 백의 자리에 어떻게 표시하나요?",
+            options=[
+                "백의 자리 위로 1을 올린다.",
+                "백의 자리에 그냥 13을 쓴다.",
+                "받아올림하지 않고 버린다.",
+                "일의 자리로 1을 내린다.",
+            ],
+            correct="A",
+            explanation="십의 자리 합이 13(실제로는 130)이므로 10(실제로는 100)은 백의 자리로 받아올림하여 '1'로 표시합니다.",
+            hint="십의 자리 13개는 100이 1개, 10이 3개인 것과 같아요.",
+        ),
+        fb(
+            id="e3-1-1-1-lv03-co-new06",
+            concept_id="concept-e3-add-sub-01",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="받아올림이 여러 번 있어도, 합이 10이 넘으면 계속 **( )**자리로 1을 올려줍니다.",
+            answer="윗",
+            explanation="받아올림은 항상 바로 윗자리(다음 계산할 자리)로 올려줍니다.",
+            accept_formats=["윗", "앞", "다음"],
+            hint="지금 계산하는 자리보다 더 큰 자리로 보내야 해요.",
+        ),
+        # 4. 뺄셈 (받아내림 없음)
+        mc(
+            id="e3-1-1-2-lv01-co-new07",
+            concept_id="concept-e3-add-sub-02",
+            category="concept",
+            part="calc",
+            difficulty=1,
+            content="뺄셈 $456 - 123$을 계산할 때 가장 먼저 계산하는 것은?",
+            options=[
+                "$4 - 1$",
+                "$5 - 2$",
+                "$6 - 3$",
+                "$456 - 100$",
+            ],
+            correct="C",
+            explanation="뺄셈도 덧셈과 마찬가지로 일의 자리($6-3$)부터 계산합니다.",
+            hint="덧셈과 순서가 같아요.",
+        ),
+        fb(
+            id="e3-1-1-2-lv01-co-new08",
+            concept_id="concept-e3-add-sub-02",
+            category="concept",
+            part="calc",
+            difficulty=1,
+            content="뺄셈을 계산할 때는 **( )**의 자리부터 순서대로 계산합니다.",
+            answer="일",
+            explanation="자릿수를 맞추어 쓰고 일의 자리부터 차례대로 뺍니다.",
+            hint="가장 작은 자리부터 계산해요.",
+        ),
+        # 5. 뺄셈 (받아내림 1번)
+        mc(
+            id="e3-1-1-2-lv02-co-new09",
+            concept_id="concept-e3-add-sub-02",
+            category="concept",
+            part="calc",
+            difficulty=2,
+            content="일의 자리끼리 뺄 수 없을 때(예: $2-8$) 가장 먼저 해야 할 일은?",
+            options=[
+                "그냥 $8-2$를 한다.",
+                "십의 자리에서 10을 빌려온다.",
+                "백의 자리에서 100을 빌려온다.",
+                "계산을 포기한다.",
+            ],
+            correct="B",
+            explanation="뺄 수 없을 때는 바로 윗자리(십의 자리)에서 1을 받아내림(빌려오면)하면 10이 됩니다.",
+            hint="작은 수에서 큰 수를 뺄 수 없을 때는 옆집에서 빌려와야 해요.",
+        ),
+        fb(
+            id="e3-1-1-2-lv02-co-new10",
+            concept_id="concept-e3-add-sub-02",
+            category="concept",
+            part="calc",
+            difficulty=2,
+            content="뺄 수 없을 때는 윗자리에서 **( )**을 받아내림하여 계산합니다.",
+            answer="10",
+            explanation="윗자리의 1은 아랫자리의 10과 같습니다.",
+            hint="십의 자리 모형 1개는 일의 자리 모형 10개와 같아요.",
+        ),
+        # 6. 뺄셈 (받아내림 2번)
+        mc(
+            id="e3-1-1-2-lv03-co-new11",
+            concept_id="concept-e3-add-sub-02",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="$624 - 357$처럼 일, 십의 자리 모두 뺄 수 없을 때 빌려오는 순서는?",
+            options=[
+                "십의 자리 → 백의 자리 (순서대로)",
+                "백의 자리 → 십의 자리",
+                "한꺼번에 다 빌려온다",
+                "편한 대로",
+            ],
+            correct="A",
+            explanation="일의 자리 계산을 위해 십의 자리에서 빌려오고, 그 다음 십의 자리 계산을 위해 백의 자리에서 빌려오는 순서로 합니다.",
+            hint="계산 순서대로 차근차근 빌려와요.",
+        ),
+        fb(
+            id="e3-1-1-2-lv03-co-new12",
+            concept_id="concept-e3-add-sub-02",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="앞 자리에서 받아내림한 수가 있으면, 그 수를 **( )**하고 계산해야 합니다. (더하고/빼고/곱하고 중 선택)",
+            answer="빼고",
+            explanation="윗자리 숫자는 빌려준 만큼 1 작아져야 하므로 1을 빼고 남은 수로 계산합니다.",
+            hint="친구에게 1개를 주었으니 내 것은 줄어들어야겠죠?",
         ),
     ]

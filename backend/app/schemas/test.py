@@ -4,7 +4,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, field_validator
 
-from .common import Difficulty, Grade, ProblemPart, QuestionCategory, QuestionType
+from .common import ConceptMethod, Difficulty, Grade, ProblemPart, QuestionCategory, QuestionType
 
 
 # ===========================
@@ -68,6 +68,9 @@ class QuestionBase(BaseModel):
     difficulty: Difficulty
     content: str = Field(..., min_length=1)
     explanation: str = ""
+    hint: str | None = None
+    concept_method: ConceptMethod | None = None  # 신규 (Phase 2)
+    fading_level: int | None = Field(None, ge=1, le=4)  # 신규 (Phase 2)
     points: int = Field(default=10, ge=1, le=100)
 
 
@@ -92,6 +95,8 @@ class QuestionResponse(QuestionBase):
     prerequisite_concept_ids: list[str] | None = None
     blank_config: dict | None = None
     correct_answer: str | None = None
+    concept_method: ConceptMethod | None = None
+    fading_level: int | None = None
 
     model_config = {"from_attributes": True}
 

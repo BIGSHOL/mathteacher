@@ -7,6 +7,7 @@ import {
   generateQuestionsAI,
   saveGeneratedQuestions,
   deriveFillBlank,
+  getConceptMethodStats, // Phase 6
 } from '../../services/questionService'
 import type { Grade } from '../../types'
 import { MathText } from '../../components/common/MathText'
@@ -47,6 +48,17 @@ export function QuestionGenerationPage() {
   // Step 관리
   const [step, setStep] = useState<Step>('config')
   const [error, setError] = useState('')
+  const [activeTab, setActiveTab] = useState<'generate' | 'dashboard'>('generate') // Phase 6
+  const [stats, setStats] = useState<{ total: number; distribution: Record<string, number> } | null>(null) // Phase 6
+
+  const loadStats = async () => {
+    try {
+      const data = await getConceptMethodStats()
+      setStats(data)
+    } catch (e) {
+      console.error('Failed to load stats', e)
+    }
+  }
 
   // 전략 선택
   const [strategy, setStrategy] = useState<Strategy>('ai')
@@ -57,6 +69,7 @@ export function QuestionGenerationPage() {
   const [concepts, setConcepts] = useState<ConceptItem[]>([])
   const [conceptId, setConceptId] = useState('')
   const [questionType, setQuestionType] = useState('multiple_choice')
+  const [conceptMethod, setConceptMethod] = useState('standard') // 신규 (Phase 5)
   const [count, setCount] = useState(10)
   const [diffMin, setDiffMin] = useState(1)
   const [diffMax, setDiffMax] = useState(10)
@@ -193,6 +206,7 @@ export function QuestionGenerationPage() {
         const result = await generateQuestionsAI({
           concept_id: conceptId,
           count: useGranular ? undefined : count,
+          concept_method: useGranular ? undefined : conceptMethod, // 신규 (Phase 5)
           question_type: useGranular ? 'multiple_choice' : questionType, // dummyMC if granular, or actual
           difficulty_min: useGranular ? undefined : diffMin,
           difficulty_max: useGranular ? undefined : diffMax,
@@ -205,6 +219,7 @@ export function QuestionGenerationPage() {
                   question_type: type === 'MC' ? 'multiple_choice' : 'fill_in_blank',
                   difficulty: parseInt(diff || '1', 10),
                   count: c,
+                  category: 'concept',
                 }
               })
             : undefined,
@@ -273,8 +288,35 @@ export function QuestionGenerationPage() {
           </button>
         </div>
 
+        {/* Phase 6: 탭 메뉴 추가 */}
+        <div className="mb-6 border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8">
+            <button
+              onClick={() => setActiveTab('generate')}
+              className={`pb-4 text-sm font-medium ${activeTab === 'generate'
+                ? 'border-b-2 border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+            >
+              문항 생성 (AI)
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('dashboard')
+                loadStats()
+              }}
+              className={`pb-4 text-sm font-medium ${activeTab === 'dashboard'
+                ? 'border-b-2 border-indigo-500 text-indigo-600'
+                : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                }`}
+            >
+              QC 대시보드
+            </button>
+          </nav>
+        </div>
+
         {/* Step 1: 설정 */}
-        {(step === 'config' || step === 'generating') && (
+        {activeTab === 'generate' && (step === 'config' || step === 'generating') && (
           <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-gray-800">
               생성 설정
@@ -400,6 +442,20 @@ export function QuestionGenerationPage() {
                       </select>
                     </div>
                     <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">생성 방식</label>
+                      <select
+                        value={conceptMethod}
+                        onChange={(e) => setConceptMethod(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                        disabled={!isComputation && selectedConceptCategory !== 'concept'} // 개념이 아니면 비활성화 (근데 이미 개념만 선택가능)
+                      >
+                        <option value="standard">일반 (Standard)</option>
+                        <option value="gradual_fading">점진적 빈칸 (Type A)</option>
+                        <option value="error_analysis">오개념 분석 (Type B)</option>
+                        <option value="visual_decoding">시각적 해체 (Type C)</option>
+                      </select>
+                    </div>
+                    <div>
                       <label className="mb-1 block text-sm font-medium text-gray-700">생성 수량</label>
                       <select
                         value={count}
@@ -449,8 +505,8 @@ export function QuestionGenerationPage() {
                       </thead>
                       <tbody>
                         {[
-                          { id: 'MC', label: 'CC (개념)', desc: 'multiple_choice' },
-                          { id: 'FB', label: 'FB (빈칸)', desc: 'fill_in_blank' },
+                          { id: 'MC', label: '개념 (객관식)', desc: 'concept (MC)', category: 'concept' },
+                          { id: 'FB', label: '개념 (빈칸)', desc: 'concept (FB)', category: 'concept' },
                         ].map((type) => (
                           <tr key={type.id} className="border-t border-gray-50 hover:bg-gray-50">
                             <td className="p-2 font-medium text-gray-700">
@@ -814,8 +870,8 @@ export function QuestionGenerationPage() {
           </div>
         )}
 
-        {/* Step 3: 완료 */}
-        {step === 'done' && (
+        {/* Step 3: 완료 (Phase 6: generate 탭일 때만 표시) */}
+        {activeTab === 'generate' && step === 'done' && (
           <div className="flex flex-col items-center justify-center rounded-xl border border-gray-200 bg-white p-12 shadow-sm">
             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
               <svg
@@ -860,7 +916,76 @@ export function QuestionGenerationPage() {
             </div>
           </div>
         )}
+
+        {/* Phase 6: Dashboard Tab Content */}
+        {activeTab === 'dashboard' && (
+          <div className="space-y-6">
+            <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200">
+              <h2 className="text-lg font-bold text-gray-900 mb-4">문항 유형 분포 (Concept Method)</h2>
+
+              {stats ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <StatCard
+                    label="전체 문항"
+                    value={stats.total}
+                    color="bg-blue-50 text-blue-700"
+                  />
+                  <StatCard
+                    label="Standard (일반)"
+                    value={stats.distribution['standard'] || (stats.distribution['none'] || 0)}
+                    subtext="기본 개념 문항"
+                    color="bg-gray-50 text-gray-700"
+                  />
+                  <StatCard
+                    label="Type A (Fading)"
+                    value={stats.distribution['gradual_fading'] || 0}
+                    subtext="점진적 빈칸 소거"
+                    color="bg-green-50 text-green-700"
+                  />
+                  <StatCard
+                    label="Type B (Error)"
+                    value={stats.distribution['error_analysis'] || 0}
+                    subtext="오개념 분석"
+                    color="bg-yellow-50 text-yellow-700"
+                  />
+                </div>
+              ) : (
+                <p className="text-gray-500">통계를 불러오는 중...</p>
+              )}
+
+              {stats && (
+                <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  <StatCard
+                    label="Type C (Visual)"
+                    value={stats.distribution['visual_decoding'] || 0}
+                    subtext="시각적 해체"
+                    color="bg-purple-50 text-purple-700"
+                  />
+                </div>
+              )}
+
+              <div className="mt-8">
+                <button
+                  onClick={loadStats}
+                  className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+                >
+                  새로고침
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+    </div>
+  )
+}
+
+function StatCard({ label, value, subtext, color }: { label: string; value: number; subtext?: string; color: string }) {
+  return (
+    <div className={`rounded-xl p-4 border border-gray-100 shadow-sm ${color.split(' ')[0]}`}>
+      <div className="text-xs font-semibold opacity-70">{label}</div>
+      <div className={`mt-1 text-2xl font-bold ${color.split(' ')[1]}`}>{value.toLocaleString()}</div>
+      {subtext && <div className="mt-1 text-[10px] opacity-60">{subtext}</div>}
     </div>
   )
 }

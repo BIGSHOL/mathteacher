@@ -9,7 +9,8 @@ from google import genai
 from google.genai import types
 
 from app.core.config import settings
-from app.services.prompt_context import format_prompt_context
+from app.services.prompt_context import format_prompt_context, CONCEPT_QUESTION_PROTOCOL, PROMPT_CONTEXTS
+from app.services.concept_generator import ConceptGenerator
 
 logger = logging.getLogger(__name__)
 
@@ -140,6 +141,16 @@ def _validate_generated_question(q: dict, category: str = "") -> list[str]:
         
         if is_calc_expr and not has_concept_kwd:
              warnings.append("개념 트랙에 단순 연산 의심 (맥락 부족)")
+
+        # [NO CALC] 단순 계산 요구 여부 (구체적 표현 차단)
+        if re.search(r"계산하시오|구하시오|값을 구해|얼마인가", content):
+            if not re.search(r"왜|이유|설명|의미|과정|원리", content):
+                warnings.append("[NO CALC 위반] 단순 계산 요구, 개념 맥락 부족")
+
+        # [WHY] '왜' 질문 포함 여부 (설명 요구 강화)
+        has_why = re.search(r"왜|이유|설명|의미|과정|원리|어떻게|무엇을|차이점|같은|다른", content)
+        if not has_why:
+             warnings.append("[WHY 미충족] 설명/이유를 묻지 않음 (단편적 질문)")
 
     return warnings
 
@@ -276,6 +287,8 @@ class AIService:
         existing_contents: list[str] | None = None,
         id_prefix: str = "",
         start_seq: int = 1,
+        concept_method: str | None = None,  # 신규 (Phase 2)
+        fading_level: int | None = None,    # 신규 (Phase 2)
     ) -> list[dict] | None:
         """Gemini로 문제를 동적 생성. 실패 시 None.
 
@@ -299,6 +312,56 @@ class AIService:
         client = _get_client()
         if not client:
             return None
+
+        # [Phase 3] 점진적 빈칸 소거 (Gradual Fading) 처리
+        if concept_method == "gradual_fading":
+            generator = ConceptGenerator()
+            # PROMPT_CONTEXTS에서 key_summary 등 정보 조회
+            ctx = PROMPT_CONTEXTS.get(concept_id, {})
+            key_summary = ctx.get("key_summary", "")
+            core_concepts = ctx.get("core_concepts", "") if not key_summary else ""
+
+            return await generator.generate_gradual_fading(
+                concept_name=concept_name,
+                concept_id=concept_id,
+                grade=grade,
+                key_summary=key_summary,
+                core_concepts=core_concepts,
+                id_prefix=id_prefix,
+                start_seq=start_seq,
+            )
+
+        # [Phase 4] 오개념 분석 (Error Analysis) 처리
+        if concept_method == "error_analysis":
+            generator = ConceptGenerator()
+            ctx = PROMPT_CONTEXTS.get(concept_id, {})
+            misconceptions = ctx.get("misconceptions", "")
+            
+            return await generator.generate_error_analysis(
+                concept_name=concept_name,
+                concept_id=concept_id,
+                grade=grade,
+                misconceptions=misconceptions,
+                count=count,
+                id_prefix=id_prefix,
+                start_seq=start_seq,
+            )
+
+        # [Phase 5] 시각적 해체 (Visual Decoding) 처리
+        if concept_method == "visual_decoding":
+            generator = ConceptGenerator()
+            ctx = PROMPT_CONTEXTS.get(concept_id, {})
+            core_concepts = ctx.get("core_concepts", "")
+            
+            return await generator.generate_visual_decoding(
+                concept_name=concept_name,
+                concept_id=concept_id,
+                grade=grade,
+                core_concepts=core_concepts,
+                count=count,
+                id_prefix=id_prefix,
+                start_seq=start_seq,
+            )
 
         grade_label = GRADE_LABELS.get(grade, grade)
         cat_label = "연산" if category == "computation" else "개념"
@@ -389,6 +452,8 @@ class AIService:
                 "2. **원리 중심**: 계산을 하더라도 '왜 그렇게 되는지', '어떤 성질을 이용했는지'를 묻거나, 과정의 빈칸을 채우게 하세요.\n"
                 "3. **개념 키워드 사용**: 정의, 성질, 이유, 설명, 포함 관계, 분류, 개수 등을 묻는 표현을 적극 사용하세요."
             )
+            # [Phase 1] 3단 변환 프로토콜 주입
+            track_instruction += CONCEPT_QUESTION_PROTOCOL
         else:
             track_instruction += "\n\n## [중요] 연산 트랙 금지 사항: 개념이나 정의를 묻지 말고, 오직 빠르고 정확한 '계산 수행 능력'을 테스트하세요."
 
@@ -473,6 +538,8 @@ class AIService:
                         "content": q.get("content", ""),
                         "correct_answer": q.get("correct_answer", ""),
                         "explanation": q.get("explanation", ""),
+                        "concept_method": concept_method,  # 신규
+                        "fading_level": fading_level,      # 신규
                         "points": 10,
                         "is_active": True,
                     }
