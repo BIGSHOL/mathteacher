@@ -58,11 +58,25 @@ async def get_today_tests(
 ):
     """오늘의 일일 테스트 3개 조회 (없으면 자동 생성)."""
     records, ai_count = await service.get_today_tests(current_user.id)
+
+    # 약점 개념 수 조회 (프론트엔드에서 약점 훈련 유도용)
+    weak_count = 0
+    if current_user.grade:
+        from app.models.concept_mastery import ConceptMastery
+        from sqlalchemy import select, func
+        stmt = select(func.count()).where(
+            ConceptMastery.student_id == current_user.id,
+            ConceptMastery.is_unlocked == True,  # noqa: E712
+            ConceptMastery.mastery_percentage < 60,
+        )
+        weak_count = await db.scalar(stmt) or 0
+
     return ApiResponse(
         data=DailyTestTodayResponse(
             date=service.get_today_str(),
             tests=[await _to_response(r, db) for r in records],
             ai_generated_count=ai_count,
+            weak_concept_count=weak_count,
         )
     )
 

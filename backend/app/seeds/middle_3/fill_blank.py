@@ -12,7 +12,7 @@ def get_fill_blank_data() -> dict:
     questions = [
         # ── 실수와 그 연산 (2문제) ──
         fb(
-            id="m3-fb-001",
+            id="m3-1-1-3-lv04-fb-001",
             concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
@@ -23,7 +23,7 @@ def get_fill_blank_data() -> dict:
             points=10,
         ),
         fb(
-            id="m3-fb-002",
+            id="m3-1-1-3-lv07-fb-001",
             concept_id="concept-m3-sqrt-03",
             category="computation",
             part="calc",
@@ -36,7 +36,7 @@ def get_fill_blank_data() -> dict:
 
         # ── 다항식의 곱셈과 인수분해 (2문제) ──
         fb(
-            id="m3-fb-003",
+            id="m3-1-2-2-lv04-fb-001",
             concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
@@ -47,7 +47,7 @@ def get_fill_blank_data() -> dict:
             points=10,
         ),
         fb(
-            id="m3-fb-004",
+            id="m3-1-2-2-lv05-fb-001",
             concept_id="concept-m3-factor-02",
             category="computation",
             part="algebra",
@@ -60,7 +60,7 @@ def get_fill_blank_data() -> dict:
 
         # ── 이차방정식 (2문제) ──
         fb(
-            id="m3-fb-005",
+            id="m3-1-3-1-lv05-fb-001",
             concept_id="concept-m3-quadeq-01",
             category="concept",
             part="algebra",
@@ -71,7 +71,7 @@ def get_fill_blank_data() -> dict:
             points=10,
         ),
         fb(
-            id="m3-fb-006",
+            id="m3-1-3-2-lv07-fb-001",
             concept_id="concept-m3-quadeq-02",
             category="concept",
             part="algebra",
@@ -84,7 +84,7 @@ def get_fill_blank_data() -> dict:
 
         # ── 이차함수 (2문제) ──
         fb(
-            id="m3-fb-007",
+            id="m3-1-4-1-lv04-fb-001",
             concept_id="concept-m3-quadfn-01",
             category="concept",
             part="func",
@@ -95,7 +95,7 @@ def get_fill_blank_data() -> dict:
             points=10,
         ),
         fb(
-            id="m3-fb-008",
+            id="m3-1-4-3-lv07-fb-001",
             concept_id="concept-m3-quadfn-03",
             category="concept",
             part="func",
@@ -108,7 +108,7 @@ def get_fill_blank_data() -> dict:
 
         # ── 삼각비 (2문제) ──
         fb(
-            id="m3-fb-009",
+            id="m3-2-1-1-lv03-fb-001",
             concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
@@ -120,7 +120,7 @@ def get_fill_blank_data() -> dict:
             points=10,
         ),
         fb(
-            id="m3-fb-010",
+            id="m3-2-1-1-lv04-fb-001",
             concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
@@ -133,7 +133,7 @@ def get_fill_blank_data() -> dict:
 
         # ── 원의 성질 (2문제) ──
         fb(
-            id="m3-fb-011",
+            id="m3-2-2-1-lv04-fb-001",
             concept_id="concept-m3-circle-01",
             category="concept",
             part="geo",
@@ -144,7 +144,7 @@ def get_fill_blank_data() -> dict:
             points=10,
         ),
         fb(
-            id="m3-fb-012",
+            id="m3-2-2-2-lv05-fb-001",
             concept_id="concept-m3-circle-02",
             category="concept",
             part="geo",
@@ -157,7 +157,7 @@ def get_fill_blank_data() -> dict:
 
         # ── 통계 (2문제) ──
         fb(
-            id="m3-fb-013",
+            id="m3-2-3-1-lv03-fb-001",
             concept_id="concept-m3-stat-01",
             category="concept",
             part="data",
@@ -168,7 +168,7 @@ def get_fill_blank_data() -> dict:
             points=10,
         ),
         fb(
-            id="m3-fb-014",
+            id="m3-2-3-2-lv05-fb-001",
             concept_id="concept-m3-stat-02",
             category="concept",
             part="data",

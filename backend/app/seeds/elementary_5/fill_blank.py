@@ -8,7 +8,7 @@ def get_fill_blank_data() -> dict:
     questions = [
         # 1단원: 자연수의 혼합 계산 (2문제)
         fb(
-            id="e5-fb-001",
+            id="e5-1-1-1-lv03-fb-001",
             concept_id="concept-e5-mixed-calc-01",
             category="computation",
             part="calc",
@@ -20,7 +20,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["17"],
         ),
         fb(
-            id="e5-fb-002",
+            id="e5-1-1-1-lv05-fb-001",
             concept_id="concept-e5-mixed-calc-01",
             category="computation",
             part="calc",
@@ -34,7 +34,7 @@ def get_fill_blank_data() -> dict:
 
         # 2단원: 약수와 배수 (2문제)
         fb(
-            id="e5-fb-003",
+            id="e5-1-2-1-lv04-fb-001",
             concept_id="concept-e5-divisor-01",
             category="computation",
             part="calc",
@@ -46,7 +46,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["6"],
         ),
         fb(
-            id="e5-fb-004",
+            id="e5-1-2-2-lv06-fb-001",
             concept_id="concept-e5-divisor-02",
             category="computation",
             part="calc",
@@ -60,7 +60,7 @@ def get_fill_blank_data() -> dict:
 
         # 3단원: 규칙과 대응 (2문제)
         fb(
-            id="e5-fb-005",
+            id="e5-1-3-1-lv04-fb-001",
             concept_id="concept-e5-corresp-01",
             category="concept",
             part="algebra",
@@ -72,7 +72,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["10"],
         ),
         fb(
-            id="e5-fb-006",
+            id="e5-1-3-2-lv06-fb-001",
             concept_id="concept-e5-corresp-02",
             category="concept",
             part="algebra",
@@ -86,7 +86,7 @@ def get_fill_blank_data() -> dict:
 
         # 4단원: 약분과 통분 (2문제)
         fb(
-            id="e5-fb-007",
+            id="e5-1-4-1-lv04-fb-001",
             concept_id="concept-e5-reduce-01",
             category="computation",
             part="calc",
@@ -98,7 +98,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["2/3"],
         ),
         fb(
-            id="e5-fb-008",
+            id="e5-1-4-2-lv05-fb-001",
             concept_id="concept-e5-reduce-02",
             category="computation",
             part="calc",
@@ -112,7 +112,7 @@ def get_fill_blank_data() -> dict:
 
         # 5단원: 분수의 덧셈과 뺄셈 (2문제)
         fb(
-            id="e5-fb-009",
+            id="e5-1-5-1-lv05-fb-001",
             concept_id="concept-e5-frac-add-01",
             category="computation",
             part="calc",
@@ -124,7 +124,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["3/4"],
         ),
         fb(
-            id="e5-fb-010",
+            id="e5-1-5-1-lv07-fb-001",
             concept_id="concept-e5-frac-add-01",
             category="computation",
             part="calc",
@@ -138,7 +138,7 @@ def get_fill_blank_data() -> dict:
 
         # 6단원: 다각형의 둘레와 넓이 (2문제)
         fb(
-            id="e5-fb-011",
+            id="e5-1-6-1-lv05-fb-001",
             concept_id="concept-e5-poly-area-01",
             category="concept",
             part="geo",
@@ -150,7 +150,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["40"],
         ),
         fb(
-            id="e5-fb-012",
+            id="e5-1-6-1-lv06-fb-001",
             concept_id="concept-e5-poly-area-01",
             category="concept",
             part="geo",
@@ -164,7 +164,7 @@ def get_fill_blank_data() -> dict:
 
         # 7단원: 수의 범위와 어림하기 (2문제)
         fb(
-            id="e5-fb-013",
+            id="e5-2-1-1-lv04-fb-001",
             concept_id="concept-e5-range-01",
             category="concept",
             part="calc",
@@ -176,7 +176,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["5"],
         ),
         fb(
-            id="e5-fb-014",
+            id="e5-2-1-2-lv06-fb-001",
             concept_id="concept-e5-round-01",
             category="concept",
             part="calc",
@@ -190,7 +190,7 @@ def get_fill_blank_data() -> dict:
 
         # 8단원: 분수의 곱셈 (2문제)
         fb(
-            id="e5-fb-015",
+            id="e5-2-2-2-lv05-fb-001",
             concept_id="concept-e5-frac-mul-02",
             category="computation",
             part="calc",
@@ -202,7 +202,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["1/6"],
         ),
         fb(
-            id="e5-fb-016",
+            id="e5-2-2-1-lv07-fb-001",
             concept_id="concept-e5-frac-mul-01",
             category="computation",
             part="calc",
@@ -216,7 +216,7 @@ def get_fill_blank_data() -> dict:
 
         # 9단원: 합동과 대칭 (2문제)
         fb(
-            id="e5-fb-017",
+            id="e5-2-5-1-lv05-fb-001",
             concept_id="concept-e5-cuboid-01",
             category="concept",
             part="geo",
@@ -228,7 +228,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["6"],
         ),
         fb(
-            id="e5-fb-018",
+            id="e5-2-3-2-lv06-fb-001",
             concept_id="concept-e5-congru-02",
             category="concept",
             part="geo",
@@ -242,7 +242,7 @@ def get_fill_blank_data() -> dict:
 
         # 10단원: 소수의 곱셈 (2문제)
         fb(
-            id="e5-fb-019",
+            id="e5-2-4-1-lv05-fb-001",
             concept_id="concept-e5-dec-mul-01",
             category="computation",
             part="calc",
@@ -254,7 +254,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["2", "2.0"],
         ),
         fb(
-            id="e5-fb-020",
+            id="e5-2-4-2-lv07-fb-001",
             concept_id="concept-e5-dec-mul-02",
             category="computation",
             part="calc",
@@ -268,7 +268,7 @@ def get_fill_blank_data() -> dict:
 
         # 11단원: 직육면체 (2문제)
         fb(
-            id="e5-fb-021",
+            id="e5-2-5-1-lv04-fb-001",
             concept_id="concept-e5-cuboid-01",
             category="concept",
             part="geo",
@@ -280,7 +280,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["8"],
         ),
         fb(
-            id="e5-fb-022",
+            id="e5-2-5-1-lv06-fb-001",
             concept_id="concept-e5-cuboid-01",
             category="concept",
             part="geo",
@@ -294,7 +294,7 @@ def get_fill_blank_data() -> dict:
 
         # 12단원: 평균과 가능성 (2문제)
         fb(
-            id="e5-fb-023",
+            id="e5-2-6-1-lv05-fb-001",
             concept_id="concept-e5-avg-01",
             category="concept",
             part="data",
@@ -306,7 +306,7 @@ def get_fill_blank_data() -> dict:
             accept_formats=["8"],
         ),
         fb(
-            id="e5-fb-024",
+            id="e5-2-6-2-lv07-fb-001",
             concept_id="concept-e5-avg-02",
             category="concept",
             part="data",
@@ -339,7 +339,16 @@ def get_fill_blank_data() -> dict:
                 "concept-e5-cuboid-01", "concept-e5-cuboid-02",
                 "concept-e5-avg-01", "concept-e5-avg-02",
             ],
-            question_ids=[f"e5-fb-{str(i).zfill(3)}" for i in range(1, 25)],
+            question_ids=[
+                "e5-1-1-1-lv03-fb-001", "e5-1-1-1-lv05-fb-001", "e5-1-2-1-lv04-fb-001", 
+                "e5-1-2-2-lv06-fb-001", "e5-1-3-1-lv04-fb-001", "e5-1-3-2-lv06-fb-001", 
+                "e5-1-4-1-lv04-fb-001", "e5-1-4-2-lv05-fb-001", "e5-1-5-1-lv05-fb-001", 
+                "e5-1-5-1-lv07-fb-001", "e5-1-6-1-lv05-fb-001", "e5-1-6-1-lv06-fb-001", 
+                "e5-2-1-1-lv04-fb-001", "e5-2-1-2-lv06-fb-001", "e5-2-2-2-lv05-fb-001", 
+                "e5-2-2-1-lv07-fb-001", "e5-2-5-1-lv05-fb-001", "e5-2-3-2-lv06-fb-001", 
+                "e5-2-4-1-lv05-fb-001", "e5-2-4-2-lv07-fb-001", "e5-2-5-1-lv04-fb-001", 
+                "e5-2-5-1-lv06-fb-001", "e5-2-6-1-lv05-fb-001", "e5-2-6-2-lv07-fb-001",
+            ],
             time_limit_minutes=30,
             use_question_pool=True,
             questions_per_attempt=12,

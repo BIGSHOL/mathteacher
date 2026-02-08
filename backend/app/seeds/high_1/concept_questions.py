@@ -56,7 +56,7 @@ def _get_questions():
 
         # 합의 법칙
         mc(
-            id="h1-conc-001",
+            id="h1-1-3-1-lv02-cc-001",
             concept_id="concept-h1-counting-01",
             category="concept",
             part="data",
@@ -70,7 +70,7 @@ def _get_questions():
 
         # 곱의 법칙
         mc(
-            id="h1-conc-002",
+            id="h1-1-3-1-lv02-cc-002",
             concept_id="concept-h1-counting-01",
             category="concept",
             part="data",
@@ -84,7 +84,7 @@ def _get_questions():
 
         # 순열 기본
         mc(
-            id="h1-conc-003",
+            id="h1-1-3-2-lv03-cc-001",
             concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
@@ -98,7 +98,7 @@ def _get_questions():
 
         # 조합 기본
         mc(
-            id="h1-conc-004",
+            id="h1-1-3-2-lv03-cc-002",
             concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
@@ -112,7 +112,7 @@ def _get_questions():
 
         # 동적 선택지 축소 문제 ★★★
         mc(
-            id="h1-conc-005",
+            id="h1-1-3-2-lv04-cc-001",
             concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
@@ -126,7 +126,7 @@ def _get_questions():
 
         # 중복조합 vs 조합 혼동 방지
         mc(
-            id="h1-conc-006",
+            id="h1-1-3-2-lv05-cc-001",
             concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
@@ -142,7 +142,7 @@ def _get_questions():
 
         # 행렬 덧셈
         mc(
-            id="h1-conc-007",
+            id="h1-1-4-1-lv02-cc-001",
             concept_id="concept-h1-matrix-01",
             category="concept",
             part="algebra",
@@ -156,7 +156,7 @@ def _get_questions():
 
         # 행렬 실수배
         mc(
-            id="h1-conc-008",
+            id="h1-1-4-1-lv02-cc-002",
             concept_id="concept-h1-matrix-01",
             category="concept",
             part="algebra",
@@ -170,7 +170,7 @@ def _get_questions():
 
         # 행렬 곱셈 기본
         mc(
-            id="h1-conc-009",
+            id="h1-1-4-2-lv03-cc-001",
             concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
@@ -184,7 +184,7 @@ def _get_questions():
 
         # 행렬 교환법칙 불성립 ★★★
         mc(
-            id="h1-conc-010",
+            id="h1-1-4-2-lv04-cc-001",
             concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
@@ -198,7 +198,7 @@ def _get_questions():
 
         # 영인자 존재 ★★★
         mc(
-            id="h1-conc-011",
+            id="h1-1-4-2-lv05-cc-001",
             concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
@@ -212,7 +212,7 @@ def _get_questions():
 
         # 약분 불가 ★★★
         mc(
-            id="h1-conc-012",
+            id="h1-1-4-2-lv05-cc-002",
             concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
@@ -228,7 +228,7 @@ def _get_questions():
 
         # 다항식 (3문제)
         mc(
-            id="h1-conc-013",
+            id="h1-1-1-1-lv03-cc-001",
             concept_id="concept-h1-polynomial-01",
             category="concept",
             part="algebra",
@@ -245,7 +245,7 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h1-conc-014",
+            id="h1-1-1-2-lv05-cc-001",
             concept_id="concept-h1-polynomial-02",
             category="concept",
             part="algebra",
@@ -257,7 +257,7 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h1-conc-015",
+            id="h1-1-1-2-lv07-cc-001",
             concept_id="concept-h1-polynomial-02",
             category="concept",
             part="algebra",
@@ -270,7 +270,7 @@ def _get_questions():
         ),
         # 방정식과 부등식 (3문제)
         mc(
-            id="h1-conc-016",
+            id="h1-1-2-1-lv04-cc-001",
             concept_id="concept-h1-equation-01",
             category="concept",
             part="algebra",
@@ -287,7 +287,7 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h1-conc-017",
+            id="h1-1-2-1-lv06-cc-001",
             concept_id="concept-h1-equation-01",
             category="concept",
             part="algebra",
@@ -304,7 +304,7 @@ def _get_questions():
             points=10,
         ),
         mc(
-            id="h1-conc-018",
+            id="h1-1-2-2-lv08-cc-001",
             concept_id="concept-h1-equation-02",
             category="concept",
             part="algebra",
@@ -332,7 +332,11 @@ def _get_tests():
             description="합의 법칙, 곱의 법칙, 순열(nPr), 조합(nCr), 동적 선택지 축소 문제",
             grade="high_1",
             concept_ids=["concept-h1-counting-01", "concept-h1-counting-02"],
-            question_ids=[f"h1-conc-{i:03d}" for i in range(1, 7)],
+            question_ids=[
+                "h1-1-3-1-lv02-cc-001", "h1-1-3-1-lv02-cc-002",
+                "h1-1-3-2-lv03-cc-001", "h1-1-3-2-lv03-cc-002",
+                "h1-1-3-2-lv04-cc-001", "h1-1-3-2-lv05-cc-001",
+            ],
             time_limit_minutes=20,
             use_question_pool=True,
             questions_per_attempt=5,
@@ -343,7 +347,11 @@ def _get_tests():
             description="2×2 행렬의 연산, 교환법칙 불성립, 영인자 존재, 약분 불가",
             grade="high_1",
             concept_ids=["concept-h1-matrix-01", "concept-h1-matrix-02"],
-            question_ids=[f"h1-conc-{i:03d}" for i in range(7, 13)],
+            question_ids=[
+                "h1-1-4-1-lv02-cc-001", "h1-1-4-1-lv02-cc-002",
+                "h1-1-4-2-lv03-cc-001", "h1-1-4-2-lv04-cc-001",
+                "h1-1-4-2-lv05-cc-001", "h1-1-4-2-lv05-cc-002",
+            ],
             time_limit_minutes=20,
             use_question_pool=True,
             questions_per_attempt=5,
@@ -354,7 +362,11 @@ def _get_tests():
             description="항등식, 나머지정리, 인수분해, 복소수, 판별식, 이차부등식의 개념 이해",
             grade="high_1",
             concept_ids=["concept-h1-polynomial-01", "concept-h1-polynomial-02", "concept-h1-equation-01", "concept-h1-equation-02"],
-            question_ids=[f"h1-conc-{i:03d}" for i in range(13, 19)],
+            question_ids=[
+                "h1-1-1-1-lv03-cc-001", "h1-1-1-2-lv05-cc-001",
+                "h1-1-1-2-lv07-cc-001", "h1-1-2-1-lv04-cc-001",
+                "h1-1-2-1-lv06-cc-001", "h1-1-2-2-lv08-cc-001",
+            ],
             time_limit_minutes=10,
             use_question_pool=True,
             questions_per_attempt=5,

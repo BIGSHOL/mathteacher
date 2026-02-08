@@ -35,6 +35,7 @@ from app.services.grading_service import GradingService
 from app.services.gamification_service import GamificationService
 from app.services.adaptive_service import AdaptiveService
 from app.services.ai_service import AIService
+from app.services.review_service import ReviewService
 from app.api.v1.auth import get_current_user, require_role
 
 router = APIRouter(prefix="/tests", tags=["tests"])
@@ -227,6 +228,45 @@ async def get_wrong_questions(
     )
 
 
+@router.get("/weak-concepts", response_model=ApiResponse)
+async def get_weak_concept_test(
+    current_user: UserResponse = Depends(get_current_user),
+    test_service: TestService = Depends(get_test_service),
+):
+    """약점 집중 테스트 조회.
+
+    mastery < 60% 인 개념을 집중 출제하는 테스트를 반환.
+    약점 개념이 없으면 404.
+    """
+    grade = current_user.grade
+    if not grade:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NO_GRADE",
+                    "message": "학년 정보가 없습니다.",
+                },
+            },
+        )
+
+    result = await test_service.generate_weak_concept_test(current_user.id, grade)
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NO_WEAK_CONCEPTS",
+                    "message": "약점 개념이 없습니다. 모든 개념의 숙련도가 60% 이상입니다.",
+                },
+            },
+        )
+
+    return ApiResponse(data=result)
+
+
 @router.get("/{test_id}", response_model=ApiResponse[TestWithQuestionsResponse])
 async def get_test_detail(
     test_id: str,
@@ -305,6 +345,29 @@ async def start_test(
     from app.models.test import Test as TestModel
 
     test = await db.get(TestModel, test_id)
+
+    # auto-generated 테스트(약점 훈련/종합시험)는 DB에 없으므로 동적 생성 후 저장
+    if not test and test_id.startswith("auto-"):
+        auto_data = await test_service.get_test_by_id(test_id, current_user.id)
+        if auto_data and isinstance(auto_data, dict):
+            test = TestModel(
+                id=auto_data["id"],
+                title=auto_data["title"],
+                description=auto_data.get("description", ""),
+                grade=auto_data["grade"],
+                test_type=auto_data.get("test_type", "cumulative"),
+                category=auto_data.get("category"),
+                concept_ids=auto_data.get("concept_ids", []),
+                question_ids=auto_data["question_ids"],
+                question_count=auto_data["question_count"],
+                time_limit_minutes=auto_data.get("time_limit_minutes", 30),
+                is_adaptive=False,
+                shuffle_options=True,
+                is_active=True,
+            )
+            db.add(test)
+            await db.flush()
+
     if not test or not test.is_active:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -607,6 +670,17 @@ async def submit_answer(
 
     result.setdefault("error_type", "")
     result.setdefault("suggestion", "")
+
+    # ── 오답 간격 반복 학습 훅 ──
+    try:
+        review_svc = ReviewService(db)
+        if result["is_correct"]:
+            await review_svc.register_correct(current_user.id, request.question_id)
+        else:
+            await review_svc.register_wrong(current_user.id, request.question_id)
+        await db.commit()
+    except Exception:
+        pass  # 복습 스케줄링 실패해도 채점 결과에 영향 없음
 
     return ApiResponse(data=SubmitAnswerResponse(**result))
 

@@ -39,7 +39,7 @@ SYSTEM_PROMPT = """당신은 2022 개정 교육과정 기반 초등/중등 수�
 
 ## 객관식(MC) 형식
 {
-  "id": "e5-comp-001",
+  "id": "e5-1-1-1-lv03-co-001",
   "concept_id": "concept-e5-xxx",
   "category": "computation",
   "part": "calc",
@@ -59,7 +59,7 @@ SYSTEM_PROMPT = """당신은 2022 개정 교육과정 기반 초등/중등 수�
 
 ## 빈칸채우기(FB) 형식
 {
-  "id": "e5-fb-001",
+  "id": "e5-1-1-1-lv03-fb-001",
   "concept_id": "concept-e5-xxx",
   "category": "computation",
   "part": "calc",
@@ -95,14 +95,14 @@ def build_generation_prompt(guide_content: str, grade: str, grade_prefix: str) -
 
 ## 작업 2: 객관식 문제(MC) 생성
 각 단원당 3개씩 객관식 문제를 생성하세요.
-- 연산 단원: id는 "{grade_prefix}-comp-001"부터 순번
-- 개념 단원: id는 "{grade_prefix}-conc-001"부터 순번
+- 연산 단원: id는 "{grade_prefix}-{{학기}}-{{단원}}-{{개념번호}}-lv{{난이도:02d}}-co-{{순번:003d}}" 형식
+- 개념 단원: id는 "{grade_prefix}-{{학기}}-{{단원}}-{{개념번호}}-lv{{난이도:02d}}-cc-{{순번:003d}}" 형식
 - 난이도 분포: 각 단원마다 저(1-3), 중(4-6), 고(7-10) 각 1문항
 - 선지 4개, 오개념을 반영한 오답 선지 포함
 
 ## 작업 3: 빈칸채우기 문제(FB) 생성
 각 단원당 2개씩 빈칸채우기 문제를 생성하세요.
-- id: "{grade_prefix}-fb-001"부터 순번
+- id: "{grade_prefix}-{{학기}}-{{단원}}-{{개념번호}}-lv{{난이도:02d}}-fb-{{순번:003d}}" 형식
 - 난이도 분포: 저(1-4) 1문항, 고(5-10) 1문항
 
 ## 출력 형식

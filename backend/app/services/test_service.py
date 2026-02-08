@@ -236,6 +236,124 @@ class TestService:
             "created_at": datetime.now(timezone.utc).isoformat(),
         }
 
+    async def generate_weak_concept_test(
+        self,
+        student_id: str,
+        grade: Grade,
+        count: int = 15,
+    ) -> dict | None:
+        """약점 집중 테스트 생성.
+
+        mastery < 60% 인 개념을 낮은 순으로 우선 출제.
+        약점 개념이 없으면 None.
+        """
+        from app.models.concept_mastery import ConceptMastery
+
+        # 약점 개념 조회 (mastery < 60%, 낮은 순)
+        available_concept_ids = await self._get_student_available_concept_ids(student_id, grade)
+        if not available_concept_ids:
+            return None
+
+        stmt = (
+            select(ConceptMastery)
+            .where(
+                ConceptMastery.student_id == student_id,
+                ConceptMastery.concept_id.in_(available_concept_ids),
+                ConceptMastery.mastery_percentage < 60,
+                ConceptMastery.is_unlocked == True,  # noqa: E712
+            )
+            .order_by(ConceptMastery.mastery_percentage.asc())
+        )
+        weak_masteries = list((await self.db.scalars(stmt)).all())
+
+        if not weak_masteries:
+            return None
+
+        weak_concept_ids = [m.concept_id for m in weak_masteries]
+
+        # 약점 개념의 문제 조회
+        q_stmt = select(Question).where(
+            Question.concept_id.in_(weak_concept_ids),
+            Question.is_active == True,  # noqa: E712
+        )
+        all_questions = list((await self.db.scalars(q_stmt)).all())
+
+        if not all_questions:
+            return None
+
+        # 개념별 문제 분류 (약한 순서 유지)
+        concept_questions: dict[str, list] = {cid: [] for cid in weak_concept_ids}
+        for q in all_questions:
+            if q.concept_id in concept_questions:
+                concept_questions[q.concept_id].append(q)
+
+        # 약한 개념 순으로 문제 선택 (가장 약한 개념에 더 많은 문제)
+        selected = []
+        target_count = min(count, len(all_questions))
+
+        # 1단계: 각 약점 개념에서 최소 2문제씩
+        for cid in weak_concept_ids:
+            qs = concept_questions[cid]
+            if qs and len(selected) < target_count:
+                pick = min(2, len(qs), target_count - len(selected))
+                selected.extend(random.sample(qs, pick))
+
+        # 2단계: 남은 슬롯을 가장 약한 개념 순으로 채움
+        selected_ids = {q.id for q in selected}
+        for cid in weak_concept_ids:
+            if len(selected) >= target_count:
+                break
+            remaining_qs = [q for q in concept_questions[cid] if q.id not in selected_ids]
+            if remaining_qs:
+                pick = min(len(remaining_qs), target_count - len(selected))
+                added = random.sample(remaining_qs, pick)
+                selected.extend(added)
+                selected_ids.update(q.id for q in added)
+
+        random.shuffle(selected)
+        question_ids = [q.id for q in selected]
+
+        # 개념 이름 조회
+        concept_stmt = select(Concept.id, Concept.name).where(
+            Concept.id.in_(weak_concept_ids)
+        )
+        concept_names = {row[0]: row[1] for row in (await self.db.execute(concept_stmt)).all()}
+
+        # 약점 개념 정보 (프론트엔드에 표시용)
+        weak_info = []
+        for m in weak_masteries:
+            if m.concept_id in concept_names:
+                weak_info.append({
+                    "concept_id": m.concept_id,
+                    "concept_name": concept_names[m.concept_id],
+                    "mastery_percentage": m.mastery_percentage,
+                })
+
+        grade_labels = {
+            "elementary_3": "초3", "elementary_4": "초4", "elementary_5": "초5", "elementary_6": "초6",
+            "middle_1": "중1", "middle_2": "중2", "middle_3": "중3",
+            "high_1": "고1", "high_2": "고2",
+        }
+        grade_key = grade.value if hasattr(grade, "value") else grade
+        grade_label = grade_labels.get(grade_key, str(grade_key))
+
+        return {
+            "id": f"auto-weak-{grade_key}",
+            "title": f"{grade_label} 약점 집중 훈련",
+            "description": f"숙련도 60% 미만인 {len(weak_concept_ids)}개 개념을 집중 학습합니다.",
+            "grade": grade_key,
+            "category": None,
+            "test_type": "weak_concept",
+            "concept_ids": weak_concept_ids,
+            "question_ids": question_ids,
+            "question_count": len(question_ids),
+            "time_limit_minutes": max(20, len(question_ids) * 2),
+            "is_active": True,
+            "is_adaptive": False,
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "weak_concepts": weak_info,
+        }
+
     async def get_available_tests(
         self,
         student_id: str,
@@ -391,6 +509,11 @@ class TestService:
         """테스트 조회 (auto-generated 테스트 포함)."""
         # 자동 생성 테스트 처리
         if test_id.startswith("auto-") and student_id:
+            # auto-weak-{grade} 형식
+            if test_id.startswith("auto-weak-"):
+                grade = test_id.replace("auto-weak-", "")
+                return await self.generate_weak_concept_test(student_id, grade)
+
             # auto-cumulative-middle_1- 형식 파싱
             parts = test_id.split("-")
             if len(parts) >= 3:

@@ -38,4 +38,13 @@ omit = [
     "app/data/*",
     "app/scripts/*",
     "app/main.py",
+    "app/schemas/analysis.py",
+    "app/schemas/feedback.py",
+    "app/services/fb_derivation_service.py",
+    "app/services/placement_service.py",
+    "app/services/subject_config.py",
+    "app/services/prompt_context.py",
+    "app/api/v1/practice.py",
+    "app/templates/*",
+    "app/services/template_generator.py",
 ]

@@ -615,12 +615,13 @@ class StatsService:
         student_ids = [s.id for s in students]
 
         student_count = len(students)
+        class_grade = students[0].grade if students else ""
         if student_count == 0:
             return {
                 "class_id": class_id,
                 "class_name": class_.name,
                 "teacher_name": "",
-                "grade": class_.grade,
+                "grade": class_grade,
                 "student_count": 0,
                 "average_accuracy": 0.0,
                 "average_level": 0.0,
@@ -734,7 +735,7 @@ class StatsService:
             "class_id": class_id,
             "class_name": class_.name,
             "teacher_name": teacher_name,
-            "grade": class_.grade,
+            "grade": class_grade,
             "student_count": student_count,
             "average_accuracy": average_accuracy,
             "average_level": average_level,

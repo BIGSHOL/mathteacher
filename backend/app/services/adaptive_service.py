@@ -2,7 +2,7 @@
 
 import random
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, case
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.answer_log import AnswerLog
@@ -197,7 +197,7 @@ class AdaptiveService:
             select(
                 func.count(AnswerLog.id).label("total"),
                 func.sum(
-                    func.case((AnswerLog.is_correct == True, 1), else_=0)  # noqa: E712
+                    case((AnswerLog.is_correct == True, 1), else_=0)  # noqa: E712
                 ).label("correct"),
             )
             .join(TestAttempt, AnswerLog.attempt_id == TestAttempt.id)

@@ -141,7 +141,7 @@ def get_concept_data() -> dict:
     # ============================================================
     quad_eq_questions = [
         mc(
-            id="m3-conc-001",
+            id="m3-1-3-1-lv02-cc-001",
             concept_id="concept-m3-quadeq-01",
             category="concept",
             part="algebra",
@@ -153,7 +153,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-002",
+            id="m3-1-3-1-lv04-cc-001",
             concept_id="concept-m3-quadeq-01",
             category="concept",
             part="algebra",
@@ -165,7 +165,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-003",
+            id="m3-1-3-1-lv06-cc-001",
             concept_id="concept-m3-quadeq-01",
             category="concept",
             part="algebra",
@@ -177,7 +177,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-004",
+            id="m3-1-3-2-lv07-cc-001",
             concept_id="concept-m3-quadeq-02",
             category="concept",
             part="algebra",
@@ -189,7 +189,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-005",
+            id="m3-1-3-2-lv08-cc-001",
             concept_id="concept-m3-quadeq-02",
             category="concept",
             part="algebra",
@@ -201,7 +201,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-006",
+            id="m3-1-3-1-lv09-cc-001",
             concept_id="concept-m3-quadeq-01",
             category="concept",
             part="algebra",
@@ -219,7 +219,7 @@ def get_concept_data() -> dict:
     # ============================================================
     quad_func_questions = [
         mc(
-            id="m3-conc-007",
+            id="m3-1-4-1-lv02-cc-001",
             concept_id="concept-m3-quadfn-01",
             category="concept",
             part="func",
@@ -231,7 +231,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-008",
+            id="m3-1-4-1-lv04-cc-001",
             concept_id="concept-m3-quadfn-01",
             category="concept",
             part="func",
@@ -243,7 +243,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-009",
+            id="m3-1-4-1-lv05-cc-001",
             concept_id="concept-m3-quadfn-01",
             category="concept",
             part="func",
@@ -255,7 +255,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-010",
+            id="m3-1-4-3-lv07-cc-001",
             concept_id="concept-m3-quadfn-03",
             category="concept",
             part="func",
@@ -267,7 +267,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-011",
+            id="m3-1-4-3-lv08-cc-001",
             concept_id="concept-m3-quadfn-03",
             category="concept",
             part="func",
@@ -279,7 +279,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-012",
+            id="m3-1-4-2-lv09-cc-001",
             concept_id="concept-m3-quadfn-02",
             category="concept",
             part="func",
@@ -297,7 +297,7 @@ def get_concept_data() -> dict:
     # ============================================================
     trig_questions = [
         mc(
-            id="m3-conc-013",
+            id="m3-2-1-1-lv02-cc-001",
             concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
@@ -314,7 +314,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-014",
+            id="m3-2-1-1-lv03-cc-001",
             concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
@@ -326,7 +326,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-015",
+            id="m3-2-1-1-lv04-cc-001",
             concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
@@ -338,7 +338,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-016",
+            id="m3-2-1-1-lv05-cc-001",
             concept_id="concept-m3-trig-01",
             category="concept",
             part="geo",
@@ -350,7 +350,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-017",
+            id="m3-2-1-2-lv07-cc-001",
             concept_id="concept-m3-trig-02",
             category="concept",
             part="geo",
@@ -367,7 +367,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-018",
+            id="m3-2-1-2-lv08-cc-001",
             concept_id="concept-m3-trig-02",
             category="concept",
             part="geo",
@@ -385,7 +385,7 @@ def get_concept_data() -> dict:
     # ============================================================
     circle_questions = [
         mc(
-            id="m3-conc-019",
+            id="m3-2-2-1-lv03-cc-001",
             concept_id="concept-m3-circle-01",
             category="concept",
             part="geo",
@@ -402,7 +402,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-020",
+            id="m3-2-2-1-lv04-cc-001",
             concept_id="concept-m3-circle-01",
             category="concept",
             part="geo",
@@ -414,7 +414,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-021",
+            id="m3-2-2-1-lv05-cc-001",
             concept_id="concept-m3-circle-01",
             category="concept",
             part="geo",
@@ -426,7 +426,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-022",
+            id="m3-2-2-2-lv06-cc-001",
             concept_id="concept-m3-circle-02",
             category="concept",
             part="geo",
@@ -438,7 +438,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-023",
+            id="m3-2-2-3-lv07-cc-001",
             concept_id="concept-m3-circle-03",
             category="concept",
             part="geo",
@@ -450,7 +450,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-024",
+            id="m3-2-2-3-lv08-cc-001",
             concept_id="concept-m3-circle-03",
             category="concept",
             part="geo",
@@ -468,7 +468,7 @@ def get_concept_data() -> dict:
     # ============================================================
     stat_questions = [
         mc(
-            id="m3-conc-025",
+            id="m3-2-3-1-lv02-cc-001",
             concept_id="concept-m3-stat-01",
             category="concept",
             part="data",
@@ -480,7 +480,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-026",
+            id="m3-2-3-1-lv04-cc-001",
             concept_id="concept-m3-stat-01",
             category="concept",
             part="data",
@@ -492,7 +492,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-027",
+            id="m3-2-3-2-lv05-cc-001",
             concept_id="concept-m3-stat-02",
             category="concept",
             part="data",
@@ -504,7 +504,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-028",
+            id="m3-2-3-2-lv06-cc-001",
             concept_id="concept-m3-stat-02",
             category="concept",
             part="data",
@@ -516,7 +516,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-029",
+            id="m3-2-3-2-lv07-cc-001",
             concept_id="concept-m3-stat-02",
             category="concept",
             part="data",
@@ -533,7 +533,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-030",
+            id="m3-2-3-3-lv08-cc-001",
             concept_id="concept-m3-stat-03",
             category="concept",
             part="data",
@@ -557,7 +557,7 @@ def get_concept_data() -> dict:
     ch1_concept_questions = [
         # 실수와 그 연산 (3문제)
         mc(
-            id="m3-conc-031",
+            id="m3-1-1-1-lv03-cc-001",
             concept_id="concept-m3-sqrt-01",
             category="concept",
             part="calc",
@@ -574,7 +574,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-032",
+            id="m3-1-1-2-lv05-cc-001",
             concept_id="concept-m3-sqrt-02",
             category="concept",
             part="calc",
@@ -586,7 +586,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-033",
+            id="m3-1-1-2-lv07-cc-001",
             concept_id="concept-m3-sqrt-02",
             category="concept",
             part="calc",
@@ -604,7 +604,7 @@ def get_concept_data() -> dict:
         ),
         # 다항식의 곱셈과 인수분해 (3문제)
         mc(
-            id="m3-conc-034",
+            id="m3-1-2-2-lv03-cc-001",
             concept_id="concept-m3-factor-02",
             category="concept",
             part="algebra",
@@ -621,7 +621,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-035",
+            id="m3-1-2-3-lv05-cc-001",
             concept_id="concept-m3-factor-03",
             category="concept",
             part="algebra",
@@ -633,7 +633,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m3-conc-036",
+            id="m3-1-2-1-lv07-cc-001",
             concept_id="concept-m3-factor-01",
             category="concept",
             part="algebra",

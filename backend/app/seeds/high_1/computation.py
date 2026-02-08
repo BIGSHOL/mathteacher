@@ -50,13 +50,13 @@ def _get_concepts():
 
 
 def _get_questions():
-    """연산 문제 목록 (12문제: 다항식 6 + 방정식 6)."""
+    """연산 문제 목록 (20문제: 각 개념당 5문제)."""
     return [
-        # ========== 1단원: 다항식 (6문제) ==========
+        # ========== 1단원: 다항식 (10문제) ==========
 
         # 다항식 연산 - 기본
         mc(
-            id="h1-comp-001",
+            id="h1-1-1-1-lv02-co-001",
             concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
@@ -70,7 +70,7 @@ def _get_questions():
 
         # 항등식 - 미정계수법
         mc(
-            id="h1-comp-002",
+            id="h1-1-1-1-lv03-co-001",
             concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
@@ -84,7 +84,7 @@ def _get_questions():
 
         # 나머지정리 - 기본
         mc(
-            id="h1-comp-003",
+            id="h1-1-1-2-lv03-co-001",
             concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
@@ -98,7 +98,7 @@ def _get_questions():
 
         # 인수분해 - 인수정리 활용
         mc(
-            id="h1-comp-004",
+            id="h1-1-1-2-lv04-co-001",
             concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
@@ -117,7 +117,7 @@ def _get_questions():
 
         # 항등식 응용 - 미정계수법
         mc(
-            id="h1-comp-005",
+            id="h1-1-1-1-lv04-co-001",
             concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
@@ -131,7 +131,7 @@ def _get_questions():
 
         # 나머지정리 응용
         mc(
-            id="h1-comp-006",
+            id="h1-1-1-2-lv05-co-001",
             concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
@@ -143,11 +143,11 @@ def _get_questions():
             points=10,
         ),
 
-        # ========== 2단원: 방정식과 부등식 (6문제) ==========
+        # ========== 2단원: 방정식과 부등식 (10문제) ==========
 
         # 복소수 - 기본
         mc(
-            id="h1-comp-007",
+            id="h1-1-2-1-lv02-co-001",
             concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
@@ -161,7 +161,7 @@ def _get_questions():
 
         # 이차방정식 판별식
         mc(
-            id="h1-comp-008",
+            id="h1-1-2-1-lv03-co-001",
             concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
@@ -175,7 +175,7 @@ def _get_questions():
 
         # 근과 계수의 관계
         mc(
-            id="h1-comp-009",
+            id="h1-1-2-1-lv03-co-002",
             concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
@@ -189,7 +189,7 @@ def _get_questions():
 
         # 판별식 응용 - 이차항 계수 조건 체크 ★★★
         mc(
-            id="h1-comp-010",
+            id="h1-1-2-1-lv04-co-001",
             concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
@@ -203,7 +203,7 @@ def _get_questions():
 
         # 이차함수 최대·최소 (제한 범위)
         mc(
-            id="h1-comp-011",
+            id="h1-1-2-2-lv04-co-001",
             concept_id="concept-h1-equation-02",
             category="computation",
             part="algebra",
@@ -217,7 +217,7 @@ def _get_questions():
 
         # 이차부등식
         mc(
-            id="h1-comp-012",
+            id="h1-1-2-2-lv05-co-001",
             concept_id="concept-h1-equation-02",
             category="computation",
             part="algebra",
@@ -226,6 +226,120 @@ def _get_questions():
             options=["2 < x < 3", "x < 2 또는 x > 3", "1 < x < 6", "x < 1 또는 x > 6"],
             correct="A",
             explanation="x² - 5x + 6 = (x - 2)(x - 3)\n부등식 (x - 2)(x - 3) < 0의 해는 두 근 사이\n∴ 2 < x < 3",
+            points=10,
+        ),
+
+        # ========== 추가 문제 (각 개념당 5개 달성) ==========
+
+        # 다항식 연산 - 곱셈 공식
+        mc(
+            id="h1-1-1-1-lv05-co-001",
+            concept_id="concept-h1-polynomial-01",
+            category="computation",
+            part="algebra",
+            difficulty=5,
+            content="(x + 2)(x - 3)(x + 1)을 전개하면?",
+            options=["x³ - 7x - 6", "x³ - 7x + 6", "x³ + 7x - 6", "x³ - 6"],
+            correct="A",
+            explanation="(x + 2)(x - 3) = x² - x - 6\n(x² - x - 6)(x + 1) = x³ + x² - x² - x - 6x - 6 = x³ - 7x - 6",
+            points=10,
+        ),
+
+        # 다항식 연산 - 곱셈 공식 응용
+        mc(
+            id="h1-1-1-1-lv06-co-001",
+            concept_id="concept-h1-polynomial-01",
+            category="computation",
+            part="algebra",
+            difficulty=6,
+            content="(x + 1)³을 전개하면?",
+            options=["x³ + 3x² + 3x + 1", "x³ + 3x + 1", "x³ + x² + x + 1", "x³ + 1"],
+            correct="A",
+            explanation="공식: (a + b)³ = a³ + 3a²b + 3ab² + b³\n(x + 1)³ = x³ + 3x² + 3x + 1",
+            points=10,
+        ),
+
+        # 나머지정리 - 이차식으로 나눈 나머지
+        mc(
+            id="h1-1-1-2-lv07-co-001",
+            concept_id="concept-h1-polynomial-02",
+            category="computation",
+            part="algebra",
+            difficulty=7,
+            content="다항식 f(x) = x⁴ - 3x² + 2를 x - 2로 나눈 나머지는?",
+            options=["6", "2", "0", "4"],
+            correct="A",
+            explanation="나머지정리: f(2)를 계산\nf(2) = 2⁴ - 3(2)² + 2 = 16 - 12 + 2 = 6",
+            points=10,
+        ),
+
+        # 나머지정리와 인수정리 종합
+        mc(
+            id="h1-1-1-2-lv08-co-001",
+            concept_id="concept-h1-polynomial-02",
+            category="computation",
+            part="algebra",
+            difficulty=8,
+            content="다항식 x³ - 7x + 6을 인수분해하면?",
+            options=["(x - 1)(x - 2)(x + 3)", "(x + 1)(x - 2)(x - 3)", "(x - 1)(x + 2)(x - 3)", "(x - 1)(x - 2)(x - 3)"],
+            correct="A",
+            explanation="f(1) = 1 - 7 + 6 = 0이므로 (x - 1)이 인수\n조립제법: (x - 1)(x² + x - 6) = (x - 1)(x - 2)(x + 3)",
+            points=10,
+        ),
+
+        # 복소수 - 곱셈
+        mc(
+            id="h1-1-2-1-lv06-co-001",
+            concept_id="concept-h1-equation-01",
+            category="computation",
+            part="algebra",
+            difficulty=6,
+            content="복소수 (2 + i)(3 - 2i)를 계산하면?",
+            options=["8 - i", "6 - i", "8 + i", "6 + i"],
+            correct="A",
+            explanation="전개: (2 + i)(3 - 2i) = 6 - 4i + 3i - 2i²\ni² = -1이므로: 6 - i - 2(-1) = 6 - i + 2 = 8 - i",
+            points=10,
+        ),
+
+        # 이차함수 최대·최소 - 축이 범위 밖
+        mc(
+            id="h1-1-2-2-lv07-co-001",
+            concept_id="concept-h1-equation-02",
+            category="computation",
+            part="algebra",
+            difficulty=7,
+            content="함수 f(x) = x² - 4x + 7 (2 ≤ x ≤ 5)의 최댓값은?",
+            options=["12", "7", "3", "8"],
+            correct="A",
+            explanation="f(x) = (x - 2)² + 3\n꼭짓점 x = 2는 범위 경계값\nf(2) = 3 (최솟값)\nf(5) = 25 - 20 + 7 = 12 (최댓값)",
+            points=10,
+        ),
+
+        # 이차부등식 - 판별식 활용
+        mc(
+            id="h1-1-2-2-lv08-co-001",
+            concept_id="concept-h1-equation-02",
+            category="computation",
+            part="algebra",
+            difficulty=8,
+            content="이차부등식 x² + 2x - 8 ≥ 0의 해는?",
+            options=["x ≤ -4 또는 x ≥ 2", "x ≤ -2 또는 x ≥ 4", "-4 ≤ x ≤ 2", "-2 ≤ x ≤ 4"],
+            correct="A",
+            explanation="x² + 2x - 8 = (x + 4)(x - 2)\n부등식 (x + 4)(x - 2) ≥ 0의 해는 두 근의 바깥쪽\n∴ x ≤ -4 또는 x ≥ 2",
+            points=10,
+        ),
+
+        # 이차부등식 - 절댓값
+        mc(
+            id="h1-1-2-2-lv10-co-001",
+            concept_id="concept-h1-equation-02",
+            category="computation",
+            part="algebra",
+            difficulty=10,
+            content="부등식 |x - 3| < 2의 해는?",
+            options=["1 < x < 5", "-1 < x < 5", "1 < x < 3", "x < 1 또는 x > 5"],
+            correct="A",
+            explanation="|a| < b ⟺ -b < a < b\n|x - 3| < 2 ⟺ -2 < x - 3 < 2\n각 부분에 3을 더하면: 1 < x < 5",
             points=10,
         ),
     ]
@@ -240,8 +354,19 @@ def _get_tests():
             description="다항식의 연산·항등식·나머지정리·인수분해, 복소수·이차방정식·판별식·이차부등식",
             grade="high_1",
             concept_ids=["concept-h1-polynomial-01", "concept-h1-polynomial-02", "concept-h1-equation-01", "concept-h1-equation-02"],
-            question_ids=[f"h1-comp-{i:03d}" for i in range(1, 13)],
-            time_limit_minutes=30,
+            question_ids=[
+                "h1-1-1-1-lv02-co-001", "h1-1-1-1-lv03-co-001",
+                "h1-1-1-2-lv03-co-001", "h1-1-1-2-lv04-co-001",
+                "h1-1-1-1-lv04-co-001", "h1-1-1-2-lv05-co-001",
+                "h1-1-2-1-lv02-co-001", "h1-1-2-1-lv03-co-001",
+                "h1-1-2-1-lv03-co-002", "h1-1-2-1-lv04-co-001",
+                "h1-1-2-2-lv04-co-001", "h1-1-2-2-lv05-co-001",
+                "h1-1-1-1-lv05-co-001", "h1-1-1-1-lv06-co-001",
+                "h1-1-1-2-lv07-co-001", "h1-1-1-2-lv08-co-001",
+                "h1-1-2-1-lv06-co-001", "h1-1-2-2-lv07-co-001",
+                "h1-1-2-2-lv08-co-001", "h1-1-2-2-lv10-co-001",
+            ],
+            time_limit_minutes=40,
             use_question_pool=True,
             questions_per_attempt=10,
         ),

@@ -14,7 +14,7 @@ def get_questions():
         # 1학기 1단원: 큰 수
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-001",
+            id="e4-1-1-1-lv02-fb-001",
             concept_id="concept-e4-big-num-01",
             category="computation",
             part="calc",
@@ -26,7 +26,7 @@ def get_questions():
             accept_formats=["100000", "10만"],
         ),
         fb(
-            id="e4-fb-002",
+            id="e4-1-1-1-lv05-fb-001",
             concept_id="concept-e4-big-num-01",
             category="computation",
             part="calc",
@@ -42,7 +42,7 @@ def get_questions():
         # 1학기 2단원: 각도
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-003",
+            id="e4-1-2-1-lv02-fb-001",
             concept_id="concept-e4-angle-01",
             category="concept",
             part="geo",
@@ -54,7 +54,7 @@ def get_questions():
             accept_formats=["90"],
         ),
         fb(
-            id="e4-fb-004",
+            id="e4-1-2-2-lv06-fb-001",
             concept_id="concept-e4-angle-02",
             category="concept",
             part="geo",
@@ -70,7 +70,7 @@ def get_questions():
         # 1학기 3단원: 곱셈과 나눗셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-005",
+            id="e4-1-3-1-lv02-fb-001",
             concept_id="concept-e4-mul-div-01",
             category="computation",
             part="calc",
@@ -82,7 +82,7 @@ def get_questions():
             accept_formats=["624"],
         ),
         fb(
-            id="e4-fb-006",
+            id="e4-1-3-2-lv06-fb-001",
             concept_id="concept-e4-mul-div-02",
             category="computation",
             part="calc",
@@ -98,7 +98,7 @@ def get_questions():
         # 1학기 4단원: 평면도형의 이동
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-007",
+            id="e4-1-4-1-lv03-fb-001",
             concept_id="concept-e4-transform-01",
             category="concept",
             part="geo",
@@ -110,7 +110,7 @@ def get_questions():
             accept_formats=["위치"],
         ),
         fb(
-            id="e4-fb-008",
+            id="e4-1-4-2-lv07-fb-001",
             concept_id="concept-e4-transform-02",
             category="concept",
             part="geo",
@@ -126,7 +126,7 @@ def get_questions():
         # 1학기 5단원: 막대그래프
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-009",
+            id="e4-1-5-1-lv03-fb-001",
             concept_id="concept-e4-bar-graph-01",
             category="concept",
             part="data",
@@ -138,7 +138,7 @@ def get_questions():
             accept_formats=["15"],
         ),
         fb(
-            id="e4-fb-010",
+            id="e4-1-5-1-lv05-fb-001",
             concept_id="concept-e4-bar-graph-01",
             category="concept",
             part="data",
@@ -154,7 +154,7 @@ def get_questions():
         # 1학기 6단원: 규칙 찾기
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-011",
+            id="e4-1-6-1-lv02-fb-001",
             concept_id="concept-e4-pattern-01",
             category="concept",
             part="algebra",
@@ -166,7 +166,7 @@ def get_questions():
             accept_formats=["15"],
         ),
         fb(
-            id="e4-fb-012",
+            id="e4-1-6-2-lv08-fb-001",
             concept_id="concept-e4-pattern-02",
             category="concept",
             part="algebra",
@@ -182,7 +182,7 @@ def get_questions():
         # 2학기 1단원: 분수의 덧셈과 뺄셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-013",
+            id="e4-2-1-1-lv03-fb-001",
             concept_id="concept-e4-frac-op-01",
             category="computation",
             part="calc",
@@ -194,7 +194,7 @@ def get_questions():
             accept_formats=["3/7"],
         ),
         fb(
-            id="e4-fb-014",
+            id="e4-2-1-2-lv07-fb-001",
             concept_id="concept-e4-frac-op-02",
             category="computation",
             part="calc",
@@ -210,7 +210,7 @@ def get_questions():
         # 2학기 2단원: 삼각형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-015",
+            id="e4-2-2-1-lv03-fb-001",
             concept_id="concept-e4-triangle-01",
             category="concept",
             part="geo",
@@ -222,7 +222,7 @@ def get_questions():
             accept_formats=["60"],
         ),
         fb(
-            id="e4-fb-016",
+            id="e4-2-2-1-lv07-fb-001",
             concept_id="concept-e4-triangle-01",
             category="concept",
             part="geo",
@@ -238,7 +238,7 @@ def get_questions():
         # 2학기 3단원: 소수의 덧셈과 뺄셈
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-017",
+            id="e4-2-3-2-lv03-fb-001",
             concept_id="concept-e4-dec-op-02",
             category="computation",
             part="calc",
@@ -250,7 +250,7 @@ def get_questions():
             accept_formats=["1.3"],
         ),
         fb(
-            id="e4-fb-018",
+            id="e4-2-3-2-lv07-fb-001",
             concept_id="concept-e4-dec-op-02",
             category="computation",
             part="calc",
@@ -266,7 +266,7 @@ def get_questions():
         # 2학기 4단원: 사각형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-019",
+            id="e4-2-4-1-lv03-fb-001",
             concept_id="concept-e4-quad-01",
             category="concept",
             part="geo",
@@ -278,7 +278,7 @@ def get_questions():
             accept_formats=["360"],
         ),
         fb(
-            id="e4-fb-020",
+            id="e4-2-4-2-lv05-fb-001",
             concept_id="concept-e4-quad-02",
             category="concept",
             part="geo",
@@ -294,7 +294,7 @@ def get_questions():
         # 2학기 5단원: 꺾은선그래프
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-021",
+            id="e4-2-5-1-lv02-fb-001",
             concept_id="concept-e4-line-graph-01",
             category="concept",
             part="data",
@@ -306,7 +306,7 @@ def get_questions():
             accept_formats=["증가", "커지고", "늘어나고"],
         ),
         fb(
-            id="e4-fb-022",
+            id="e4-2-5-2-lv04-fb-001",
             concept_id="concept-e4-line-graph-02",
             category="concept",
             part="data",
@@ -322,7 +322,7 @@ def get_questions():
         # 2학기 6단원: 다각형
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
         fb(
-            id="e4-fb-023",
+            id="e4-2-6-1-lv02-fb-001",
             concept_id="concept-e4-polygon-01",
             category="concept",
             part="geo",
@@ -334,7 +334,7 @@ def get_questions():
             accept_formats=["다각형"],
         ),
         fb(
-            id="e4-fb-024",
+            id="e4-2-6-1-lv06-fb-001",
             concept_id="concept-e4-polygon-01",
             category="concept",
             part="geo",

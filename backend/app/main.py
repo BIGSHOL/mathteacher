@@ -29,7 +29,8 @@ def init_db():
     # Import all models to register them with Base
     from app.models import (
         User, Class, Concept, Question, Test, TestAttempt, AnswerLog,
-        Chapter, ChapterProgress, ConceptMastery, DailyTestRecord
+        Chapter, ChapterProgress, ConceptMastery, DailyTestRecord,
+        WrongAnswerReview,
     )
     from app.models.user import RefreshToken
     from app.services.auth_service import AuthService
@@ -2456,6 +2457,69 @@ def cleanup_bad_ai_questions():
         db.close()
 
 
+def migrate_wrong_answer_reviews():
+    """기존 AnswerLog에서 오답 기록을 WrongAnswerReview로 이관.
+
+    - 틀린 적 있고, 한 번도 맞추지 못한 (student_id, question_id) 쌍을 찾아
+      WrongAnswerReview에 stage=1, next_review_date=오늘로 등록.
+    - 이미 데이터가 있으면 스킵 (멱등).
+    """
+    from datetime import date
+    from sqlalchemy import text
+    from app.models.wrong_answer_review import WrongAnswerReview
+
+    db = SyncSessionLocal()
+    try:
+        # 이미 마이그레이션 되었으면 스킵
+        existing = db.query(WrongAnswerReview).first()
+        if existing:
+            return
+
+        # 틀린 적 있고 아직 맞추지 못한 (student_id, question_id) 쌍
+        wrong_pairs = db.execute(text("""
+            SELECT al.question_id, ta.student_id,
+                   COUNT(*) as wrong_cnt,
+                   MAX(al.created_at) as last_wrong
+            FROM answer_logs al
+            JOIN test_attempts ta ON al.attempt_id = ta.id
+            WHERE al.is_correct = 0
+            AND NOT EXISTS (
+                SELECT 1 FROM answer_logs al2
+                JOIN test_attempts ta2 ON al2.attempt_id = ta2.id
+                WHERE al2.question_id = al.question_id
+                AND ta2.student_id = ta.student_id
+                AND al2.is_correct = 1
+            )
+            GROUP BY al.question_id, ta.student_id
+        """)).all()
+
+        if not wrong_pairs:
+            logger.info("오답 복습 마이그레이션: 대상 없음")
+            return
+
+        today = date.today().isoformat()
+        count = 0
+        for row in wrong_pairs:
+            review = WrongAnswerReview(
+                student_id=row.student_id,
+                question_id=row.question_id,
+                review_stage=1,
+                next_review_date=today,
+                wrong_count=row.wrong_cnt,
+                last_wrong_at=row.last_wrong,
+            )
+            db.add(review)
+            count += 1
+
+        db.commit()
+        logger.info(f"오답 복습 마이그레이션 완료: {count}건")
+    except Exception as e:
+        db.rollback()
+        logger.error(f"오답 복습 마이그레이션 실패: {e}", exc_info=True)
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events."""
@@ -2471,6 +2535,7 @@ async def lifespan(app: FastAPI):
     await loop.run_in_executor(None, audit_question_categories)
     await loop.run_in_executor(None, migrate_concept_sequential_unlock)
     await loop.run_in_executor(None, cleanup_bad_ai_questions)
+    await loop.run_in_executor(None, migrate_wrong_answer_reviews)
     yield
     # Shutdown
 

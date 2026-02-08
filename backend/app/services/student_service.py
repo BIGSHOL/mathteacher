@@ -143,7 +143,7 @@ class StudentService:
 
         # 학생의 모든 테스트 시도 조회
         attempts = (await self.db.scalars(
-            select(TestAttempt).where(TestAttempt.user_id == student_id)
+            select(TestAttempt).where(TestAttempt.student_id == student_id)
         )).all()
 
         # 답변 로그 삭제
@@ -154,7 +154,7 @@ class StudentService:
 
         # 테스트 시도 삭제
         await self.db.execute(
-            TestAttempt.__table__.delete().where(TestAttempt.user_id == student_id)
+            TestAttempt.__table__.delete().where(TestAttempt.student_id == student_id)
         )
 
         # 학생 통계 초기화

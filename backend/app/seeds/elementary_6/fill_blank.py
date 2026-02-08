@@ -6,9 +6,9 @@ from .._base import fb
 def get_questions() -> list[dict]:
     """빈칸 채우기 문제 24개 반환 (단원당 2개)."""
     return [
-        # 1학기 1단원: 분수의 나눗셈1 (e6-fb-001 ~ 002)
+        # 1학기 1단원: 분수의 나눗셈1 (e6-1-1-1-lv04-fb-001 ~ 002)
         fb(
-            id="e6-fb-001",
+            id="e6-1-1-1-lv04-fb-001",
             concept_id="concept-e6-frac-div1",
             category="computation",
             part="calc",
@@ -19,7 +19,7 @@ def get_questions() -> list[dict]:
             accept_formats=["5/6"],
         ),
         fb(
-            id="e6-fb-002",
+            id="e6-1-1-1-lv05-fb-001",
             concept_id="concept-e6-frac-div1",
             category="computation",
             part="calc",
@@ -29,9 +29,9 @@ def get_questions() -> list[dict]:
             explanation="2/3 ÷ 4 = 2/3 × 1/4 = 2/12 = 1/6입니다.",
             accept_formats=["1/6"],
         ),
-        # 1학기 2단원: 각기둥과 각뿔 (e6-fb-003 ~ 004)
+        # 1학기 2단원: 각기둥과 각뿔 (e6-1-2-1-lv06-fb-001 ~ 004)
         fb(
-            id="e6-fb-003",
+            id="e6-1-2-1-lv06-fb-001",
             concept_id="concept-e6-prism-pyramid",
             category="concept",
             part="geo",
@@ -42,7 +42,7 @@ def get_questions() -> list[dict]:
             accept_formats=["12"],
         ),
         fb(
-            id="e6-fb-004",
+            id="e6-1-2-1-lv07-fb-001",
             concept_id="concept-e6-prism-pyramid",
             category="concept",
             part="geo",
@@ -52,9 +52,9 @@ def get_questions() -> list[dict]:
             explanation="각뿔의 면 = 밑면의 변의 수 + 1입니다. 오각뿔은 5 + 1 = 6개입니다.",
             accept_formats=["6"],
         ),
-        # 1학기 3단원: 소수의 나눗셈1 (e6-fb-005 ~ 006)
+        # 1학기 3단원: 소수의 나눗셈1 (e6-1-3-1-lv06-fb-001 ~ 006)
         fb(
-            id="e6-fb-005",
+            id="e6-1-3-1-lv06-fb-001",
             concept_id="concept-e6-dec-div1",
             category="computation",
             part="calc",
@@ -65,7 +65,7 @@ def get_questions() -> list[dict]:
             accept_formats=["0.6"],
         ),
         fb(
-            id="e6-fb-006",
+            id="e6-1-3-1-lv07-fb-001",
             concept_id="concept-e6-dec-div1",
             category="computation",
             part="calc",
@@ -75,9 +75,9 @@ def get_questions() -> list[dict]:
             explanation="915 ÷ 5 = 183이므로, 9.15 ÷ 5 = 1.83입니다.",
             accept_formats=["1.83"],
         ),
-        # 1학기 4단원: 비와 비율 (e6-fb-007 ~ 008)
+        # 1학기 4단원: 비와 비율 (e6-1-4-1-lv08-fb-001 ~ 008)
         fb(
-            id="e6-fb-007",
+            id="e6-1-4-1-lv08-fb-001",
             concept_id="concept-e6-ratio",
             category="computation",
             part="calc",
@@ -88,7 +88,7 @@ def get_questions() -> list[dict]:
             accept_formats=["3:4", "3 : 4"],
         ),
         fb(
-            id="e6-fb-008",
+            id="e6-1-4-1-lv09-fb-001",
             concept_id="concept-e6-ratio",
             category="computation",
             part="calc",
@@ -98,9 +98,9 @@ def get_questions() -> list[dict]:
             explanation="소금물 농도 = (소금)/(전체) × 100 = 50/(50+200) × 100 = 50/250 × 100 = 20%입니다.",
             accept_formats=["20"],
         ),
-        # 1학기 5단원: 여러 가지 그래프 (e6-fb-009 ~ 010)
+        # 1학기 5단원: 여러 가지 그래프 (e6-1-5-1-lv07-fb-001 ~ 010)
         fb(
-            id="e6-fb-009",
+            id="e6-1-5-1-lv07-fb-001",
             concept_id="concept-e6-graphs",
             category="concept",
             part="data",
@@ -111,7 +111,7 @@ def get_questions() -> list[dict]:
             accept_formats=["72"],
         ),
         fb(
-            id="e6-fb-010",
+            id="e6-1-5-1-lv08-fb-001",
             concept_id="concept-e6-graphs",
             category="concept",
             part="data",
@@ -121,9 +121,9 @@ def get_questions() -> list[dict]:
             explanation="90° ÷ 360° = 0.25 = 25%입니다.",
             accept_formats=["25"],
         ),
-        # 1학기 6단원: 직육면체의 부피와 겉넓이 (e6-fb-011 ~ 012)
+        # 1학기 6단원: 직육면체의 부피와 겉넓이 (e6-1-6-1-lv08-fb-001 ~ 012)
         fb(
-            id="e6-fb-011",
+            id="e6-1-6-1-lv08-fb-001",
             concept_id="concept-e6-volume",
             category="concept",
             part="geo",
@@ -134,7 +134,7 @@ def get_questions() -> list[dict]:
             accept_formats=["60"],
         ),
         fb(
-            id="e6-fb-012",
+            id="e6-1-6-1-lv09-fb-001",
             concept_id="concept-e6-volume",
             category="concept",
             part="geo",
@@ -144,9 +144,9 @@ def get_questions() -> list[dict]:
             explanation="겉넓이 = 한 면의 넓이 × 6 = 10 × 10 × 6 = 600cm²입니다.",
             accept_formats=["600"],
         ),
-        # 2학기 1단원: 분수의 나눗셈2 (e6-fb-013 ~ 014)
+        # 2학기 1단원: 분수의 나눗셈2 (e6-2-1-1-lv07-fb-001 ~ 014)
         fb(
-            id="e6-fb-013",
+            id="e6-2-1-1-lv07-fb-001",
             concept_id="concept-e6-frac-div2",
             category="computation",
             part="calc",
@@ -157,7 +157,7 @@ def get_questions() -> list[dict]:
             accept_formats=["2/3"],
         ),
         fb(
-            id="e6-fb-014",
+            id="e6-2-1-1-lv08-fb-001",
             concept_id="concept-e6-frac-div2",
             category="computation",
             part="calc",
@@ -167,9 +167,9 @@ def get_questions() -> list[dict]:
             explanation="4/7 ÷ 2/7 = 4/7 × 7/2 = 28/14 = 2입니다. 통분으로도 계산 가능: 분모가 같으므로 4 ÷ 2 = 2입니다.",
             accept_formats=["2"],
         ),
-        # 2학기 2단원: 소수의 나눗셈2 (e6-fb-015 ~ 016)
+        # 2학기 2단원: 소수의 나눗셈2 (e6-2-2-1-lv08-fb-001 ~ 016)
         fb(
-            id="e6-fb-015",
+            id="e6-2-2-1-lv08-fb-001",
             concept_id="concept-e6-dec-div2",
             category="computation",
             part="calc",
@@ -180,7 +180,7 @@ def get_questions() -> list[dict]:
             accept_formats=["3"],
         ),
         fb(
-            id="e6-fb-016",
+            id="e6-2-2-1-lv09-fb-001",
             concept_id="concept-e6-dec-div2",
             category="computation",
             part="calc",
@@ -190,9 +190,9 @@ def get_questions() -> list[dict]:
             explanation="60 ÷ 15 = 4입니다.",
             accept_formats=["4"],
         ),
-        # 2학기 3단원: 공간과 입체 (e6-fb-017 ~ 018)
+        # 2학기 3단원: 공간과 입체 (e6-2-3-1-lv08-fb-001 ~ 018)
         fb(
-            id="e6-fb-017",
+            id="e6-2-3-1-lv08-fb-001",
             concept_id="concept-e6-spatial",
             category="concept",
             part="geo",
@@ -203,7 +203,7 @@ def get_questions() -> list[dict]:
             accept_formats=["9"],
         ),
         fb(
-            id="e6-fb-018",
+            id="e6-2-3-1-lv09-fb-001",
             concept_id="concept-e6-spatial",
             category="concept",
             part="geo",
@@ -213,9 +213,9 @@ def get_questions() -> list[dict]:
             explanation="각 칸에 쌓인 높이를 모두 더하면 전체 개수가 됩니다.",
             accept_formats=["높이", "수"],
         ),
-        # 2학기 4단원: 비례식과 비례배분 (e6-fb-019 ~ 020)
+        # 2학기 4단원: 비례식과 비례배분 (e6-2-4-1-lv09-fb-001 ~ 020)
         fb(
-            id="e6-fb-019",
+            id="e6-2-4-1-lv09-fb-001",
             concept_id="concept-e6-proportion",
             category="concept",
             part="algebra",
@@ -226,7 +226,7 @@ def get_questions() -> list[dict]:
             accept_formats=["12"],
         ),
         fb(
-            id="e6-fb-020",
+            id="e6-2-4-1-lv10-fb-001",
             concept_id="concept-e6-proportion",
             category="concept",
             part="algebra",
@@ -236,9 +236,9 @@ def get_questions() -> list[dict]:
             explanation="비의 합 = 3 + 2 = 5입니다. 큰 쪽 = 30 × 3/5 = 18입니다.",
             accept_formats=["18"],
         ),
-        # 2학기 5단원: 원의 넓이 (e6-fb-021 ~ 022)
+        # 2학기 5단원: 원의 넓이 (e6-2-5-1-lv08-fb-001 ~ 022)
         fb(
-            id="e6-fb-021",
+            id="e6-2-5-1-lv08-fb-001",
             concept_id="concept-e6-circle-area",
             category="concept",
             part="geo",
@@ -249,7 +249,7 @@ def get_questions() -> list[dict]:
             accept_formats=["78.5"],
         ),
         fb(
-            id="e6-fb-022",
+            id="e6-2-5-1-lv09-fb-001",
             concept_id="concept-e6-circle-area",
             category="concept",
             part="geo",
@@ -259,9 +259,9 @@ def get_questions() -> list[dict]:
             explanation="반지름 = 8 ÷ 2 = 4cm, 넓이 = 3 × 4 × 4 = 48cm²입니다.",
             accept_formats=["48"],
         ),
-        # 2학기 6단원: 원기둥, 원뿔, 구 (e6-fb-023 ~ 024)
+        # 2학기 6단원: 원기둥, 원뿔, 구 (e6-2-6-1-lv07-fb-001 ~ 024)
         fb(
-            id="e6-fb-023",
+            id="e6-2-6-1-lv07-fb-001",
             concept_id="concept-e6-solids",
             category="concept",
             part="geo",
@@ -272,7 +272,7 @@ def get_questions() -> list[dict]:
             accept_formats=["2"],
         ),
         fb(
-            id="e6-fb-024",
+            id="e6-2-6-1-lv08-fb-001",
             concept_id="concept-e6-solids",
             category="concept",
             part="geo",

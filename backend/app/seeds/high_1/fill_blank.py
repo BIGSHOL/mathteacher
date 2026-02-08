@@ -16,7 +16,7 @@ def _get_questions():
         # ========== 1단원: 다항식 (3문제) ==========
 
         fb(
-            id="h1-fb-001",
+            id="h1-1-1-1-lv03-fb-001",
             concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
@@ -29,7 +29,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-002",
+            id="h1-1-1-1-lv04-fb-001",
             concept_id="concept-h1-polynomial-01",
             category="computation",
             part="algebra",
@@ -42,7 +42,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-003",
+            id="h1-1-1-2-lv05-fb-001",
             concept_id="concept-h1-polynomial-02",
             category="computation",
             part="algebra",
@@ -57,7 +57,7 @@ def _get_questions():
         # ========== 2단원: 방정식과 부등식 (3문제) ==========
 
         fb(
-            id="h1-fb-004",
+            id="h1-1-2-1-lv03-fb-001",
             concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
@@ -70,7 +70,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-005",
+            id="h1-1-2-1-lv04-fb-001",
             concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
@@ -83,7 +83,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-006",
+            id="h1-1-2-1-lv05-fb-001",
             concept_id="concept-h1-equation-01",
             category="computation",
             part="algebra",
@@ -98,7 +98,7 @@ def _get_questions():
         # ========== 3단원: 경우의 수 (3문제) ==========
 
         fb(
-            id="h1-fb-007",
+            id="h1-1-3-2-lv03-fb-001",
             concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
@@ -111,7 +111,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-008",
+            id="h1-1-3-2-lv04-fb-001",
             concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
@@ -124,7 +124,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-009",
+            id="h1-1-3-2-lv05-fb-001",
             concept_id="concept-h1-counting-02",
             category="concept",
             part="data",
@@ -139,7 +139,7 @@ def _get_questions():
         # ========== 4단원: 행렬 (3문제) ==========
 
         fb(
-            id="h1-fb-010",
+            id="h1-1-4-1-lv03-fb-001",
             concept_id="concept-h1-matrix-01",
             category="concept",
             part="algebra",
@@ -152,7 +152,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-011",
+            id="h1-1-4-2-lv04-fb-001",
             concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",
@@ -165,7 +165,7 @@ def _get_questions():
         ),
 
         fb(
-            id="h1-fb-012",
+            id="h1-1-4-2-lv05-fb-001",
             concept_id="concept-h1-matrix-02",
             category="concept",
             part="algebra",

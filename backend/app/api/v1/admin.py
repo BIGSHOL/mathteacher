@@ -207,13 +207,13 @@ async def reset_student_data(
 
     # 4) ConceptMastery
     await db.execute(
-        text("DELETE FROM concept_masteries WHERE student_id = :sid"),
+        text("DELETE FROM concept_mastery WHERE student_id = :sid"),
         {"sid": student_id},
     )
 
     # 5) ChapterProgress
     await db.execute(
-        text("DELETE FROM chapter_progresses WHERE student_id = :sid"),
+        text("DELETE FROM chapter_progress WHERE student_id = :sid"),
         {"sid": student_id},
     )
 

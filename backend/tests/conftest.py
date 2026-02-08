@@ -14,7 +14,22 @@ from httpx import ASGITransport, AsyncClient
 
 from app.main import app, limiter
 from app.core.database import Base, get_db
-from app.models import User, Class, Concept, Question, Test, TestAttempt, AnswerLog
+# Import ALL models so they register with Base.metadata
+from app.models import (
+    User,
+    RefreshToken,
+    Class,
+    Concept,
+    Question,
+    QuestionReport,
+    Test,
+    TestAttempt,
+    AnswerLog,
+    ConceptMastery,
+    ChapterProgress,
+    DailyTestRecord,
+    Chapter,
+)
 from app.services.auth_service import AuthService
 
 # 테스트 환경에서 Rate Limiter 비활성화
@@ -94,12 +109,26 @@ async def _create_test_data(db: AsyncSession):
     )
     db.add(teacher)
 
+    # 마스터 관리자 생성
+    master = User(
+        id="master-001",
+        login_id="master01",
+        name="테스트 관리자",
+        role="master",
+        hashed_password=auth_service.hash_password("password123"),
+        is_active=True,
+        level=1,
+        total_xp=0,
+        current_streak=0,
+        max_streak=0,
+    )
+    db.add(master)
+
     # 반 생성
     test_class = Class(
         id="class-001",
         name="테스트반",
         teacher_id="teacher-001",
-        grade="middle_1",
     )
     db.add(test_class)
 

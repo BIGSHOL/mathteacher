@@ -12,6 +12,7 @@ from .question_report import QuestionReport
 from .test import Test
 from .test_attempt import TestAttempt
 from .user import RefreshToken, User
+from .wrong_answer_review import WrongAnswerReview
 
 __all__ = [
     "AnswerLog",
@@ -27,4 +28,5 @@ __all__ = [
     "Test",
     "TestAttempt",
     "User",
+    "WrongAnswerReview",
 ]

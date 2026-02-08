@@ -121,7 +121,7 @@ def get_concept_data() -> dict:
     # ── 일차함수 (3문제) ──
     func_questions = [
         mc(
-            id="m2-conc-001",
+            id="m2-2-1-01-lv02-cc-001",
             concept_id="concept-m2-linfn-01",
             category="concept",
             part="func",
@@ -133,7 +133,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-002",
+            id="m2-2-1-01-lv05-cc-001",
             concept_id="concept-m2-linfn-01",
             category="concept",
             part="func",
@@ -145,7 +145,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-003",
+            id="m2-2-1-02-lv07-cc-001",
             concept_id="concept-m2-linfn-02",
             category="concept",
             part="func",
@@ -161,7 +161,7 @@ def get_concept_data() -> dict:
     # ── 삼각형의 성질 (3문제) ──
     triangle_questions = [
         mc(
-            id="m2-conc-004",
+            id="m2-2-2-01-lv03-cc-001",
             concept_id="concept-m2-tri-01",
             category="concept",
             part="geo",
@@ -173,7 +173,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-005",
+            id="m2-2-2-02-lv06-cc-001",
             concept_id="concept-m2-tri-02",
             category="concept",
             part="geo",
@@ -185,7 +185,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-006",
+            id="m2-2-2-02-lv08-cc-001",
             concept_id="concept-m2-tri-02",
             category="concept",
             part="geo",
@@ -201,7 +201,7 @@ def get_concept_data() -> dict:
     # ── 사각형의 성질 (3문제) ──
     quadrilateral_questions = [
         mc(
-            id="m2-conc-007",
+            id="m2-2-3-01-lv03-cc-001",
             concept_id="concept-m2-quad-01",
             category="concept",
             part="geo",
@@ -213,7 +213,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-008",
+            id="m2-2-3-02-lv06-cc-001",
             concept_id="concept-m2-quad-02",
             category="concept",
             part="geo",
@@ -225,7 +225,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-009",
+            id="m2-2-3-01-lv08-cc-001",
             concept_id="concept-m2-quad-01",
             category="concept",
             part="geo",
@@ -241,7 +241,7 @@ def get_concept_data() -> dict:
     # ── 도형의 닮음 (3문제) ──
     similarity_questions = [
         mc(
-            id="m2-conc-010",
+            id="m2-2-4-01-lv04-cc-001",
             concept_id="concept-m2-simil-01",
             category="concept",
             part="geo",
@@ -253,7 +253,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-011",
+            id="m2-2-4-02-lv07-cc-001",
             concept_id="concept-m2-simil-02",
             category="concept",
             part="geo",
@@ -265,7 +265,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-012",
+            id="m2-2-4-02-lv09-cc-001",
             concept_id="concept-m2-simil-02",
             category="concept",
             part="geo",
@@ -281,7 +281,7 @@ def get_concept_data() -> dict:
     # ── 피타고라스 정리 (3문제) ──
     pythagoras_questions = [
         mc(
-            id="m2-conc-013",
+            id="m2-2-5-01-lv03-cc-001",
             concept_id="concept-m2-pytha-01",
             category="concept",
             part="geo",
@@ -293,7 +293,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-014",
+            id="m2-2-5-02-lv06-cc-001",
             concept_id="concept-m2-pytha-02",
             category="concept",
             part="geo",
@@ -305,7 +305,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-015",
+            id="m2-2-5-01-lv08-cc-001",
             concept_id="concept-m2-pytha-01",
             category="concept",
             part="geo",
@@ -321,7 +321,7 @@ def get_concept_data() -> dict:
     # ── 확률 (3문제) ──
     probability_questions = [
         mc(
-            id="m2-conc-016",
+            id="m2-2-6-02-lv04-cc-001",
             concept_id="concept-m2-prob-02",
             category="concept",
             part="data",
@@ -333,7 +333,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-017",
+            id="m2-2-6-02-lv07-cc-001",
             concept_id="concept-m2-prob-02",
             category="concept",
             part="data",
@@ -345,7 +345,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-018",
+            id="m2-2-6-01-lv10-cc-001",
             concept_id="concept-m2-prob-01",
             category="concept",
             part="data",
@@ -362,7 +362,7 @@ def get_concept_data() -> dict:
     ch1_concept_questions = [
         # 유리수와 순환소수 (3문제)
         mc(
-            id="m2-conc-019",
+            id="m2-1-1-01-lv03-cc-001",
             concept_id="concept-m2-rational-01",
             category="concept",
             part="calc",
@@ -379,7 +379,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-020",
+            id="m2-1-1-02-lv05-cc-001",
             concept_id="concept-m2-rational-02",
             category="concept",
             part="calc",
@@ -391,7 +391,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-021",
+            id="m2-1-1-02-lv07-cc-001",
             concept_id="concept-m2-rational-02",
             category="concept",
             part="calc",
@@ -409,12 +409,12 @@ def get_concept_data() -> dict:
         ),
         # 식의 계산 (3문제)
         mc(
-            id="m2-conc-022",
+            id="m2-1-2-01-lv03-cc-001",
             concept_id="concept-m2-expr-01",
             category="concept",
             part="algebra",
             difficulty=3,
-            content="지수법칙 a^m × a^n = a^(m+n)이 성립하는 이유는?",
+            content="지수법칙 aᵐ × aⁿ = aᵐ⁺ⁿ이 성립하는 이유는?",
             options=[
                 "a를 m번 곱한 것에 n번 더 곱하면 총 (m+n)번이므로",
                 "지수끼리 곱하면 되므로",
@@ -422,11 +422,11 @@ def get_concept_data() -> dict:
                 "지수를 빼야 하므로",
             ],
             correct="A",
-            explanation="a^m × a^n = (a × a × ... m번) × (a × a × ... n번) = a × a × ... (m+n)번 = a^(m+n). 곱셈의 반복이라는 거듭제곱의 정의에서 자연스럽게 유도됩니다.",
+            explanation="aᵐ × aⁿ = (a × a × ... m번) × (a × a × ... n번) = a × a × ... (m+n)번 = aᵐ⁺ⁿ. 곱셈의 반복이라는 거듭제곱의 정의에서 자연스럽게 유도됩니다.",
             points=10,
         ),
         mc(
-            id="m2-conc-023",
+            id="m2-1-2-02-lv05-cc-001",
             concept_id="concept-m2-expr-02",
             category="concept",
             part="algebra",
@@ -438,7 +438,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-024",
+            id="m2-1-2-02-lv07-cc-001",
             concept_id="concept-m2-expr-02",
             category="concept",
             part="algebra",
@@ -451,7 +451,7 @@ def get_concept_data() -> dict:
         ),
         # 일차부등식 (3문제)
         mc(
-            id="m2-conc-025",
+            id="m2-1-3-01-lv03-cc-001",
             concept_id="concept-m2-ineq-01",
             category="concept",
             part="algebra",
@@ -463,7 +463,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-026",
+            id="m2-1-3-01-lv05-cc-001",
             concept_id="concept-m2-ineq-01",
             category="concept",
             part="algebra",
@@ -480,7 +480,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-027",
+            id="m2-1-3-02-lv07-cc-001",
             concept_id="concept-m2-ineq-02",
             category="concept",
             part="algebra",
@@ -498,7 +498,7 @@ def get_concept_data() -> dict:
         ),
         # 연립일차방정식 (3문제)
         mc(
-            id="m2-conc-028",
+            id="m2-1-4-01-lv04-cc-001",
             concept_id="concept-m2-simul-01",
             category="concept",
             part="algebra",
@@ -510,7 +510,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-029",
+            id="m2-1-4-02-lv06-cc-001",
             concept_id="concept-m2-simul-02",
             category="concept",
             part="algebra",
@@ -522,7 +522,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m2-conc-030",
+            id="m2-1-4-01-lv08-cc-001",
             concept_id="concept-m2-simul-01",
             category="concept",
             part="algebra",

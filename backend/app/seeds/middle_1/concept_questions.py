@@ -184,9 +184,57 @@ def get_concept_data() -> dict:
     # 문제: 8개 개념 × 3문제 = 24개
     # ============================================================
     questions = [
+        # ========== 1단원: 소인수분해 (개념) ==========
+        mc(
+            id="m1-1-01-01-lv02-cc-001",
+            concept_id="concept-m1-prime-01",
+            category="concept",
+            part="calc",
+            difficulty=2,
+            content="다음 중 소수가 아닌 것은?",
+            options=["2", "9", "13", "17"],
+            correct="B",
+            explanation="9 = 3 × 3이므로 합성수입니다. 2는 유일한 짝수 소수입니다.",
+            points=10,
+        ),
+        mc(
+            id="m1-1-01-01-lv04-cc-001",
+            concept_id="concept-m1-prime-01",
+            category="concept",
+            part="calc",
+            difficulty=4,
+            content="다음 중 옳은 것은?",
+            options=[
+                "4와 9는 서로소이다.",
+                "서로소인 두 수는 반드시 모두 소수이다.",
+                "1은 가장 작은 소수이다.",
+                "합성수는 소인수가 2개 이상이다.",
+            ],
+            correct="A",
+            explanation="4와 9는 공약수가 1뿐이므로 서로소입니다. 서로소는 '관계'를 나타내며 두 수 모두 소수일 필요는 없습니다. 1은 소수도 합성수도 아닙니다.",
+            points=10,
+        ),
+        # ========== 2단원: 정수와 유리수 (개념) ==========
+        mc(
+            id="m1-1-02-02-lv05-cc-001",
+            concept_id="concept-m1-int-02",
+            category="concept",
+            part="calc",
+            difficulty=5,
+            content="다음 중 옳지 않은 것은?",
+            options=[
+                "|-5| = 5",
+                "-a는 항상 음수이다.",
+                "절대값이 같은 두 수는 서로 같거나 부호가 반대이다.",
+                "0의 절대값은 0이다.",
+            ],
+            correct="B",
+            explanation="-a가 양수인지 음수인지는 a의 값에 따라 달라집니다. 예를 들어 a = -3이면 -a = 3으로 양수입니다.",
+            points=10,
+        ),
         # 좌표평면과 그래프 (3문제)
         mc(
-            id="m1-conc-001",
+            id="m1-2-05-01-lv02-cc-001",
             concept_id="concept-m1-coord-01",
             category="concept",
             part="func",
@@ -198,7 +246,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-002",
+            id="m1-2-05-01-lv04-cc-001",
             concept_id="concept-m1-coord-01",
             category="concept",
             part="func",
@@ -215,7 +263,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-003",
+            id="m1-2-05-02-lv06-cc-001",
             concept_id="concept-m1-coord-02",
             category="concept",
             part="func",
@@ -233,7 +281,7 @@ def get_concept_data() -> dict:
         ),
         # 정비례와 반비례 (3문제)
         mc(
-            id="m1-conc-004",
+            id="m1-2-06-01-lv03-cc-001",
             concept_id="concept-m1-prop-01",
             category="concept",
             part="func",
@@ -245,7 +293,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-005",
+            id="m1-2-06-02-lv05-cc-001",
             concept_id="concept-m1-prop-02",
             category="concept",
             part="func",
@@ -257,7 +305,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-006",
+            id="m1-2-06-03-lv07-cc-001",
             concept_id="concept-m1-prop-03",
             category="concept",
             part="func",
@@ -275,7 +323,7 @@ def get_concept_data() -> dict:
         ),
         # 기본 도형과 작도 (3문제)
         mc(
-            id="m1-conc-007",
+            id="m1-2-07-02-lv03-cc-001",
             concept_id="concept-m1-geo-02",
             category="concept",
             part="geo",
@@ -287,7 +335,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-008",
+            id="m1-2-07-01-lv05-cc-001",
             concept_id="concept-m1-geo-01",
             category="concept",
             part="geo",
@@ -304,7 +352,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-009",
+            id="m1-2-07-03-lv08-cc-001",
             concept_id="concept-m1-geo-03",
             category="concept",
             part="geo",
@@ -322,7 +370,7 @@ def get_concept_data() -> dict:
         ),
         # 평면도형의 성질 (3문제)
         mc(
-            id="m1-conc-010",
+            id="m1-2-08-01-lv03-cc-001",
             concept_id="concept-m1-plane-01",
             category="concept",
             part="geo",
@@ -334,7 +382,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-011",
+            id="m1-2-08-01-lv05-cc-001",
             concept_id="concept-m1-plane-01",
             category="concept",
             part="geo",
@@ -346,7 +394,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-012",
+            id="m1-2-08-02-lv07-cc-001",
             concept_id="concept-m1-plane-02",
             category="concept",
             part="geo",
@@ -359,7 +407,7 @@ def get_concept_data() -> dict:
         ),
         # 입체도형의 성질 (3문제)
         mc(
-            id="m1-conc-013",
+            id="m1-2-09-02-lv04-cc-001",
             concept_id="concept-m1-solid-02",
             category="concept",
             part="geo",
@@ -371,7 +419,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-014",
+            id="m1-2-09-02-lv06-cc-001",
             concept_id="concept-m1-solid-02",
             category="concept",
             part="geo",
@@ -383,7 +431,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-015",
+            id="m1-2-09-02-lv08-cc-001",
             concept_id="concept-m1-solid-02",
             category="concept",
             part="geo",
@@ -401,7 +449,7 @@ def get_concept_data() -> dict:
         ),
         # 자료의 정리와 해석 (3문제)
         mc(
-            id="m1-conc-016",
+            id="m1-2-10-01-lv03-cc-001",
             concept_id="concept-m1-freq-01",
             category="concept",
             part="data",
@@ -413,7 +461,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-017",
+            id="m1-2-10-03-lv05-cc-001",
             concept_id="concept-m1-freq-03",
             category="concept",
             part="data",
@@ -425,7 +473,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-018",
+            id="m1-2-10-02-lv07-cc-001",
             concept_id="concept-m1-freq-02",
             category="concept",
             part="data",
@@ -438,7 +486,7 @@ def get_concept_data() -> dict:
         ),
         # 대푯값 (3문제) - NEW
         mc(
-            id="m1-conc-019",
+            id="m1-2-11-01-lv04-cc-001",
             concept_id="concept-m1-repr-01",
             category="concept",
             part="data",
@@ -450,7 +498,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-020",
+            id="m1-2-11-02-lv06-cc-001",
             concept_id="concept-m1-repr-02",
             category="concept",
             part="data",
@@ -467,7 +515,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-021",
+            id="m1-2-11-01-lv08-cc-001",
             concept_id="concept-m1-repr-01",
             category="concept",
             part="data",
@@ -485,7 +533,7 @@ def get_concept_data() -> dict:
         ),
         # 산점도와 상관관계 (3문제) - NEW
         mc(
-            id="m1-conc-022",
+            id="m1-2-12-01-lv04-cc-001",
             concept_id="concept-m1-scat-01",
             category="concept",
             part="data",
@@ -497,7 +545,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-023",
+            id="m1-2-12-01-lv06-cc-001",
             concept_id="concept-m1-scat-01",
             category="concept",
             part="data",
@@ -514,7 +562,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-024",
+            id="m1-2-12-02-lv09-cc-001",
             concept_id="concept-m1-scat-02",
             category="concept",
             part="data",
@@ -535,7 +583,7 @@ def get_concept_data() -> dict:
         # ────────────────────────────────────────────────────────
         # 소인수분해 (3문제)
         mc(
-            id="m1-conc-025",
+            id="m1-1-01-01-lv02-cc-002",
             concept_id="concept-m1-prime-01",
             category="concept",
             part="calc",
@@ -552,7 +600,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-026",
+            id="m1-1-01-01-lv05-cc-001",
             concept_id="concept-m1-prime-01",
             category="concept",
             part="calc",
@@ -569,7 +617,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-027",
+            id="m1-1-01-03-lv07-cc-001",
             concept_id="concept-m1-prime-03",
             category="concept",
             part="calc",
@@ -582,7 +630,7 @@ def get_concept_data() -> dict:
         ),
         # 정수와 유리수 (3문제)
         mc(
-            id="m1-conc-028",
+            id="m1-1-02-01-lv02-cc-001",
             concept_id="concept-m1-int-01",
             category="concept",
             part="calc",
@@ -599,7 +647,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-029",
+            id="m1-1-02-02-lv05-cc-002",
             concept_id="concept-m1-int-02",
             category="concept",
             part="calc",
@@ -616,7 +664,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-030",
+            id="m1-1-02-01-lv07-cc-001",
             concept_id="concept-m1-int-01",
             category="concept",
             part="calc",
@@ -629,7 +677,7 @@ def get_concept_data() -> dict:
         ),
         # 문자의 사용과 식의 계산 (3문제)
         mc(
-            id="m1-conc-031",
+            id="m1-1-03-01-lv02-cc-001",
             concept_id="concept-m1-expr-01",
             category="concept",
             part="algebra",
@@ -641,7 +689,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-032",
+            id="m1-1-03-02-lv05-cc-001",
             concept_id="concept-m1-expr-02",
             category="concept",
             part="algebra",
@@ -653,7 +701,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-033",
+            id="m1-1-03-03-lv07-cc-001",
             concept_id="concept-m1-expr-03",
             category="concept",
             part="algebra",
@@ -666,7 +714,7 @@ def get_concept_data() -> dict:
         ),
         # 일차방정식 (3문제)
         mc(
-            id="m1-conc-034",
+            id="m1-1-04-01-lv02-cc-001",
             concept_id="concept-m1-eq-01",
             category="concept",
             part="algebra",
@@ -678,7 +726,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-035",
+            id="m1-1-04-01-lv05-cc-001",
             concept_id="concept-m1-eq-01",
             category="concept",
             part="algebra",
@@ -695,7 +743,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-conc-036",
+            id="m1-1-04-01-lv07-cc-001",
             concept_id="concept-m1-eq-01",
             category="concept",
             part="algebra",
@@ -730,12 +778,12 @@ def get_concept_data() -> dict:
                 "concept-m1-prop-03",
             ],
             question_ids=[
-                "m1-conc-001",
-                "m1-conc-002",
-                "m1-conc-003",
-                "m1-conc-004",
-                "m1-conc-005",
-                "m1-conc-006",
+                "m1-2-05-01-lv02-cc-001",
+                "m1-2-05-01-lv04-cc-001",
+                "m1-2-05-02-lv06-cc-001",
+                "m1-2-06-01-lv03-cc-001",
+                "m1-2-06-02-lv05-cc-001",
+                "m1-2-06-03-lv07-cc-001",
             ],
             time_limit_minutes=10,
             use_question_pool=True,
@@ -757,15 +805,15 @@ def get_concept_data() -> dict:
                 "concept-m1-solid-03",
             ],
             question_ids=[
-                "m1-conc-007",
-                "m1-conc-008",
-                "m1-conc-009",
-                "m1-conc-010",
-                "m1-conc-011",
-                "m1-conc-012",
-                "m1-conc-013",
-                "m1-conc-014",
-                "m1-conc-015",
+                "m1-2-07-02-lv03-cc-001",
+                "m1-2-07-01-lv05-cc-001",
+                "m1-2-07-03-lv08-cc-001",
+                "m1-2-08-01-lv03-cc-001",
+                "m1-2-08-01-lv05-cc-001",
+                "m1-2-08-02-lv07-cc-001",
+                "m1-2-09-02-lv04-cc-001",
+                "m1-2-09-02-lv06-cc-001",
+                "m1-2-09-02-lv08-cc-001",
             ],
             time_limit_minutes=15,
             use_question_pool=True,
@@ -786,15 +834,15 @@ def get_concept_data() -> dict:
                 "concept-m1-scat-02",
             ],
             question_ids=[
-                "m1-conc-016",
-                "m1-conc-017",
-                "m1-conc-018",
-                "m1-conc-019",
-                "m1-conc-020",
-                "m1-conc-021",
-                "m1-conc-022",
-                "m1-conc-023",
-                "m1-conc-024",
+                "m1-2-10-01-lv03-cc-001",
+                "m1-2-10-03-lv05-cc-001",
+                "m1-2-10-02-lv07-cc-001",
+                "m1-2-11-01-lv04-cc-001",
+                "m1-2-11-02-lv06-cc-001",
+                "m1-2-11-01-lv08-cc-001",
+                "m1-2-12-01-lv04-cc-001",
+                "m1-2-12-01-lv06-cc-001",
+                "m1-2-12-02-lv09-cc-001",
             ],
             time_limit_minutes=15,
             use_question_pool=True,
@@ -815,7 +863,20 @@ def get_concept_data() -> dict:
                 "concept-m1-expr-03",
                 "concept-m1-eq-01",
             ],
-            question_ids=[f"m1-conc-{i:03d}" for i in range(25, 37)],
+            question_ids=[
+                "m1-1-01-01-lv02-cc-002",
+                "m1-1-01-01-lv05-cc-001",
+                "m1-1-01-03-lv07-cc-001",
+                "m1-1-02-01-lv02-cc-001",
+                "m1-1-02-02-lv05-cc-002",
+                "m1-1-02-01-lv07-cc-001",
+                "m1-1-03-01-lv02-cc-001",
+                "m1-1-03-02-lv05-cc-001",
+                "m1-1-03-03-lv07-cc-001",
+                "m1-1-04-01-lv02-cc-001",
+                "m1-1-04-01-lv05-cc-001",
+                "m1-1-04-01-lv07-cc-001",
+            ],
             time_limit_minutes=15,
             use_question_pool=True,
             questions_per_attempt=8,

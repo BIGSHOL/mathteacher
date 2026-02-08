@@ -50,13 +50,13 @@ def _get_concepts():
 
 
 def _get_questions():
-    """연산 문제 목록 (12문제: 평면좌표 3 + 직선 3 + 원 3 + 이동 3)."""
+    """연산 문제 목록 (20문제: 각 개념당 5문제)."""
     return [
-        # ========== 1. 평면좌표 (3문제) ==========
+        # ========== 1. 평면좌표 (5문제) ==========
 
         # 두 점 사이의 거리 - 기본
         mc(
-            id="h2-comp-001",
+            id="h2-2-1-1-lv03-co-001",
             concept_id="concept-h2-plane-coord",
             category="computation",
             part="calc",
@@ -70,7 +70,7 @@ def _get_questions():
 
         # 내분점 - 기본
         mc(
-            id="h2-comp-002",
+            id="h2-2-1-1-lv05-co-001",
             concept_id="concept-h2-plane-coord",
             category="computation",
             part="calc",
@@ -84,7 +84,7 @@ def _get_questions():
 
         # 무게중심
         mc(
-            id="h2-comp-003",
+            id="h2-2-1-1-lv07-co-001",
             concept_id="concept-h2-plane-coord",
             category="computation",
             part="calc",
@@ -96,11 +96,11 @@ def _get_questions():
             points=10,
         ),
 
-        # ========== 2. 직선의 방정식 (3문제) ==========
+        # ========== 2. 직선의 방정식 (5문제) ==========
 
         # 직선의 방정식 - 기본
         mc(
-            id="h2-comp-004",
+            id="h2-2-1-2-lv03-co-001",
             concept_id="concept-h2-line",
             category="computation",
             part="algebra",
@@ -114,7 +114,7 @@ def _get_questions():
 
         # 평행과 수직
         mc(
-            id="h2-comp-005",
+            id="h2-2-1-2-lv05-co-001",
             concept_id="concept-h2-line",
             category="computation",
             part="algebra",
@@ -128,7 +128,7 @@ def _get_questions():
 
         # 점과 직선 사이의 거리
         mc(
-            id="h2-comp-006",
+            id="h2-2-1-2-lv08-co-001",
             concept_id="concept-h2-line",
             category="computation",
             part="algebra",
@@ -140,11 +140,11 @@ def _get_questions():
             points=10,
         ),
 
-        # ========== 3. 원의 방정식 (3문제) ==========
+        # ========== 3. 원의 방정식 (5문제) ==========
 
         # 원의 방정식 - 표준형
         mc(
-            id="h2-comp-007",
+            id="h2-2-1-3-lv04-co-001",
             concept_id="concept-h2-circle",
             category="computation",
             part="algebra",
@@ -163,7 +163,7 @@ def _get_questions():
 
         # 원의 방정식 - 일반형 → 표준형 변환
         mc(
-            id="h2-comp-008",
+            id="h2-2-1-3-lv06-co-001",
             concept_id="concept-h2-circle",
             category="computation",
             part="algebra",
@@ -182,7 +182,7 @@ def _get_questions():
 
         # 원의 접선
         mc(
-            id="h2-comp-009",
+            id="h2-2-1-3-lv08-co-001",
             concept_id="concept-h2-circle",
             category="computation",
             part="algebra",
@@ -194,11 +194,11 @@ def _get_questions():
             points=10,
         ),
 
-        # ========== 4. 도형의 이동 (3문제) ==========
+        # ========== 4. 도형의 이동 (5문제) ==========
 
         # 평행이동 - 점
         mc(
-            id="h2-comp-010",
+            id="h2-2-1-4-lv03-co-001",
             concept_id="concept-h2-transform",
             category="computation",
             part="geo",
@@ -212,7 +212,7 @@ def _get_questions():
 
         # 평행이동 - 직선
         mc(
-            id="h2-comp-011",
+            id="h2-2-1-4-lv06-co-001",
             concept_id="concept-h2-transform",
             category="computation",
             part="geo",
@@ -226,7 +226,7 @@ def _get_questions():
 
         # 대칭이동 - y = x
         mc(
-            id="h2-comp-012",
+            id="h2-2-1-4-lv08-co-001",
             concept_id="concept-h2-transform",
             category="computation",
             part="geo",
@@ -235,6 +235,120 @@ def _get_questions():
             options=["(-4, 3)", "(4, -3)", "(-3, 4)", "(3, 4)"],
             correct="A",
             explanation="y = x에 대한 대칭이동: (x, y) → (y, x)\n(3, -4) → (-4, 3)\n\n[핵심 정리]\n- x축 대칭: (x, y) → (x, -y)\n- y축 대칭: (x, y) → (-x, y)\n- 원점 대칭: (x, y) → (-x, -y)\n- y = x 대칭: (x, y) → (y, x)",
+            points=10,
+        ),
+
+        # ========== 추가 문제 (각 개념당 5개 달성) ==========
+
+        # 평면좌표 - 거리 응용
+        mc(
+            id="h2-2-1-1-lv06-co-001",
+            concept_id="concept-h2-plane-coord",
+            category="computation",
+            part="calc",
+            difficulty=6,
+            content="두 점 A(-2, 1), B(4, 9) 사이의 거리는?",
+            options=["10", "8", "√100", "6"],
+            correct="A",
+            explanation="거리 공식: d = √[(x₂ - x₁)² + (y₂ - y₁)²]\nd = √[(4 - (-2))² + (9 - 1)²] = √[(6)² + (8)²] = √(36 + 64) = √100 = 10",
+            points=10,
+        ),
+
+        # 평면좌표 - 내분점 응용
+        mc(
+            id="h2-2-1-1-lv08-co-001",
+            concept_id="concept-h2-plane-coord",
+            category="computation",
+            part="calc",
+            difficulty=8,
+            content="두 점 A(-1, 3), B(5, 9)를 2:1로 내분하는 점의 좌표는?",
+            options=["(3, 7)", "(2, 6)", "(4, 8)", "(1, 5)"],
+            correct="A",
+            explanation="내분점 공식: ((m×x₂ + n×x₁)/(m+n), (m×y₂ + n×y₁)/(m+n))\n2:1 내분점 = ((2×5 + 1×(-1))/(2+1), (2×9 + 1×3)/(2+1))\n= ((10 - 1)/3, (18 + 3)/3) = (9/3, 21/3) = (3, 7)",
+            points=10,
+        ),
+
+        # 직선 - 두 점을 지나는 직선
+        mc(
+            id="h2-2-1-2-lv06-co-001",
+            concept_id="concept-h2-line",
+            category="computation",
+            part="algebra",
+            difficulty=6,
+            content="두 점 (1, 2), (3, 8)을 지나는 직선의 기울기는?",
+            options=["3", "2", "1/3", "6"],
+            correct="A",
+            explanation="기울기 공식: m = (y₂ - y₁)/(x₂ - x₁)\nm = (8 - 2)/(3 - 1) = 6/2 = 3",
+            points=10,
+        ),
+
+        # 직선 - 일반형 → 기울기-절편 형식
+        mc(
+            id="h2-2-1-2-lv07-co-001",
+            concept_id="concept-h2-line",
+            category="computation",
+            part="algebra",
+            difficulty=7,
+            content="직선 3x - 2y + 6 = 0의 기울기와 y절편은?",
+            options=["기울기 3/2, y절편 3", "기울기 -3/2, y절편 3", "기울기 3/2, y절편 -3", "기울기 2/3, y절편 3"],
+            correct="A",
+            explanation="일반형을 y = mx + b로 변환:\n-2y = -3x - 6\ny = (3/2)x + 3\n∴ 기울기 3/2, y절편 3",
+            points=10,
+        ),
+
+        # 원 - 원과 직선의 위치 관계
+        mc(
+            id="h2-2-1-3-lv09-co-001",
+            concept_id="concept-h2-circle",
+            category="computation",
+            part="algebra",
+            difficulty=9,
+            content="원 x² + y² = 25와 직선 y = 3의 교점의 x좌표는?",
+            options=["±4", "±3", "±5", "없음"],
+            correct="A",
+            explanation="y = 3을 원의 방정식에 대입:\nx² + 3² = 25\nx² + 9 = 25\nx² = 16\nx = ±4",
+            points=10,
+        ),
+
+        # 원 - 중심을 지나는 현의 길이
+        mc(
+            id="h2-2-1-3-lv10-co-001",
+            concept_id="concept-h2-circle",
+            category="computation",
+            part="algebra",
+            difficulty=10,
+            content="원 (x - 1)² + (y - 2)² = 9의 넓이는?",
+            options=["9π", "3π", "18π", "81π"],
+            correct="A",
+            explanation="원의 반지름: r = √9 = 3\n넓이 = πr² = π × 3² = 9π",
+            points=10,
+        ),
+
+        # 도형의 이동 - x축 대칭
+        mc(
+            id="h2-2-1-4-lv05-co-001",
+            concept_id="concept-h2-transform",
+            category="computation",
+            part="geo",
+            difficulty=5,
+            content="점 (5, -3)을 x축에 대해 대칭이동한 점의 좌표는?",
+            options=["(5, 3)", "(-5, -3)", "(-5, 3)", "(5, -3)"],
+            correct="A",
+            explanation="x축 대칭: (x, y) → (x, -y)\n(5, -3) → (5, 3)",
+            points=10,
+        ),
+
+        # 도형의 이동 - 원점 대칭
+        mc(
+            id="h2-2-1-4-lv07-co-001",
+            concept_id="concept-h2-transform",
+            category="computation",
+            part="geo",
+            difficulty=7,
+            content="점 (2, -5)를 원점에 대해 대칭이동한 점의 좌표는?",
+            options=["(-2, 5)", "(2, 5)", "(-2, -5)", "(-5, 2)"],
+            correct="A",
+            explanation="원점 대칭: (x, y) → (-x, -y)\n(2, -5) → (-2, 5)",
             points=10,
         ),
     ]
@@ -254,9 +368,9 @@ def _get_tests():
                 "concept-h2-circle",
                 "concept-h2-transform"
             ],
-            question_ids=[f"h2-comp-{i:03d}" for i in range(1, 13)],
-            time_limit_minutes=20,
+            question_ids=['h2-2-1-1-lv03-co-001', 'h2-2-1-1-lv05-co-001', 'h2-2-1-1-lv07-co-001', 'h2-2-1-2-lv03-co-001', 'h2-2-1-2-lv05-co-001', 'h2-2-1-2-lv08-co-001', 'h2-2-1-3-lv04-co-001', 'h2-2-1-3-lv06-co-001', 'h2-2-1-3-lv08-co-001', 'h2-2-1-4-lv03-co-001', 'h2-2-1-4-lv06-co-001', 'h2-2-1-4-lv08-co-001', 'h2-2-1-1-lv06-co-001', 'h2-2-1-1-lv08-co-001', 'h2-2-1-2-lv06-co-001', 'h2-2-1-2-lv07-co-001', 'h2-2-1-3-lv09-co-001', 'h2-2-1-3-lv10-co-001', 'h2-2-1-4-lv05-co-001', 'h2-2-1-4-lv07-co-001'],
+            time_limit_minutes=30,
             use_question_pool=True,
-            questions_per_attempt=8,
+            questions_per_attempt=10,
         ),
     ]
