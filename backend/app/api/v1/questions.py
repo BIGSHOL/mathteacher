@@ -260,7 +260,6 @@ async def list_questions(
 async def get_filter_options(
     grade: Grade | None = Query(None),
     db: AsyncSession = Depends(get_db),
-    _user: UserResponse = Depends(get_current_user),
 ):
     """필터용 단원+개념 목록을 한 번에 조회 (단일 라운드트립)."""
     # 단원 조회
@@ -309,7 +308,6 @@ async def get_filter_options(
 async def list_chapters_for_filter(
     grade: Grade | None = Query(None),
     db: AsyncSession = Depends(get_db),
-    _user: UserResponse = Depends(get_current_user),
 ):
     """필터용 단원 목록 조회 (경량: 필요한 컬럼만 SELECT)."""
     cols = select(
@@ -340,7 +338,6 @@ async def list_concepts_for_filter(
     grade: Grade | None = Query(None),
     chapter_id: str | None = Query(None),
     db: AsyncSession = Depends(get_db),
-    _user: UserResponse = Depends(get_current_user),
 ):
     """필터용 개념 목록 조회 (경량: id, name, grade, category SELECT)."""
     cols = select(Concept.id, Concept.name, Concept.grade, Concept.category)
