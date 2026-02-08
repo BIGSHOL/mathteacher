@@ -325,6 +325,7 @@ class AIService:
                 "- 좋은 예: '서로소인 두 수의 조건은?', '합성수의 특징은?'\n"
             )
 
+        # 객관식/빈칸에 따른 프롬프트 보강
         if question_type == "fill_in_blank":
             type_instruction = (
                 "빈칸 채우기 문제를 생성하세요.\n"
@@ -332,37 +333,13 @@ class AIService:
                 "- options: null\n"
                 '- correct_answer: 정답 (예: "2³×3²")\n'
                 '- accept_formats: 허용 답안 리스트 (예: ["2^3×3^2", "2^3*3^2"])\n'
-                "\n## 빈칸 채우기 필수 규칙\n"
-                "- 학생이 숫자·수식·단어를 직접 입력하는 형식입니다.\n"
-                "- 정답은 반드시 하나의 명확한 값(숫자, 수식, 용어)이어야 합니다.\n"
-                "- content 안에 모든 정보가 포함되어야 합니다. 외부 참조 금지.\n"
-                "\n### 절대 금지 (위반 시 문제 삭제됨)\n"
-                "1. (가)/(나)/(ㄱ)/(ㄴ)/(ㄷ) 등 보기·참조형 기호 사용 금지\n"
-                "2. '고르시오', '선택하시오', '모두 고르면' 등 선택형 표현 금지\n"
-                "3. '옳은 것', '옳지 않은 것' 등 판별형 표현 금지\n"
-                "4. '다음 수', '다음 중', '다음은', '아래 표' 등 외부 참조 표현 금지\n"
-                "5. **content 안에 숫자 목록을 나열하는 것 금지**\n"
-                "   → '(2, 4, 9, 11, 15)' 같은 괄호 안 숫자 나열 금지\n"
-                "   → '1, 3, 5, 7, 11 중에서' 같은 쉼표로 연결된 수 나열 금지\n"
-                "   → 빈칸 채우기는 보기가 없는 문제입니다. 후보 숫자를 제시하면 안 됩니다.\n"
-                "6. '몇 개인가?'로 개수를 세는 문제에서 대상 목록을 나열하지 마세요\n"
-                "   → 범위로 표현: '50 이하의 소수는 몇 개인가?' (O)\n"
-                "   → 목록 나열: '다음 수 중 소수는 몇 개인가? (2, 4, 9, 11)' (X)\n"
-                "\n### 좋은 예시 (이런 문제를 만드세요)\n"
-                "- '72를 소인수분해하면?'\n"
-                "- '두 수 14와 21의 최대공약수는?'\n"
-                "- '50 이하의 자연수 중 소수의 개수는?'\n"
-                "- '18의 약수의 개수는?'\n"
-                "- '120과 84의 최소공배수는?'\n"
-                "- 'x²+5x+6을 인수분해하면?'\n"
-                "- '(-3)×(-5)+2의 값은?'\n"
-                "\n### 나쁜 예시 (이런 문제는 100% 삭제됨)\n"
-                "- '다음 수 중 합성수는 몇 개인가? (2, 4, 9, 11, 15, 17)' → 숫자 목록 나열 금지\n"
-                "- '다음 중 소수는? (1, 9, 13, 15)' → '다음 중' + 숫자 목록 나열\n"
-                "- '다음 수 중 27과 서로소인 수는? (2, 3, 5, 9)' → 후보 수를 제시하면 안 됨\n"
-                "- '다음 수들을 소인수분해했을 때...' → '다음 수'가 어디에도 없음\n"
-                "- '(가)에 들어갈 수는?' → 참조형 빈칸\n"
-                "- '다음은 72를 소인수분해하는 과정이다...' → 과정 참조형\n"
+                "\n## 빈칸 채우기 필수 규칙 (매우 중요)\n"
+                "1. 학생이 숫자·수식·단어를 직접 입력하는 형식입니다. 보기가 없습니다.\n"
+                "2. 정답은 반드시 하나의 명확한 값이어야 합니다.\n"
+                "3. **기호 사용 금지**: (ㄱ), (ㄴ), (가), (나) 등 보기용 기호를 절대 사용하지 마세요.\n"
+                "   - 대신 `[ ]` 또는 `( )`를 사용하여 빈칸을 표시하세요. 예: '5 + 2 = [ ]'\n"
+                "4. '고르시오', '선택하시오', '다음 중' 등 객관식형 표현을 절대 사용하지 마세요.\n"
+                "5. **목록 나열 금지**: 후보 숫자 목록(예: 2, 4, 7, 9)을 제시하지 마세요.\n"
             )
             json_example = (
                 '{"content": "72를 소인수분해하면?", '
@@ -375,21 +352,16 @@ class AIService:
             type_instruction = (
                 "객관식(4지선다) 문제를 생성하세요.\n"
                 "- 반드시 선지 4개 (A, B, C, D)\n"
-                "- 오개념을 반영한 매력적인 오답 선지 포함\n"
                 "- correct_answer: 정답 라벨 (A/B/C/D 중 하나)\n"
-                "\n### 객관식 필수 규칙 (위반 시 문제 삭제됨)\n"
-                "- content에는 문제 텍스트만 포함. 보기(선지)는 절대 content에 넣지 마세요.\n"
-                "- 보기는 반드시 options 배열에 별도로 넣으세요.\n"
-                "- content에 (ㄱ)/(ㄴ)/(ㄷ)/(ㄹ)/(ㅁ)/(가)/(나) 등 보기 기호를 절대 넣지 마세요.\n"
-                "- content에 선지 목록(예: '1, 4, 7, 9, 13')을 나열하지 마세요. 선지는 options에만!\n"
-                "\n### 좋은 content 예시\n"
-                "- '24의 약수의 개수는?' (보기 없이 질문만)\n"
-                "- '두 수 12와 18의 최대공약수는?' (보기 없이 질문만)\n"
-                "- '50 이하의 소수의 개수는?' (보기 없이 질문만)\n"
-                "\n### 나쁜 content 예시 (이런 문제 생성 시 삭제됨)\n"
-                "- '다음 수 중에서 합성수를 모두 고르면? (ㄱ) 1 (ㄴ) 4 (ㄷ) 13' → 보기가 content에 들어감\n"
-                "- '다음 중 소수를 모두 고른 것은?' → '다음 중'이 불필요, 선지는 options에 있음\n"
-                "- '다음 중 옳은 것은?' → options에 선지가 있으므로 '다음 중' 불필요\n"
+                "\n## 객관식 필수 규칙 (매우 중요)\n"
+                "1. **기호 사용 금지**: (ㄱ), (ㄴ), (가), (나) 등 기호를 content에 넣지 마세요.\n"
+                "   - 만약 문제 내에서 특정 부분을 지칭해야 한다면 [A], [B] 또는 [가], [나] 대신 [ ]를 사용하거나 전체 식을 다시 쓰세요.\n"
+                "2. **선지는 options에만**: content에는 문제 텍스트만 넣으세요. 선지 목록을 content에 나열하지 마세요.\n"
+                "## 객관식(MC) 지침\n"
+                "1. options 배열에 5개의 선택지를 'label'(A-E)과 'text' 형식으로 제공하세요.\n"
+                "2. correct_answer는 반드시 'A', 'B', 'C', 'D', 'E' 중 하나여야 합니다.\n"
+                "3. (ㄱ), (ㄴ), (가), (나) 등의 기호를 사용하지 마세요.\n"
+                "4. [CoT 지시] 문제를 낼 때 먼저 스스로 계산하고, 그 결과가 선지에 있는지 확인한 후 최종 JSON을 구성하세요."
             )
             json_example = (
                 '{"content": "24의 약수의 개수는?", '
@@ -400,152 +372,145 @@ class AIService:
                 '"difficulty": 5}'
             )
 
-        # 중복 방지: 기존 문제 목록을 프롬프트에 포함
+        # 트랙별 지침 (개념 vs 연산)
+        if category == "concept":
+            track_instruction = (
+                "## 개념(Concept) 트랙 지침\n"
+                "1. 단순 계산 실력을 묻는 문제보다는 원리, 정의, 성질, 과정에 대한 이해를 묻는 문제를 만드세요.\n"
+                "   - 나쁜 예: 25 + 36 = [ ] (이것은 연산 문제입니다)\n"
+                "   - 좋은 예: 25 + 36을 계산할 때 십의 자리에서 일의 자리로 받아올림이 있는지 묻거나, 계산 과정을 설명하는 문제\n"
+                "2. 스토리텔링이나 실생활 상황을 활용하여 개념의 적용을 확인하세요."
+            )
+        else:
+            track_instruction = "## 연산(Computation) 트랙 지침: 정확한 계산 절차와 결과를 확인하는 문제를 생성하세요."
+
+        # 중복 방지
         existing_section = ""
         if existing_contents:
             existing_list = "\n".join(f"- {c}" for c in existing_contents[:20])
             existing_section = (
-                f"\n## 이미 존재하는 문제 (중복 금지)\n"
-                f"아래 문제들과 동일하거나 숫자만 바꾼 유사 문제는 절대 생성하지 마세요:\n"
+                f"\n## 중복 금지 목록\n"
+                f"아래 문제들과 중복되지 않게 하세요:\n"
                 f"{existing_list}\n"
             )
 
-        # 교육과정 컨텍스트 주입 (핵심 개념, 오개념, 출제 가이드라인)
         curriculum_context = format_prompt_context(concept_id, grade)
-        context_section = (
-            f"\n## 교육과정 컨텍스트\n{curriculum_context}\n"
-            if curriculum_context else ""
-        )
+        context_section = f"\n## 교육과정 배경\n{curriculum_context}\n" if curriculum_context else ""
 
         prompt = (
-            f"당신은 2022 개정 교육과정 기반 {grade_label} 수학 문제 출제 전문가입니다.\n\n"
-            f"[개념] {concept_name}\n"
-            f"[트랙] {cat_label}\n"
-            f"[난이도 범위] {difficulty_min}~{difficulty_max} (1=매우 쉬움, 10=매우 어려움)\n"
-            f"[생성 개수] {count}개\n"
-            f"{track_instruction}\n"
-            f"{context_section}\n"
-            f"{type_instruction}\n"
-            "## 규칙\n"
-            "1. 모든 수학 계산은 반드시 정확해야 합니다. 검산을 수행하세요.\n"
-            "2. explanation에 풀이 과정을 포함하세요.\n"
-            f"3. difficulty는 {difficulty_min}~{difficulty_max} 범위에서 다양하게 분포시키세요.\n"
-            "4. 한국어로 작성하세요.\n"
-            "5. 각 문제가 서로 다른 유형/소재여야 합니다.\n"
-            "6. 위 '학생 주요 오개념' 목록의 오류 유형을 반영하여 매력적인 오답 선지를 만드세요.\n"
-            "7. **객관식 정답 검증 필수**: correct_answer 라벨(A/B/C/D)이 가리키는 선지의 text가 "
-            "explanation의 최종 답과 반드시 일치해야 합니다. 예: 해설에서 '8개'가 정답이면 "
-            "correct_answer는 '8개'가 적힌 선지의 라벨이어야 합니다.\n"
-            f"{existing_section}\n"
-            f"## 출력 형식 (JSON 배열)\n"
-            f"예시: [{json_example}]\n\n"
-            f"반드시 {count}개의 문제를 JSON 배열로만 출력하세요. 다른 텍스트는 포함하지 마세요."
+            f"당신은 {grade_label} 수학 문제 출제 전문가입니다.\n\n"
+            f"[개념명] {concept_name} | [트랙] {cat_label}\n"
+            f"[난이도] {difficulty_min}~{difficulty_max} | [개수] {count}개\n\n"
+            f"{track_instruction}\n\n"
+            f"{context_section}\n\n"
+            f"{type_instruction}\n\n"
+            "## 공통 규칙\n"
+            "1. 정확성: 모든 계산은 100% 정확해야 합니다.\n"
+            "2. 다양성: 한 개념 내에서도 다양한 상황과 난이도를 구성하세요.\n"
+            "3. 기호 사용 금지: (ㄱ), (ㄴ), (가), (나), ①, ② 등은 절대 사용하지 마세요. 대신 [ ] 또는 ( )를 사용하세요.\n"
+            "4. LaTeX 제한: LaTeX 문법을 사용할 수 있지만, array, tabular, begin{...} 등 복잡한 환경은 렌더링을 위해 사용하지 마세요.\n"
+            f"{existing_section}\n\n"
+            f"## 출력 형식: JSON 배열만 출력 (예: [{json_example}])"
         )
 
-        try:
-            response = client.models.generate_content(
-                model=settings.GEMINI_MODEL_NAME,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.5,
-                    max_output_tokens=4096,
-                ),
-            )
-
-            # 응답 유효성 검사
-            if not response.text:
-                logger.warning(
-                    "AI returned empty response for concept %s (possibly blocked by safety filters)",
-                    concept_name
+        max_retries = 2
+        for attempt in range(max_retries + 1):
+            try:
+                response = client.models.generate_content(
+                    model=settings.GEMINI_MODEL_NAME,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=0.4 + (attempt * 0.1),  # 재시도 시 창의성 약간 높임
+                        max_output_tokens=4096,
+                    ),
                 )
-                return None
 
-            text = response.text.strip()
+                if not response.text:
+                    if attempt < max_retries: continue
+                    return None
 
-            if not text:
-                logger.warning("AI returned whitespace-only response for concept %s", concept_name)
-                return None
-
-            # JSON 추출
-            if "```" in text:
-                match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
-                if match:
-                    text = match.group(1)
-
-            questions_raw = json.loads(text)
-            if not isinstance(questions_raw, list):
-                questions_raw = [questions_raw]
-
-            # Question 모델에 맞게 변환
-            result = []
-            seq = start_seq
-            for q in questions_raw[:count]:
-                if id_prefix:
-                    qid = f"{id_prefix}-{seq:03d}"
-                else:
-                    qid = f"ai-{uuid4().hex[:12]}"
-                seq += 1
-                diff = int(q.get("difficulty", 5))
-                diff = max(1, min(10, diff))
-
-                question_dict = {
-                    "id": qid,
-                    "concept_id": concept_id,
-                    "category": category,
-                    "part": part,
-                    "question_type": question_type,
-                    "difficulty": diff,
-                    "content": q.get("content", ""),
-                    "correct_answer": q.get("correct_answer", ""),
-                    "explanation": q.get("explanation", ""),
-                    "points": 10,
-                    "is_active": True,
-                }
-
-                if question_type == "multiple_choice":
-                    options = q.get("options", [])
-                    if options and isinstance(options, list):
-                        formatted = []
-                        labels = ["A", "B", "C", "D"]
-                        for i, opt in enumerate(options[:4]):
-                            if isinstance(opt, dict):
-                                formatted.append({
-                                    "id": str(i + 1),
-                                    "label": opt.get("label", labels[i]),
-                                    "text": str(opt.get("text", "")),
-                                })
-                            else:
-                                formatted.append({
-                                    "id": str(i + 1),
-                                    "label": labels[i],
-                                    "text": str(opt),
-                                })
-                        question_dict["options"] = formatted
+                text = response.text.strip()
+                # Markdown 코드 블록 제거
+                if "```" in text:
+                    match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
+                    if match:
+                        text = match.group(1).strip()
                     else:
-                        question_dict["options"] = None
-                else:
-                    question_dict["options"] = None
-                    accept = q.get("accept_formats", [])
-                    question_dict["blank_config"] = {
-                        "blank_count": 1,
-                        "accept_formats": accept if accept else [q.get("correct_answer", "")],
+                        text = re.sub(r"```(?:json)?|```", "", text).strip()
+                
+                # 가끔 앞뒤에 붙는 불필요한 텍스트 제거 (최초 [ 와 마지막 ] 찾기)
+                start_idx = text.find("[")
+                end_idx = text.rfind("]")
+                if start_idx != -1 and end_idx != -1:
+                    text = text[start_idx:end_idx+1]
+
+                questions_raw = json.loads(text)
+                if not isinstance(questions_raw, list):
+                    questions_raw = [questions_raw]
+
+                # 결과 가공 및 검증
+                result = []
+                seq = start_seq
+                for q in questions_raw[:count]:
+                    qid = f"{id_prefix}-{seq:03d}" if id_prefix else f"ai-{uuid4().hex[:12]}"
+                    seq += 1
+                    
+                    question_dict = {
+                        "id": qid,
+                        "concept_id": concept_id,
+                        "category": category,
+                        "part": part,
+                        "question_type": question_type,
+                        "difficulty": max(1, min(10, int(q.get("difficulty", 5)))),
+                        "content": q.get("content", ""),
+                        "correct_answer": q.get("correct_answer", ""),
+                        "explanation": q.get("explanation", ""),
+                        "points": 10,
+                        "is_active": True,
                     }
 
-                if question_dict["content"]:
-                    # 후처리 검증: 문제 품질 경고 → 위반 시 제외
+                    if question_type == "multiple_choice":
+                        options = q.get("options", [])
+                        if options and isinstance(options, list):
+                            formatted = []
+                            labels = ["A", "B", "C", "D"]
+                            for i, opt in enumerate(options[:4]):
+                                formatted.append({
+                                    "id": str(i + 1),
+                                    "label": opt.get("label", labels[i]) if isinstance(opt, dict) else labels[i],
+                                    "text": str(opt.get("text", opt) if isinstance(opt, dict) else opt),
+                                })
+                            question_dict["options"] = formatted
+                        else:
+                            continue # 보기 없는 객관식 제외
+                    else:
+                        question_dict["options"] = None
+                        accept = q.get("accept_formats", [])
+                        question_dict["blank_config"] = {
+                            "blank_count": 1,
+                            "accept_formats": accept if accept else [str(q.get("correct_answer", ""))],
+                        }
+
+                    # 품질 검증
                     warnings = _validate_generated_question(question_dict, category)
-                    if warnings:
-                        logger.warning(
-                            "AI 생성 문제 제외 (concept=%s, id=%s): %s | content=%s",
-                            concept_name, qid, "; ".join(warnings),
-                            question_dict["content"][:80],
-                        )
-                        continue
-                    result.append(question_dict)
+                    if not warnings:
+                        result.append(question_dict)
+                    else:
+                        logger.warning("AI 문제 제외 (%s): %s", qid, "; ".join(warnings))
 
-            logger.info("AI generated %d questions for concept %s", len(result), concept_name)
-            return result
+                if result:
+                    logger.info("AI generated %d questions for %s (attempt %d)", len(result), concept_name, attempt + 1)
+                    return result
+                
+                if attempt < max_retries:
+                    logger.info("No valid questions generated for %s, retrying...", concept_name)
+                    continue
 
-        except Exception:
-            logger.exception("AI question generation failed for concept %s", concept_name)
-            return None
+            except json.JSONDecodeError as e:
+                logger.error("JSON 파싱 실패 (시도 %d/%d): %s\nResponse: %s", attempt + 1, max_retries + 1, e, text[:500])
+                if attempt < max_retries: continue
+            except Exception:
+                logger.exception("AI 문제 생성 중 예외 발생 (시도 %d)", attempt + 1)
+                if attempt < max_retries: continue
+
+        return None

@@ -9,6 +9,7 @@ import {
   deriveFillBlank,
 } from '../../services/questionService'
 import type { Grade } from '../../types'
+import { MathText } from '../../components/common/MathText'
 
 interface ChapterItem {
   id: string
@@ -624,9 +625,10 @@ export function QuestionGenerationPage() {
                       <div className="flex items-center gap-3">
                         <span className="w-6">#</span>
                         <span className="flex-1">문제 내용</span>
-                        <span className="w-14 text-center">유형</span>
-                        <span className="w-10 text-center">난이도</span>
-                        <span className="w-[120px]">정답</span>
+                        <span className="w-[60px] text-center">트랙</span>
+                        <span className="w-[60px] text-center">유형</span>
+                        <span className="w-[60px] text-center">난이도</span>
+                        <span className="w-[100px] text-center">정답</span>
                         <span className="w-4" />
                       </div>
                     </th>
@@ -656,43 +658,58 @@ export function QuestionGenerationPage() {
                         >
                           <div className="flex items-start gap-3">
                             {/* 번호 */}
-                            <span className="shrink-0 w-6 text-gray-400">{idx + 1}</span>
+                            <span className="shrink-0 w-6 text-gray-400 font-mono text-xs">{idx + 1}</span>
                             {/* 내용 */}
                             <div className="min-w-0 flex-1">
                               <div className={`text-gray-800 ${isExpanded ? '' : 'line-clamp-2'}`}>
-                                {String(q.content || '')}
+                                <MathText text={String(q.content || '')} />
                               </div>
                               {/* 경고 배지 */}
                               {warnings.length > 0 && (
                                 <div className="mt-1 flex flex-wrap gap-1">
                                   {warnings.map((w, wi) => (
-                                    <span key={wi} className="rounded bg-red-100 px-1.5 py-0.5 text-xs text-red-600">
+                                    <span key={wi} className="rounded bg-red-100 px-1.5 py-0.5 text-[10px] text-red-600">
                                       {w}
                                     </span>
                                   ))}
                                 </div>
                               )}
                             </div>
+                            {/* 트랙 뱃지 */}
+                            <div className="shrink-0 w-[60px] flex justify-center">
+                              <span
+                                className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${q.category === 'computation'
+                                  ? 'bg-blue-50 text-blue-600 border border-blue-100'
+                                  : 'bg-emerald-50 text-emerald-600 border border-emerald-100'
+                                  }`}
+                              >
+                                {q.category === 'computation' ? '연산' : '개념'}
+                              </span>
+                            </div>
                             {/* 유형 뱃지 */}
-                            <span
-                              className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${q.question_type === 'fill_in_blank'
-                                ? 'bg-cyan-100 text-cyan-700'
-                                : 'bg-purple-100 text-purple-700'
-                                }`}
-                            >
-                              {q.question_type === 'fill_in_blank' ? '빈칸' : '객관식'}
-                            </span>
+                            <div className="shrink-0 w-[60px] flex justify-center">
+                              <span
+                                className={`rounded px-1.5 py-0.5 text-[10px] font-bold ${q.question_type === 'fill_in_blank'
+                                  ? 'bg-cyan-50 text-cyan-600 border border-cyan-100'
+                                  : 'bg-purple-50 text-purple-600 border border-purple-100'
+                                  }`}
+                              >
+                                {q.question_type === 'fill_in_blank' ? '빈칸' : '객관식'}
+                              </span>
+                            </div>
                             {/* 난이도 */}
-                            <span className="shrink-0 rounded bg-gray-100 px-1.5 py-0.5 text-xs font-medium text-gray-600">
-                              Lv.{String(q.difficulty || '?')}
-                            </span>
+                            <div className="shrink-0 w-[60px] flex justify-center mt-0.5">
+                              <span className="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium text-gray-600">
+                                Lv.{String(q.difficulty || '?')}
+                              </span>
+                            </div>
                             {/* 정답 */}
-                            <span className="shrink-0 font-mono text-xs text-gray-600 max-w-[120px] truncate">
+                            <div className="shrink-0 w-[100px] text-center font-mono text-xs text-gray-600 truncate mt-0.5">
                               {String(q.correct_answer || '')}
-                            </span>
+                            </div>
                             {/* 펼침 화살표 */}
                             <svg
-                              className={`h-4 w-4 shrink-0 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                              className={`h-4 w-4 shrink-0 text-gray-400 transition-transform mt-0.5 ${isExpanded ? 'rotate-180' : ''}`}
                               fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
                             >
                               <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />

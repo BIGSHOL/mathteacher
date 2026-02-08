@@ -1719,7 +1719,8 @@ def audit_question_categories():
     # -- 2단계: concept → computation 패턴 (개념인데 연산형) --
     CALC_INSTRUCTION = re.compile(r"계산하[시여면]오?|구하[시여면]오?|값[은을]\s*구|얼마")
     CALC_EXPRESSION = re.compile(r"[\d]+\s*[+\-×÷*/]\s*[\d]+")
-    CONCEPT_CONTEXT = re.compile(r"정의|성질|옳은|설명|이유|특징")
+    # '의미', '뜻', '몇 개' 등이 포함되면 연산 수식이 있더라도 개념형으로 유지
+    CONCEPT_CONTEXT = re.compile(r"정의|성질|옳은|설명|이유|특징|의미|뜻|몇\s*개|개수")
 
     db = SyncSessionLocal()
     try:
