@@ -2482,13 +2482,13 @@ def migrate_wrong_answer_reviews():
                    MAX(al.created_at) as last_wrong
             FROM answer_logs al
             JOIN test_attempts ta ON al.attempt_id = ta.id
-            WHERE al.is_correct = 0
+            WHERE al.is_correct = FALSE
             AND NOT EXISTS (
                 SELECT 1 FROM answer_logs al2
                 JOIN test_attempts ta2 ON al2.attempt_id = ta2.id
                 WHERE al2.question_id = al.question_id
                 AND ta2.student_id = ta.student_id
-                AND al2.is_correct = 1
+                AND al2.is_correct = TRUE
             )
             GROUP BY al.question_id, ta.student_id
         """)).all()
