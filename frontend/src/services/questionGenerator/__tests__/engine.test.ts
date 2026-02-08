@@ -56,7 +56,7 @@ describe('generateQuestions', () => {
   it('조건에 맞는 템플릿이 없으면 빈 배열을 반환한다', () => {
     const request: GenerateRequest = {
       grade: 'elementary_6',
-      category: 'word_problem',
+      category: 'concept',
       level: 1,
       count: 1,
     }
@@ -221,7 +221,7 @@ describe('generateAdaptiveQuestion', () => {
   it('조건에 맞는 템플릿이 없으면 null을 반환한다', () => {
     const result = generateAdaptiveQuestion(
       'elementary_6',
-      'word_problem',
+      'concept',
       1,
       [mockTemplate]
     )

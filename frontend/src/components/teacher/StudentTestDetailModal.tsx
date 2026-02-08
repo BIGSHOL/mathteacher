@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import axios from 'axios'
-import { MathText } from '../../common/MathText'
-import { TestAttempt, AnswerLog, TestWithQuestions } from '../../../types'
+import { MathText } from '../common/MathText'
+import type { TestAttempt, AnswerLog, TestWithQuestions, Question } from '../../types'
 
 interface GetAttemptResponse {
     attempt: TestAttempt
@@ -106,7 +106,7 @@ export function StudentTestDetailModal({ isOpen, onClose, attemptId }: StudentTe
                                     </div>
                                 ) : data ? (
                                     <div className="space-y-6">
-                                        {data.test.questions.map((question, index) => {
+                                        {data.test.questions.map((question: Omit<Question, 'correct_answer'> & { correct_answer?: string }, index: number) => {
                                             const answerLog = data.answers.find((a) => a.question_id === question.id)
                                             const isCorrect = answerLog?.is_correct ?? false
 

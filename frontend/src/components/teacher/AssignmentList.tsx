@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { ko } from 'date-fns/locale'
-import { TrashIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/outline'
 import api from '../../lib/api'
 import type { Assignment } from '../../types'
 
@@ -97,12 +96,16 @@ export function AssignmentList({ studentId, onRefresh }: AssignmentListProps) {
                     <div className="flex items-center gap-3 ml-4">
                         {assignment.is_completed ? (
                             <div className="text-center">
-                                <CheckCircleIcon className="h-6 w-6 text-green-500 mx-auto" />
+                                <svg className="h-6 w-6 text-green-500 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                                 <span className="text-xs text-green-600 font-medium">완료</span>
                             </div>
                         ) : (
                             <div className="text-center">
-                                <XCircleIcon className="h-6 w-6 text-gray-300 mx-auto" />
+                                <svg className="h-6 w-6 text-gray-300 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
                                 <span className="text-xs text-gray-400">미완료</span>
                             </div>
                         )}
@@ -112,7 +115,9 @@ export function AssignmentList({ studentId, onRefresh }: AssignmentListProps) {
                             className="rounded-full p-1 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors"
                             title="삭제"
                         >
-                            <TrashIcon className="h-5 w-5" />
+                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
                         </button>
                     </div>
                 </div>

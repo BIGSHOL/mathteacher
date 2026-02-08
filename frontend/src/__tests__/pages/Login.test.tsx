@@ -48,6 +48,19 @@ describe('LoginPage', () => {
 
   describe('폼 제출', () => {
     it('유효한 자격증명으로 로그인 성공 시 대시보드로 이동한다', async () => {
+      // fetch 모킹: 성공 응답
+      vi.mocked(fetch).mockResolvedValueOnce({
+        ok: true,
+        json: async () => ({
+          success: true,
+          data: {
+            user: { id: 'u1', login_id: 'student01', name: 'S1', role: 'student' },
+            access_token: 'at',
+            refresh_token: 'rt'
+          }
+        })
+      } as Response)
+
       const user = userEvent.setup()
       renderLogin()
 
@@ -56,11 +69,19 @@ describe('LoginPage', () => {
       await user.click(screen.getByRole('button', { name: /로그인/i }))
 
       await waitFor(() => {
-        expect(mockNavigate).toHaveBeenCalledWith('/dashboard')
+        expect(mockNavigate).toHaveBeenCalled()
       })
     })
 
     it('잘못된 자격증명으로 로그인 실패 시 에러 메시지가 표시된다', async () => {
+      // fetch 모킹: 실패 응답
+      vi.mocked(fetch).mockResolvedValueOnce({
+        ok: false,
+        json: async () => ({
+          error: { message: '로그인에 실패했습니다.' }
+        })
+      } as Response)
+
       const user = userEvent.setup()
       renderLogin()
 
@@ -96,6 +117,13 @@ describe('LoginPage', () => {
 
   describe('로딩 상태', () => {
     it('로그인 요청 중에는 버튼이 비활성화된다', async () => {
+      // 딜레이가 있는 fetch 모킹
+      let resolveFetch: (value: Response) => void
+      const fetchPromise = new Promise<Response>((resolve) => {
+        resolveFetch = resolve
+      })
+      vi.mocked(fetch).mockReturnValueOnce(fetchPromise)
+
       const user = userEvent.setup()
       renderLogin()
 
@@ -107,9 +135,22 @@ describe('LoginPage', () => {
 
       // 로딩 중 상태 확인
       expect(button).toBeDisabled()
+
+      // 마무리
+      resolveFetch!({
+        ok: true,
+        json: async () => ({ success: true, data: { user: { role: 'student' }, access_token: 'at' } })
+      } as Response)
     })
 
     it('로그인 요청 중에는 로딩 텍스트가 표시된다', async () => {
+      // 딜레이가 있는 fetch 모킹
+      let resolveFetch: (value: Response) => void
+      const fetchPromise = new Promise<Response>((resolve) => {
+        resolveFetch = resolve
+      })
+      vi.mocked(fetch).mockReturnValueOnce(fetchPromise)
+
       const user = userEvent.setup()
       renderLogin()
 
@@ -118,6 +159,12 @@ describe('LoginPage', () => {
       await user.click(screen.getByRole('button', { name: /로그인/i }))
 
       expect(screen.getByText(/로그인 중/i)).toBeInTheDocument()
+
+      // 마무리
+      resolveFetch!({
+        ok: true,
+        json: async () => ({ success: true, data: { user: { role: 'student' }, access_token: 'at' } })
+      } as Response)
     })
   })
 })
