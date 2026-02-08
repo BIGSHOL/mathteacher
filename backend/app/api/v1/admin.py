@@ -421,12 +421,8 @@ async def admin_generate_questions(
     category = concept.category.value if hasattr(concept.category, "value") else str(concept.category)
     part = concept.part.value if hasattr(concept.part, "value") else str(concept.part)
 
-    # 연산 문제는 템플릿 생성기 사용 → AI 생성 불필요
-    if category == "computation":
-        raise HTTPException(
-            status_code=400,
-            detail="연산(computation) 문제는 AI 생성 대상이 아닙니다. 템플릿 생성기를 사용하세요.",
-        )
+    # 연산 트랙에 대해서도 AI 생성을 허용합니다. 
+    # AI 서비스 내부의 track_instruction이 연산용 지침을 이미 포함하고 있습니다.
 
     # 기존 문제 content 조회 (중복 방지)
     existing_stmt = (

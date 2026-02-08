@@ -537,7 +537,7 @@ export function QuestionGenerationPage() {
 
             <button
               onClick={handleGenerate}
-              disabled={step === 'generating' || !conceptId || (isComputation && strategy === 'ai')}
+              disabled={step === 'generating' || !conceptId}
               className="mt-2 rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {step === 'generating' ? (

@@ -273,7 +273,7 @@ async def get_filter_options(
     ch_stmt = ch_stmt.order_by(Chapter.grade, Chapter.semester, Chapter.chapter_number)
 
     # 개념 조회
-    co_stmt = select(Concept.id, Concept.name, Concept.grade)
+    co_stmt = select(Concept.id, Concept.name, Concept.grade, Concept.category)
     if grade:
         co_stmt = co_stmt.where(Concept.grade == grade)
     co_stmt = co_stmt.order_by(Concept.name)
@@ -293,7 +293,12 @@ async def get_filter_options(
                 for r in ch_rows
             ],
             "concepts": [
-                {"id": r.id, "name": r.name, "grade": r.grade.value if hasattr(r.grade, "value") else r.grade}
+                {
+                    "id": r.id, 
+                    "name": r.name, 
+                    "grade": r.grade.value if hasattr(r.grade, "value") else r.grade,
+                    "category": r.category.value if hasattr(r.category, "value") else r.category,
+                }
                 for r in co_rows
             ],
         }
@@ -337,8 +342,8 @@ async def list_concepts_for_filter(
     db: AsyncSession = Depends(get_db),
     _user: UserResponse = Depends(get_current_user),
 ):
-    """필터용 개념 목록 조회 (경량: id, name, grade만 SELECT)."""
-    cols = select(Concept.id, Concept.name, Concept.grade)
+    """필터용 개념 목록 조회 (경량: id, name, grade, category SELECT)."""
+    cols = select(Concept.id, Concept.name, Concept.grade, Concept.category)
     if chapter_id:
         chapter = await db.get(Chapter, chapter_id)
         if chapter and chapter.concept_ids:
@@ -352,7 +357,15 @@ async def list_concepts_for_filter(
     stmt = stmt.order_by(Concept.name)
     rows = (await db.execute(stmt)).all()
     return ApiResponse(
-        data=[{"id": r.id, "name": r.name, "grade": r.grade.value if hasattr(r.grade, "value") else r.grade} for r in rows]
+        data=[
+            {
+                "id": r.id, 
+                "name": r.name, 
+                "grade": r.grade.value if hasattr(r.grade, "value") else r.grade,
+                "category": r.category.value if hasattr(r.category, "value") else r.category,
+            } 
+            for r in rows
+        ]
     )
 
 
