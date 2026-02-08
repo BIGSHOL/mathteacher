@@ -8,6 +8,39 @@ from .common import Grade
 
 
 # ===========================
+# 업적 스키마
+# ===========================
+
+
+class Achievement(BaseModel):
+    """획득한 업적."""
+
+    id: str  # achievement_type
+    name: str
+    description: str
+    icon: str
+    earned_at: datetime
+
+    earned_at: datetime
+
+
+# ===========================
+# 랭킹 스키마
+# ===========================
+
+
+class RankingItem(BaseModel):
+    """랭킹 항목."""
+
+    rank: int
+    user_id: str
+    name: str
+    level: int
+    total_xp: int
+    grade: str | None
+
+
+# ===========================
 # 개념 통계 스키마
 # ===========================
 
@@ -64,6 +97,26 @@ class QuotaProgress(BaseModel):
     carry_over: bool
 
 
+class RecentTest(BaseModel):
+    """최근 테스트."""
+
+    test_id: str
+    test_title: str
+    score: int
+    max_score: int
+    accuracy_rate: float
+    completed_at: datetime
+
+
+class DailyActivity(BaseModel):
+    """일별 활동."""
+
+    date: str
+    tests_completed: int
+    questions_answered: int
+    accuracy_rate: float
+
+
 class StudentStats(BaseModel):
     """학생 통계."""
 
@@ -102,26 +155,6 @@ class StudentStatsSummary(BaseModel):
     tests_completed: int
     current_streak: int
     last_activity_at: datetime | None
-
-
-class RecentTest(BaseModel):
-    """최근 테스트."""
-
-    test_id: str
-    test_title: str
-    score: int
-    max_score: int
-    accuracy_rate: float
-    completed_at: datetime
-
-
-class DailyActivity(BaseModel):
-    """일별 활동."""
-
-    date: str
-    tests_completed: int
-    questions_answered: int
-    accuracy_rate: float
 
 
 class ChapterProgressStat(BaseModel):

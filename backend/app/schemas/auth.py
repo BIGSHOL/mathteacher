@@ -35,6 +35,7 @@ class UserUpdate(BaseModel):
     grade: Grade | None = None
     class_id: str | None = None
     is_active: bool | None = None
+    teacher_memo: str | None = None
 
 
 class UserResponse(UserBase):
@@ -46,6 +47,7 @@ class UserResponse(UserBase):
     level: int = 1
     total_xp: int = 0
     current_streak: int = 0
+    teacher_memo: str | None = None
     created_at: datetime
     updated_at: datetime
 

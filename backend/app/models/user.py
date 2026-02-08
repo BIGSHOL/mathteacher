@@ -49,6 +49,9 @@ class User(Base):
     # 상태
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
 
+    # 관계
+    inventory = relationship("UserItem", back_populates="user", cascade="all, delete-orphan")
+
     # 진단 평가 (Placement Test)
     has_completed_placement: Mapped[bool] = mapped_column(
         Boolean, default=False, comment="진단 평가 완료 여부"
@@ -58,6 +61,11 @@ class User(Base):
     )
     placement_result: Mapped[dict | None] = mapped_column(
         JSON, nullable=True, comment="진단 평가 결과 (시작 단원, 레벨 등)"
+    )
+
+    # 강사 메모
+    teacher_memo: Mapped[str | None] = mapped_column(
+        String(2000), nullable=True, comment="강사 메모 (학생에 대한 특이사항 등)"
     )
 
     # 타임스탬프

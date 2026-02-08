@@ -52,7 +52,9 @@ export function Header() {
                 <>
                   <NavLink to="/daily-lab">이달의 수학</NavLink>
                   <NavLink to="/tests">테스트</NavLink>
+                  <NavLink to="/leaderboard">랭킹</NavLink>
                   <NavLink to="/my-stats">내 통계</NavLink>
+                  {/* <NavLink to="/shop">상점</NavLink> */}
                 </>
               )}
             </nav>
@@ -106,11 +108,10 @@ function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
     <Link
       to={to}
-      className={`relative text-sm font-medium transition-colors ${
-        isActive
-          ? 'text-primary-600'
-          : 'text-gray-600 hover:text-primary-600'
-      }`}
+      className={`relative text-sm font-medium transition-colors ${isActive
+        ? 'text-primary-600'
+        : 'text-gray-600 hover:text-primary-600'
+        }`}
     >
       {children}
       {isActive && (

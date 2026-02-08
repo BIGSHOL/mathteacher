@@ -6,7 +6,9 @@ import { clsx } from 'clsx'
 import api from '../../lib/api'
 import { XpBar } from '../../components/gamification/XpBar'
 import { useAuthStore } from '../../store/authStore'
-import type { StudentStats, TrackStats, Grade, ChapterProgressItem, DailyActivityItem, RecentTestItem } from '../../types'
+import { LearningTrendChart } from '../../components/analytics/LearningTrendChart'
+import { WeaknessRadarChart } from '../../components/analytics/WeaknessRadarChart'
+import type { StudentStats, TrackStats, Grade, ChapterProgressItem, RecentTestItem, Achievement } from '../../types'
 
 /** 레벨별 아이콘 & 칭호 (15레벨 체계) */
 function getLevelMeta(level: number): { icon: string; title: string } {
@@ -295,6 +297,8 @@ export function MyStatsPage() {
   const { user } = useAuthStore()
   const [stats, setStats] = useState<StudentStats | null>(null)
   const [chapters, setChapters] = useState<ChapterProgressItem[]>([])
+  const [achievements, setAchievements] = useState<Achievement[]>([])
+  const [radarData, setRadarData] = useState<any[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -324,15 +328,23 @@ export function MyStatsPage() {
       setIsLoading(true)
       setError('')
 
-      const [statsRes, chaptersRes] = await Promise.all([
+      const [statsRes, chaptersRes, achievementsRes, radarRes] = await Promise.all([
         api.get<{ success: boolean; data: StudentStats }>('/api/v1/stats/me'),
         api.get<{ success: boolean; data: ChapterProgressItem[] }>('/api/v1/chapters/progress', {
           params: { grade: user?.grade }
         }).catch(() => null),
+        api.get<{ success: boolean; data: Achievement[] }>('/api/v1/stats/me/achievements').catch(() => ({ data: { data: [] } })),
+        api.get('/api/v1/stats/me/radar').catch(() => ({ data: { data: [] } })),
       ])
       setStats(statsRes.data.data)
       if (chaptersRes?.data?.data) {
         setChapters(chaptersRes.data.data)
+      }
+      if (achievementsRes?.data?.data) {
+        setAchievements(achievementsRes.data.data)
+      }
+      if (radarRes?.data?.data) {
+        setRadarData(radarRes.data.data)
       }
     } catch {
       setError('통계를 불러오는데 실패했습니다.')
@@ -450,6 +462,41 @@ export function MyStatsPage() {
           </div>
         </motion.div>
 
+        {/* 업적 (Achievements) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-sm font-semibold text-gray-900">나의 업적</h2>
+            <span className="text-xs text-gray-500">총 {achievements.length}개 획득</span>
+          </div>
+
+          {achievements.length === 0 ? (
+            <div className="rounded-xl bg-white p-6 text-center shadow-sm">
+              <div className="text-4xl mb-2 opacity-30">🏆</div>
+              <p className="text-gray-500 text-sm">아직 획득한 업적이 없습니다.</p>
+              <p className="text-xs text-gray-400 mt-1">열심히 학습하여 배지를 모아보세요!</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+              {achievements.map((ach) => (
+                <div key={ach.id} className="flex flex-col items-center p-2 rounded-xl bg-white shadow-sm border border-gray-100">
+                  <div className="text-3xl mb-1">{ach.icon}</div>
+                  <div className="text-[10px] font-bold text-gray-800 text-center leading-tight truncate w-full">{ach.name}</div>
+                </div>
+              ))}
+              {/* 빈 슬롯 채우기 (선택사항) */}
+              {Array.from({ length: Math.max(0, 12 - achievements.length) }).map((_, i) => (
+                <div key={`empty-${i}`} className="flex flex-col items-center justify-center p-2 rounded-xl bg-gray-50 border border-dashed border-gray-200 opacity-50 aspect-square">
+                  <div className="text-xl text-gray-300">?</div>
+                </div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+
         {/* 학습 통계 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -544,8 +591,30 @@ export function MyStatsPage() {
             transition={{ delay: 0.28 }}
           >
             <h2 className="mb-2 text-sm font-semibold text-gray-900">최근 7일 학습 추이</h2>
-            <div className="rounded-xl bg-white p-4 shadow-sm">
-              <WeeklyActivityChart data={stats.daily_activity} />
+            <div className="rounded-xl bg-white p-4 shadow-sm h-72">
+              <LearningTrendChart
+                data={stats.daily_activity.map(d => ({
+                  date: d.date,
+                  solved: d.questions_answered,
+                  accuracy: d.accuracy_rate
+                }))}
+              />
+            </div>
+          </motion.div>
+        )}
+
+        {/* 취약점 분석 (레이더 차트) */}
+        {radarData.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.29 }}
+          >
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">영역별 숙련도</h2>
+            <div className="rounded-xl bg-white p-4 shadow-sm h-72 flex justify-center items-center">
+              <div className="w-full h-full max-w-md">
+                <WeaknessRadarChart data={radarData} />
+              </div>
             </div>
           </motion.div>
         )}
@@ -818,51 +887,7 @@ function ChapterRow({ chapter: ch }: { chapter: ChapterProgressItem }) {
   )
 }
 
-// 최근 7일 학습 추이 차트
-const DAY_LABELS = ['일', '월', '화', '수', '목', '금', '토']
 
-function WeeklyActivityChart({ data }: { data: DailyActivityItem[] }) {
-  const maxQuestions = Math.max(...data.map(d => d.questions_answered), 1)
-
-  return (
-    <div className="space-y-3">
-      {/* 막대 그래프 */}
-      <div className="flex items-end justify-between gap-1" style={{ height: 100 }}>
-        {data.map((d) => {
-          const h = d.questions_answered > 0 ? Math.max(8, (d.questions_answered / maxQuestions) * 100) : 4
-          const dayOfWeek = new Date(d.date).getDay()
-          return (
-            <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
-              {d.questions_answered > 0 && (
-                <span className="text-[10px] font-bold text-gray-500">{d.questions_answered}</span>
-              )}
-              <motion.div
-                initial={{ height: 0 }}
-                animate={{ height: h }}
-                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                className={clsx(
-                  'w-full max-w-[28px] rounded-t-md',
-                  d.questions_answered > 0
-                    ? d.accuracy_rate >= 80 ? 'bg-gradient-to-t from-green-400 to-green-500'
-                      : d.accuracy_rate >= 60 ? 'bg-gradient-to-t from-blue-400 to-blue-500'
-                      : 'bg-gradient-to-t from-orange-400 to-orange-500'
-                    : 'bg-gray-200'
-                )}
-              />
-              <span className="text-[10px] text-gray-400">{DAY_LABELS[dayOfWeek]}</span>
-            </div>
-          )
-        })}
-      </div>
-      {/* 범례 */}
-      <div className="flex justify-center gap-3 text-[10px] text-gray-400">
-        <span><span className="mr-0.5 inline-block h-2 w-2 rounded-sm bg-green-400" />80%+</span>
-        <span><span className="mr-0.5 inline-block h-2 w-2 rounded-sm bg-blue-400" />60%+</span>
-        <span><span className="mr-0.5 inline-block h-2 w-2 rounded-sm bg-orange-400" />60% 미만</span>
-      </div>
-    </div>
-  )
-}
 
 // 문제 유형별 통계 카드
 const TYPE_LABELS: Record<string, { icon: string; label: string }> = {

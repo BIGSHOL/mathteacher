@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, useLocation, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import confetti from 'canvas-confetti'
+import { fireFireworks, fireSchoolPride, fireStars } from '../../utils/confetti'
 import api from '../../lib/api'
 import { ReportQuestionModal } from '../../components/test/ReportQuestionModal'
 import type { TestAttempt, Test, AnswerLog, LevelDownAction } from '../../types'
@@ -13,10 +13,13 @@ interface CompleteState {
   level_down?: boolean
   new_level?: number | null
   xp_earned?: number
+  achievements_earned?: AchievementEarned[]
   level_down_defense?: number | null
   level_down_action?: LevelDownAction | null
   mastery_achieved?: boolean
 }
+
+import { AchievementEarned } from '../../types'
 
 interface AttemptResult {
   attempt: TestAttempt
@@ -47,38 +50,43 @@ export function TestResultPage() {
     // 전문 정답 → perfect 효과음
     if (accuracy === 100) {
       const perfectSound = new Audio('/sounds/perfect.mp3')
-      perfectSound.play().catch(() => {})
+      perfectSound.play().catch(() => { })
     }
 
     // 레벨업 효과음
     if (completeState.level_up) {
       const lvlupSound = new Audio('/sounds/lvlup.mp3')
-      lvlupSound.play().catch(() => {})
+      lvlupSound.play().catch(() => { })
     }
 
     // 레벨다운 효과음
     if (completeState.level_down) {
       const lvldownSound = new Audio('/sounds/lvldown.mp3')
-      lvldownSound.play().catch(() => {})
+      lvldownSound.play().catch(() => { })
     }
 
-    // 좋은 성적일 때 폭죽 효과
-    if (accuracy >= 80) {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-      })
+    // 좋은 성적일 때 폭죽 효과 (80점 이상)
+    if (accuracy >= 80 && accuracy < 100) {
+      fireSchoolPride()
     }
+
+    // 만점 축하
+    if (accuracy === 100) {
+      fireFireworks()
+    }
+
     // 마스터 달성 시 추가 폭죽
     if (completeState.mastery_achieved) {
       setTimeout(() => {
-        confetti({ particleCount: 200, spread: 100, origin: { y: 0.4 } })
+        fireStars()
       }, 500)
+    }
+
+    // 레벨업 시 별 폭죽
+    if (completeState.level_up) {
       setTimeout(() => {
-        confetti({ particleCount: 150, angle: 60, spread: 55, origin: { x: 0 } })
-        confetti({ particleCount: 150, angle: 120, spread: 55, origin: { x: 1 } })
-      }, 1000)
+        fireStars()
+      }, 200)
     }
   }, [result])
 
@@ -357,9 +365,16 @@ export function TestResultPage() {
           onClose={() => setReportQuestionId(null)}
         />
       )}
+
+      {/* 업적 달성 토스트 */}
+      {completeState.achievements_earned && completeState.achievements_earned.length > 0 && (
+        <AchievementToast achievements={completeState.achievements_earned} />
+      )}
     </div>
   )
 }
+
+import { AchievementToast } from '../../components/common/AchievementToast'
 
 interface StatItemProps {
   icon: string

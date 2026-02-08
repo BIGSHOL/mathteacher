@@ -25,6 +25,16 @@ export type ProblemPart = 'calc' | 'algebra' | 'func' | 'geo' | 'data' | 'word'
 /** 난이도 1~10 (1: 가장 쉬움, 10: 가장 어려움). 학년별 × 트랙별 독립 운영 */
 export type Difficulty = number
 
+// 집중 체크 항목 타입
+export interface FocusCheckItem {
+  id: string
+  question_id: string
+  question_content: string
+  concept_name: string
+  wrong_count: number
+  created_at: string
+}
+
 // API 응답 타입
 export interface ApiResponse<T> {
   success: boolean
@@ -131,7 +141,7 @@ export interface AvailableTest extends Test {
 }
 
 export interface TestWithQuestions extends Test {
-  questions: Omit<Question, 'correct_answer'>[]
+  questions: (Omit<Question, 'correct_answer'> & { correct_answer?: string })[]
 }
 
 // 시도 타입
@@ -205,6 +215,14 @@ export interface NextQuestionResponse {
 // 테스트 완료 응답
 export type LevelDownAction = 'none' | 'defense_consumed' | 'defense_restored' | 'level_down'
 
+export interface AchievementEarned {
+  id: string
+  name: string
+  description: string
+  icon: string
+  earned_at: string
+}
+
 export interface CompleteTestResult {
   level_up: boolean
   level_down: boolean
@@ -212,6 +230,7 @@ export interface CompleteTestResult {
   xp_earned: number
   total_xp: number | null
   current_streak: number | null
+  achievements_earned?: AchievementEarned[]
   level_down_defense: number | null
   level_down_action: LevelDownAction | null
   mastery_achieved?: boolean
@@ -352,4 +371,35 @@ export interface ChapterProgressItem {
   is_completed: boolean
   final_test_score: number | null
   teacher_approved: boolean
+}
+
+// 과제 타입
+export interface Assignment {
+  id: string
+  student_id: string
+  assignment_type: 'chapter' | 'review' | 'custom'
+  reference_id?: string
+  title: string
+  description?: string
+  due_date?: string
+  is_completed: boolean
+  completed_at?: string
+  created_at: string
+}
+
+export interface Achievement {
+  id: string
+  name: string
+  description: string
+  icon: string
+  earned_at: string
+}
+
+export interface RankingItem {
+  rank: number
+  user_id: string
+  name: string
+  level: number
+  total_xp: number
+  grade: string | null
 }

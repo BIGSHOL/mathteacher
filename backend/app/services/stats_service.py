@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
 from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.user import User
@@ -573,6 +574,7 @@ class StatsService:
             test = await self.db.get(Test, attempt.test_id)
             if test:
                 recent_tests.append({
+                    "attempt_id": attempt.id,
                     "test_id": test.id,
                     "test_title": test.title,
                     "score": attempt.score,
@@ -666,6 +668,7 @@ class StatsService:
             "login_id": student.login_id,
             "grade": student.grade,
             "class_name": class_name,
+            "teacher_memo": student.teacher_memo,
             "recent_tests": recent_tests,
             "daily_activity": daily_activity,
             "chapter_progress": chapter_progress_list,
@@ -1024,3 +1027,78 @@ class StatsService:
                     **progress,
                 })
         return result
+
+    async def get_learning_trend(self, user_id: str, days: int = 7) -> list[dict]:
+        """최근 N일간의 학습 추이 (일별 문제 풀이 수, 정답률)."""
+        today = _kst_today()
+        trend_data = []
+        
+        # 1. AnswerLog 기반으로 일별 통계 집계
+        # (성능 최적화를 위해 DailyTestRecord를 쓰는게 좋지만, 실시간성을 위해 직접 집계 예시)
+        # 혹은 DailyTestRecord가 잘 업데이트 되고 있다면 그것을 사용.
+        # 여기서는 DailyTestRecord를 사용한다고 가정 (이미 존재한다고 함)
+        
+        from app.models.daily_test_record import DailyTestRecord
+        
+        start_date = today - timedelta(days=days-1)
+        
+        query = (
+            select(
+                DailyTestRecord.date,
+                func.sum(DailyTestRecord.total_count).label("total_solved"),
+                func.sum(DailyTestRecord.correct_count).label("total_correct")
+            )
+            .where(
+                DailyTestRecord.student_id == user_id,
+                DailyTestRecord.date >= start_date
+            )
+            .group_by(DailyTestRecord.date)
+            .order_by(DailyTestRecord.date.asc())
+        )
+        
+        result = await self.db.execute(query)
+        rows = result.all()
+        stats_map = {row.date: {"total": row.total_solved, "correct": row.total_correct} for row in rows}
+        
+        for i in range(days):
+            date = start_date + timedelta(days=i)
+            data = stats_map.get(date, {"total": 0, "correct": 0})
+            
+            accuracy = 0
+            if data["total"] > 0:
+                accuracy = round((data["correct"] / data["total"]) * 100)
+                
+            trend_data.append({
+                "date": date.strftime("%Y-%m-%d"),
+                "solved": data["total"],
+                "accuracy": accuracy
+            })
+            
+        return trend_data
+
+    async def get_weak_concepts_radar(self, user_id: str, limit: int = 6) -> list[dict]:
+        """취약 개념 레이더 차트 데이터."""
+        from app.models.concept_mastery import ConceptMastery
+        
+        # 최근 업데이트된 개념 숙련도 조회
+        query = (
+            select(ConceptMastery)
+            .where(ConceptMastery.student_id == user_id)
+            .options(selectinload(ConceptMastery.concept))
+            .order_by(ConceptMastery.updated_at.desc())
+            .limit(limit)
+        )
+        result = await self.db.execute(query)
+        masteries = result.scalars().all()
+        
+        data = []
+        for m in masteries:
+            if m.concept:
+                data.append({
+                    "subject": m.concept.name,
+                    "score": m.mastery_percentage,
+                    "fullMark": 100
+                })
+                
+        # 데이터가 없으면 빈 리스트 반환
+        return data

@@ -24,7 +24,10 @@ from app.schemas import (
     DailyClassStat,
     TodayStats,
     WeekStats,
+    WeekStats,
     UserResponse,
+    Achievement,
+    RankingItem,
 )
 from app.schemas.common import UserRole
 from app.services.stats_service import StatsService
@@ -66,6 +69,91 @@ async def get_my_stats(
     review_stats = ReviewStatsInfo(**review_raw) if review_raw else None
 
     return ApiResponse(data=StudentStats(**stats, quota=quota, review_stats=review_stats))
+
+
+@router.get("/me/trend", response_model=ApiResponse[list[dict]])
+async def get_my_learning_trend(
+    days: int = Query(7, ge=1, le=30),
+    current_user: UserResponse = Depends(get_current_user),
+    stats_service: StatsService = Depends(get_stats_service),
+):
+    """내 학습 추이 조회."""
+    trend = await stats_service.get_learning_trend(current_user.id, days)
+    return ApiResponse(data=trend)
+
+
+@router.get("/me/radar", response_model=ApiResponse[list[dict]])
+async def get_my_weakness_radar(
+    current_user: UserResponse = Depends(get_current_user),
+    stats_service: StatsService = Depends(get_stats_service),
+):
+    """내 취약점 레이더 차트 데이터 조회."""
+    radar = await stats_service.get_weak_concepts_radar(current_user.id)
+    return ApiResponse(data=radar)
+
+@router.get("/me/achievements", response_model=ApiResponse[list[Achievement]])
+async def get_my_achievements(
+    current_user: UserResponse = Depends(get_current_user),
+    stats_service: StatsService = Depends(get_stats_service),
+):
+    """내 업적 목록 조회 (획득한 것만)."""
+    # 순환 참조 방지를 위해 함수 내부 import 혹은 서비스 분리 고려
+    # 여기서는 간단히 AchievementService 직접 사용
+    from app.services.achievement_service import AchievementService
+    # db session access hack: stats_service.db
+    achievement_service = AchievementService(stats_service.db)
+    
+    achievements = await achievement_service.get_student_achievements(current_user.id)
+    
+    # DB 모델 -> 스키마 변환 (AchievementService.ACHIEVEMENTS_DEF 참조)
+    result = []
+    for ach in achievements:
+        def_info = AchievementService.ACHIEVEMENTS_DEF.get(ach.achievement_type)
+        if def_info:
+            result.append(Achievement(
+                id=ach.achievement_type,
+                name=def_info["name"],
+                description=def_info["description"],
+                icon=def_info["icon"],
+                earned_at=ach.earned_at
+            ))
+            
+    return ApiResponse(data=result)
+
+
+    return ApiResponse(data=result)
+
+
+@router.get("/ranking", response_model=ApiResponse[list[RankingItem]])
+async def get_ranking(
+    grade: str | None = Query(None, description="학년 필터 (없으면 전체)"),
+    limit: int = Query(50, ge=1, le=100, description="조회 개수"),
+    current_user: UserResponse = Depends(get_current_user),
+    stats_service: StatsService = Depends(get_stats_service),
+):
+    """상위 유저 랭킹 조회."""
+    from app.services.ranking_service import RankingService
+    ranking_service = RankingService(stats_service.db)
+    
+    ranking = await ranking_service.get_top_users(limit, grade)
+    return ApiResponse(data=[RankingItem(**item) for item in ranking])
+
+
+@router.get("/ranking/me", response_model=ApiResponse[RankingItem | None])
+async def get_my_rank(
+    grade: str | None = Query(None, description="학년 필터 (없으면 전체 내 랭킹)"),
+    current_user: UserResponse = Depends(get_current_user),
+    stats_service: StatsService = Depends(get_stats_service),
+):
+    """내 랭킹 조회."""
+    from app.services.ranking_service import RankingService
+    ranking_service = RankingService(stats_service.db)
+    
+    rank_info = await ranking_service.get_user_rank(current_user.id, grade)
+    if not rank_info:
+        return ApiResponse(data=None)
+        
+    return ApiResponse(data=RankingItem(**rank_info))
 
 
 @router.get("/dashboard", response_model=ApiResponse[DashboardStats])

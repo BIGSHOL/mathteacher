@@ -23,6 +23,13 @@ class ResetPasswordRequest(BaseModel):
     """비밀번호 초기화 요청."""
     new_password: str = Field(..., min_length=6, max_length=100)
 
+
+class BulkActionRequest(BaseModel):
+    """일괄 작업 요청."""
+    student_ids: list[str]
+    action: str = Field(..., description="reset_password, change_class, delete")
+    payload: dict | None = None
+
 router = APIRouter(prefix="/students", tags=["students"])
 
 
@@ -290,3 +297,145 @@ async def reset_student_history(
         )
 
     return ApiResponse(data={"message": "테스트 기록이 초기화되었습니다."})
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 집중 체크 (Focus Check) API
+# ─────────────────────────────────────────────────────────────────────────────
+
+from sqlalchemy import select
+from app.models.focus_check import FocusCheckItem
+from app.models.question import Question
+from datetime import datetime, timezone
+
+
+class FocusCheckItemResponse(BaseModel):
+    """집중 체크 항목 응답."""
+    id: str
+    question_id: str
+    question_content: str
+    concept_name: str
+    wrong_count: int
+    created_at: str
+
+
+class FocusCheckListResponse(BaseModel):
+    """집중 체크 목록 응답."""
+    items: list[FocusCheckItemResponse]
+    total: int
+
+
+@router.get("/me/focus-check", response_model=ApiResponse[FocusCheckListResponse])
+async def get_my_focus_check_items(
+    current_user: UserResponse = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """내 집중 체크 목록 조회 (학생 본인)."""
+    stmt = (
+        select(FocusCheckItem, Question)
+        .join(Question, FocusCheckItem.question_id == Question.id)
+        .where(FocusCheckItem.student_id == current_user.id)
+        .where(FocusCheckItem.is_resolved == False)
+        .order_by(FocusCheckItem.created_at.desc())
+    )
+    result = await db.execute(stmt)
+    rows = result.all()
+
+    items = []
+    for focus_item, question in rows:
+        items.append(FocusCheckItemResponse(
+            id=focus_item.id,
+            question_id=question.id,
+            question_content=question.content[:100] + "..." if len(question.content) > 100 else question.content,
+            concept_name=question.concept.name if question.concept else "",
+            wrong_count=focus_item.wrong_count,
+            created_at=focus_item.created_at.isoformat(),
+        ))
+
+    return ApiResponse(data=FocusCheckListResponse(items=items, total=len(items)))
+
+
+@router.post("/me/focus-check/{item_id}/resolve", response_model=ApiResponse[dict])
+async def resolve_focus_check_item(
+    item_id: str,
+    current_user: UserResponse = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """집중 체크 항목 해결 처리."""
+    focus_item = await db.get(FocusCheckItem, item_id)
+    if not focus_item or focus_item.student_id != current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "success": False,
+                "error": {
+                    "code": "NOT_FOUND",
+                    "message": "집중 체크 항목을 찾을 수 없습니다.",
+                },
+            },
+        )
+
+    focus_item.is_resolved = True
+    focus_item.resolved_at = datetime.now(timezone.utc)
+    await db.commit()
+
+    return ApiResponse(data={"message": "집중 체크 항목이 해결되었습니다."})
+
+@router.post("/bulk-action", response_model=ApiResponse[dict])
+async def bulk_action(
+    request: BulkActionRequest,
+    current_user: UserResponse = Depends(require_role(UserRole.TEACHER, UserRole.ADMIN, UserRole.MASTER)),
+    student_service: StudentService = Depends(get_student_service),
+):
+    """학생 일괄 작업."""
+    success_count = 0
+    fail_count = 0
+    
+    for student_id in request.student_ids:
+        # 권한 체크 (강사는 자신의 반 학생만)
+        if current_user.role == UserRole.TEACHER:
+            if not await student_service.check_teacher_access(current_user.id, student_id):
+                fail_count += 1
+                continue
+                
+        try:
+            if request.action == "reset_password":
+                new_password = request.payload.get("new_password")
+                if not new_password:
+                    fail_count += 1
+                    continue
+                await student_service.reset_password(student_id, new_password)
+                
+            elif request.action == "change_class":
+                class_id = request.payload.get("class_id")
+                grade = request.payload.get("grade")
+                
+                update_data = UserUpdate()
+                if class_id:
+                    update_data.class_id = class_id
+                if grade:
+                    from app.schemas.common import Grade
+                    update_data.grade = grade # type: ignore
+                    
+                await student_service.update_student(student_id, update_data)
+                
+            elif request.action == "delete":
+                # Master/Admin only? Or Teacher too?
+                # For now allow teacher to deactivate
+                await student_service.delete_student(student_id)
+                
+            else:
+                fail_count += 1
+                continue
+                
+            success_count += 1
+        except Exception:
+            fail_count += 1
+            
+    return ApiResponse(
+        data={
+            "success_count": success_count,
+            "fail_count": fail_count,
+            "message": f"{success_count}명 처리 성공, {fail_count}명 실패"
+        }
+    )

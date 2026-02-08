@@ -677,7 +677,9 @@ class TestService:
         """시도 조회."""
         return await self.db.get(TestAttempt, attempt_id)
 
-    async def get_attempt_questions(self, attempt_id: str) -> list[dict] | None:
+    async def get_attempt_questions(
+        self, attempt_id: str, include_answer: bool = False
+    ) -> list[dict] | None:
         """시도의 문제 목록 조회 (셔플 적용)."""
         attempt = await self.get_attempt_by_id(attempt_id)
         if not attempt:
@@ -732,6 +734,12 @@ class TestService:
                     # 정답은 응답에 포함하지 않음 (채점 시에만 사용)
                 if "blank_config" in config:
                     q_data["blank_config"] = config["blank_config"]
+                
+                if include_answer and "correct_answer" in config:
+                    q_data["correct_answer"] = config["correct_answer"]
+            
+            if include_answer and "correct_answer" not in q_data:
+                 q_data["correct_answer"] = q.correct_answer
 
             result.append(q_data)
 
@@ -752,7 +760,9 @@ class TestService:
         question = await self.db.get(Question, question_id)
         return question.correct_answer if question else None
 
-    async def get_attempt_with_details(self, attempt_id: str) -> dict | None:
+    async def get_attempt_with_details(
+        self, attempt_id: str, include_answer: bool = False
+    ) -> dict | None:
         """시도와 상세 정보 조회."""
         attempt = await self.get_attempt_by_id(attempt_id)
         if not attempt:
@@ -764,6 +774,7 @@ class TestService:
 
         # 테스트 정보
         test = await self.get_test_by_id(attempt.test_id)
+
 
         return {
             "attempt": attempt,

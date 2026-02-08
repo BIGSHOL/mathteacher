@@ -616,15 +616,29 @@ async def submit_answer(
         attempt_id, request.question_id
     )
 
-    # 채점
-    result = await grading_service.submit_answer(
-        attempt=attempt,
-        question=question,
-        selected_answer=request.selected_answer,
-        time_spent_seconds=request.time_spent_seconds,
-        current_combo=current_combo,
-        correct_answer_override=correct_answer_override,
-    )
+    # 일일 테스트 여부 확인 (test_id가 daily-로 시작하면 일일 테스트)
+    is_daily_test = attempt.test_id.startswith("daily-")
+
+    # 채점 (일일 테스트면 재도전 로직 포함)
+    if is_daily_test:
+        result = await grading_service.submit_answer_with_retry(
+            attempt=attempt,
+            question=question,
+            selected_answer=request.selected_answer,
+            time_spent_seconds=request.time_spent_seconds,
+            current_combo=current_combo,
+            correct_answer_override=correct_answer_override,
+            is_daily_test=True,
+        )
+    else:
+        result = await grading_service.submit_answer(
+            attempt=attempt,
+            question=question,
+            selected_answer=request.selected_answer,
+            time_spent_seconds=request.time_spent_seconds,
+            current_combo=current_combo,
+            correct_answer_override=correct_answer_override,
+        )
 
     # 적응형이면 다음 난이도 힌트 추가
     if attempt.is_adaptive:
@@ -921,6 +935,45 @@ async def complete_test(
     daily_service = DailyTestService(db)
     await daily_service.try_complete_daily_test(attempt_id)
 
+    # 업적 달성 체크
+    from app.services.achievement_service import AchievementService
+    achievement_service = AchievementService(db)
+    
+    # 완료된 테스트 수 조회 (필요 시 StatsService 등 활용, 여기서는 간단히 count query 생략하고 0으로 가정하거나 별도 조회 필요)
+    # AchievementService 내부에서 처리하도록 변경하거나 여기서 조회해서 넘김.
+    # 효율성을 위해 StatsService.get_student_stats() 재사용 권장하지만, 일단 여기서 count query
+    # 혹은 AchievementService.check_achievements 내부에서 처리
+    
+    # 테스트 완료 횟수 조회 (간단 구현)
+    from app.models.test_attempt import TestAttempt
+    from sqlalchemy import func
+    count_stmt = select(func.count(TestAttempt.id)).where(
+        TestAttempt.student_id == current_user.id,
+        TestAttempt.is_completed == True  # noqa: E712
+    )
+    completed_count = await db.scalar(count_stmt)
+
+    new_achievements = await achievement_service.check_achievements(
+        student_id=current_user.id,
+        attempt=completed_attempt,
+        user=current_user,
+        completed_count=completed_count
+    )
+
+    # 일일 미션 진행도 업데이트
+    from app.services.mission_service import MissionService
+    mission_service = MissionService(db)
+    
+    # 1. 테스트 완료 미션
+    await mission_service.update_mission_progress(current_user.id, "complete_tests", 1)
+    
+    # 2. 문제 풀이 미션 (전체 문항 수)
+    await mission_service.update_mission_progress(current_user.id, "solve_questions", completed_attempt.total_count)
+    
+    # 3. 만점 미션 (100점)
+    if completed_attempt.score >= 100:  # or max_score check
+        await mission_service.update_mission_progress(current_user.id, "perfect_score", 1)
+
     # 답안 기록 조회
     details = await test_service.get_attempt_with_details(attempt_id)
     answer_logs = details["answer_logs"] if details else []
@@ -935,7 +988,7 @@ async def complete_test(
             xp_earned=completed_attempt.xp_earned,
             total_xp=gamification_result.get("total_xp"),
             current_streak=gamification_result.get("current_streak"),
-            achievements_earned=[],  # TODO: 업적 시스템 구현
+            achievements_earned=new_achievements,
             level_down_defense=gamification_result.get("level_down_defense"),
             level_down_action=gamification_result.get("level_down_action", "none"),
         )
@@ -1015,9 +1068,34 @@ async def get_attempt(
             if q:
                 q_map[qid] = q
         questions = [q_map[qid] for qid in q_ids if qid in q_map]
+        
+        # 정답 포함 여부 결정 (강사이거나 완료된 시험인 경우)
+        include_answer = (current_user.role != UserRole.STUDENT) or (attempt.completed_at is not None)
+            
+        question_responses = [
+            QuestionResponse(
+                id=q.id,
+                concept_id=q.concept_id,
+                concept_name=q.concept.name if q.concept else "",  # concept relationship needed or fetch
+                category=q.category,
+                part=q.part,
+                question_type=q.question_type,
+                difficulty=q.difficulty,
+                content=q.content,
+                options=q.options,
+                explanation=q.explanation if include_answer else "",
+                points=q.points,
+                blank_config=q.blank_config,
+                correct_answer=q.correct_answer if include_answer else None,
+            )
+            for q in questions
+        ]
     else:
+        # 정답 포함 여부 결정 (강사이거나 완료된 시험인 경우)
+        include_answer = (current_user.role != UserRole.STUDENT) or (attempt.completed_at is not None)
+
         # 셔플 적용된 문제 목록 사용 (시작 시 저장된 셔플 순서 유지)
-        shuffled_questions = await test_service.get_attempt_questions(attempt.id)
+        shuffled_questions = await test_service.get_attempt_questions(attempt.id, include_answer=include_answer)
         if shuffled_questions:
             question_responses = [
                 QuestionResponse(
@@ -1030,9 +1108,10 @@ async def get_attempt(
                     difficulty=q["difficulty"],
                     content=q["content"],
                     options=q["options"],
-                    explanation="" if not attempt.completed_at else q.get("explanation", ""),
+                    explanation=q.get("explanation", "") if include_answer else "",
                     points=q["points"],
                     blank_config=q.get("blank_config"),
+                    correct_answer=q.get("correct_answer"),
                 )
                 for q in shuffled_questions
             ]

@@ -91,6 +91,7 @@ class QuestionResponse(QuestionBase):
     options: list[QuestionOption] | None = None
     prerequisite_concept_ids: list[str] | None = None
     blank_config: dict | None = None
+    correct_answer: str | None = None
 
     model_config = {"from_attributes": True}
 
@@ -227,6 +228,13 @@ class SubmitAnswerResponse(BaseModel):
     next_difficulty: int | None = None
     error_type: str = ""
     suggestion: str = ""
+    # 재도전 관련 필드 (일일 테스트용)
+    retry_scheduled: bool | None = None  # 재도전 예정 여부
+    retry_count: int | None = None  # 이 문제에서 틀린 횟수
+    retry_queue_count: int | None = None  # 재도전 대기 문제 수
+    hint: dict | None = None  # 재도전 힌트 정보
+    moved_to_focus_check: bool | None = None  # 집중 체크로 이동 여부
+    focus_check_message: str | None = None  # 집중 체크 안내 메시지
 
 
 class AnswerLogResponse(BaseModel):
@@ -249,6 +257,14 @@ class AnswerLogResponse(BaseModel):
 # ===========================
 
 
+class AchievementEarned(BaseModel):
+    id: str
+    name: str
+    description: str
+    icon: str
+    earned_at: datetime
+
+
 class CompleteTestResponse(BaseModel):
     """테스트 완료 응답."""
 
@@ -260,7 +276,7 @@ class CompleteTestResponse(BaseModel):
     xp_earned: int
     total_xp: int | None = None
     current_streak: int | None = None
-    achievements_earned: list[str] = []
+    achievements_earned: list[AchievementEarned] = []
     # 레벨다운 방어 시스템
     level_down_defense: int | None = None
     level_down_action: str | None = None  # none / defense_consumed / defense_restored / level_down

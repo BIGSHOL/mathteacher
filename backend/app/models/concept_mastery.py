@@ -26,6 +26,9 @@ class ConceptMastery(Base):
     concept_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("concepts.id", ondelete="CASCADE"), index=True
     )
+    
+    student = relationship("User", backref="concept_masteries")
+    concept = relationship("Concept", backref="masteries")
 
     # 숙련도 메트릭
     mastery_percentage: Mapped[int] = mapped_column(

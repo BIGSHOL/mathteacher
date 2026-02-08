@@ -28,3 +28,15 @@ api_router.include_router(ai_assist_router)
 api_router.include_router(daily_tests_router)
 api_router.include_router(admin_router, prefix="/admin", tags=["admin"])
 api_router.include_router(question_reports_router)
+
+from .assignments import router as assignments_router
+api_router.include_router(assignments_router)
+
+from .missions import router as missions_router
+api_router.include_router(missions_router)
+
+from .shop import router as shop_router
+api_router.include_router(shop_router)
+
+from .ai_learning import router as ai_learning_router
+api_router.include_router(ai_learning_router)

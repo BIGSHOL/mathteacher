@@ -28,6 +28,48 @@ class TestGetMyStats:
         assert "weak_concepts" in data["data"]
         assert "strong_concepts" in data["data"]
 
+    async def test_get_my_learning_trend(self, client: AsyncClient) -> None:
+        """내 학습 추이 조회 성공."""
+        login_response = await client.post(
+            "/api/v1/auth/login",
+            json={"login_id": "student01", "password": "password123"},
+        )
+        access_token = login_response.json()["data"]["access_token"]
+
+        response = await client.get(
+            "/api/v1/stats/me/trend?days=7",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert isinstance(data["data"], list)
+        if len(data["data"]) > 0:
+            assert "date" in data["data"][0]
+            assert "solved" in data["data"][0]
+            assert "accuracy" in data["data"][0]
+
+    async def test_get_my_weakness_radar(self, client: AsyncClient) -> None:
+        """내 취약점 레이더 차트 데이터 조회 성공."""
+        login_response = await client.post(
+            "/api/v1/auth/login",
+            json={"login_id": "student01", "password": "password123"},
+        )
+        access_token = login_response.json()["data"]["access_token"]
+
+        response = await client.get(
+            "/api/v1/stats/me/radar",
+            headers={"Authorization": f"Bearer {access_token}"},
+        )
+
+        assert response.status_code == 200
+        data = response.json()
+        assert isinstance(data["data"], list)
+        if len(data["data"]) > 0:
+            assert "subject" in data["data"][0]
+            assert "score" in data["data"][0]
+            assert "fullMark" in data["data"][0]
+
     async def test_get_my_stats_without_auth(self, client: AsyncClient) -> None:
         """인증 없이 조회 시도."""
         response = await client.get("/api/v1/stats/me")

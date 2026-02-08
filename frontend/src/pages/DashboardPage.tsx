@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { useAuthStore } from '../store/authStore'
 import { Link } from 'react-router-dom'
 import api from '../lib/api'
+import { MissionWidget } from '../components/gamification/MissionWidget'
+import { AiRecommendation } from '../components/dashboard/AiRecommendation'
 
 interface QuotaProgress {
   daily_quota: number
@@ -39,7 +41,7 @@ export function DashboardPage() {
   useEffect(() => {
     api.get<{ success: boolean; data: StudentStats }>('/api/v1/stats/me', { timeout: 10000 })
       .then((res) => setStats(res.data.data))
-      .catch(() => {})
+      .catch(() => { })
   }, [])
 
   return (
@@ -55,17 +57,35 @@ export function DashboardPage() {
           <p className="text-gray-600">{user?.name || '학생'}님, 오늘도 열심히 공부해요!</p>
         </motion.div>
 
-        {/* 할당량 프로그레스 */}
-        {stats?.quota && (
+        {/* 미션 위젯 & 할당량 프로그레스 & AI 추천 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {stats?.quota && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="h-full"
+            >
+              <QuotaCard quota={stats.quota} />
+            </motion.div>
+          )}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="mb-6"
+            transition={{ delay: 0.12 }}
+            className="h-full"
           >
-            <QuotaCard quota={stats.quota} />
+            <MissionWidget />
           </motion.div>
-        )}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.14 }}
+            className="h-full"
+          >
+            <AiRecommendation />
+          </motion.div>
+        </div>
 
         {/* 통계 카드 */}
         <motion.div
@@ -267,11 +287,10 @@ function CategoryCard({ title, icon, stats, color }: CategoryCardProps) {
       {/* 정답률 프로그레스 바 */}
       <div className="mt-4 w-full bg-gray-200 rounded-full h-2">
         <div
-          className={`h-2 rounded-full transition-all duration-500 ${
-            accuracy >= 80 ? 'bg-green-500' :
+          className={`h-2 rounded-full transition-all duration-500 ${accuracy >= 80 ? 'bg-green-500' :
             accuracy >= 60 ? 'bg-yellow-500' :
-            'bg-red-500'
-          }`}
+              'bg-red-500'
+            }`}
           style={{ width: `${accuracy}%` }}
         />
       </div>

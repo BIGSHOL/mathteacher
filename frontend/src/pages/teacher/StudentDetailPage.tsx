@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline'
+import { StudentTestDetailModal } from '../../components/teacher/StudentTestDetailModal'
+import { AssignmentList } from '../../components/teacher/AssignmentList'
+import { AssignmentCreateModal } from '../../components/teacher/AssignmentCreateModal'
 import { motion, AnimatePresence } from 'framer-motion'
 import api from '../../lib/api'
 import type { Grade } from '../../types'
@@ -20,6 +24,7 @@ interface ConceptStat {
 }
 
 interface RecentTest {
+  attempt_id: string
   test_id: string
   test_title: string
   score: number
@@ -57,6 +62,7 @@ interface StudentDetail {
   login_id: string
   grade: Grade
   class_name: string
+  teacher_memo?: string
   total_tests: number
   total_questions: number
   correct_answers: number
@@ -117,8 +123,20 @@ export function StudentDetailPage() {
   const [actionLoading, setActionLoading] = useState(false)
   const [actionMessage, setActionMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null)
 
+  // 강사 메모 상태
+  const [memo, setMemo] = useState('')
+  const [isMemoSaving, setIsMemoSaving] = useState(false)
+
+  // 테스트 상세 모달 상태
+  const [detailModalOpen, setDetailModalOpen] = useState(false)
+  const [selectedAttemptId, setSelectedAttemptId] = useState<string | null>(null)
+
   // 단원 잠금 해제 관련 상태
   const [chapterActionLoading, setChapterActionLoading] = useState<string | null>(null)
+
+  // 과제 관련 상태
+  const [assignmentModalOpen, setAssignmentModalOpen] = useState(false)
+  const [refreshAssignmentsTrigger, setRefreshAssignmentsTrigger] = useState(0)
 
   useEffect(() => {
     if (studentId) {
@@ -145,6 +163,7 @@ export function StudentDetailPage() {
       const studentData = res.data.data
       setData(studentData)
       setEditGrade(studentData.grade)
+      setMemo(studentData.teacher_memo || '')
       // class_id는 별도로 가져와야 함
     } catch {
       setError('학생 정보를 불러오는데 실패했습니다.')
@@ -169,6 +188,18 @@ export function StudentDetailPage() {
       setActionMessage({ type: 'error', text: '수정에 실패했습니다.' })
     } finally {
       setActionLoading(false)
+    }
+  }
+
+  const handleSaveMemo = async () => {
+    if (!studentId) return
+    setIsMemoSaving(true)
+    try {
+      await api.patch(`/api/v1/students/${studentId}`, { teacher_memo: memo })
+    } catch {
+      alert('메모 저장에 실패했습니다.')
+    } finally {
+      setIsMemoSaving(false)
     }
   }
 
@@ -356,6 +387,30 @@ export function StudentDetailPage() {
                   </div>
                 </div>
 
+                {/* 강사 메모 */}
+                <div className="mb-6 rounded-xl border border-gray-100 bg-yellow-50/50 p-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-sm font-semibold text-gray-900">강사 메모</h3>
+                    <button
+                      onClick={handleSaveMemo}
+                      disabled={isMemoSaving}
+                      className="text-xs text-primary-600 hover:text-primary-700 font-medium disabled:opacity-50"
+                    >
+                      {isMemoSaving ? '저장 중...' : '저장'}
+                    </button>
+                  </div>
+                  <textarea
+                    value={memo}
+                    onChange={(e) => setMemo(e.target.value)}
+                    className="w-full rounded-lg border-gray-200 bg-white p-3 text-sm text-gray-700 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                    placeholder="학생에 대한 특이사항이나 지도 계획을 메모하세요."
+                    rows={4}
+                  />
+                  <div className="mt-1 text-right text-xs text-gray-500">
+                    * 작성 내용은 학생에게 보이지 않습니다.
+                  </div>
+                </div>
+
                 {/* 계정 관리 버튼들 */}
                 <div className="flex flex-wrap gap-3">
                   <button
@@ -525,17 +580,16 @@ export function StudentDetailPage() {
                     <button
                       onClick={() => handleToggleChapterLock(chapter.chapter_id, chapter.is_unlocked)}
                       disabled={chapterActionLoading === chapter.chapter_id}
-                      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                        chapter.is_unlocked
-                          ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                          : 'bg-green-100 text-green-700 hover:bg-green-200'
-                      } disabled:opacity-50`}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${chapter.is_unlocked
+                        ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                        } disabled:opacity-50`}
                     >
                       {chapterActionLoading === chapter.chapter_id
                         ? '...'
                         : chapter.is_unlocked
-                        ? '잠금'
-                        : '해제'}
+                          ? '잠금'
+                          : '해제'}
                     </button>
                   </div>
                 )
@@ -567,10 +621,9 @@ export function StudentDetailPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">정답률</span>
-                    <span className={`text-sm font-semibold ${
-                      data.computation_stats.accuracy_rate >= 80 ? 'text-green-600' :
+                    <span className={`text-sm font-semibold ${data.computation_stats.accuracy_rate >= 80 ? 'text-green-600' :
                       data.computation_stats.accuracy_rate >= 60 ? 'text-yellow-600' : 'text-red-600'
-                    }`}>
+                      }`}>
                       {data.computation_stats.accuracy_rate}%
                     </span>
                   </div>
@@ -599,10 +652,9 @@ export function StudentDetailPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm text-gray-600">정답률</span>
-                    <span className={`text-sm font-semibold ${
-                      data.concept_stats.accuracy_rate >= 80 ? 'text-green-600' :
+                    <span className={`text-sm font-semibold ${data.concept_stats.accuracy_rate >= 80 ? 'text-green-600' :
                       data.concept_stats.accuracy_rate >= 60 ? 'text-yellow-600' : 'text-red-600'
-                    }`}>
+                      }`}>
                       {data.concept_stats.accuracy_rate}%
                     </span>
                   </div>
@@ -693,8 +745,8 @@ export function StudentDetailPage() {
               {data.daily_activity.map((day) => {
                 const date = new Date(day.date)
                 const accuracyColor = day.accuracy_rate >= 80 ? 'bg-green-100 text-green-700' :
-                                     day.accuracy_rate >= 60 ? 'bg-yellow-100 text-yellow-700' :
-                                     day.questions_answered > 0 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'
+                  day.accuracy_rate >= 60 ? 'bg-yellow-100 text-yellow-700' :
+                    day.questions_answered > 0 ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-500'
 
                 return (
                   <div key={day.date} className={`rounded-lg p-3 text-center ${accuracyColor}`}>
@@ -733,6 +785,7 @@ export function StudentDetailPage() {
                     <th className="px-4 py-3 text-center font-medium text-gray-600">점수</th>
                     <th className="px-4 py-3 text-center font-medium text-gray-600">정답률</th>
                     <th className="px-4 py-3 text-center font-medium text-gray-600">완료일</th>
+                    <th className="px-4 py-3 text-center font-medium text-gray-600">상세</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -750,6 +803,20 @@ export function StudentDetailPage() {
                       <td className="px-4 py-3 text-center text-gray-500">
                         {new Date(t.completed_at).toLocaleDateString('ko-KR', { month: 'short', day: 'numeric' })}
                       </td>
+                      <td className="px-4 py-3 text-center">
+                        <button
+                          onClick={() => {
+                            if (t.attempt_id) {
+                              setSelectedAttemptId(t.attempt_id)
+                              setDetailModalOpen(true)
+                            }
+                          }}
+                          className="rounded p-1 text-gray-400 hover:bg-white hover:text-primary-600 hover:shadow-sm"
+                          title="상세 보기"
+                        >
+                          <MagnifyingGlassIcon className="h-5 w-5" />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -757,6 +824,42 @@ export function StudentDetailPage() {
             </div>
           )}
         </motion.div>
+        {/* 과제 관리 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.32 }}
+          className="mt-6 rounded-2xl bg-white p-6 shadow-sm"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">과제 관리</h2>
+            <button
+              onClick={() => setAssignmentModalOpen(true)}
+              className="rounded-lg bg-primary-50 px-3 py-1.5 text-sm font-medium text-primary-600 hover:bg-primary-100 transition-colors"
+            >
+              + 과제 부여
+            </button>
+          </div>
+          {studentId && (
+            <AssignmentList
+              studentId={studentId}
+              onRefresh={() => setRefreshAssignmentsTrigger(prev => prev + 1)}
+              key={refreshAssignmentsTrigger}
+            />
+          )}
+        </motion.div>
+
+        <StudentTestDetailModal
+          isOpen={detailModalOpen}
+          onClose={() => setDetailModalOpen(false)}
+          attemptId={selectedAttemptId}
+        />
+        <AssignmentCreateModal
+          isOpen={assignmentModalOpen}
+          onClose={() => setAssignmentModalOpen(false)}
+          studentId={studentId || ''}
+          onSuccess={() => setRefreshAssignmentsTrigger(prev => prev + 1)}
+        />
       </div>
     </div>
   )
@@ -764,9 +867,9 @@ export function StudentDetailPage() {
 
 function StatCard({ label, value, color }: { label: string; value: string; color?: string }) {
   const colorClass = color === 'green' ? 'text-green-600' :
-                     color === 'red' ? 'text-red-600' :
-                     color === 'yellow' ? 'text-yellow-600' :
-                     color === 'purple' ? 'text-purple-600' : 'text-gray-900'
+    color === 'red' ? 'text-red-600' :
+      color === 'yellow' ? 'text-yellow-600' :
+        color === 'purple' ? 'text-purple-600' : 'text-gray-900'
   return (
     <div className="rounded-xl bg-white p-4 shadow-sm">
       <p className="text-sm text-gray-500">{label}</p>

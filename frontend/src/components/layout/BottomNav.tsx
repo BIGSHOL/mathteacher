@@ -24,18 +24,16 @@ function NavItem({ to, icon, label }: NavItemProps) {
         className="flex flex-col items-center"
       >
         <div
-          className={`mb-1 flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${
-            isActive ? 'bg-primary-100' : ''
-          }`}
+          className={`mb-1 flex h-8 w-8 items-center justify-center rounded-xl transition-colors ${isActive ? 'bg-primary-100' : ''
+            }`}
         >
           <span className={`text-xl ${isActive ? '' : 'grayscale opacity-60'}`}>
             {icon}
           </span>
         </div>
         <span
-          className={`text-xs font-medium transition-colors ${
-            isActive ? 'text-primary-600' : 'text-gray-500'
-          }`}
+          className={`text-xs font-medium transition-colors ${isActive ? 'text-primary-600' : 'text-gray-500'
+            }`}
         >
           {label}
         </span>
@@ -74,6 +72,7 @@ export function BottomNav() {
           // 학생용 네비게이션
           <>
             <NavItem to="/tests" icon="📝" label="테스트" />
+            <NavItem to="/leaderboard" icon="🏆" label="랭킹" />
             <NavItem to="/my-stats" icon="📊" label="내 통계" />
             <NavItem to="/help" icon="📖" label="도움말" />
             <NavItem to="/profile" icon="👤" label="내 정보" />

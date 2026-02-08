@@ -19,6 +19,10 @@ const ReviewPage = lazy(() => import('./pages/student/ReviewPage').then(m => ({ 
 const QuickPracticeSetupPage = lazy(() => import('./pages/student/QuickPracticeSetupPage').then(m => ({ default: m.QuickPracticeSetupPage })))
 const HelpPage = lazy(() => import('./pages/student/HelpPage').then(m => ({ default: m.HelpPage })))
 const ProfilePage = lazy(() => import('./pages/student/ProfilePage').then(m => ({ default: m.ProfilePage })))
+const FocusCheckPage = lazy(() => import('./pages/student/FocusCheckPage').then(m => ({ default: m.FocusCheckPage })))
+const LeaderboardPage = lazy(() => import('./pages/student/LeaderboardPage').then(m => ({ default: m.LeaderboardPage })))
+const ShopPage = lazy(() => import('./pages/student/ShopPage').then(m => ({ default: m.ShopPage })))
+const InventoryPage = lazy(() => import('./pages/student/InventoryPage').then(m => ({ default: m.InventoryPage })))
 
 // 강사 페이지 (lazy load)
 const TeacherDashboardPage = lazy(() => import('./pages/teacher').then(m => ({ default: m.TeacherDashboardPage })))
@@ -138,6 +142,38 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['student']}>
                   <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/focus-check"
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <FocusCheckPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/leaderboard"
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <LeaderboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/shop"
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <ShopPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/inventory"
+              element={
+                <ProtectedRoute allowedRoles={['student']}>
+                  <InventoryPage />
                 </ProtectedRoute>
               }
             />

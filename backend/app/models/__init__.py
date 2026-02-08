@@ -7,12 +7,17 @@ from .class_ import Class
 from .concept import Concept
 from .concept_mastery import ConceptMastery
 from .daily_test_record import DailyTestRecord
+from .focus_check import FocusCheckItem
 from .question import Question
 from .question_report import QuestionReport
 from .test import Test
 from .test_attempt import TestAttempt
 from .user import RefreshToken, User
 from .wrong_answer_review import WrongAnswerReview
+from .assignment import Assignment
+from .achievement import Achievement
+from .daily_mission import DailyMission
+from .item import Item, UserItem
 
 __all__ = [
     "AnswerLog",
@@ -22,6 +27,7 @@ __all__ = [
     "Concept",
     "ConceptMastery",
     "DailyTestRecord",
+    "FocusCheckItem",
     "Question",
     "QuestionReport",
     "RefreshToken",
@@ -29,4 +35,9 @@ __all__ = [
     "TestAttempt",
     "User",
     "WrongAnswerReview",
+    "Assignment",
+    "Achievement",
+    "Item",
+    "UserItem",
+    "DailyMission",
 ]

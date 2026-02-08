@@ -26,6 +26,7 @@ interface AuthState {
   refreshToken: () => Promise<boolean>
   setUser: (user: User) => void
   setAccessToken: (token: string) => void
+  fetchUser: () => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -35,6 +36,36 @@ export const useAuthStore = create<AuthState>()(
       accessToken: null, // 메모리에만 저장 (persist에서 제외)
       isAuthenticated: false,
       isRefreshing: false,
+
+      fetchUser: async () => {
+        const { accessToken } = get()
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/v1/auth/me`, {
+            headers: {
+              'Content-Type': 'application/json',
+              ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+            },
+            credentials: 'include',
+          })
+          if (response.ok) {
+            const result = await response.json()
+            const data = result.data
+            // Update user state partially or fully
+            set((state) => ({
+              user: {
+                ...state.user!,
+                ...data, // API returns UserResponse which should match User interface mostly
+                // Ensure specific fields if needed
+                level: data.level || 1,
+                total_xp: data.total_xp || 0,
+                current_streak: data.current_streak || 0,
+              }
+            }))
+          }
+        } catch (error) {
+          console.error("Failed to fetch user", error)
+        }
+      },
 
       login: async (login_id: string, password: string) => {
         const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {

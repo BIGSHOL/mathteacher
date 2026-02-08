@@ -84,8 +84,8 @@ function DifficultyChangeToast({ change }: { change: DifficultyChange }) {
     >
       <div
         className={`flex items-center gap-3 rounded-2xl px-6 py-4 shadow-2xl ${isUp
-            ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white'
-            : 'bg-gradient-to-r from-orange-400 to-amber-500 text-white'
+          ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white'
+          : 'bg-gradient-to-r from-orange-400 to-amber-500 text-white'
           }`}
       >
         <motion.span
@@ -333,6 +333,7 @@ export function TestPlayPage() {
           level_down_defense: completeData.level_down_defense,
           level_down_action: completeData.level_down_action,
           mastery_achieved: completeData.mastery_achieved,
+          achievements_earned: completeData.achievements_earned,
         },
       })
     } catch {

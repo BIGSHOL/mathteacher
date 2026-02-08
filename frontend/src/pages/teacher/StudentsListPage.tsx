@@ -37,6 +37,61 @@ export function StudentsListPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showCreateModal, setShowCreateModal] = useState(false)
 
+  // 다중 선택 상태
+  const [selectedStudentIds, setSelectedStudentIds] = useState<Set<string>>(new Set())
+
+  const toggleSelection = (id: string) => {
+    const newSelection = new Set(selectedStudentIds)
+    if (newSelection.has(id)) {
+      newSelection.delete(id)
+    } else {
+      newSelection.add(id)
+    }
+    setSelectedStudentIds(newSelection)
+  }
+
+  const toggleAll = () => {
+    if (selectedStudentIds.size === filteredStudents.length) {
+      setSelectedStudentIds(new Set())
+    } else {
+      setSelectedStudentIds(new Set(filteredStudents.map((s) => s.user_id)))
+    }
+  }
+
+  const handleBulkAction = async (action: 'reset_password' | 'change_class' | 'delete') => {
+    if (selectedStudentIds.size === 0) return
+    const ids = Array.from(selectedStudentIds)
+
+    // TODO: 구현 필요 (모달 띄우기 등)
+    if (action === 'delete') {
+      if (!confirm(`${ids.length}명의 학생을 삭제(비활성화) 하시겠습니까?`)) return
+      try {
+        await api.post('/api/v1/students/bulk-action', {
+          student_ids: ids,
+          action: 'delete'
+        })
+        fetchStudents()
+        setSelectedStudentIds(new Set())
+      } catch {
+        alert('일괄 삭제 실패')
+      }
+    } else if (action === 'reset_password') {
+      const newPw = prompt('새로운 비밀번호를 입력하세요:')
+      if (!newPw) return
+      try {
+        await api.post('/api/v1/students/bulk-action', {
+          student_ids: ids,
+          action: 'reset_password',
+          payload: { new_password: newPw }
+        })
+        alert('비밀번호 일괄 변경 완료')
+        setSelectedStudentIds(new Set())
+      } catch {
+        alert('일괄 변경 실패')
+      }
+    }
+  }
+
   useEffect(() => {
     fetchStudents()
   }, [page, gradeFilter])
@@ -181,6 +236,34 @@ export function StudentsListPage() {
           <div className="mb-4 rounded-lg bg-red-50 p-4 text-red-600">{error}</div>
         )}
 
+        {/* 일괄 작업 바 */}
+        {selectedStudentIds.size > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 flex items-center justify-between rounded-xl bg-primary-50 p-4 text-primary-900"
+          >
+            <div className="flex items-center gap-2">
+              <span className="font-bold">{selectedStudentIds.size}명</span>
+              <span>선택됨</span>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleBulkAction('reset_password')}
+                className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-primary-700 shadow-sm hover:bg-primary-50"
+              >
+                비밀번호 초기화
+              </button>
+              <button
+                onClick={() => handleBulkAction('delete')}
+                className="rounded-lg bg-white px-3 py-1.5 text-sm font-medium text-red-600 shadow-sm hover:bg-red-50"
+              >
+                삭제
+              </button>
+            </div>
+          </motion.div>
+        )}
+
         {/* 학생 목록 */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -203,6 +286,14 @@ export function StudentsListPage() {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
+                    <th className="w-12 px-6 py-4">
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                        checked={filteredStudents.length > 0 && selectedStudentIds.size === filteredStudents.length}
+                        onChange={toggleAll}
+                      />
+                    </th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-gray-600">학생</th>
                     <th className="px-6 py-4 text-left text-sm font-medium text-gray-600">학년/반</th>
                     <th className="px-6 py-4 text-center text-sm font-medium text-gray-600">레벨</th>
@@ -223,6 +314,14 @@ export function StudentsListPage() {
                       className="cursor-pointer hover:bg-gray-50"
                       onClick={() => navigate(`/teacher/students/${student.user_id}`)}
                     >
+                      <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                        <input
+                          type="checkbox"
+                          className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                          checked={selectedStudentIds.has(student.user_id)}
+                          onChange={() => toggleSelection(student.user_id)}
+                        />
+                      </td>
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary-400 to-primary-600 text-white font-medium">
@@ -249,13 +348,12 @@ export function StudentsListPage() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         <span
-                          className={`font-medium ${
-                            student.accuracy_rate >= 80
+                          className={`font-medium ${student.accuracy_rate >= 80
                               ? 'text-green-600'
                               : student.accuracy_rate >= 60
-                              ? 'text-yellow-600'
-                              : 'text-red-600'
-                          }`}
+                                ? 'text-yellow-600'
+                                : 'text-red-600'
+                            }`}
                         >
                           {student.accuracy_rate}%
                         </span>
@@ -300,11 +398,10 @@ export function StudentsListPage() {
                   <button
                     key={pageNum}
                     onClick={() => setPage(pageNum)}
-                    className={`rounded-lg px-4 py-2 text-sm font-medium ${
-                      page === pageNum
+                    className={`rounded-lg px-4 py-2 text-sm font-medium ${page === pageNum
                         ? 'bg-primary-500 text-white'
                         : 'text-gray-600 hover:bg-gray-100'
-                    }`}
+                      }`}
                   >
                     {pageNum}
                   </button>

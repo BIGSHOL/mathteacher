@@ -3,6 +3,8 @@
 import { useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MathText } from '../common/MathText'
+import { HintBox, FocusCheckAlert } from './HintBox'
+import type { RetryHint } from '../../types'
 
 const correctSound = new Audio('/sounds/correct.mp3')
 const wrongSound = new Audio('/sounds/wrong.mp3')
@@ -28,6 +30,12 @@ interface FeedbackModalProps {
   errorType?: string
   /** AI 학습 제안 (오답 시) */
   suggestion?: string
+  /** 재도전 관련 필드 (일일 테스트용) */
+  hint?: RetryHint | null
+  retryScheduled?: boolean
+  retryCount?: number
+  movedToFocusCheck?: boolean
+  focusCheckMessage?: string
   onNext: () => void
 }
 
@@ -47,6 +55,11 @@ export function FeedbackModal({
   totalBlanks,
   errorType,
   suggestion,
+  hint,
+  retryScheduled,
+  retryCount,
+  movedToFocusCheck,
+  focusCheckMessage,
   onNext,
 }: FeedbackModalProps) {
   const prevOpen = useRef(false)
@@ -55,7 +68,7 @@ export function FeedbackModal({
     if (isOpen && !prevOpen.current) {
       const sound = isCorrect ? correctSound : wrongSound
       sound.currentTime = 0
-      sound.play().catch(() => {})
+      sound.play().catch(() => { })
     }
     prevOpen.current = isOpen
   }, [isOpen, isCorrect])
@@ -91,142 +104,160 @@ export function FeedbackModal({
               }}
               className="w-full max-h-[85vh] max-w-lg flex flex-col rounded-t-3xl bg-white shadow-2xl md:rounded-3xl"
             >
-            {/* 헤더 */}
-            <div
-              className={`shrink-0 p-6 text-center rounded-t-3xl ${
-                isTimeUp ? 'bg-gray-700 text-white' : isCorrect ? 'bg-correct text-white' : 'bg-incorrect text-white'
-              }`}
-            >
-              <motion.div
-                initial={{ scale: 0, rotate: isCorrect ? 0 : -10 }}
-                animate={{
-                  scale: 1,
-                  rotate: isCorrect ? 0 : [0, -5, 5, -5, 5, 0]
-                }}
-                transition={{ type: 'spring', duration: 0.5 }}
-                className="mb-2 text-6xl"
+              {/* 헤더 */}
+              <div
+                className={`shrink-0 p-6 text-center rounded-t-3xl ${isTimeUp ? 'bg-gray-700 text-white' : isCorrect ? 'bg-correct text-white' : 'bg-incorrect text-white'
+                  }`}
               >
-                {isTimeUp ? '⏰' : isCorrect ? '🎉' : '😢'}
-              </motion.div>
-              <h2 className="text-2xl font-bold">
-                {isTimeUp ? '시간 초과!' : isCorrect ? '정답!' : '아쉬워요'}
-              </h2>
+                <motion.div
+                  initial={{ scale: 0, rotate: isCorrect ? 0 : -10 }}
+                  animate={{
+                    scale: 1,
+                    rotate: isCorrect ? 0 : [0, -5, 5, -5, 5, 0]
+                  }}
+                  transition={{ type: 'spring', duration: 0.5 }}
+                  className="mb-2 text-6xl"
+                >
+                  {isTimeUp ? '⏰' : isCorrect ? '🎉' : '😢'}
+                </motion.div>
+                <h2 className="text-2xl font-bold">
+                  {isTimeUp ? '시간 초과!' : isCorrect ? '정답!' : '아쉬워요'}
+                </h2>
 
-              {/* 콤보 & 점수 & 시간보너스 */}
-              {isCorrect && (
-                <div className="mt-4 flex flex-wrap justify-center gap-3">
-                  {comboCount > 1 && (
+                {/* 콤보 & 점수 & 시간보너스 */}
+                {isCorrect && (
+                  <div className="mt-4 flex flex-wrap justify-center gap-3">
+                    {comboCount > 1 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        className="rounded-full bg-white/20 px-4 py-1"
+                      >
+                        <span className="font-bold">{comboCount}</span> 콤보!
+                      </motion.div>
+                    )}
                     <motion.div
                       initial={{ scale: 0 }}
                       animate={{ scale: 1 }}
+                      transition={{ delay: 0.1 }}
                       className="rounded-full bg-white/20 px-4 py-1"
                     >
-                      <span className="font-bold">{comboCount}</span> 콤보!
+                      +<span className="font-bold">{pointsEarned}</span>점
                     </motion.div>
-                  )}
+                    {timeBonus > 0 && (
+                      <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.2 }}
+                        className="rounded-full bg-yellow-400/30 px-4 py-1"
+                      >
+                        +<span className="font-bold">{timeBonus}</span> 시간 보너스
+                      </motion.div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* 내용 (스크롤 영역) */}
+              <div className="flex-1 overflow-y-auto p-6 min-h-0">
+                {/* 시간초과/오답 시 난이도 하락 경고 */}
+                {!isCorrect && nextDifficulty !== undefined && currentDifficulty !== undefined && nextDifficulty < currentDifficulty && (
                   <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: 0.1 }}
-                    className="rounded-full bg-white/20 px-4 py-1"
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mb-4 rounded-xl bg-red-50 border border-red-200 p-3 text-center"
                   >
-                    +<span className="font-bold">{pointsEarned}</span>점
+                    <span className="text-red-600 font-semibold text-sm">
+                      📉 난이도 하락: Lv.{currentDifficulty} → Lv.{nextDifficulty}
+                    </span>
+                    {isTimeUp && (
+                      <p className="text-xs text-red-500 mt-1">시간 안에 풀지 못하면 난이도가 내려갑니다!</p>
+                    )}
                   </motion.div>
-                  {timeBonus > 0 && (
-                    <motion.div
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ delay: 0.2 }}
-                      className="rounded-full bg-yellow-400/30 px-4 py-1"
-                    >
-                      +<span className="font-bold">{timeBonus}</span> 시간 보너스
-                    </motion.div>
-                  )}
-                </div>
-              )}
-            </div>
+                )}
 
-            {/* 내용 (스크롤 영역) */}
-            <div className="flex-1 overflow-y-auto p-6 min-h-0">
-              {/* 시간초과/오답 시 난이도 하락 경고 */}
-              {!isCorrect && nextDifficulty !== undefined && currentDifficulty !== undefined && nextDifficulty < currentDifficulty && (
-                <motion.div
-                  initial={{ opacity: 0, y: -5 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mb-4 rounded-xl bg-red-50 border border-red-200 p-3 text-center"
-                >
-                  <span className="text-red-600 font-semibold text-sm">
-                    📉 난이도 하락: Lv.{currentDifficulty} → Lv.{nextDifficulty}
-                  </span>
-                  {isTimeUp && (
-                    <p className="text-xs text-red-500 mt-1">시간 안에 풀지 못하면 난이도가 내려갑니다!</p>
-                  )}
-                </motion.div>
-              )}
+                {/* 정답 표시 (오답일 때) */}
+                {!isCorrect && (
+                  <div className="mb-4 rounded-xl bg-gray-100 p-4">
+                    <div className="text-sm text-gray-500">정답</div>
+                    <div className="text-lg font-bold text-gray-900"><MathText text={correctAnswer} /></div>
+                  </div>
+                )}
 
-              {/* 정답 표시 (오답일 때) */}
-              {!isCorrect && (
-                <div className="mb-4 rounded-xl bg-gray-100 p-4">
-                  <div className="text-sm text-gray-500">정답</div>
-                  <div className="text-lg font-bold text-gray-900"><MathText text={correctAnswer} /></div>
-                </div>
-              )}
+                {/* 재도전 힌트 표시 (일일 테스트) */}
+                {!isCorrect && hint && (
+                  <HintBox hint={hint} className="mb-4" />
+                )}
 
-              {/* 빈칸 채우기 부분 점수 */}
-              {correctCount !== undefined && totalBlanks !== undefined && totalBlanks > 0 && (
-                <div className="mb-4 rounded-xl bg-blue-50 border border-blue-200 p-4">
-                  <div className="text-sm text-gray-600 mb-1">빈칸 정답 현황</div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-2xl font-bold text-blue-600">{correctCount}</span>
-                      <span className="text-gray-600"> / {totalBlanks}</span>
-                      <span className="ml-2 text-sm text-gray-500">정답</span>
-                    </div>
-                    <div className="text-sm text-gray-600">
-                      부분 점수: <span className="font-semibold text-blue-600">{pointsEarned}점</span>
+                {/* 집중 체크 이동 알림 */}
+                {movedToFocusCheck && focusCheckMessage && (
+                  <FocusCheckAlert message={focusCheckMessage} className="mb-4" />
+                )}
+
+                {/* 재도전 예정 안내 */}
+                {!isCorrect && retryScheduled && !movedToFocusCheck && (
+                  <div className="mb-4 rounded-xl bg-amber-50 border border-amber-200 p-3 text-center">
+                    <span className="text-amber-700 text-sm">
+                      🔄 이 문제는 나중에 다시 한번 풀게 됩니다 ({retryCount ?? 1}회차)
+                    </span>
+                  </div>
+                )}
+
+                {/* 빈칸 채우기 부분 점수 */}
+                {correctCount !== undefined && totalBlanks !== undefined && totalBlanks > 0 && (
+                  <div className="mb-4 rounded-xl bg-blue-50 border border-blue-200 p-4">
+                    <div className="text-sm text-gray-600 mb-1">빈칸 정답 현황</div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-2xl font-bold text-blue-600">{correctCount}</span>
+                        <span className="text-gray-600"> / {totalBlanks}</span>
+                        <span className="ml-2 text-sm text-gray-500">정답</span>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        부분 점수: <span className="font-semibold text-blue-600">{pointsEarned}점</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* 해설 */}
-              {explanation && (
-                <div className="mb-6">
-                  <div className="mb-2 text-sm font-medium text-gray-500">해설</div>
-                  <p className="text-gray-700"><MathText text={explanation} /></p>
-                </div>
-              )}
+                {/* 해설 */}
+                {explanation && (
+                  <div className="mb-6">
+                    <div className="mb-2 text-sm font-medium text-gray-500">해설</div>
+                    <p className="text-gray-700"><MathText text={explanation} /></p>
+                  </div>
+                )}
 
-              {/* AI 분석 (오답 시) */}
-              {!isCorrect && (errorType || suggestion) && (
-                <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
-                  {errorType && (
-                    <div className="mb-2 flex items-center gap-2">
-                      <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-600">
-                        {errorType}
-                      </span>
-                    </div>
-                  )}
-                  {suggestion && (
-                    <p className="text-sm text-blue-700">{suggestion}</p>
-                  )}
-                </div>
-              )}
+                {/* AI 분석 (오답 시) */}
+                {!isCorrect && (errorType || suggestion) && (
+                  <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-4">
+                    {errorType && (
+                      <div className="mb-2 flex items-center gap-2">
+                        <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-semibold text-blue-600">
+                          {errorType}
+                        </span>
+                      </div>
+                    )}
+                    {suggestion && (
+                      <p className="text-sm text-blue-700">{suggestion}</p>
+                    )}
+                  </div>
+                )}
 
-            </div>
+              </div>
 
-            {/* 다음 버튼 (항상 하단 고정) */}
-            <div className="shrink-0 px-6 pb-6 pt-3 bg-white md:rounded-b-3xl">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={onNext}
-                className="btn-primary w-full py-4 text-lg"
-              >
-                {isLastQuestion ? '결과 보기' : '다음 문제'}
-              </motion.button>
-            </div>
-          </motion.div>
+              {/* 다음 버튼 (항상 하단 고정) */}
+              <div className="shrink-0 px-6 pb-6 pt-3 bg-white md:rounded-b-3xl">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={onNext}
+                  className="btn-primary w-full py-4 text-lg"
+                >
+                  {isLastQuestion ? '결과 보기' : '다음 문제'}
+                </motion.button>
+              </div>
+            </motion.div>
           </div>
         </>
       )}

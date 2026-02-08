@@ -58,6 +58,11 @@ class TestAttempt(Base):
     selected_question_ids: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)
     question_shuffle_config: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
+    # 재도전 기능 (오늘의 학습)
+    retry_queue: Mapped[list[str] | None] = mapped_column(JSON, nullable=True)  # 재도전 대기 큐
+    retry_counts: Mapped[dict | None] = mapped_column(JSON, nullable=True)  # {question_id: 틀린 횟수}
+    current_question_index: Mapped[int] = mapped_column(Integer, default=0)  # 현재 문제 인덱스
+
     # 관계
     test: Mapped["Test"] = relationship("Test", back_populates="attempts", lazy="selectin")
     student: Mapped["User"] = relationship("User", lazy="selectin")
