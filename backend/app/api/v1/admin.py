@@ -36,6 +36,7 @@ class GranularConfigItem(BaseModel):
     difficulty: int = Field(..., ge=1, le=10)
     count: int = Field(..., ge=1, le=50)
     category: Optional[str] = Field(None, description="concept 또는 computation (기본값: 개념의 카테고리)")
+    concept_method: Optional[str] = Field(None, description="standard, gradual_fading, error_analysis, visual_decoding")
 
 
 class AIGenerateRequest(BaseModel):
@@ -50,6 +51,7 @@ class AIGenerateRequest(BaseModel):
     granular_config: Optional[list[GranularConfigItem]] = Field(
         default=None, description="세분화된 생성 설정 (난이도 x 유형별 수량)"
     )
+    concept_method: Optional[str] = Field(None, description="standard, gradual_fading, error_analysis, visual_decoding")
 
 
 class AISaveRequest(BaseModel):
@@ -442,7 +444,8 @@ async def admin_generate_questions(
                 "count": config.count,
                 "diff_min": config.difficulty,
                 "diff_max": config.difficulty,
-                "category": config.category or default_category
+                "category": config.category or default_category,
+                "concept_method": config.concept_method or request.concept_method
             })
     else:
         # 기존 방식 하위 호환
@@ -455,7 +458,8 @@ async def admin_generate_questions(
             "count": count,
             "diff_min": d_min,
             "diff_max": d_max,
-            "category": default_category
+            "category": default_category,
+            "concept_method": request.concept_method
         })
 
     all_generated: list[dict] = []
@@ -475,6 +479,7 @@ async def admin_generate_questions(
                 count=batch_count,
                 difficulty_min=task["diff_min"],
                 difficulty_max=task["diff_max"],
+                concept_method=task.get("concept_method"),
                 existing_contents=existing_contents + [q["content"] for q in all_generated],
                 id_prefix=f"ai-{request.concept_id.replace('concept-', '')}",
                 start_seq=len(all_generated) + 1,

@@ -220,6 +220,7 @@ export function QuestionGenerationPage() {
                   difficulty: parseInt(diff || '1', 10),
                   count: c,
                   category: 'concept',
+                  concept_method: conceptMethod,
                 }
               })
             : undefined,
@@ -427,72 +428,75 @@ export function QuestionGenerationPage() {
                   </button>
                 </div>
 
-                {!useGranular ? (
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                    {/* 기존 로직 */}
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">문제 유형</label>
-                      <select
-                        value={questionType}
-                        onChange={(e) => setQuestionType(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                      >
-                        <option value="multiple_choice">객관식 (MC)</option>
-                        <option value="fill_in_blank">빈칸 채우기 (FB)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">생성 방식</label>
-                      <select
-                        value={conceptMethod}
-                        onChange={(e) => setConceptMethod(e.target.value)}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                        disabled={!isComputation && selectedConceptCategory !== 'concept'} // 개념이 아니면 비활성화 (근데 이미 개념만 선택가능)
-                      >
-                        <option value="standard">일반 (Standard)</option>
-                        <option value="gradual_fading">점진적 빈칸 (Type A)</option>
-                        <option value="error_analysis">오개념 분석 (Type B)</option>
-                        <option value="visual_decoding">시각적 해체 (Type C)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">생성 수량</label>
-                      <select
-                        value={count}
-                        onChange={(e) => setCount(Number(e.target.value))}
-                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                      >
-                        {[5, 10, 20, 30, 50].map((n) => (
-                          <option key={n} value={n}>{n}문제</option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="mb-1 block text-sm font-medium text-gray-700">난이도 범위</label>
-                      <div className="flex items-center gap-2">
+                <div className="flex flex-col md:flex-row md:items-end gap-4 mb-5">
+                  <div className="flex-1">
+                    <label className="mb-1 block text-sm font-medium text-gray-700">생성 방식</label>
+                    <select
+                      value={conceptMethod}
+                      onChange={(e) => setConceptMethod(e.target.value)}
+                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      disabled={!isComputation && selectedConceptCategory !== 'concept'}
+                    >
+                      <option value="standard">일반 (Standard)</option>
+                      <option value="gradual_fading">점진적 빈칸 (Type A)</option>
+                      <option value="error_analysis">오개념 분석 (Type B)</option>
+                      <option value="visual_decoding">시각적 해체 (Type C)</option>
+                    </select>
+                  </div>
+                  {!useGranular && (
+                    <>
+                      <div className="flex-1">
+                        <label className="mb-1 block text-sm font-medium text-gray-700">문제 유형</label>
                         <select
-                          value={diffMin}
-                          onChange={(e) => setDiffMin(Number(e.target.value))}
+                          value={questionType}
+                          onChange={(e) => setQuestionType(e.target.value)}
                           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
                         >
-                          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                            <option key={n} value={n}>Lv.{n}</option>
-                          ))}
+                          <option value="multiple_choice">객관식 (MC)</option>
+                          <option value="fill_in_blank">빈칸 채우기 (FB)</option>
                         </select>
-                        <span className="text-gray-400">~</span>
+                      </div>
+                      <div className="flex-1">
+                        <label className="mb-1 block text-sm font-medium text-gray-700">생성 수량</label>
                         <select
-                          value={diffMax}
-                          onChange={(e) => setDiffMax(Number(e.target.value))}
+                          value={count}
+                          onChange={(e) => setCount(Number(e.target.value))}
                           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
                         >
-                          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                            <option key={n} value={n}>Lv.{n}</option>
+                          {[5, 10, 20, 30, 50].map((n) => (
+                            <option key={n} value={n}>{n}문제</option>
                           ))}
                         </select>
                       </div>
-                    </div>
-                  </div>
-                ) : (
+                      <div className="flex-1">
+                        <label className="mb-1 block text-sm font-medium text-gray-700">난이도 범위</label>
+                        <div className="flex items-center gap-2">
+                          <select
+                            value={diffMin}
+                            onChange={(e) => setDiffMin(Number(e.target.value))}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                          >
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                              <option key={n} value={n}>Lv.{n}</option>
+                            ))}
+                          </select>
+                          <span className="text-gray-400">~</span>
+                          <select
+                            value={diffMax}
+                            onChange={(e) => setDiffMax(Number(e.target.value))}
+                            className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                          >
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                              <option key={n} value={n}>Lv.{n}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                {useGranular && (
                   <div className="overflow-x-auto rounded-lg border border-gray-200">
                     <table className="w-full border-collapse text-left text-[11px]">
                       <thead>
