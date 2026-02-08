@@ -137,18 +137,20 @@ def _validate_generated_question(q: dict, category: str = "") -> list[str]:
     if category == "concept":
         # 단순 계산식(숫자와 연산자)이 포함되어 있으면서, 개념적 맥락(의미, 이유 등)이 없는 경우
         is_calc_expr = re.search(r"[\d]+\s*[+\-×÷*/]\s*[\d]+", content)
-        has_concept_kwd = re.search(r"정의|성질|옳은|설명|이유|특징|의미|뜻|몇\s*개|개수|과정|원리|잘못|틀린|모두|만족하는", content)
+        # 키워드 대폭 확장: 바르게, 모두, 맞게, 틀린, 원리, 방법 등 추가
+        has_concept_kwd = re.search(r"정의|성질|옳은|오른|맞는|바른|맞게|바르게|설명|이유|특징|의미|뜻|몇\s*개|개수|과정|원리|방법|잘못|틀린|모두|만족하는", content)
         
         if is_calc_expr and not has_concept_kwd:
              warnings.append("개념 트랙에 단순 연산 의심 (맥락 부족)")
 
         # [NO CALC] 단순 계산 요구 여부 (구체적 표현 차단)
-        if re.search(r"계산하시오|구하시오|값을 구해|얼마인가", content):
-            if not re.search(r"왜|이유|설명|의미|과정|원리", content):
+        if re.search(r"계산하시오|구하시오|값을 구해|얼마인가|몇\s*(개|마리|장|명|cm|m|kg|g|원)인가", content):
+            if not re.search(r"왜|이유|설명|의미|과정|원리|방법|어떻게", content):
                 warnings.append("[NO CALC 위반] 단순 계산 요구, 개념 맥락 부족")
 
         # [WHY] '왜' 질문 포함 여부 (설명 요구 강화)
-        has_why = re.search(r"왜|이유|설명|의미|과정|원리|어떻게|무엇을|차이점|같은|다른", content)
+        # '바르게', '것은', '방법' 등 개념 문항에서 흔히 쓰이는 키워드 추가
+        has_why = re.search(r"왜|이유|설명|의미|과정|원리|어떻게|무엇을|차이점|같은|다른|방법|바르게|것은|옳은|맞는", content)
         if not has_why:
              warnings.append("[WHY 미충족] 설명/이유를 묻지 않음 (단편적 질문)")
 

@@ -108,7 +108,7 @@ PROMPT_CONTEXTS: dict[str, ConceptPromptContext] = {
     # ━━ 1단원: 덧셈과 뺄셈 ━━
     "concept-e3-add-sub-01": {
         "core_concepts": (
-            "• 세 자리 수의 덧셈 (받아올림)\n"
+            "• 세 자리 수 + 세 자리 수의 덧셈 (받아올림)\n"
             "• 각 자리의 합이 10 이상일 때 상위 자릿수로 1 올림\n"
             "• 연속 받아올림: 일→십→백의 자리 순차적 올림"
         ),
@@ -126,7 +126,7 @@ PROMPT_CONTEXTS: dict[str, ConceptPromptContext] = {
     },
     "concept-e3-add-sub-02": {
         "core_concepts": (
-            "• 세 자리 수의 뺄셈 (받아내림/재구조화)\n"
+            "• 세 자리 수 - 세 자리 수의 뺄셈 (받아내림/재구조화)\n"
             "• 상위 자리에서 1을 빌려 10으로 바꾸는 원리\n"
             "• 감산 방향성: 항상 위 수에서 아래 수를 빼야 함"
         ),
