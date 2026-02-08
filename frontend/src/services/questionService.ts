@@ -147,10 +147,11 @@ export async function getQuestionStats(): Promise<{
 /** AI 문제 생성 요청 */
 export async function generateQuestionsAI(params: {
   concept_id: string
-  count: number
-  question_type: string
-  difficulty_min: number
-  difficulty_max: number
+  count?: number
+  question_type?: string
+  difficulty_min?: number
+  difficulty_max?: number
+  granular_config?: { question_type: string; difficulty: number; count: number }[]
 }): Promise<{ generated: Record<string, unknown>[]; count: number }> {
   const { data } = await api.post<
     ApiResponse<{ generated: Record<string, unknown>[]; count: number }>

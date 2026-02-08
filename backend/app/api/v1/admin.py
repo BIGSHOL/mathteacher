@@ -31,15 +31,24 @@ _ai_service = AIService()
 # ─────────────────────────────────────────────
 # AI 문제 생성 스키마
 # ─────────────────────────────────────────────
+class GranularConfigItem(BaseModel):
+    question_type: str = Field(..., description="multiple_choice 또는 fill_in_blank")
+    difficulty: int = Field(..., ge=1, le=10)
+    count: int = Field(..., ge=1, le=50)
+
+
 class AIGenerateRequest(BaseModel):
     concept_id: str = Field(..., description="개념 ID")
-    count: int = Field(default=10, ge=1, le=50, description="생성할 문제 수")
-    question_type: str = Field(
-        default="multiple_choice",
+    count: Optional[int] = Field(default=None, ge=1, le=50, description="전체 생성할 문제 수")
+    question_type: Optional[str] = Field(
+        default=None,
         description="multiple_choice 또는 fill_in_blank",
     )
-    difficulty_min: int = Field(default=1, ge=1, le=10)
-    difficulty_max: int = Field(default=10, ge=1, le=10)
+    difficulty_min: Optional[int] = Field(default=None, ge=1, le=10)
+    difficulty_max: Optional[int] = Field(default=None, ge=1, le=10)
+    granular_config: Optional[list[GranularConfigItem]] = Field(
+        default=None, description="세분화된 생성 설정 (난이도 x 유형별 수량)"
+    )
 
 
 class AISaveRequest(BaseModel):
@@ -427,32 +436,55 @@ async def admin_generate_questions(
     existing_result = await db.execute(existing_stmt)
     existing_contents = [row[0] for row in existing_result.all()]
 
-    # 배치 생성 (10개씩 끊어서 호출)
-    BATCH_SIZE = 10
+    # 생성 목록 준비 (정밀 설정 vs 기본 설정)
+    generation_tasks = []
+    if request.granular_config:
+        for config in request.granular_config:
+            generation_tasks.append({
+                "type": config.question_type,
+                "count": config.count,
+                "diff_min": config.difficulty,
+                "diff_max": config.difficulty
+            })
+    else:
+        # 기존 방식 하위 호환
+        count = request.count or 10
+        q_type = request.question_type or "multiple_choice"
+        d_min = request.difficulty_min or 1
+        d_max = request.difficulty_max or 10
+        generation_tasks.append({
+            "type": q_type,
+            "count": count,
+            "diff_min": d_min,
+            "diff_max": d_max
+        })
+
     all_generated: list[dict] = []
 
-    for i in range(0, request.count, BATCH_SIZE):
-        batch_count = min(BATCH_SIZE, request.count - i)
-        batch = await _ai_service.generate_questions(
-            concept_name=concept_name,
-            concept_id=request.concept_id,
-            grade=grade,
-            category=category,
-            part=part,
-            question_type=request.question_type,
-            count=batch_count,
-            difficulty_min=request.difficulty_min,
-            difficulty_max=request.difficulty_max,
-            existing_contents=existing_contents + [q["content"] for q in all_generated],
-            id_prefix=f"ai-{request.concept_id.replace('concept-', '')}",
-            start_seq=len(all_generated) + 1,
-        )
-        if batch:
-            all_generated.extend(batch)
+    for task in generation_tasks:
+        # 각 타스크별로 배치 생성 (10개씩 끊어서 호출)
+        BATCH_SIZE = 10
+        for i in range(0, task["count"], BATCH_SIZE):
+            batch_count = min(BATCH_SIZE, task["count"] - i)
+            batch = await _ai_service.generate_questions(
+                concept_name=concept_name,
+                concept_id=request.concept_id,
+                grade=grade,
+                category=category,
+                part=part,
+                question_type=task["type"],
+                count=batch_count,
+                difficulty_min=task["diff_min"],
+                difficulty_max=task["diff_max"],
+                existing_contents=existing_contents + [q["content"] for q in all_generated],
+                id_prefix=f"ai-{request.concept_id.replace('concept-', '')}",
+                start_seq=len(all_generated) + 1,
+            )
+            if batch:
+                all_generated.extend(batch)
 
-        # Rate limit 배려
-        if i + BATCH_SIZE < request.count:
-            await asyncio.sleep(1)
+            # Rate limit 배려
+            await asyncio.sleep(0.5)
 
     if not all_generated:
         raise HTTPException(

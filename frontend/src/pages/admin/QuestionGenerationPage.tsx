@@ -60,6 +60,8 @@ export function QuestionGenerationPage() {
   const [diffMin, setDiffMin] = useState(1)
   const [diffMax, setDiffMax] = useState(10)
   const [maxPerMc, setMaxPerMc] = useState(3)
+  const [useGranular, setUseGranular] = useState(false)
+  const [granularConfig, setGranularConfig] = useState<Record<string, number>>({}) // "MC-1": 2, "FB-5": 3 등
 
   // 생성 결과
   const [generated, setGenerated] = useState<Record<string, unknown>[]>([])
@@ -189,10 +191,22 @@ export function QuestionGenerationPage() {
       if (strategy === 'ai') {
         const result = await generateQuestionsAI({
           concept_id: conceptId,
-          count,
-          question_type: questionType,
-          difficulty_min: diffMin,
-          difficulty_max: diffMax,
+          count: useGranular ? undefined : count,
+          question_type: useGranular ? 'multiple_choice' : questionType, // dummyMC if granular, or actual
+          difficulty_min: useGranular ? undefined : diffMin,
+          difficulty_max: useGranular ? undefined : diffMax,
+          granular_config: useGranular
+            ? Object.entries(granularConfig)
+              .filter(([_, c]) => c > 0)
+              .map(([key, c]) => {
+                const [type, diff] = key.split('-')
+                return {
+                  question_type: type === 'MC' ? 'multiple_choice' : 'fill_in_blank',
+                  difficulty: parseInt(diff || '1', 10),
+                  count: c,
+                }
+              })
+            : undefined,
         })
         setGenerated(result.generated)
         setSelected(new Set(result.generated.map((_, i) => i)))
@@ -272,11 +286,10 @@ export function QuestionGenerationPage() {
               </label>
               <div className="flex gap-3">
                 <label
-                  className={`flex cursor-pointer items-center gap-2 rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-                    strategy === 'ai'
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                  }`}
+                  className={`flex cursor-pointer items-center gap-2 rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-colors ${strategy === 'ai'
+                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                    }`}
                 >
                   <input
                     type="radio"
@@ -289,11 +302,10 @@ export function QuestionGenerationPage() {
                   AI 생성
                 </label>
                 <label
-                  className={`flex cursor-pointer items-center gap-2 rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-colors ${
-                    strategy === 'fb_derive'
-                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                      : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
-                  }`}
+                  className={`flex cursor-pointer items-center gap-2 rounded-lg border-2 px-4 py-2.5 text-sm font-medium transition-colors ${strategy === 'fb_derive'
+                    ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                    : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                    }`}
                 >
                   <input
                     type="radio"
@@ -356,68 +368,138 @@ export function QuestionGenerationPage() {
               </div>
             </div>
 
-            {/* AI 전략 옵션 */}
+            {/* AI 전략 옵션 - 정밀 모드 토글 */}
             {strategy === 'ai' && (
-              <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    문제 유형
-                  </label>
-                  <select
-                    value={questionType}
-                    onChange={(e) => setQuestionType(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+              <div className="mb-5">
+                <div className="flex items-center justify-between mb-3">
+                  <label className="text-sm font-medium text-gray-700">AI 생성 옵션</label>
+                  <button
+                    onClick={() => setUseGranular(!useGranular)}
+                    className={`text-xs font-semibold px-2 py-1 rounded transition-colors ${useGranular
+                      ? 'bg-amber-100 text-amber-700 border border-amber-200'
+                      : 'bg-gray-100 text-gray-600 border border-gray-200'
+                      }`}
                   >
-                    <option value="multiple_choice">객관식 (MC)</option>
-                    <option value="fill_in_blank">빈칸 채우기 (FB)</option>
-                  </select>
+                    {useGranular ? '정밀 모드 ON' : '정밀 모드 OFF'}
+                  </button>
                 </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    생성 수량
-                  </label>
-                  <select
-                    value={count}
-                    onChange={(e) => setCount(Number(e.target.value))}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                  >
-                    {[5, 10, 20, 30, 50].map((n) => (
-                      <option key={n} value={n}>
-                        {n}문제
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm font-medium text-gray-700">
-                    난이도 범위
-                  </label>
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={diffMin}
-                      onChange={(e) => setDiffMin(Number(e.target.value))}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                    >
-                      {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                        <option key={n} value={n}>
-                          Lv.{n}
-                        </option>
-                      ))}
-                    </select>
-                    <span className="text-gray-400">~</span>
-                    <select
-                      value={diffMax}
-                      onChange={(e) => setDiffMax(Number(e.target.value))}
-                      className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
-                    >
-                      {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
-                        <option key={n} value={n}>
-                          Lv.{n}
-                        </option>
-                      ))}
-                    </select>
+
+                {!useGranular ? (
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    {/* 기존 로직 */}
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">문제 유형</label>
+                      <select
+                        value={questionType}
+                        onChange={(e) => setQuestionType(e.target.value)}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      >
+                        <option value="multiple_choice">객관식 (MC)</option>
+                        <option value="fill_in_blank">빈칸 채우기 (FB)</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">생성 수량</label>
+                      <select
+                        value={count}
+                        onChange={(e) => setCount(Number(e.target.value))}
+                        className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                      >
+                        {[5, 10, 20, 30, 50].map((n) => (
+                          <option key={n} value={n}>{n}문제</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="mb-1 block text-sm font-medium text-gray-700">난이도 범위</label>
+                      <div className="flex items-center gap-2">
+                        <select
+                          value={diffMin}
+                          onChange={(e) => setDiffMin(Number(e.target.value))}
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                        >
+                          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                            <option key={n} value={n}>Lv.{n}</option>
+                          ))}
+                        </select>
+                        <span className="text-gray-400">~</span>
+                        <select
+                          value={diffMax}
+                          onChange={(e) => setDiffMax(Number(e.target.value))}
+                          className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"
+                        >
+                          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                            <option key={n} value={n}>Lv.{n}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="overflow-x-auto rounded-lg border border-gray-200">
+                    <table className="w-full border-collapse text-left text-[11px]">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="border-b border-gray-100 p-2 font-semibold text-gray-600">유형 \ 난이도</th>
+                          {Array.from({ length: 10 }, (_, i) => i + 1).map((n) => (
+                            <th key={n} className="border-b border-gray-100 p-2 text-center font-semibold text-gray-600">Lv.{n}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { id: 'MC', label: 'CC (개념)', desc: 'multiple_choice' },
+                          { id: 'FB', label: 'FB (빈칸)', desc: 'fill_in_blank' },
+                        ].map((type) => (
+                          <tr key={type.id} className="border-t border-gray-50 hover:bg-gray-50">
+                            <td className="p-2 font-medium text-gray-700">
+                              {type.label}
+                              <div className="text-[9px] font-normal text-gray-400">{type.desc}</div>
+                            </td>
+                            {Array.from({ length: 10 }, (_, i) => i + 1).map((diff) => {
+                              const key = `${type.id}-${diff}`
+                              return (
+                                <td key={diff} className="p-1">
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    max="50"
+                                    value={granularConfig[key] || ''}
+                                    placeholder="-"
+                                    onChange={(e) => {
+                                      const v = parseInt(e.target.value, 10)
+                                      setGranularConfig((prev) => ({
+                                        ...prev,
+                                        [key]: isNaN(v) ? 0 : v,
+                                      }))
+                                    }}
+                                    className={`w-full rounded border py-1 text-center transition-colors focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 ${(granularConfig[key] || 0) > 0
+                                      ? 'bg-indigo-50 border-indigo-300 font-bold'
+                                      : 'bg-white border-gray-200'
+                                      }`}
+                                  />
+                                </td>
+                              )
+                            })}
+                          </tr>
+                        ))}
+                        <tr className="border-t border-gray-50 bg-gray-50/30">
+                          <td className="p-2 font-medium text-gray-400">
+                            CO (연산)
+                            <div className="text-[9px] font-normal text-gray-400">template</div>
+                          </td>
+                          <td colSpan={10} className="p-2 text-center text-xs text-gray-400 italic">
+                            * 연산 문제는 템플릿 엔진을 통해 자동 생성됩니다 (AI 생성 대상 아님)
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p className="p-2 text-[10px] text-gray-500 bg-gray-50 border-t border-gray-200">
+                      * 문항 수를 입력한 칸에 대해서만 AI 생성이 수행됩니다. 한 유형당 최대 50문항까지
+                      가능합니다.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
@@ -460,11 +542,7 @@ export function QuestionGenerationPage() {
             >
               {step === 'generating' ? (
                 <span className="flex items-center gap-2">
-                  <svg
-                    className="h-4 w-4 animate-spin"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                     <circle
                       className="opacity-25"
                       cx="12"
@@ -571,9 +649,8 @@ export function QuestionGenerationPage() {
                           />
                         </td>
                         <td
-                          className={`cursor-pointer px-3 py-2 align-top text-gray-400 ${
-                            selected.has(idx) ? 'bg-indigo-50/50' : 'hover:bg-gray-50'
-                          }`}
+                          className={`cursor-pointer px-3 py-2 align-top text-gray-400 ${selected.has(idx) ? 'bg-indigo-50/50' : 'hover:bg-gray-50'
+                            }`}
                           colSpan={5}
                           onClick={() => setExpandedIdx(isExpanded ? null : idx)}
                         >
@@ -598,11 +675,10 @@ export function QuestionGenerationPage() {
                             </div>
                             {/* 유형 뱃지 */}
                             <span
-                              className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
-                                q.question_type === 'fill_in_blank'
-                                  ? 'bg-cyan-100 text-cyan-700'
-                                  : 'bg-purple-100 text-purple-700'
-                              }`}
+                              className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${q.question_type === 'fill_in_blank'
+                                ? 'bg-cyan-100 text-cyan-700'
+                                : 'bg-purple-100 text-purple-700'
+                                }`}
                             >
                               {q.question_type === 'fill_in_blank' ? '빈칸' : '객관식'}
                             </span>
@@ -634,11 +710,10 @@ export function QuestionGenerationPage() {
                                     {options.map((opt, oi) => (
                                       <div
                                         key={oi}
-                                        className={`rounded-lg border px-3 py-1.5 text-sm ${
-                                          opt.label === String(q.correct_answer)
-                                            ? 'border-green-300 bg-green-50 font-semibold text-green-800'
-                                            : 'border-gray-200 bg-gray-50 text-gray-700'
-                                        }`}
+                                        className={`rounded-lg border px-3 py-1.5 text-sm ${opt.label === String(q.correct_answer)
+                                          ? 'border-green-300 bg-green-50 font-semibold text-green-800'
+                                          : 'border-gray-200 bg-gray-50 text-gray-700'
+                                          }`}
                                       >
                                         <span className="font-medium">{opt.label}.</span> {opt.text}
                                       </div>
