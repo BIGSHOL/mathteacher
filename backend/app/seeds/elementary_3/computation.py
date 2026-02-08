@@ -111,7 +111,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-1-2-lv03-co-001",
             concept_id="concept-e3-add-sub-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=3,
             content="계산 과정을 보고 틀린 곳을 찾으세요.\n\n  423\n- 157\n-----\n  334\n\n어느 자리에서 처음 실수가 발생했나요?",
@@ -128,7 +128,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-1-2-lv04-co-001",
             concept_id="concept-e3-add-sub-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=4,
             content="받아내림을 할 때, 십의 자리에서 가져온 수는 실제로 얼마를 의미하나요?\n\n  524\n-  78\n-----",
@@ -146,7 +146,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-1-1-lv05-co-001",
             concept_id="concept-e3-add-sub-01",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=5,
             content="다음 계산에서 받아올림이 일어나는 자리를 모두 고르세요.\n\n  378\n+ 465\n-----",
@@ -168,7 +168,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-4-2-lv03-co-001",
             concept_id="concept-e3-mul1-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=3,
             content="23 × 4를 계산하는 과정입니다. 빈칸에 들어갈 알맞은 수는?\n\n23 × 4 = (20 + 3) × 4\n      = 20 × 4 + 3 × 4\n      = 80 + (   )\n      = 92",
@@ -185,7 +185,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-4-1-lv04-co-001",
             concept_id="concept-e3-mul1-01",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=4,
             content="다음 중 46 × 2를 바르게 계산한 것은?",
@@ -203,7 +203,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-4-2-lv06-co-001",
             concept_id="concept-e3-mul1-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=6,
             content="모눈종이에서 가로 23칸, 세로 4칸의 직사각형 넓이를 구할 때, "
@@ -225,7 +225,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-3-1-lv03-co-001",
             concept_id="concept-e3-div1-01",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=3,
             content="사탕 12개를 3명에게 똑같이 나누면 한 명당 몇 개씩인가요?",
@@ -243,7 +243,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-1-3-1-lv06-co-001",
             concept_id="concept-e3-div1-01",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=6,
             content="구슬 20개를 4개씩 묶으면 몇 묶음인가요? 이 상황을 나타내는 나눗셈식은?",
@@ -264,7 +264,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-2-1-2-lv05-co-001",
             concept_id="concept-e3-mul2-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=5,
             content="34 × 12를 계산할 때, 다음 중 옳은 과정은?",
@@ -322,7 +322,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-2-2-1-lv06-co-001",
             concept_id="concept-e3-div2-01",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=6,
             content="다음 계산이 틀린 이유를 설명하세요.\n\n14 ÷ 3 = 3 ... 5",
@@ -340,7 +340,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-2-2-2-lv08-co-001",
             concept_id="concept-e3-div2-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=8,
             content="학생 14명을 3명씩 텐트에 배정하려고 합니다. 텐트는 최소 몇 개 필요한가요?",
@@ -746,7 +746,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-2-2-2-lv05-co-001",
             concept_id="concept-e3-div2-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=5,
             content="25명이 4인승 보트를 타려고 합니다. 보트는 최소 몇 대 필요한가요?",
@@ -757,7 +757,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-2-2-2-lv05-co-002",
             concept_id="concept-e3-div2-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=5,
             content="사탕 23개를 5명에게 똑같이 나누면 한 명은 최대 몇 개 받나요?",
@@ -768,7 +768,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-2-2-2-lv06-co-001",
             concept_id="concept-e3-div2-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=6,
             content="리본 38cm를 7cm씩 자르면 최대 몇 도막을 만들 수 있나요?",
@@ -779,7 +779,7 @@ def get_questions() -> list[dict]:
         mc(
             id="e3-2-2-2-lv07-co-001",
             concept_id="concept-e3-div2-02",
-            category="computation",
+            category="concept",
             part="calc",
             difficulty=7,
             content="학생 33명이 8인승 차를 타려고 합니다. 차는 최소 몇 대 필요한가요?",

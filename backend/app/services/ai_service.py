@@ -132,6 +132,15 @@ def _validate_generated_question(q: dict, category: str = "") -> list[str]:
         if re.search(r"무엇인가\??$|무엇일까\??$", content.strip()):
             warnings.append("연산 트랙에 암기형 문제")
 
+    # 개념 트랙인데 단순 계산 문제인 경우
+    if category == "concept":
+        # 단순 계산식(숫자와 연산자)이 포함되어 있으면서, 개념적 맥락(의미, 이유 등)이 없는 경우
+        is_calc_expr = re.search(r"[\d]+\s*[+\-×÷*/]\s*[\d]+", content)
+        has_concept_kwd = re.search(r"정의|성질|옳은|설명|이유|특징|의미|뜻|몇\s*개|개수|과정|원리|잘못|틀린|모두|만족하는", content)
+        
+        if is_calc_expr and not has_concept_kwd:
+             warnings.append("개념 트랙에 단순 연산 의심 (맥락 부족)")
+
     return warnings
 
 
@@ -372,17 +381,16 @@ class AIService:
                 '"difficulty": 5}'
             )
 
-        # 트랙별 지침 (개념 vs 연산)
+        # 트랙별 지침 (상세 내용 통합)
         if category == "concept":
-            track_instruction = (
-                "## 개념(Concept) 트랙 지침\n"
-                "1. 단순 계산 실력을 묻는 문제보다는 원리, 정의, 성질, 과정에 대한 이해를 묻는 문제를 만드세요.\n"
-                "   - 나쁜 예: 25 + 36 = [ ] (이것은 연산 문제입니다)\n"
-                "   - 좋은 예: 25 + 36을 계산할 때 십의 자리에서 일의 자리로 받아올림이 있는지 묻거나, 계산 과정을 설명하는 문제\n"
-                "2. 스토리텔링이나 실생활 상황을 활용하여 개념의 적용을 확인하세요."
+            track_instruction += (
+                "\n\n## [중요] 개념 트랙 금지 사항\n"
+                "1. **단순 계산 금지**: '다음 식을 계산하시오', '25 + 36 = ?' 같은 단순 연산 문제는 절대 만들지 마세요.\n"
+                "2. **원리 중심**: 계산을 하더라도 '왜 그렇게 되는지', '어떤 성질을 이용했는지'를 묻거나, 과정의 빈칸을 채우게 하세요.\n"
+                "3. **개념 키워드 사용**: 정의, 성질, 이유, 설명, 포함 관계, 분류, 개수 등을 묻는 표현을 적극 사용하세요."
             )
         else:
-            track_instruction = "## 연산(Computation) 트랙 지침: 정확한 계산 절차와 결과를 확인하는 문제를 생성하세요."
+            track_instruction += "\n\n## [중요] 연산 트랙 금지 사항: 개념이나 정의를 묻지 말고, 오직 빠르고 정확한 '계산 수행 능력'을 테스트하세요."
 
         # 중복 방지
         existing_section = ""

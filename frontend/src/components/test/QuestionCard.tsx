@@ -23,7 +23,7 @@ export function QuestionCard({
   onSelectAnswer,
   disabled = false,
   blankValues = {},
-  onBlankChange = () => {},
+  onBlankChange = () => { },
 }: QuestionCardProps) {
   return (
     <div className="card p-4 sm:p-6">
@@ -58,7 +58,7 @@ export function QuestionCard({
         </div>
       ) : (
         <div className="mb-6">
-          <p className="text-lg font-medium text-gray-900">
+          <p className="text-lg font-medium text-gray-900 whitespace-pre-wrap">
             <MathText text={question.content} />
           </p>
         </div>
@@ -82,15 +82,15 @@ export function QuestionCard({
       {/* 단답형 / 빈칸 채우기 (blank_config 없을 때) */}
       {(question.question_type === 'short_answer' ||
         (question.question_type === 'fill_in_blank' && !question.blank_config)) && (
-        <input
-          type="text"
-          placeholder="정답을 입력하세요"
-          className="input mt-4"
-          disabled={disabled}
-          autoComplete="off"
-          onChange={(e) => onSelectAnswer(e.target.value)}
-        />
-      )}
+          <input
+            type="text"
+            placeholder="정답을 입력하세요"
+            className="input mt-4"
+            disabled={disabled}
+            autoComplete="off"
+            onChange={(e) => onSelectAnswer(e.target.value)}
+          />
+        )}
     </div>
   )
 }

@@ -661,7 +661,7 @@ export function QuestionGenerationPage() {
                             <span className="shrink-0 w-6 text-gray-400 font-mono text-xs">{idx + 1}</span>
                             {/* 내용 */}
                             <div className="min-w-0 flex-1">
-                              <div className={`text-gray-800 ${isExpanded ? '' : 'line-clamp-2'}`}>
+                              <div className={`text-gray-800 ${isExpanded ? 'whitespace-pre-wrap' : 'line-clamp-2'}`}>
                                 <MathText text={String(q.content || '')} />
                               </div>
                               {/* 경고 배지 */}

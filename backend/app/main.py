@@ -1714,6 +1714,8 @@ def audit_question_categories():
         re.compile(r"_{2,}[도를이]|_{2,}\s*(라고?\s*한다|이라)"),        # 용어 빈칸
         re.compile(r"예\s*/\s*아니오|존재하는가|존재하지\s*않"),          # 판별형
         re.compile(r"무엇인가\??$|무엇일까\??$"),                        # 암기형
+        re.compile(r"이유|과정|원리|설명"),                              # 원리/설명
+        re.compile(r"틀린\s*곳|잘못된"),                                # 오답 분석
     ]
 
     # -- 2단계: concept → computation 패턴 (개념인데 연산형) --
@@ -1742,8 +1744,8 @@ def audit_question_categories():
                         q.category = "concept"
                         recategorized += 1
                         logger.info(
-                            "카테고리 변경 comp→concept: %s | %s",
-                            q.id, content[:60],
+                            "카테고리 변경: %s | %s -> %s | %s",
+                            q.id, original_cat, q.category, content[:60],
                         )
                         break
 
@@ -1755,8 +1757,8 @@ def audit_question_categories():
                     q.category = "computation"
                     recategorized += 1
                     logger.info(
-                        "카테고리 변경 concept→comp: %s | %s",
-                        q.id, content[:60],
+                        "카테고리 변경: %s | %s -> %s | %s",
+                        q.id, original_cat, q.category, content[:60],
                     )
 
             # 3단계: 재분류 후 연산 품질 검증 (AI 문제만 비활성화)
