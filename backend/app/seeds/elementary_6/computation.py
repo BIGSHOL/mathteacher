@@ -31,7 +31,7 @@ def get_concepts() -> list[dict]:
             description="비의 구조 이해, 기준량 찾기, 비율과 백분율로 표현",
         ),
         concept(
-            id="e6-1-1-2",
+            id="e6-2-1-1",
             name="분수의 나눗셈 (분수÷분수)",
             grade="elementary_6",
             category="computation",
@@ -39,7 +39,7 @@ def get_concepts() -> list[dict]:
             description="통분과 역수를 이용한 분수 나눗셈, 대분수 계산",
         ),
         concept(
-            id="e6-1-3-2",
+            id="e6-2-2-1",
             name="소수의 나눗셈 (소수÷소수)",
             grade="elementary_6",
             category="computation",
@@ -298,7 +298,7 @@ def get_questions() -> list[dict]:
         # 2학기 1단원: 분수의 나눗셈2 (e6-2-1-1-co-001 ~ 014)
         mc(
             id="e6-2-1-1-co-001",
-            concept_id="e6-1-1-2",
+            concept_id="e6-2-1-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -314,7 +314,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-1-1-co-002",
-            concept_id="e6-1-1-2",
+            concept_id="e6-2-1-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -330,7 +330,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-1-1-co-003",
-            concept_id="e6-1-1-2",
+            concept_id="e6-2-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -346,7 +346,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-1-1-co-004",
-            concept_id="e6-1-1-2",
+            concept_id="e6-2-1-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -362,7 +362,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-1-1-co-005",
-            concept_id="e6-1-1-2",
+            concept_id="e6-2-1-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -379,7 +379,7 @@ def get_questions() -> list[dict]:
         # 2학기 2단원: 소수의 나눗셈2 (e6-2-2-1-co-001 ~ 015, 024 ~ 025)
         mc(
             id="e6-2-2-1-co-001",
-            concept_id="e6-1-3-2",
+            concept_id="e6-2-2-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -395,7 +395,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-2-1-co-002",
-            concept_id="e6-1-3-2",
+            concept_id="e6-2-2-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -411,7 +411,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-2-1-co-003",
-            concept_id="e6-1-3-2",
+            concept_id="e6-2-2-1",
             category="computation",
             part="calc",
             difficulty=9,
@@ -427,7 +427,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-2-1-co-004",
-            concept_id="e6-1-3-2",
+            concept_id="e6-2-2-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -443,7 +443,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-2-1-co-005",
-            concept_id="e6-1-3-2",
+            concept_id="e6-2-2-1",
             category="computation",
             part="calc",
             difficulty=8,

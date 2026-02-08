@@ -740,7 +740,7 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            concept_id="concept-m1-eq-01",
+            concept_id="m1-1-4-1",
             category="concept",
             part="algebra",
             difficulty=5,
@@ -756,8 +756,8 @@ def get_concept_data() -> dict:
             points=10,
         ),
         mc(
-            id="m1-1-04-01-lv07-cc-001",
-            concept_id="concept-m1-eq-01",
+            id="m1-1-4-1-cc-002",
+            concept_id="m1-1-4-1",
             category="concept",
             part="algebra",
             difficulty=7,

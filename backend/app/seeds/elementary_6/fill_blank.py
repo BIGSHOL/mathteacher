@@ -8,8 +8,8 @@ def get_questions() -> list[dict]:
     return [
         # 1학기 1단원: 분수의 나눗셈1 (e6-1-1-1-lv04-fb-001 ~ 002)
         fb(
-            id="e6-1-1-1-lv04-fb-001",
-            concept_id="concept-e6-frac-div1",
+            id="e6-1-1-1-fb-001",
+            concept_id="e6-1-1-1",
             category="computation",
             part="calc",
             difficulty=4,
@@ -19,8 +19,8 @@ def get_questions() -> list[dict]:
             accept_formats=["5/6"],
         ),
         fb(
-            id="e6-1-1-1-lv05-fb-001",
-            concept_id="concept-e6-frac-div1",
+            id="e6-1-1-1-fb-002",
+            concept_id="e6-1-1-1",
             category="computation",
             part="calc",
             difficulty=5,
@@ -54,8 +54,8 @@ def get_questions() -> list[dict]:
         ),
         # 1학기 3단원: 소수의 나눗셈1 (e6-1-3-1-lv06-fb-001 ~ 006)
         fb(
-            id="e6-1-3-1-lv06-fb-001",
-            concept_id="concept-e6-dec-div1",
+            id="e6-1-3-1-fb-001",
+            concept_id="e6-1-3-1",
             category="computation",
             part="calc",
             difficulty=6,
@@ -65,8 +65,8 @@ def get_questions() -> list[dict]:
             accept_formats=["0.6"],
         ),
         fb(
-            id="e6-1-3-1-lv07-fb-001",
-            concept_id="concept-e6-dec-div1",
+            id="e6-1-3-1-fb-002",
+            concept_id="e6-1-3-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -77,8 +77,8 @@ def get_questions() -> list[dict]:
         ),
         # 1학기 4단원: 비와 비율 (e6-1-4-1-lv08-fb-001 ~ 008)
         fb(
-            id="e6-1-4-1-lv08-fb-001",
-            concept_id="concept-e6-ratio",
+            id="e6-1-4-1-fb-001",
+            concept_id="e6-1-4-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -88,8 +88,8 @@ def get_questions() -> list[dict]:
             accept_formats=["3:4", "3 : 4"],
         ),
         fb(
-            id="e6-1-4-1-lv09-fb-001",
-            concept_id="concept-e6-ratio",
+            id="e6-1-4-1-fb-002",
+            concept_id="e6-1-4-1",
             category="computation",
             part="calc",
             difficulty=9,
@@ -146,8 +146,8 @@ def get_questions() -> list[dict]:
         ),
         # 2학기 1단원: 분수의 나눗셈2 (e6-2-1-1-lv07-fb-001 ~ 014)
         fb(
-            id="e6-2-1-1-lv07-fb-001",
-            concept_id="concept-e6-frac-div2",
+            id="e6-2-1-1-fb-001",
+            concept_id="e6-2-1-1",
             category="computation",
             part="calc",
             difficulty=7,
@@ -157,8 +157,8 @@ def get_questions() -> list[dict]:
             accept_formats=["2/3"],
         ),
         fb(
-            id="e6-2-1-1-lv08-fb-001",
-            concept_id="concept-e6-frac-div2",
+            id="e6-2-1-1-fb-002",
+            concept_id="e6-2-1-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -169,8 +169,8 @@ def get_questions() -> list[dict]:
         ),
         # 2학기 2단원: 소수의 나눗셈2 (e6-2-2-1-lv08-fb-001 ~ 016)
         fb(
-            id="e6-2-2-1-lv08-fb-001",
-            concept_id="concept-e6-dec-div2",
+            id="e6-2-2-1-fb-001",
+            concept_id="e6-2-2-1",
             category="computation",
             part="calc",
             difficulty=8,
@@ -180,8 +180,8 @@ def get_questions() -> list[dict]:
             accept_formats=["3"],
         ),
         fb(
-            id="e6-2-2-1-lv09-fb-001",
-            concept_id="concept-e6-dec-div2",
+            id="e6-2-2-1-fb-002",
+            concept_id="e6-2-2-1",
             category="computation",
             part="calc",
             difficulty=9,
@@ -261,8 +261,8 @@ def get_questions() -> list[dict]:
         ),
         # 2학기 6단원: 원기둥, 원뿔, 구 (e6-2-6-1-lv07-fb-001 ~ 024)
         fb(
-            id="e6-2-6-1-lv07-fb-001",
-            concept_id="concept-e6-solids",
+            id="e6-2-6-1-fb-001",
+            concept_id="e6-2-6-1",
             category="concept",
             part="geo",
             difficulty=7,
@@ -272,8 +272,8 @@ def get_questions() -> list[dict]:
             accept_formats=["2"],
         ),
         fb(
-            id="e6-2-6-1-lv08-fb-001",
-            concept_id="concept-e6-solids",
+            id="e6-2-6-1-fb-002",
+            concept_id="e6-2-6-2",
             category="concept",
             part="geo",
             difficulty=8,

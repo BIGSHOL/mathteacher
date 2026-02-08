@@ -264,7 +264,7 @@ def get_questions() -> list[dict]:
         # 2학기 3단원: 공간과 입체 (e6-2-3-1-lv08-cc-001 ~ 012)
         mc(
             id="e6-2-3-1-cc-001",
-            concept_id="concept-e6-spatial", # This concept is not in the new list, keeping original.
+            concept_id="e6-2-3-1",
             category="concept",
             part="geo",
             difficulty=8,
@@ -280,7 +280,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-3-1-cc-002",
-            concept_id="concept-e6-spatial", # This concept is not in the new list, keeping original.
+            concept_id="e6-2-3-1",
             category="concept",
             part="geo",
             difficulty=9,
@@ -296,7 +296,7 @@ def get_questions() -> list[dict]:
         ),
         mc(
             id="e6-2-3-1-cc-003",
-            concept_id="concept-e6-spatial", # This concept is not in the new list, keeping original.
+            concept_id="e6-2-3-1",
             category="concept",
             part="geo",
             difficulty=7,
@@ -393,8 +393,8 @@ def get_questions() -> list[dict]:
             explanation="원의 넓이 = πr²에서 r은 반지름입니다.",
         ),
         mc(
-            id="e6-2-5-1-lv08-cc-001",
-            concept_id="concept-e6-circle-area",
+            id="e6-2-5-1-cc-001",
+            concept_id="e6-2-5-1",
             category="concept",
             part="geo",
             difficulty=8,
@@ -410,8 +410,8 @@ def get_questions() -> list[dict]:
         ),
         # 2학기 6단원: 원기둥, 원뿔, 구 (e6-2-6-1-lv07-cc-001 ~ 021)
         mc(
-            id="e6-2-6-1-lv07-cc-001",
-            concept_id="concept-e6-solids",
+            id="e6-2-6-1-cc-001",
+            concept_id="e6-2-6-1",
             category="concept",
             part="geo",
             difficulty=7,
@@ -426,8 +426,8 @@ def get_questions() -> list[dict]:
             explanation="구는 곡면이므로 평면으로 완벽하게 펼칠 수 없습니다. 지구본을 종이 지도로 그릴 때 왜곡이 생기는 것과 같은 원리입니다.",
         ),
         mc(
-            id="e6-2-6-1-lv08-cc-001",
-            concept_id="concept-e6-solids",
+            id="e6-2-6-2-cc-001",
+            concept_id="e6-2-6-2",
             category="concept",
             part="geo",
             difficulty=8,
@@ -442,8 +442,8 @@ def get_questions() -> list[dict]:
             explanation="원뿔의 높이는 꼭짓점에서 밑면에 수직으로 내린 선분입니다. 옆면을 따라 내려가는 모선과 혼동하지 마세요.",
         ),
         mc(
-            id="e6-2-6-1-lv06-cc-001",
-            concept_id="concept-e6-solids",
+            id="e6-2-6-1-cc-002",
+            concept_id="e6-2-6-1",
             category="concept",
             part="geo",
             difficulty=6,

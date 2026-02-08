@@ -41,7 +41,7 @@ def _get_tests():
             id="test-e6-1-1-1",
             name="초6-1-1 분수의 나눗셈 (기본)",
             grade="elementary_6",
-            concept_ids=["e6-1-1-1", "e6-1-1-2"],
+            concept_ids=["e6-1-1-1", "e6-2-1-1"],
             question_ids=["e6-1-1-1-co-001", "e6-1-1-1-co-002", "e6-2-1-1-co-001"],
         ),
         test(
@@ -55,7 +55,7 @@ def _get_tests():
             id="test-e6-1-3-1",
             name="초6-1-3 소수의 나눗셈 (기본)",
             grade="elementary_6",
-            concept_ids=["e6-1-3-1", "e6-1-3-2"],
+            concept_ids=["e6-1-3-1", "e6-2-2-1"],
             question_ids=["e6-1-3-1-co-001", "e6-2-2-1-co-001"],
         ),
         test(
