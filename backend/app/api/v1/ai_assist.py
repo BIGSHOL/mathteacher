@@ -1,4 +1,4 @@
-"""Gemini AI 학습 보조 API - 힌트, 유연 채점, 피드백."""
+"""Gemini AI 학습 보조 API - 유연 채점, 피드백."""
 
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from pydantic import BaseModel, Field
@@ -14,52 +14,7 @@ _ai_service = AIService()
 
 
 # ─────────────────────────────────────────────
-# 1. 힌트 생성
-# ─────────────────────────────────────────────
-class HintRequest(BaseModel):
-    question_content: str = Field(..., description="문제 내용")
-    question_type: str = Field(..., description="multiple_choice 또는 fill_in_blank")
-    options: list[str] | None = Field(None, description="객관식 선지 (MC만)")
-    student_grade: str = Field(..., description="학년 (예: middle_1)")
-    hint_level: int = Field(1, ge=1, le=3, description="힌트 수준 1~3 (클수록 구체적)")
-
-
-class HintResponse(BaseModel):
-    hint: str
-    hint_level: int
-
-
-@router.post("/hint", response_model=HintResponse)
-@limiter.limit("30/minute")
-async def generate_hint(
-    request: Request,
-    req: HintRequest,
-    current_user: UserResponse = Depends(get_current_user),
-):
-    """학생에게 단계별 힌트를 제공합니다. 정답은 절대 노출하지 않습니다."""
-    if not settings.GEMINI_API_KEY:
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="AI 서비스가 설정되지 않았습니다.",
-        )
-
-    result = await _ai_service.generate_hint(
-        question_content=req.question_content,
-        question_type=req.question_type,
-        options=req.options,
-        student_grade=req.student_grade,
-        hint_level=req.hint_level,
-    )
-    if not result:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="힌트 생성에 실패했습니다.",
-        )
-    return HintResponse(**result)
-
-
-# ─────────────────────────────────────────────
-# 2. 유연 채점 (빈칸 채우기)
+# 1. 유연 채점 (빈칸 채우기)
 # ─────────────────────────────────────────────
 class GradeRequest(BaseModel):
     question_content: str = Field(..., description="문제 내용")

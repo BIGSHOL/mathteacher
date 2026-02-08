@@ -6,7 +6,7 @@ import { clsx } from 'clsx'
 import api from '../../lib/api'
 import { XpBar } from '../../components/gamification/XpBar'
 import { useAuthStore } from '../../store/authStore'
-import type { StudentStats, TrackStats, Grade, ChapterProgressItem } from '../../types'
+import type { StudentStats, TrackStats, Grade, ChapterProgressItem, DailyActivityItem, RecentTestItem } from '../../types'
 
 /** 레벨별 아이콘 & 칭호 (15레벨 체계) */
 function getLevelMeta(level: number): { icon: string; title: string } {
@@ -508,12 +508,86 @@ export function MyStatsPage() {
           </motion.div>
         )}
 
+        {/* 오늘의 학습 요약 */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.26 }}
+        >
+          <h2 className="mb-2 text-sm font-semibold text-gray-900">오늘의 학습</h2>
+          <div className="grid gap-2.5 grid-cols-2">
+            <div className="rounded-xl bg-gradient-to-br from-cyan-400 to-cyan-600 p-3 text-white shadow-md">
+              <p className="text-[10px] font-medium opacity-75">오늘 푼 문제</p>
+              <p className="font-math text-2xl font-black mt-0.5">{stats.today_solved}<span className="ml-1 text-xs font-normal opacity-80">문제</span></p>
+            </div>
+            {stats.review_stats && (
+              <div className="rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 p-3 text-white shadow-md">
+                <p className="text-[10px] font-medium opacity-75">오답 복습</p>
+                <div className="flex items-end gap-2 mt-0.5">
+                  <p className="font-math text-2xl font-black">{stats.review_stats.pending_count}<span className="ml-1 text-xs font-normal opacity-80">대기</span></p>
+                </div>
+                <div className="flex items-center gap-2 mt-1 text-[10px] opacity-90">
+                  <span>진행 {stats.review_stats.in_progress_count}</span>
+                  <span>|</span>
+                  <span>졸업 {stats.review_stats.graduated_count}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+
+        {/* 최근 7일 학습 추이 */}
+        {stats.daily_activity && stats.daily_activity.length > 0 && stats.daily_activity.some(d => d.questions_answered > 0) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.28 }}
+          >
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">최근 7일 학습 추이</h2>
+            <div className="rounded-xl bg-white p-4 shadow-sm">
+              <WeeklyActivityChart data={stats.daily_activity} />
+            </div>
+          </motion.div>
+        )}
+
+        {/* 문제 유형별 성적 */}
+        {stats.type_stats && Object.keys(stats.type_stats).length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">유형별 성적</h2>
+            <div className="grid gap-2.5 grid-cols-2 lg:grid-cols-4">
+              {Object.entries(stats.type_stats).map(([typeKey, ts]) => (
+                <TypeStatCard key={typeKey} typeKey={typeKey} stats={ts} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
+        {/* 최근 시험 이력 */}
+        {stats.recent_tests && stats.recent_tests.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.32 }}
+          >
+            <h2 className="mb-2 text-sm font-semibold text-gray-900">최근 시험</h2>
+            <div className="space-y-1.5">
+              {stats.recent_tests.slice(0, 5).map((test) => (
+                <RecentTestRow key={`${test.test_id}-${test.completed_at}`} test={test} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+
         {/* 단원 진행 상황 */}
         {chapters.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.28 }}
+            transition={{ delay: 0.34 }}
           >
             <h2 className="mb-2 text-sm font-semibold text-gray-900">단원 진행 상황</h2>
             <div className="space-y-4">
@@ -740,6 +814,105 @@ function ChapterRow({ chapter: ch }: { chapter: ChapterProgressItem }) {
       {isLocked && (
         <p className="text-xs text-gray-400">이전 단원을 완료하면 해금됩니다</p>
       )}
+    </div>
+  )
+}
+
+// 최근 7일 학습 추이 차트
+const DAY_LABELS = ['일', '월', '화', '수', '목', '금', '토']
+
+function WeeklyActivityChart({ data }: { data: DailyActivityItem[] }) {
+  const maxQuestions = Math.max(...data.map(d => d.questions_answered), 1)
+
+  return (
+    <div className="space-y-3">
+      {/* 막대 그래프 */}
+      <div className="flex items-end justify-between gap-1" style={{ height: 100 }}>
+        {data.map((d) => {
+          const h = d.questions_answered > 0 ? Math.max(8, (d.questions_answered / maxQuestions) * 100) : 4
+          const dayOfWeek = new Date(d.date).getDay()
+          return (
+            <div key={d.date} className="flex flex-1 flex-col items-center gap-1">
+              {d.questions_answered > 0 && (
+                <span className="text-[10px] font-bold text-gray-500">{d.questions_answered}</span>
+              )}
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: h }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className={clsx(
+                  'w-full max-w-[28px] rounded-t-md',
+                  d.questions_answered > 0
+                    ? d.accuracy_rate >= 80 ? 'bg-gradient-to-t from-green-400 to-green-500'
+                      : d.accuracy_rate >= 60 ? 'bg-gradient-to-t from-blue-400 to-blue-500'
+                      : 'bg-gradient-to-t from-orange-400 to-orange-500'
+                    : 'bg-gray-200'
+                )}
+              />
+              <span className="text-[10px] text-gray-400">{DAY_LABELS[dayOfWeek]}</span>
+            </div>
+          )
+        })}
+      </div>
+      {/* 범례 */}
+      <div className="flex justify-center gap-3 text-[10px] text-gray-400">
+        <span><span className="mr-0.5 inline-block h-2 w-2 rounded-sm bg-green-400" />80%+</span>
+        <span><span className="mr-0.5 inline-block h-2 w-2 rounded-sm bg-blue-400" />60%+</span>
+        <span><span className="mr-0.5 inline-block h-2 w-2 rounded-sm bg-orange-400" />60% 미만</span>
+      </div>
+    </div>
+  )
+}
+
+// 문제 유형별 통계 카드
+const TYPE_LABELS: Record<string, { icon: string; label: string }> = {
+  multiple_choice: { icon: '🔘', label: '객관식' },
+  fill_in_blank: { icon: '✏️', label: '빈칸' },
+  short_answer: { icon: '📝', label: '단답형' },
+  true_false: { icon: '⭕', label: 'O/X' },
+}
+
+function TypeStatCard({ typeKey, stats: ts }: { typeKey: string; stats: TrackStats }) {
+  const meta = TYPE_LABELS[typeKey] || { icon: '📋', label: typeKey }
+  const color = ts.accuracy_rate >= 80 ? 'text-green-600' : ts.accuracy_rate >= 60 ? 'text-blue-600' : 'text-red-600'
+  const barColor = ts.accuracy_rate >= 80 ? 'from-green-400 to-green-600' : ts.accuracy_rate >= 60 ? 'from-blue-400 to-blue-600' : 'from-red-400 to-red-600'
+
+  return (
+    <div className="rounded-xl bg-white p-3 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-1.5 mb-1">
+        <span className="text-base">{meta.icon}</span>
+        <span className="text-xs font-semibold text-gray-700">{meta.label}</span>
+      </div>
+      <p className={`font-math text-xl font-black ${color}`}>{ts.accuracy_rate}%</p>
+      <p className="text-[10px] text-gray-400 mt-0.5">{ts.correct_answers}/{ts.total_questions}문제</p>
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-gray-100">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${ts.accuracy_rate}%` }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className={`h-full rounded-full bg-gradient-to-r ${barColor}`}
+        />
+      </div>
+    </div>
+  )
+}
+
+// 최근 시험 이력 행
+function RecentTestRow({ test }: { test: RecentTestItem }) {
+  const date = new Date(test.completed_at)
+  const dateStr = `${date.getMonth() + 1}/${date.getDate()}`
+  const color = test.accuracy_rate >= 80 ? 'text-green-600' : test.accuracy_rate >= 60 ? 'text-blue-600' : 'text-red-600'
+
+  return (
+    <div className="flex items-center justify-between rounded-lg bg-white px-3 py-2.5 shadow-sm">
+      <div className="flex items-center gap-2 min-w-0">
+        <span className="text-xs text-gray-400 shrink-0">{dateStr}</span>
+        <span className="text-sm font-medium text-gray-900 truncate">{test.test_title}</span>
+      </div>
+      <div className="flex items-center gap-2 shrink-0">
+        <span className="text-xs text-gray-500">{test.score}/{test.max_score}</span>
+        <span className={`font-math text-sm font-bold ${color}`}>{test.accuracy_rate}%</span>
+      </div>
     </div>
   )
 }

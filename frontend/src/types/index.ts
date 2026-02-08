@@ -176,6 +176,21 @@ export interface SubmitAnswerResponse {
   next_difficulty?: number
   error_type?: string
   suggestion?: string
+  // 재도전 관련 필드 (일일 테스트용)
+  retry_scheduled?: boolean  // 재도전 예정 여부
+  retry_count?: number  // 이 문제에서 틀린 횟수
+  retry_queue_count?: number  // 재도전 대기 문제 수
+  hint?: RetryHint | null  // 재도전 힌트 정보
+  moved_to_focus_check?: boolean  // 집중 체크로 이동 여부
+  focus_check_message?: string  // 집중 체크 안내 메시지
+}
+
+// 재도전 힌트 타입
+export interface RetryHint {
+  level: number  // 1, 2, 3
+  type: 'concept' | 'direction' | 'extended'
+  message: string
+  concept_id?: string
 }
 
 // 적응형 다음 문제 응답
@@ -215,6 +230,29 @@ export interface TrackStats {
   total_questions: number
   correct_answers: number
   accuracy_rate: number
+  average_time?: number
+}
+
+export interface ReviewStatsInfo {
+  pending_count: number
+  in_progress_count: number
+  graduated_count: number
+}
+
+export interface DailyActivityItem {
+  date: string
+  tests_completed: number
+  questions_answered: number
+  accuracy_rate: number
+}
+
+export interface RecentTestItem {
+  test_id: string
+  test_title: string
+  score: number
+  max_score: number
+  accuracy_rate: number
+  completed_at: string
 }
 
 export interface StudentStats {
@@ -233,6 +271,10 @@ export interface StudentStats {
   strong_concepts: ConceptStat[]
   computation_stats?: TrackStats
   concept_stats?: TrackStats
+  type_stats?: Record<string, TrackStats>
+  daily_activity?: DailyActivityItem[]
+  recent_tests?: RecentTestItem[]
+  review_stats?: ReviewStatsInfo
 }
 
 // 학생 통계 요약 (강사용)

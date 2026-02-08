@@ -37,11 +37,20 @@ class ConceptDetailStat(ConceptStat):
 
 
 class TrackStats(BaseModel):
-    """트랙별 통계 (연산/개념)."""
+    """트랙별 통계 (연산/개념/유형)."""
 
     total_questions: int
     correct_answers: int
     accuracy_rate: float
+    average_time: float = 0
+
+
+class ReviewStatsInfo(BaseModel):
+    """오답 복습 현황."""
+
+    pending_count: int = 0      # 복습 대기 (오늘 이전)
+    in_progress_count: int = 0  # 진행 중 (아직 졸업 안 함)
+    graduated_count: int = 0    # 졸업 완료
 
 
 class QuotaProgress(BaseModel):
@@ -73,6 +82,10 @@ class StudentStats(BaseModel):
     strong_concepts: list[ConceptStat]
     computation_stats: TrackStats | None = None
     concept_stats: TrackStats | None = None
+    type_stats: dict[str, TrackStats] = {}
+    daily_activity: list[DailyActivity] = []
+    recent_tests: list[RecentTest] = []
+    review_stats: ReviewStatsInfo | None = None
     quota: QuotaProgress | None = None
 
 

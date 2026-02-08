@@ -83,11 +83,10 @@ function DifficultyChangeToast({ change }: { change: DifficultyChange }) {
       className="fixed left-1/2 top-24 z-[60] -translate-x-1/2 sm:top-20"
     >
       <div
-        className={`flex items-center gap-3 rounded-2xl px-6 py-4 shadow-2xl ${
-          isUp
+        className={`flex items-center gap-3 rounded-2xl px-6 py-4 shadow-2xl ${isUp
             ? 'bg-gradient-to-r from-emerald-500 to-green-500 text-white'
             : 'bg-gradient-to-r from-orange-400 to-amber-500 text-white'
-        }`}
+          }`}
       >
         <motion.span
           initial={{ scale: 0, rotate: isUp ? -180 : 180 }}
@@ -160,12 +159,6 @@ export function TestPlayPage() {
   const [isFetchingNext, setIsFetchingNext] = useState(false)
   const [difficultyChange, setDifficultyChange] = useState<DifficultyChange | null>(null)
   const difficultyChangeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  // 힌트 상태
-  const [hintText, setHintText] = useState<string | null>(null)
-  const [hintLevel, setHintLevel] = useState(0)
-  const [isLoadingHint, setIsLoadingHint] = useState(false)
-  const MAX_HINTS = 3
 
   // 타이머 상태
   const [timerKey, setTimerKey] = useState(0)
@@ -312,30 +305,6 @@ export function TestPlayPage() {
     submitAnswer(selectedAnswer ?? '')
   }, [showFeedback, isSubmitting, selectedAnswer, submitAnswer])
 
-  /** AI 힌트 요청 */
-  const handleRequestHint = async () => {
-    if (!currentQuestion || hintLevel >= MAX_HINTS || isLoadingHint) return
-    setIsLoadingHint(true)
-    try {
-      const res = await api.post<{ success: boolean; data: { hint: string; hint_level: number } }>(
-        '/api/v1/ai/hint',
-        {
-          question_content: currentQuestion.content,
-          question_type: currentQuestion.question_type,
-          options: currentQuestion.options?.map((o) => o.text),
-          student_grade: user?.grade || '',
-          hint_level: hintLevel + 1,
-        }
-      )
-      setHintText(res.data.data.hint)
-      setHintLevel((prev) => prev + 1)
-    } catch {
-      // AI 힌트 실패 시 무시
-    } finally {
-      setIsLoadingHint(false)
-    }
-  }
-
   const completeTest = useCallback(async () => {
     if (!attemptId) return
 
@@ -410,8 +379,6 @@ export function TestPlayPage() {
         setFeedbackData(null)
         setShowFeedback(false)
         setIsTimeUp(false)
-        setHintText(null)
-        setHintLevel(0)
         setStartTime(Date.now())
         setTimerKey((prev) => prev + 1)
       } catch {
@@ -430,8 +397,6 @@ export function TestPlayPage() {
         setFeedbackData(null)
         setShowFeedback(false)
         setIsTimeUp(false)
-        setHintText(null)
-        setHintLevel(0)
         setStartTime(Date.now())
         setTimerKey((prev) => prev + 1)
       }
@@ -584,42 +549,19 @@ export function TestPlayPage() {
           </AnimatePresence>
         )}
 
-        {/* 힌트 + 신고 영역 */}
+        {/* 신고 영역 */}
         {!showFeedback && !isFetchingNext && (
-          <div className="mt-4">
-            {hintText && (
-              <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-                <div className="mb-1 text-sm font-medium text-amber-700">
-                  힌트 {hintLevel}
-                </div>
-                <p className="text-sm text-gray-700">{hintText}</p>
-              </div>
-            )}
-            <div className="flex items-center justify-between">
-              {hintLevel < MAX_HINTS ? (
-                <button
-                  onClick={handleRequestHint}
-                  disabled={isLoadingHint}
-                  className="text-sm text-amber-600 hover:text-amber-700 disabled:opacity-50"
-                >
-                  {isLoadingHint
-                    ? '힌트 생성 중...'
-                    : `힌트 보기 (${MAX_HINTS - hintLevel}회 남음)`}
-                </button>
-              ) : (
-                <span />
-              )}
-              <button
-                onClick={() => setShowReportModal(true)}
-                className="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-red-500"
-                title="문제 신고"
-              >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                </svg>
-                신고
-              </button>
-            </div>
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="flex items-center gap-1 text-xs text-gray-400 transition-colors hover:text-red-500"
+              title="문제 신고"
+            >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+              </svg>
+              신고
+            </button>
           </div>
         )}
 
@@ -654,6 +596,11 @@ export function TestPlayPage() {
         currentDifficulty={isAdaptive && difficultyChange ? difficultyChange.from : undefined}
         errorType={feedbackData?.error_type}
         suggestion={feedbackData?.suggestion}
+        hint={feedbackData?.hint}
+        retryScheduled={feedbackData?.retry_scheduled}
+        retryCount={feedbackData?.retry_count}
+        movedToFocusCheck={feedbackData?.moved_to_focus_check}
+        focusCheckMessage={feedbackData?.focus_check_message}
         onNext={handleNextQuestion}
       />
 

@@ -247,6 +247,88 @@ class StatsService:
                     "average_time": round(avg_time, 1),
                 }
 
+        # 최근 테스트 (최근 10개)
+        recent_tests = []
+        recent_attempts_stmt = select(TestAttempt).where(
+            TestAttempt.student_id == student_id,
+            TestAttempt.completed_at.isnot(None),
+        ).order_by(TestAttempt.completed_at.desc()).limit(10)
+        recent_attempts = list((await self.db.scalars(recent_attempts_stmt)).all())
+        for attempt in recent_attempts:
+            test = await self.db.get(Test, attempt.test_id)
+            if test:
+                recent_tests.append({
+                    "test_id": test.id,
+                    "test_title": test.title,
+                    "score": attempt.score,
+                    "max_score": attempt.max_score,
+                    "accuracy_rate": self.calculate_accuracy_rate(
+                        attempt.correct_count, attempt.total_count
+                    ),
+                    "completed_at": attempt.completed_at,
+                })
+
+        # 일별 활동 (최근 7일, KST 기준)
+        daily_activity = []
+        for i in range(7):
+            day = today - timedelta(days=6 - i)
+            day_start, day_end = _kst_day_utc_range(day)
+            day_attempts_stmt = select(TestAttempt).where(
+                TestAttempt.student_id == student_id,
+                TestAttempt.completed_at.isnot(None),
+                TestAttempt.started_at >= day_start,
+                TestAttempt.started_at < day_end,
+            )
+            day_attempts = list((await self.db.scalars(day_attempts_stmt)).all())
+
+            tests_completed = len(day_attempts)
+            questions_answered = sum(a.total_count for a in day_attempts)
+            correct = sum(a.correct_count for a in day_attempts)
+            day_accuracy = self.calculate_accuracy_rate(correct, questions_answered)
+
+            daily_activity.append({
+                "date": day.isoformat(),
+                "tests_completed": tests_completed,
+                "questions_answered": questions_answered,
+                "accuracy_rate": day_accuracy,
+            })
+
+        # 오답 복습 현황
+        review_stats = None
+        try:
+            from app.models.wrong_answer_review import WrongAnswerReview
+
+            today_str = today.isoformat()
+            # 전체 미졸업 수
+            in_progress_stmt = select(func.count()).where(
+                WrongAnswerReview.student_id == student_id,
+                WrongAnswerReview.is_graduated == False,  # noqa: E712
+            )
+            in_progress_count = await self.db.scalar(in_progress_stmt) or 0
+
+            # 복습 대기 (next_review_date <= 오늘)
+            pending_stmt = select(func.count()).where(
+                WrongAnswerReview.student_id == student_id,
+                WrongAnswerReview.is_graduated == False,  # noqa: E712
+                WrongAnswerReview.next_review_date <= today_str,
+            )
+            pending_count = await self.db.scalar(pending_stmt) or 0
+
+            # 졸업 수
+            graduated_stmt = select(func.count()).where(
+                WrongAnswerReview.student_id == student_id,
+                WrongAnswerReview.is_graduated == True,  # noqa: E712
+            )
+            graduated_count = await self.db.scalar(graduated_stmt) or 0
+
+            review_stats = {
+                "pending_count": pending_count,
+                "in_progress_count": in_progress_count,
+                "graduated_count": graduated_count,
+            }
+        except Exception:
+            pass  # WrongAnswerReview 테이블 없으면 무시
+
         return {
             "user_id": student_id,
             "total_tests": total_tests,
@@ -264,6 +346,9 @@ class StatsService:
             "computation_stats": computation_stats,
             "concept_stats": concept_stats,
             "type_stats": type_stats,
+            "daily_activity": daily_activity,
+            "recent_tests": recent_tests,
+            "review_stats": review_stats,
         }
 
     async def get_dashboard_stats(self, teacher_id: str | None = None) -> dict:

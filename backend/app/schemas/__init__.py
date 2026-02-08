@@ -68,6 +68,7 @@ from .stats import (
     QuotaProgress,
     QuotaUpdateRequest,
     RecentTest,
+    ReviewStatsInfo,
     StudentDetailStats,
     StudentQuotaStatus,
     StudentStats,

@@ -11,6 +11,7 @@ from app.schemas import (
     Grade,
     PaginatedResponse,
     QuotaProgress,
+    ReviewStatsInfo,
     StudentStats,
     StudentStatsSummary,
     StudentDetailStats,
@@ -60,7 +61,11 @@ async def get_my_stats(
     quota_data = await stats_service.get_student_quota_progress(current_user.id)
     quota = QuotaProgress(**quota_data) if quota_data else None
 
-    return ApiResponse(data=StudentStats(**stats, quota=quota))
+    # 복습 현황 변환
+    review_raw = stats.pop("review_stats", None)
+    review_stats = ReviewStatsInfo(**review_raw) if review_raw else None
+
+    return ApiResponse(data=StudentStats(**stats, quota=quota, review_stats=review_stats))
 
 
 @router.get("/dashboard", response_model=ApiResponse[DashboardStats])

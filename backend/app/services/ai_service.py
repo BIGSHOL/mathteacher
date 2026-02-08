@@ -138,47 +138,6 @@ def _validate_generated_question(q: dict, category: str = "") -> list[str]:
 class AIService:
     """AI 보조 서비스. 모든 메서드는 실패 시 None 반환."""
 
-    async def generate_hint(
-        self,
-        question_content: str,
-        question_type: str,
-        options: list[str] | None,
-        student_grade: str,
-        hint_level: int,
-    ) -> dict | None:
-        """단계별 힌트 생성. 실패 시 None."""
-        client = _get_client()
-        if not client:
-            return None
-
-        grade_label = GRADE_LABELS.get(student_grade, student_grade)
-        level_desc = {
-            1: "풀이 방향만 가볍게 안내. 구체적인 숫자나 공식은 제시하지 마세요.",
-            2: "관련 개념과 공식을 알려주되, 핵심 계산 단계는 비워두세요.",
-            3: "풀이 과정을 거의 다 안내하되, 마지막 답만 빈칸으로 남기세요.",
-        }
-
-        prompt = (
-            f"당신은 {grade_label} 학생을 위한 수학 튜터입니다.\n"
-            f"학생이 아래 문제를 풀다가 막혔습니다. 힌트 레벨 {hint_level}에 맞춰 도움을 주세요.\n\n"
-            f"[힌트 레벨 설명]\n{level_desc.get(hint_level, level_desc[1])}\n\n"
-            f"[문제]\n{question_content}\n"
-        )
-        if options:
-            prompt += f"[선지] {', '.join(options)}\n"
-        prompt += "\n절대 정답을 직접 알려주지 마세요. 한국어로 2~4문장, 친절하게 답하세요."
-
-        try:
-            response = client.models.generate_content(
-                model=settings.GEMINI_MODEL_NAME,
-                contents=prompt,
-                config=types.GenerateContentConfig(temperature=0.4, max_output_tokens=300),
-            )
-            return {"hint": response.text.strip(), "hint_level": hint_level}
-        except Exception:
-            logger.exception("AI hint generation failed")
-            return None
-
     async def grade_fill_blank(
         self,
         question_content: str,
