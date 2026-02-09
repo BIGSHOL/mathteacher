@@ -1,114 +1,131 @@
 """초등 4학년 연산 문제 시드 데이터.
 
 커버 단원:
-  1학기 1단원 - 큰 수
-  1학기 3단원 - 곱셈과 나눗셈
-  2학기 1단원 - 분수의 덧셈과 뺄셈
-  2학기 3단원 - 소수의 덧셈과 뺄셈
+  1학기 1단원 - 큰 수 (6개 개념)
+  1학기 3단원 - 곱셈과 나눗셈 (7개 개념)
+  2학기 1단원 - 분수의 덧셈과 뺄셈 (6개 개념)
+  2학기 3단원 - 소수의 덧셈과 뺄셈 (8개 개념)
 
-총 41개 문제 (개념당 5개)
+총 27개 개념, 60개 문제 (기존 41개 + 신규 19개)
 """
 from app.seeds._base import mc, concept
+from app.data.pdf_concept_map import E4_S1_CONCEPTS, E4_S2_CONCEPTS
 
 
 def get_concepts():
-    """연산 관련 개념 반환."""
-    return [
-        concept(
-            id="e4-1-1-1",
-            name="큰 수 - 십진기수법과 자릿값",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="만, 억, 조 단위의 큰 수를 읽고 쓸 수 있으며, 10배의 원리와 자릿값을 이해합니다.",
-        ),
-        concept(
-            id="e4-1-1-2",
-            name="큰 수 - 수의 크기 비교",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="자릿수가 같은 큰 수의 크기를 최상위 자릿수부터 비교하여 대소를 판단합니다.",
-        ),
-        concept(
-            id="e4-1-3-1",
-            name="곱셈과 나눗셈 - 곱셈 알고리즘",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="(세 자리 수)×(두 자리 수) 세로셈을 이해하고 정확히 계산할 수 있습니다.",
-        ),
-        concept(
-            id="e4-1-3-2",
-            name="곱셈과 나눗셈 - 나눗셈과 검산",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="(세 자리 수)÷(두 자리 수) 계산과 검산(나누는 수×몫+나머지=나누어지는 수), 나머지의 맥락적 해석을 할 수 있습니다.",
-        ),
-        concept(
-            id="e4-2-1-1",
-            name="분수의 덧셈과 뺄셈 - 동분모 진분수 연산",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="분모가 같은 분수의 덧셈·뺄셈에서 분모는 그대로 두고 분자끼리 연산합니다.",
-        ),
-        concept(
-            id="e4-2-1-2",
-            name="분수의 덧셈과 뺄셈 - 대분수와 받아내림",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="대분수의 덧셈·뺄셈(받아내림 포함)을 이해하고, 자연수에서 분수를 빼는 계산을 할 수 있습니다.",
-        ),
-        concept(
-            id="e4-2-3-1",
-            name="소수의 덧셈과 뺄셈 - 소수 구조와 크기 비교",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="소수의 자릿값(0.01, 0.001)을 이해하고, 소수점 아래 같은 자리부터 크기를 비교합니다.",
-        ),
-        concept(
-            id="e4-2-3-2",
-            name="소수의 덧셈과 뺄셈 - 소수 덧뺄셈 계산",
-            grade="elementary_4",
-            category="computation",
-            part="calc",
-            description="소수점 위치를 맞추어 정렬한 덧셈과 뺄셈을 정확히 계산할 수 있습니다.",
-        ),
-    ]
+    """연산 관련 개념 반환 (PDF 기반)."""
+    result = []
+
+    # 1학기: 1단원(큰 수), 3단원(곱셈과 나눗셈)
+    for c in E4_S1_CONCEPTS:
+        if c["chapter_number"] in {1, 3}:
+            result.append(concept(
+                id=c["id"],
+                name=c["name"],
+                grade=c["grade"],
+                category=c["category"],
+                part=c["part"],
+                description=c["description"],
+            ))
+
+    # 2학기: 1단원(분수의 덧셈과 뺄셈), 3단원(소수의 덧셈과 뺄셈)
+    for c in E4_S2_CONCEPTS:
+        if c["chapter_number"] in {1, 3}:
+            result.append(concept(
+                id=c["id"],
+                name=c["name"],
+                grade=c["grade"],
+                category=c["category"],
+                part=c["part"],
+                description=c["description"],
+            ))
+
+    return result
 
 
 def get_questions():
     """연산 문제 반환."""
     return [
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 1학기 1단원: 큰 수
+        # 1학기 1단원: 큰 수 (6개 개념)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        # concept-e4-big-num-01: 큰 수 - 십진기수법과 자릿값 (5개)
+        # e4-1-1-01: 만 (2개)
         mc(
-            id="e4-1-1-1-co-001",
-            concept_id="e4-1-1-1",
-            category="computation",
+            id="e4-1-1-01-co-001",
+            concept_id="e4-1-1-01",
+            category="concept",
             part="calc",
             difficulty=2,
-            content="삼억 오천만을 숫자로 바르게 쓴 것은?",
+            content="9999 다음 수는?",
             options=[
-                "35000000",
-                "305000000",
-                "350000000",
-                "3500000000",
+                "10000",
+                "9998",
+                "10001",
+                "99910",
             ],
-            correct="C",
-            explanation="삼억 오천만 = 3억 5000만 = 350,000,000입니다. 억 자리에 3, 천만 자리에 5를 쓰고 나머지는 0으로 채웁니다. 0이 포함된 큰 수를 쓸 때 빈 자리를 누락하지 않도록 주의합니다.",
+            correct="A",
+            explanation="9999 다음 수는 10000입니다. 천의 10배가 만(10000)입니다. 자릿수가 하나 늘어나는 것을 이해해야 합니다.",
             points=10,
         ),
         mc(
+            id="e4-1-1-01-co-002",
+            concept_id="e4-1-1-01",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="1000은 10의 몇 배인가?",
+            options=[
+                "10배",
+                "100배",
+                "1000배",
+                "10000배",
+            ],
+            correct="B",
+            explanation="1000 ÷ 10 = 100이므로 1000은 10의 100배입니다. 십진기수법에서 자릿수가 2개 늘어나면 100배가 됩니다.",
+            points=10,
+        ),
+
+        # e4-1-1-02: 다섯 자리 수 (2개)
+        mc(
+            id="e4-1-1-02-co-001",
+            concept_id="e4-1-1-02",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="12345를 읽으면?",
+            options=[
+                "일이삼사오",
+                "일만 이천삼백사십오",
+                "십이만 삼백사십오",
+                "일천이백삼십사만 오천",
+            ],
+            correct="B",
+            explanation="12345는 '일만 이천삼백사십오'입니다. 만의 자리(1), 천의 자리(2), 백의 자리(3), 십의 자리(4), 일의 자리(5)로 읽습니다.",
+            points=10,
+        ),
+        mc(
+            id="e4-1-1-02-co-002",
+            concept_id="e4-1-1-02",
+            category="concept",
+            part="calc",
+            difficulty=4,
+            content="25780에서 7이 나타내는 값은?",
+            options=[
+                "7",
+                "70",
+                "700",
+                "7000",
+            ],
+            correct="C",
+            explanation="25780에서 7은 백의 자리에 있으므로 7이 나타내는 값(자릿값)은 700입니다.",
+            points=10,
+        ),
+
+        # e4-1-1-03: 십만, 백만, 천만 (기존 5개 → 재매핑)
+        mc(
             id="e4-1-1-1-co-002",
-            concept_id="e4-1-1-1",
+            concept_id="e4-1-1-03",
             category="computation",
             part="calc",
             difficulty=4,
@@ -124,25 +141,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-1-1-co-003",
-            concept_id="e4-1-1-1",
-            category="computation",
-            part="calc",
-            difficulty=3,
-            content="칠억 사천삼백만을 숫자로 쓰면?",
-            options=[
-                "74300000",
-                "704300000",
-                "743000000",
-                "7430000000",
-            ],
-            correct="C",
-            explanation="칠억 사천삼백만 = 7억 4300만 = 743,000,000입니다. 억 자리에 7, 천만 자리에 4, 백만 자리에 3을 쓰고 나머지는 0으로 채웁니다.",
-            points=10,
-        ),
-        mc(
             id="e4-1-1-1-co-004",
-            concept_id="e4-1-1-1",
+            concept_id="e4-1-1-03",
             category="computation",
             part="calc",
             difficulty=5,
@@ -158,8 +158,61 @@ def get_questions():
             points=10,
         ),
         mc(
+            id="e4-1-1-03-co-001",
+            concept_id="e4-1-1-03",
+            category="computation",
+            part="calc",
+            difficulty=3,
+            content="백만은 만의 몇 배인가?",
+            options=[
+                "10배",
+                "100배",
+                "1000배",
+                "10000배",
+            ],
+            correct="B",
+            explanation="백만(1,000,000) ÷ 만(10,000) = 100이므로 백만은 만의 100배입니다.",
+            points=10,
+        ),
+
+        # e4-1-1-04: 억과 조 (기존 3개 → 재매핑)
+        mc(
+            id="e4-1-1-1-co-001",
+            concept_id="e4-1-1-04",
+            category="computation",
+            part="calc",
+            difficulty=2,
+            content="삼억 오천만을 숫자로 바르게 쓴 것은?",
+            options=[
+                "35000000",
+                "305000000",
+                "350000000",
+                "3500000000",
+            ],
+            correct="C",
+            explanation="삼억 오천만 = 3억 5000만 = 350,000,000입니다. 억 자리에 3, 천만 자리에 5를 쓰고 나머지는 0으로 채웁니다. 0이 포함된 큰 수를 쓸 때 빈 자리를 누락하지 않도록 주의합니다.",
+            points=10,
+        ),
+        mc(
+            id="e4-1-1-1-co-003",
+            concept_id="e4-1-1-04",
+            category="computation",
+            part="calc",
+            difficulty=3,
+            content="칠억 사천삼백만을 숫자로 쓰면?",
+            options=[
+                "74300000",
+                "704300000",
+                "743000000",
+                "7430000000",
+            ],
+            correct="C",
+            explanation="칠억 사천삼백만 = 7억 4300만 = 743,000,000입니다. 억 자리에 7, 천만 자리에 4, 백만 자리에 3을 쓰고 나머지는 0으로 채웁니다.",
+            points=10,
+        ),
+        mc(
             id="e4-1-1-1-co-005",
-            concept_id="e4-1-1-1",
+            concept_id="e4-1-1-04",
             category="computation",
             part="calc",
             difficulty=6,
@@ -175,10 +228,46 @@ def get_questions():
             points=10,
         ),
 
-        # concept-e4-big-num-02: 큰 수 - 수의 크기 비교 (5개)
+        # e4-1-1-05: 뛰어 세기 (2개 신규)
+        mc(
+            id="e4-1-1-05-co-001",
+            concept_id="e4-1-1-05",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="100000씩 뛰어 세면 200000 다음 수는?",
+            options=[
+                "210000",
+                "300000",
+                "200100",
+                "1000000",
+            ],
+            correct="B",
+            explanation="십만(100000)씩 뛰어 세면 200000, 300000, 400000... 순서입니다. 200000 다음은 300000입니다.",
+            points=10,
+        ),
+        mc(
+            id="e4-1-1-05-co-002",
+            concept_id="e4-1-1-05",
+            category="concept",
+            part="calc",
+            difficulty=4,
+            content="10000000씩 뛰어 세면 30000000 다음 수는?",
+            options=[
+                "31000000",
+                "40000000",
+                "30001000",
+                "130000000",
+            ],
+            correct="B",
+            explanation="천만(10000000)씩 뛰어 세면 10000000, 20000000, 30000000, 40000000... 순서입니다. 30000000 다음은 40000000입니다.",
+            points=10,
+        ),
+
+        # e4-1-1-06: 수의 크기 비교 (기존 5개 → 재매핑)
         mc(
             id="e4-1-1-2-co-001",
-            concept_id="e4-1-1-2",
+            concept_id="e4-1-1-06",
             category="computation",
             part="calc",
             difficulty=6,
@@ -195,7 +284,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-1-2-co-002",
-            concept_id="e4-1-1-2",
+            concept_id="e4-1-1-06",
             category="computation",
             part="calc",
             difficulty=4,
@@ -212,7 +301,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-1-2-co-003",
-            concept_id="e4-1-1-2",
+            concept_id="e4-1-1-06",
             category="computation",
             part="calc",
             difficulty=5,
@@ -229,7 +318,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-1-2-co-004",
-            concept_id="e4-1-1-2",
+            concept_id="e4-1-1-06",
             category="computation",
             part="calc",
             difficulty=7,
@@ -246,7 +335,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-1-2-co-005",
-            concept_id="e4-1-1-2",
+            concept_id="e4-1-1-06",
             category="computation",
             part="calc",
             difficulty=8,
@@ -263,13 +352,49 @@ def get_questions():
         ),
 
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 1학기 3단원: 곱셈과 나눗셈
+        # 1학기 3단원: 곱셈과 나눗셈 (7개 개념)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        # concept-e4-mul-div-01: 곱셈 알고리즘 (5개)
+        # e4-1-3-01: (세 자리 수)×(몇십) (2개 신규)
+        mc(
+            id="e4-1-3-01-co-001",
+            concept_id="e4-1-3-01",
+            category="computation",
+            part="calc",
+            difficulty=3,
+            content="320 × 30을 계산하세요.",
+            options=[
+                "960",
+                "9600",
+                "96000",
+                "960000",
+            ],
+            correct="B",
+            explanation="320 × 30 = 320 × 3 × 10 = 960 × 10 = 9600입니다. 0을 붙이는 원리를 활용합니다.",
+            points=10,
+        ),
+        mc(
+            id="e4-1-3-01-co-002",
+            concept_id="e4-1-3-01",
+            category="computation",
+            part="calc",
+            difficulty=4,
+            content="156 × 40을 계산하세요.",
+            options=[
+                "624",
+                "6240",
+                "62400",
+                "5240",
+            ],
+            correct="B",
+            explanation="156 × 40 = 156 × 4 × 10 = 624 × 10 = 6240입니다.",
+            points=10,
+        ),
+
+        # e4-1-3-02: (세 자리 수)×(몇십몇) (기존 5개 → 재매핑)
         mc(
             id="e4-1-3-1-co-001",
-            concept_id="e4-1-3-1",
+            concept_id="e4-1-3-02",
             category="computation",
             part="calc",
             difficulty=3,
@@ -286,7 +411,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-3-1-co-002",
-            concept_id="e4-1-3-1",
+            concept_id="e4-1-3-02",
             category="computation",
             part="calc",
             difficulty=4,
@@ -303,7 +428,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-3-1-co-003",
-            concept_id="e4-1-3-1",
+            concept_id="e4-1-3-02",
             category="computation",
             part="calc",
             difficulty=5,
@@ -320,7 +445,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-3-1-co-004",
-            concept_id="e4-1-3-1",
+            concept_id="e4-1-3-02",
             category="computation",
             part="calc",
             difficulty=6,
@@ -337,7 +462,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-3-1-co-005",
-            concept_id="e4-1-3-1",
+            concept_id="e4-1-3-02",
             category="computation",
             part="calc",
             difficulty=7,
@@ -353,10 +478,84 @@ def get_questions():
             points=10,
         ),
 
-        # concept-e4-mul-div-02: 나눗셈과 검산 (5개)
+        # e4-1-3-03: (세 자리 수)÷(몇십) (2개 신규)
+        mc(
+            id="e4-1-3-03-co-001",
+            concept_id="e4-1-3-03",
+            category="computation",
+            part="calc",
+            difficulty=4,
+            content="480 ÷ 30을 계산하세요.",
+            options=[
+                "14",
+                "15",
+                "16",
+                "17",
+            ],
+            correct="C",
+            explanation="480 ÷ 30 = 16입니다. 30×10=300, 30×20=600이므로 몫은 10~20 사이입니다. 30×16=480으로 확인할 수 있습니다.",
+            points=10,
+        ),
+        mc(
+            id="e4-1-3-03-co-002",
+            concept_id="e4-1-3-03",
+            category="computation",
+            part="calc",
+            difficulty=5,
+            content="385 ÷ 20을 계산하면 몫과 나머지는?",
+            options=[
+                "몫 19, 나머지 5",
+                "몫 19, 나머지 0",
+                "몫 20, 나머지 5",
+                "몫 18, 나머지 25",
+            ],
+            correct="A",
+            explanation="385 ÷ 20 = 19 나머지 5입니다. 20×19=380, 385-380=5입니다.",
+            points=10,
+        ),
+
+        # e4-1-3-04: 몫이 한 자리 수인 (두 자리 수)÷(두 자리 수) (1개 신규)
+        mc(
+            id="e4-1-3-04-co-001",
+            concept_id="e4-1-3-04",
+            category="computation",
+            part="calc",
+            difficulty=3,
+            content="72 ÷ 18을 계산하세요.",
+            options=[
+                "3",
+                "4",
+                "5",
+                "6",
+            ],
+            correct="B",
+            explanation="72 ÷ 18 = 4입니다. 18×4=72로 검산할 수 있습니다.",
+            points=10,
+        ),
+
+        # e4-1-3-05: 몫이 한 자리 수인 (세 자리 수)÷(두 자리 수) (1개 기존 → 재매핑)
+        mc(
+            id="e4-1-3-2-co-003",
+            concept_id="e4-1-3-05",
+            category="computation",
+            part="calc",
+            difficulty=4,
+            content="936 ÷ 18을 계산하세요.",
+            options=[
+                "50",
+                "51",
+                "52",
+                "53",
+            ],
+            correct="C",
+            explanation="936 ÷ 18 = 52입니다. 검산: 18 × 52 = 936이므로 정답입니다.",
+            points=10,
+        ),
+
+        # e4-1-3-06: 몫이 두 자리 수인 (세 자리 수)÷(두 자리 수) (1) (2개 기존 → 재매핑)
         mc(
             id="e4-1-3-2-co-001",
-            concept_id="e4-1-3-2",
+            concept_id="e4-1-3-06",
             category="computation",
             part="calc",
             difficulty=5,
@@ -372,42 +571,27 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-1-3-2-co-002",
-            concept_id="e4-1-3-2",
+            id="e4-1-3-06-co-001",
+            concept_id="e4-1-3-06",
             category="computation",
             part="calc",
-            difficulty=8,
-            content="빵 365개를 한 상자에 24개씩 담으려 합니다. 모든 빵을 담으려면 상자는 최소 몇 개 필요한가요?",
+            difficulty=5,
+            content="684 ÷ 19를 계산하세요.",
             options=[
-                "14개",
-                "15개",
-                "16개",
-                "17개",
+                "34",
+                "35",
+                "36",
+                "37",
             ],
             correct="C",
-            explanation="365 ÷ 24 = 15 나머지 5입니다. 나머지 5개도 상자에 담아야 하므로 15+1=16개가 필요합니다. 나머지를 맥락에 맞게 해석(올림)하는 것이 중요합니다.",
+            explanation="684 ÷ 19 = 36입니다. 백의 자리 6을 19로 나눌 수 없으므로 68(십의 자리까지)을 19로 나눕니다. 19×3=57, 19×4=76이므로 십의 자리 몫은 3입니다.",
             points=10,
         ),
-        mc(
-            id="e4-1-3-2-co-003",
-            concept_id="e4-1-3-2",
-            category="computation",
-            part="calc",
-            difficulty=4,
-            content="936 ÷ 18을 계산하세요.",
-            options=[
-                "50",
-                "51",
-                "52",
-                "53",
-            ],
-            correct="C",
-            explanation="936 ÷ 18 = 52입니다. 검산: 18 × 52 = 936이므로 정답입니다.",
-            points=10,
-        ),
+
+        # e4-1-3-07: 몫이 두 자리 수인 (세 자리 수)÷(두 자리 수) (2) (나머지 있음, 검산) (3개 기존 → 재매핑)
         mc(
             id="e4-1-3-2-co-004",
-            concept_id="e4-1-3-2",
+            concept_id="e4-1-3-07",
             category="computation",
             part="calc",
             difficulty=6,
@@ -424,7 +608,7 @@ def get_questions():
         ),
         mc(
             id="e4-1-3-2-co-005",
-            concept_id="e4-1-3-2",
+            concept_id="e4-1-3-07",
             category="computation",
             part="calc",
             difficulty=7,
@@ -439,15 +623,32 @@ def get_questions():
             explanation="427 ÷ 32 = 13 나머지 11입니다. 검산: 32 × 13 + 11 = 416 + 11 = 427로 정답입니다.",
             points=10,
         ),
+        mc(
+            id="e4-1-3-2-co-002",
+            concept_id="e4-1-3-07",
+            category="computation",
+            part="calc",
+            difficulty=8,
+            content="빵 365개를 한 상자에 24개씩 담으려 합니다. 모든 빵을 담으려면 상자는 최소 몇 개 필요한가요?",
+            options=[
+                "14개",
+                "15개",
+                "16개",
+                "17개",
+            ],
+            correct="C",
+            explanation="365 ÷ 24 = 15 나머지 5입니다. 나머지 5개도 상자에 담아야 하므로 15+1=16개가 필요합니다. 나머지를 맥락에 맞게 해석(올림)하는 것이 중요합니다.",
+            points=10,
+        ),
 
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 2학기 1단원: 분수의 덧셈과 뺄셈
+        # 2학기 1단원: 분수의 덧셈과 뺄셈 (6개 개념)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        # concept-e4-frac-op-01: 동분모 진분수 연산 (5개)
+        # e4-2-1-01: (진분수)+(진분수) (3개 기존 → 재매핑)
         mc(
             id="e4-2-1-1-co-001",
-            concept_id="e4-2-1-1",
+            concept_id="e4-2-1-01",
             category="computation",
             part="calc",
             difficulty=2,
@@ -464,7 +665,7 @@ def get_questions():
         ),
         mc(
             id="e4-2-1-1-co-002",
-            concept_id="e4-2-1-1",
+            concept_id="e4-2-1-01",
             category="computation",
             part="calc",
             difficulty=5,
@@ -480,25 +681,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-1-1-co-003",
-            concept_id="e4-2-1-1",
-            category="computation",
-            part="calc",
-            difficulty=3,
-            content="7/9 - 4/9를 계산하세요.",
-            options=[
-                "3/9",
-                "3/0",
-                "11/9",
-                "11/18",
-            ],
-            correct="A",
-            explanation="분모가 같은 분수의 뺄셈은 분모는 그대로 두고 분자끼리 뺍니다. 7/9 - 4/9 = 3/9입니다. 3/9는 1/3으로 약분할 수 있습니다.",
-            points=10,
-        ),
-        mc(
             id="e4-2-1-1-co-004",
-            concept_id="e4-2-1-1",
+            concept_id="e4-2-1-01",
             category="computation",
             part="calc",
             difficulty=4,
@@ -513,45 +697,11 @@ def get_questions():
             explanation="5/12 + 7/12 = 12/12입니다. 12/12 = 1이므로 답은 1입니다.",
             points=10,
         ),
-        mc(
-            id="e4-2-1-1-co-005",
-            concept_id="e4-2-1-1",
-            category="computation",
-            part="calc",
-            difficulty=6,
-            content="11/15 - 4/15를 계산하세요.",
-            options=[
-                "7/15",
-                "7/0",
-                "15/15",
-                "7/30",
-            ],
-            correct="A",
-            explanation="11/15 - 4/15 = 7/15입니다. 분모는 그대로 두고 분자끼리 뺍니다.",
-            points=10,
-        ),
 
-        # concept-e4-frac-op-02: 대분수와 받아내림 (5개)
-        mc(
-            id="e4-2-1-2-co-001",
-            concept_id="e4-2-1-2",
-            category="computation",
-            part="calc",
-            difficulty=8,
-            content="3 - 2/5를 계산하세요.",
-            options=[
-                "1/5",
-                "2 3/5",
-                "1 2/5",
-                "2 2/5",
-            ],
-            correct="B",
-            explanation="자연수에서 분수를 빼려면 3을 2 5/5로 바꿉니다. 2 5/5 - 2/5 = 2 3/5입니다. 자연수에서 1을 빌려와 분모와 같은 분자의 가분수로 만드는 것이 핵심입니다.",
-            points=10,
-        ),
+        # e4-2-1-02: (대분수)+(대분수) (1개 기존 + 1개 신규)
         mc(
             id="e4-2-1-2-co-002",
-            concept_id="e4-2-1-2",
+            concept_id="e4-2-1-02",
             category="computation",
             part="calc",
             difficulty=6,
@@ -567,8 +717,101 @@ def get_questions():
             points=10,
         ),
         mc(
+            id="e4-2-1-02-co-001",
+            concept_id="e4-2-1-02",
+            category="computation",
+            part="calc",
+            difficulty=5,
+            content="1 2/5 + 3 1/5를 계산하세요.",
+            options=[
+                "4 3/5",
+                "4 2/5",
+                "5 3/5",
+                "4 3/10",
+            ],
+            correct="A",
+            explanation="1 2/5 + 3 1/5 = (1+3) + (2/5+1/5) = 4 + 3/5 = 4 3/5입니다.",
+            points=10,
+        ),
+
+        # e4-2-1-03: (진분수)-(진분수) (2개 기존 → 재매핑)
+        mc(
+            id="e4-2-1-1-co-003",
+            concept_id="e4-2-1-03",
+            category="computation",
+            part="calc",
+            difficulty=3,
+            content="7/9 - 4/9를 계산하세요.",
+            options=[
+                "3/9",
+                "3/0",
+                "11/9",
+                "11/18",
+            ],
+            correct="A",
+            explanation="분모가 같은 분수의 뺄셈은 분모는 그대로 두고 분자끼리 뺍니다. 7/9 - 4/9 = 3/9입니다. 3/9는 1/3으로 약분할 수 있습니다.",
+            points=10,
+        ),
+        mc(
+            id="e4-2-1-1-co-005",
+            concept_id="e4-2-1-03",
+            category="computation",
+            part="calc",
+            difficulty=6,
+            content="11/15 - 4/15를 계산하세요.",
+            options=[
+                "7/15",
+                "7/0",
+                "15/15",
+                "7/30",
+            ],
+            correct="A",
+            explanation="11/15 - 4/15 = 7/15입니다. 분모는 그대로 두고 분자끼리 뺍니다.",
+            points=10,
+        ),
+
+        # e4-2-1-04: 받아내림이 없는 (대분수)-(대분수) (1개 신규)
+        mc(
+            id="e4-2-1-04-co-001",
+            concept_id="e4-2-1-04",
+            category="computation",
+            part="calc",
+            difficulty=5,
+            content="5 4/7 - 2 1/7을 계산하세요.",
+            options=[
+                "3 3/7",
+                "3 4/7",
+                "3 5/7",
+                "4 3/7",
+            ],
+            correct="A",
+            explanation="5 4/7 - 2 1/7 = (5-2) + (4/7-1/7) = 3 + 3/7 = 3 3/7입니다. 자연수끼리, 분수끼리 각각 뺍니다.",
+            points=10,
+        ),
+
+        # e4-2-1-05: (자연수)-(분수) (1개 기존 → 재매핑)
+        mc(
+            id="e4-2-1-2-co-001",
+            concept_id="e4-2-1-05",
+            category="computation",
+            part="calc",
+            difficulty=8,
+            content="3 - 2/5를 계산하세요.",
+            options=[
+                "1/5",
+                "2 3/5",
+                "1 2/5",
+                "2 2/5",
+            ],
+            correct="B",
+            explanation="자연수에서 분수를 빼려면 3을 2 5/5로 바꿉니다. 2 5/5 - 2/5 = 2 3/5입니다. 자연수에서 1을 빌려와 분모와 같은 분자의 가분수로 만드는 것이 핵심입니다.",
+            points=10,
+        ),
+
+        # e4-2-1-06: 받아내림이 있는 (대분수)-(대분수) (3개 기존 → 재매핑)
+        mc(
             id="e4-2-1-2-co-003",
-            concept_id="e4-2-1-2",
+            concept_id="e4-2-1-06",
             category="computation",
             part="calc",
             difficulty=7,
@@ -585,7 +828,7 @@ def get_questions():
         ),
         mc(
             id="e4-2-1-2-co-004",
-            concept_id="e4-2-1-2",
+            concept_id="e4-2-1-06",
             category="computation",
             part="calc",
             difficulty=8,
@@ -602,7 +845,7 @@ def get_questions():
         ),
         mc(
             id="e4-2-1-2-co-005",
-            concept_id="e4-2-1-2",
+            concept_id="e4-2-1-06",
             category="computation",
             part="calc",
             difficulty=7,
@@ -619,13 +862,51 @@ def get_questions():
         ),
 
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 2학기 3단원: 소수의 덧셈과 뺄셈
+        # 2학기 3단원: 소수의 덧셈과 뺄셈 (8개 개념)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-        # concept-e4-dec-op-01: 소수 구조와 크기 비교 (5개)
+        # e4-2-3-01: 소수 두 자리 수 (1개 신규)
+        mc(
+            id="e4-2-3-01-co-001",
+            concept_id="e4-2-3-01",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="0.01은 0.1의 몇 배인가?",
+            options=[
+                "10배",
+                "1/10배",
+                "100배",
+                "1/100배",
+            ],
+            correct="B",
+            explanation="0.01 = 0.1 × 1/10입니다. 0.01은 0.1의 1/10배입니다. 소수 둘째 자리(0.01)는 소수 첫째 자리(0.1)의 1/10입니다.",
+            points=10,
+        ),
+
+        # e4-2-3-02: 소수 세 자리 수 (1개 신규)
+        mc(
+            id="e4-2-3-02-co-001",
+            concept_id="e4-2-3-02",
+            category="concept",
+            part="calc",
+            difficulty=4,
+            content="0.523에서 2가 나타내는 값은?",
+            options=[
+                "0.2",
+                "0.02",
+                "0.002",
+                "2",
+            ],
+            correct="B",
+            explanation="0.523에서 2는 소수 둘째 자리에 있으므로 2가 나타내는 값은 0.02입니다.",
+            points=10,
+        ),
+
+        # e4-2-3-03: 소수의 크기 비교 (기존 5개 → 재매핑)
         mc(
             id="e4-2-3-1-co-001",
-            concept_id="e4-2-3-1",
+            concept_id="e4-2-3-03",
             category="computation",
             part="calc",
             difficulty=3,
@@ -642,7 +923,7 @@ def get_questions():
         ),
         mc(
             id="e4-2-3-1-co-002",
-            concept_id="e4-2-3-1",
+            concept_id="e4-2-3-03",
             category="computation",
             part="calc",
             difficulty=5,
@@ -659,7 +940,7 @@ def get_questions():
         ),
         mc(
             id="e4-2-3-1-co-003",
-            concept_id="e4-2-3-1",
+            concept_id="e4-2-3-03",
             category="computation",
             part="calc",
             difficulty=4,
@@ -676,7 +957,7 @@ def get_questions():
         ),
         mc(
             id="e4-2-3-1-co-004",
-            concept_id="e4-2-3-1",
+            concept_id="e4-2-3-03",
             category="computation",
             part="calc",
             difficulty=6,
@@ -693,7 +974,7 @@ def get_questions():
         ),
         mc(
             id="e4-2-3-1-co-005",
-            concept_id="e4-2-3-1",
+            concept_id="e4-2-3-03",
             category="computation",
             part="calc",
             difficulty=7,
@@ -709,10 +990,29 @@ def get_questions():
             points=10,
         ),
 
-        # concept-e4-dec-op-02: 소수 덧뺄셈 계산 (5개)
+        # e4-2-3-04: 소수 사이의 관계 (1개 신규)
+        mc(
+            id="e4-2-3-04-co-001",
+            concept_id="e4-2-3-04",
+            category="concept",
+            part="calc",
+            difficulty=4,
+            content="0.3과 크기가 같은 것은?",
+            options=[
+                "0.03",
+                "0.30",
+                "0.300",
+                "B와 C 모두",
+            ],
+            correct="D",
+            explanation="0.3 = 0.30 = 0.300입니다. 소수의 맨 뒤에 0을 붙이거나 떼어도 크기는 같습니다. B(0.30)와 C(0.300) 모두 0.3과 크기가 같습니다.",
+            points=10,
+        ),
+
+        # e4-2-3-05: 소수 한 자리 수의 덧셈 (2개 기존 → 재매핑)
         mc(
             id="e4-2-3-2-co-001",
-            concept_id="e4-2-3-2",
+            concept_id="e4-2-3-05",
             category="computation",
             part="calc",
             difficulty=2,
@@ -728,8 +1028,46 @@ def get_questions():
             points=10,
         ),
         mc(
+            id="e4-2-3-2-co-003",
+            concept_id="e4-2-3-05",
+            category="computation",
+            part="calc",
+            difficulty=4,
+            content="1.4 + 2.3을 계산하세요.",
+            options=[
+                "3.7",
+                "3.1",
+                "4.3",
+                "2.9",
+            ],
+            correct="A",
+            explanation="1.4 + 2.3 = 3.7입니다. 소수 첫째 자리끼리 더하면 4+3=7이므로 0.7, 자연수 부분은 1+2=3이므로 3.7입니다.",
+            points=10,
+        ),
+
+        # e4-2-3-06: 소수 한 자리 수의 뺄셈 (1개 기존 → 재매핑)
+        mc(
+            id="e4-2-3-2-co-004",
+            concept_id="e4-2-3-06",
+            category="computation",
+            part="calc",
+            difficulty=5,
+            content="5.6 - 2.4를 계산하세요.",
+            options=[
+                "3.2",
+                "3.0",
+                "2.2",
+                "8.0",
+            ],
+            correct="A",
+            explanation="5.6 - 2.4 = 3.2입니다. 소수 첫째 자리는 6-4=2, 자연수 부분은 5-2=3이므로 3.2입니다.",
+            points=10,
+        ),
+
+        # e4-2-3-07: 소수 두 자리 수의 덧셈 (2개 기존 → 재매핑)
+        mc(
             id="e4-2-3-2-co-002",
-            concept_id="e4-2-3-2",
+            concept_id="e4-2-3-07",
             category="computation",
             part="calc",
             difficulty=7,
@@ -745,59 +1083,8 @@ def get_questions():
             points=10,
         ),
         mc(
-            id="e4-2-3-2-co-003",
-            concept_id="e4-2-3-2",
-            category="computation",
-            part="calc",
-            difficulty=4,
-            content="1.4 + 2.3을 계산하세요.",
-            options=[
-                "3.7",
-                "3.1",
-                "4.3",
-                "2.9",
-            ],
-            correct="A",
-            explanation="1.4 + 2.3 = 3.7입니다. 소수 첫째 자리끼리 더하면 4+3=7이므로 0.7, 자연수 부분은 1+2=3이므로 3.7입니다.",
-            points=10,
-        ),
-        mc(
-            id="e4-2-3-2-co-004",
-            concept_id="e4-2-3-2",
-            category="computation",
-            part="calc",
-            difficulty=5,
-            content="5.6 - 2.4를 계산하세요.",
-            options=[
-                "3.2",
-                "3.0",
-                "2.2",
-                "8.0",
-            ],
-            correct="A",
-            explanation="5.6 - 2.4 = 3.2입니다. 소수 첫째 자리는 6-4=2, 자연수 부분은 5-2=3이므로 3.2입니다.",
-            points=10,
-        ),
-        mc(
-            id="e4-2-3-2-co-005",
-            concept_id="e4-2-3-2",
-            category="computation",
-            part="calc",
-            difficulty=6,
-            content="4.12 - 1.8을 계산하세요.",
-            options=[
-                "2.32",
-                "3.32",
-                "2.94",
-                "3.94",
-            ],
-            correct="A",
-            explanation="소수점을 맞추어 세로로 정렬합니다. 4.12 - 1.80 = 2.32입니다. 1.8을 1.80으로 바꾸어 자릿수를 맞추는 것이 핵심입니다.",
-            points=10,
-        ),
-        mc(
             id="e4-2-3-2-co-006",
-            concept_id="e4-2-3-2",
+            concept_id="e4-2-3-07",
             category="computation",
             part="calc",
             difficulty=8,
@@ -810,6 +1097,25 @@ def get_questions():
             ],
             correct="A",
             explanation="소수점을 맞추어 세로로 정렬합니다. 7.030 + 2.574 = 9.604입니다. 빈 자리를 0으로 채워 자릿수를 맞춥니다.",
+            points=10,
+        ),
+
+        # e4-2-3-08: 소수 두 자리 수의 뺄셈 (1개 기존 → 재매핑)
+        mc(
+            id="e4-2-3-2-co-005",
+            concept_id="e4-2-3-08",
+            category="computation",
+            part="calc",
+            difficulty=6,
+            content="4.12 - 1.8을 계산하세요.",
+            options=[
+                "2.32",
+                "3.32",
+                "2.94",
+                "3.94",
+            ],
+            correct="A",
+            explanation="소수점을 맞추어 세로로 정렬합니다. 4.12 - 1.80 = 2.32입니다. 1.8을 1.80으로 바꾸어 자릿수를 맞추는 것이 핵심입니다.",
             points=10,
         ),
     ]

@@ -1,18 +1,165 @@
-"""초등 5학년 시드 데이터 모듈 - 2022 개정 교육과정."""
+"""초등 5학년 시드 데이터."""
 
-from app.seeds.elementary_5.computation import get_computation_data
-from app.seeds.elementary_5.concept_questions import get_concept_data
-from app.seeds.elementary_5.fill_blank import get_fill_blank_data
+from .computation import get_concepts as comp_concepts, get_questions as comp_questions
+from .concept_questions import get_concepts as conc_concepts, get_questions as conc_questions
+from .fill_blank import get_questions as fb_questions
+from .._base import test
 
 
-def get_all_data() -> dict:
-    """초5 전체 데이터 반환 (12단원 통합)."""
-    computation = get_computation_data()
-    concept = get_concept_data()
-    fill_blank = get_fill_blank_data()
+def get_all_data():
+    """초등 5학년 전체 시드 데이터 반환."""
+    concepts = comp_concepts() + conc_concepts()
+    questions = comp_questions() + conc_questions() + fb_questions()
+    tests = _get_tests()
+    return {"concepts": concepts, "questions": questions, "tests": tests}
 
-    return {
-        "concepts": computation["concepts"] + concept["concepts"],
-        "questions": computation["questions"] + concept["questions"] + fill_blank["questions"],
-        "tests": computation["tests"] + concept["tests"] + fill_blank["tests"],
-    }
+
+def _get_tests():
+    """초등 5학년 테스트 4개 반환."""
+    return [
+        # 1. 연산 종합평가
+        test(
+            id="test-e5-calc",
+            title="초등 5학년 연산 종합평가",
+            description="혼합 계산, 약수와 배수, 약분과 통분, 분수의 덧뺄셈, 분수의 곱셈, 소수의 곱셈 연산 능력을 평가합니다.",
+            grade="elementary_5",
+            concept_ids=[
+                # 1학기 1단원: 자연수의 혼합 계산
+                "e5-1-1-01", "e5-1-1-03", "e5-1-1-05",
+                # 1학기 2단원: 약수와 배수
+                "e5-1-2-01", "e5-1-2-03", "e5-1-2-06",
+                # 1학기 4단원: 약분과 통분
+                "e5-1-4-01", "e5-1-4-03", "e5-1-4-06",
+                # 1학기 5단원: 분수의 덧셈과 뺄셈
+                "e5-1-5-01", "e5-1-5-04", "e5-1-5-06",
+                # 2학기 2단원: 분수의 곱셈
+                "e5-2-2-01", "e5-2-2-03", "e5-2-2-05",
+                # 2학기 4단원: 소수의 곱셈
+                "e5-2-4-01", "e5-2-4-04", "e5-2-4-07",
+            ],
+            question_ids=[
+                # 1단원: 혼합 계산
+                "e5-1-1-1-co-001", "e5-1-1-1-co-003", "e5-1-1-2-co-001",
+                # 2단원: 약수와 배수
+                "e5-1-2-1-co-001", "e5-1-2-2-co-001", "e5-1-2-2-co-004",
+                # 4단원: 약분과 통분
+                "e5-1-4-1-co-001", "e5-1-4-2-co-001", "e5-1-4-05-co-001",
+                # 5단원: 분수의 덧셈과 뺄셈
+                "e5-1-5-1-co-001", "e5-1-5-2-co-001", "e5-1-5-05-co-001",
+                # 8단원: 분수의 곱셈
+                "e5-2-2-1-co-001", "e5-2-2-2-co-001", "e5-2-2-01-co-003",
+                # 10단원: 소수의 곱셈
+                "e5-2-4-1-co-001", "e5-2-4-2-co-001", "e5-2-4-04-co-001",
+            ],
+            time_limit_minutes=30,
+            is_adaptive=False,
+            use_question_pool=True,
+            questions_per_attempt=12,
+        ),
+        # 2. 개념 종합평가
+        test(
+            id="test-e5-concept",
+            title="초등 5학년 개념 종합평가",
+            description="규칙과 대응, 다각형의 둘레와 넓이, 수의 범위, 합동과 대칭, 직육면체, 평균과 가능성을 평가합니다.",
+            grade="elementary_5",
+            concept_ids=[
+                # 1학기 3단원: 규칙과 대응
+                "e5-1-3-01", "e5-1-3-02", "e5-1-3-03",
+                # 1학기 6단원: 다각형의 둘레와 넓이
+                "e5-1-6-01", "e5-1-6-04", "e5-1-6-07", "e5-1-6-09",
+                # 2학기 1단원: 수의 범위와 어림하기
+                "e5-2-1-01", "e5-2-1-04", "e5-2-1-07",
+                # 2학기 3단원: 합동과 대칭
+                "e5-2-3-01", "e5-2-3-03", "e5-2-3-04",
+                # 2학기 5단원: 직육면체
+                "e5-2-5-01", "e5-2-5-04", "e5-2-5-06",
+                # 2학기 6단원: 평균과 가능성
+                "e5-2-6-01", "e5-2-6-04", "e5-2-6-06",
+            ],
+            question_ids=[
+                # 규칙과 대응
+                "e5-1-3-1-cc-001", "e5-1-3-2-cc-001", "e5-1-3-3-cc-001",
+                # 다각형의 둘레와 넓이
+                "e5-1-6-1-cc-001", "e5-1-6-2-cc-001", "e5-1-6-4-cc-001", "e5-1-6-5-cc-001",
+                # 수의 범위와 어림하기
+                "e5-2-1-1-cc-001", "e5-2-1-2-cc-001", "e5-2-1-5-cc-001",
+                # 합동과 대칭
+                "e5-2-3-1-cc-001", "e5-2-3-2-cc-001", "e5-2-3-2-cc-003",
+                # 직육면체
+                "e5-2-5-1-cc-001", "e5-2-5-2-cc-001", "e5-2-5-5-cc-001",
+                # 평균과 가능성
+                "e5-2-6-1-cc-001", "e5-2-6-3-cc-001", "e5-2-6-5-cc-001",
+            ],
+            time_limit_minutes=30,
+            is_adaptive=False,
+            use_question_pool=True,
+            questions_per_attempt=12,
+        ),
+        # 3. 분수·소수 집중평가
+        test(
+            id="test-e5-frac-dec",
+            title="초등 5학년 분수·소수 집중평가",
+            description="약분과 통분, 분수의 덧셈과 뺄셈, 분수의 곱셈, 소수의 곱셈을 집중 평가합니다. "
+            "중학교 수학의 기초가 되는 핵심 단원입니다.",
+            grade="elementary_5",
+            concept_ids=[
+                # 1학기 4단원: 약분과 통분
+                "e5-1-4-01", "e5-1-4-02", "e5-1-4-03", "e5-1-4-04", "e5-1-4-05", "e5-1-4-06",
+                # 1학기 5단원: 분수의 덧셈과 뺄셈
+                "e5-1-5-01", "e5-1-5-02", "e5-1-5-03", "e5-1-5-04", "e5-1-5-05", "e5-1-5-06",
+                # 2학기 2단원: 분수의 곱셈
+                "e5-2-2-01", "e5-2-2-02", "e5-2-2-03", "e5-2-2-04", "e5-2-2-05",
+                # 2학기 4단원: 소수의 곱셈
+                "e5-2-4-01", "e5-2-4-02", "e5-2-4-03", "e5-2-4-04",
+                "e5-2-4-05", "e5-2-4-06", "e5-2-4-07",
+            ],
+            question_ids=[
+                # 약분과 통분
+                "e5-1-4-1-co-001", "e5-1-4-01-co-001", "e5-1-4-2-co-001", "e5-1-4-02-co-001",
+                # 분수의 덧셈과 뺄셈
+                "e5-1-5-1-co-001", "e5-1-5-01-co-003", "e5-1-5-2-co-001", "e5-1-5-02-co-001",
+                # 분수의 곱셈
+                "e5-2-2-1-co-001", "e5-2-2-1-co-003", "e5-2-2-2-co-001",
+                # 소수의 곱셈
+                "e5-2-4-1-co-001", "e5-2-4-03-co-001", "e5-2-4-2-co-001",
+                # 빈칸
+                "e5-1-4-01-fb-001", "e5-1-5-01-fb-001", "e5-2-2-01-fb-001", "e5-2-4-01-fb-001",
+            ],
+            time_limit_minutes=25,
+            is_adaptive=False,
+        ),
+        # 4. 종합평가
+        test(
+            id="test-e5-comprehensive",
+            title="초등 5학년 종합평가",
+            description="1·2학기 12단원의 연산과 개념을 종합적으로 평가합니다.",
+            grade="elementary_5",
+            concept_ids=[
+                # 연산 (1학기)
+                "e5-1-1-01", "e5-1-1-05", "e5-1-2-01", "e5-1-2-06",
+                "e5-1-4-01", "e5-1-4-06", "e5-1-5-01", "e5-1-5-06",
+                # 연산 (2학기)
+                "e5-2-2-01", "e5-2-2-05", "e5-2-4-01", "e5-2-4-07",
+                # 개념 (1학기)
+                "e5-1-3-01", "e5-1-3-03", "e5-1-6-01", "e5-1-6-09",
+                # 개념 (2학기)
+                "e5-2-1-01", "e5-2-1-07", "e5-2-3-01", "e5-2-3-04",
+                "e5-2-5-01", "e5-2-5-06", "e5-2-6-01", "e5-2-6-06",
+            ],
+            question_ids=[
+                # 연산 각 단원별 1~2문제씩
+                "e5-1-1-1-co-001", "e5-1-2-1-co-001", "e5-1-4-1-co-001",
+                "e5-1-5-1-co-001", "e5-2-2-1-co-001", "e5-2-4-1-co-001",
+                # 개념 각 단원별 1~2문제씩
+                "e5-1-3-1-cc-001", "e5-1-6-1-cc-001", "e5-2-1-1-cc-001",
+                "e5-2-3-1-cc-001", "e5-2-5-1-cc-001", "e5-2-6-1-cc-001",
+                # 빈칸 혼합
+                "e5-1-1-01-fb-001", "e5-1-2-01-fb-001", "e5-1-4-01-fb-001",
+                "e5-1-5-01-fb-001", "e5-1-6-01-fb-001", "e5-2-1-01-fb-001",
+                "e5-2-2-01-fb-001", "e5-2-3-01-fb-001", "e5-2-4-01-fb-001",
+                "e5-2-5-01-fb-001", "e5-2-6-01-fb-001",
+            ],
+            time_limit_minutes=40,
+            is_adaptive=False,
+        ),
+    ]

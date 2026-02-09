@@ -1,110 +1,163 @@
 """초등 6학년 시드 데이터."""
 
 from .computation import get_concepts as comp_concepts, get_questions as comp_questions
-from . import computation
-from . import concept_questions
-from . import fill_blank
-from .._base import test, concept
+from .concept_questions import get_concepts as conc_concepts, get_questions as conc_questions
+from .fill_blank import get_questions as fb_questions
+from .._base import test
 
 
 def get_all_data():
     """초등 6학년 전체 시드 데이터 반환."""
-    concepts = (
-        computation.get_concepts()
-        + concept_questions.get_concepts()
-        + [
-            concept(
-                id="e6-2-3-1",
-                name="공간과 입체",
-                grade="elementary_6",
-                category="concept",
-                part="geo",
-                description="쌓기나무로 만든 모양을 보고 위, 앞, 옆에서 본 모양을 추론하고 개수를 구합니다.",
-            )
-        ]
-    )
-    questions = (
-        computation.get_questions()
-        + concept_questions.get_questions()
-        + fill_blank.get_questions()
-    )
+    concepts = comp_concepts() + conc_concepts()
+    questions = comp_questions() + conc_questions() + fb_questions()
     tests = _get_tests()
     return {"concepts": concepts, "questions": questions, "tests": tests}
 
 
 def _get_tests():
-    """초등 6학년 테스트 목록 반환."""
-    from .._base import test
-
+    """초등 6학년 테스트 4개 반환."""
     return [
+        # 1. 연산 종합평가
         test(
-            id="test-e6-1-1-1",
-            name="초6-1-1 분수의 나눗셈 (기본)",
+            id="test-e6-calc",
+            title="초등 6학년 연산 종합평가",
+            description="분수의 나눗셈, 소수의 나눗셈, 비와 비율, 분수·소수의 혼합 계산 연산 능력을 평가합니다.",
             grade="elementary_6",
-            concept_ids=["e6-1-1-1", "e6-2-1-1"],
-            question_ids=["e6-1-1-1-co-001", "e6-1-1-1-co-002", "e6-2-1-1-co-001"],
+            concept_ids=[
+                # 1학기 1단원: 분수의 나눗셈
+                "e6-1-1-01", "e6-1-1-02", "e6-1-1-04",
+                # 1학기 3단원: 소수의 나눗셈
+                "e6-1-3-01", "e6-1-3-04", "e6-1-3-07",
+                # 1학기 4단원: 비와 비율
+                "e6-1-4-01", "e6-1-4-03", "e6-1-4-06",
+                # 2학기 1단원: 분수의 나눗셈 (2)
+                "e6-2-1-01", "e6-2-1-04", "e6-2-1-06",
+                # 2학기 2단원: 소수의 나눗셈 (2)
+                "e6-2-2-01", "e6-2-2-04", "e6-2-2-06",
+            ],
+            question_ids=[
+                # 1단원: 분수의 나눗셈
+                "e6-1-1-1-co-001", "e6-1-1-2-co-001", "e6-1-1-4-co-001",
+                # 3단원: 소수의 나눗셈
+                "e6-1-3-1-co-001", "e6-1-3-4-co-001", "e6-1-3-7-co-001",
+                # 4단원: 비와 비율
+                "e6-1-4-1-co-001", "e6-1-4-3-co-001", "e6-1-4-6-co-001",
+                # 7단원: 분수의 나눗셈 (2)
+                "e6-2-1-1-co-001", "e6-2-1-4-co-001", "e6-2-1-6-co-001",
+                # 8단원: 소수의 나눗셈 (2)
+                "e6-2-2-1-co-001", "e6-2-2-4-co-001", "e6-2-2-6-co-001",
+            ],
+            time_limit_minutes=30,
+            is_adaptive=False,
+            use_question_pool=True,
+            questions_per_attempt=12,
         ),
+        # 2. 개념 종합평가
         test(
-            id="test-e6-1-2-1",
-            name="초6-1-2 각기둥과 각뿔 (기본)",
+            id="test-e6-concept",
+            title="초등 6학년 개념 종합평가",
+            description="각기둥과 각뿔, 여러 가지 그래프, 직육면체의 부피, 공간과 입체, 비례식, 원의 넓이, 원기둥·원뿔·구를 평가합니다.",
             grade="elementary_6",
-            concept_ids=["e6-1-2-1", "e6-1-2-2"],
-            question_ids=["e6-1-2-1-cc-001", "e6-1-2-2-cc-001", "e6-1-2-1-fb-001"],
+            concept_ids=[
+                # 1학기 2단원: 각기둥과 각뿔
+                "e6-1-2-01", "e6-1-2-03", "e6-1-2-06",
+                # 1학기 5단원: 여러 가지 그래프
+                "e6-1-5-01", "e6-1-5-04", "e6-1-5-07",
+                # 1학기 6단원: 직육면체의 겉넓이와 부피
+                "e6-1-6-01", "e6-1-6-03", "e6-1-6-04",
+                # 2학기 3단원: 공간과 입체
+                "e6-2-3-01", "e6-2-3-04", "e6-2-3-06",
+                # 2학기 4단원: 비례식과 비례배분
+                "e6-2-4-01", "e6-2-4-04", "e6-2-4-06",
+                # 2학기 5단원: 원의 넓이
+                "e6-2-5-01", "e6-2-5-04", "e6-2-5-06",
+                # 2학기 6단원: 원기둥, 원뿔, 구
+                "e6-2-6-01", "e6-2-6-03", "e6-2-6-04",
+            ],
+            question_ids=[
+                # 각기둥과 각뿔
+                "e6-1-2-01-cc-001", "e6-1-2-03-cc-001", "e6-1-2-06-cc-001",
+                # 여러 가지 그래프
+                "e6-1-5-01-cc-001", "e6-1-5-04-cc-001", "e6-1-5-07-cc-001",
+                # 직육면체의 겉넓이와 부피
+                "e6-1-6-01-cc-001", "e6-1-6-03-cc-001", "e6-1-6-04-cc-001",
+                # 공간과 입체
+                "e6-2-3-01-cc-001", "e6-2-3-04-cc-001", "e6-2-3-06-cc-001",
+                # 비례식과 비례배분
+                "e6-2-4-01-cc-001", "e6-2-4-04-cc-001", "e6-2-4-06-cc-001",
+                # 원의 넓이
+                "e6-2-5-01-cc-001", "e6-2-5-04-cc-001", "e6-2-5-06-cc-001",
+                # 원기둥, 원뿔, 구
+                "e6-2-6-01-cc-001", "e6-2-6-03-cc-001", "e6-2-6-04-cc-001",
+            ],
+            time_limit_minutes=30,
+            is_adaptive=False,
+            use_question_pool=True,
+            questions_per_attempt=12,
         ),
+        # 3. 비와 비율 집중평가
         test(
-            id="test-e6-1-3-1",
-            name="초6-1-3 소수의 나눗셈 (기본)",
+            id="test-e6-ratio",
+            title="초등 6학년 비와 비율 집중평가",
+            description="비와 비율, 비례식과 비례배분을 집중 평가합니다. "
+            "중학교 함수와 비례 관계의 기초가 되는 핵심 단원입니다.",
             grade="elementary_6",
-            concept_ids=["e6-1-3-1", "e6-2-2-1"],
-            question_ids=["e6-1-3-1-co-001", "e6-2-2-1-co-001"],
+            concept_ids=[
+                # 1학기 4단원: 비와 비율
+                "e6-1-4-01", "e6-1-4-02", "e6-1-4-03",
+                "e6-1-4-04", "e6-1-4-05", "e6-1-4-06",
+                # 2학기 4단원: 비례식과 비례배분
+                "e6-2-4-01", "e6-2-4-02", "e6-2-4-03",
+                "e6-2-4-04", "e6-2-4-05", "e6-2-4-06",
+            ],
+            question_ids=[
+                # 비와 비율
+                "e6-1-4-1-co-001", "e6-1-4-2-co-001", "e6-1-4-3-co-001",
+                "e6-1-4-4-co-001", "e6-1-4-5-co-001", "e6-1-4-6-co-001",
+                # 비례식과 비례배분
+                "e6-2-4-01-cc-001", "e6-2-4-02-cc-001", "e6-2-4-03-cc-001",
+                "e6-2-4-04-cc-001", "e6-2-4-05-cc-001", "e6-2-4-06-cc-001",
+                # 빈칸
+                "e6-1-4-01-fb-001", "e6-1-4-03-fb-001", "e6-1-4-05-fb-001",
+                "e6-2-4-01-fb-001", "e6-2-4-03-fb-001", "e6-2-4-05-fb-001",
+            ],
+            time_limit_minutes=25,
+            is_adaptive=False,
         ),
+        # 4. 종합평가
         test(
-            id="test-e6-1-4-1",
-            name="초6-1-4 비와 비율 (기본)",
+            id="test-e6-comprehensive",
+            title="초등 6학년 종합평가",
+            description="1·2학기 12단원의 연산과 개념을 종합적으로 평가합니다. "
+            "초등 수학 최종 정리 평가입니다.",
             grade="elementary_6",
-            concept_ids=["e6-1-4-1"],
-            question_ids=["e6-1-4-1-co-001", "e6-1-4-1-co-002"],
-        ),
-        test(
-            id="test-e6-1-5-1",
-            name="초6-1-5 여러 가지 그래프 (기본)",
-            grade="elementary_6",
-            concept_ids=["e6-1-5-1", "e6-1-5-2"],
-            question_ids=["e6-1-5-1-cc-001", "e6-1-5-2-cc-001", "e6-1-5-1-fb-001"],
-        ),
-        test(
-            id="test-e6-1-6-1",
-            name="초6-1-6 직육면체의 겉넓이와 부피 (기본)",
-            grade="elementary_6",
-            concept_ids=["e6-1-6-1", "e6-1-6-2"],
-            question_ids=["e6-1-6-1-cc-001", "e6-1-6-2-cc-001", "e6-1-6-2-fb-001"],
-        ),
-        test(
-            id="test-e6-2-3-1",
-            name="초6-2-3 공간과 입체 (기본)",
-            grade="elementary_6",
-            concept_ids=["e6-2-3-1"],
-            question_ids=["e6-2-3-1-cc-001", "e6-2-3-1-fb-001"],
-        ),
-        test(
-            id="test-e6-2-4-1",
-            name="초6-2-4 비례식과 비례배분 (기본)",
-            grade="elementary_6",
-            concept_ids=["e6-2-4-1", "e6-2-4-2"],
-            question_ids=["e6-2-4-1-cc-001", "e6-2-4-2-cc-001", "e6-2-4-1-fb-001"],
-        ),
-        test(
-            id="test-e6-2-5-1",
-            name="초6-2-5 원의 넓이 (기본)",
-            grade="elementary_6",
-            concept_ids=["e6-2-5-1", "e6-2-5-2"],
-            question_ids=["e6-2-5-1-cc-001", "e6-2-5-2-cc-001", "e6-2-5-1-fb-001"],
-        ),
-        test(
-            id="test-e6-2-6-1",
-            name="초6-2-6 원기둥, 원뿔, 구 (기본)",
-            grade="elementary_6",
-            concept_ids=["e6-2-6-1", "e6-2-6-2"],
-            question_ids=["e6-2-6-1-cc-001", "e6-2-6-2-cc-001"],
+            concept_ids=[
+                # 연산 (1학기)
+                "e6-1-1-01", "e6-1-1-04", "e6-1-3-01", "e6-1-3-07",
+                "e6-1-4-01", "e6-1-4-06",
+                # 연산 (2학기)
+                "e6-2-1-01", "e6-2-1-06", "e6-2-2-01", "e6-2-2-06",
+                # 개념 (1학기)
+                "e6-1-2-01", "e6-1-2-06", "e6-1-5-01", "e6-1-5-07",
+                "e6-1-6-01", "e6-1-6-04",
+                # 개념 (2학기)
+                "e6-2-3-01", "e6-2-3-06", "e6-2-4-01", "e6-2-4-06",
+                "e6-2-5-01", "e6-2-5-06", "e6-2-6-01", "e6-2-6-04",
+            ],
+            question_ids=[
+                # 연산
+                "e6-1-1-1-co-001", "e6-1-3-1-co-001", "e6-1-4-1-co-001",
+                "e6-2-1-1-co-001", "e6-2-2-1-co-001",
+                # 개념
+                "e6-1-2-01-cc-001", "e6-1-5-01-cc-001", "e6-1-6-01-cc-001",
+                "e6-2-3-01-cc-001", "e6-2-4-01-cc-001", "e6-2-5-01-cc-001", "e6-2-6-01-cc-001",
+                # 빈칸
+                "e6-1-1-01-fb-001", "e6-1-2-01-fb-001", "e6-1-3-01-fb-001",
+                "e6-1-4-01-fb-001", "e6-1-5-01-fb-001", "e6-1-6-01-fb-001",
+                "e6-2-1-01-fb-001", "e6-2-2-01-fb-001", "e6-2-3-01-fb-001",
+                "e6-2-4-01-fb-001", "e6-2-5-01-fb-001", "e6-2-6-01-fb-001",
+            ],
+            time_limit_minutes=40,
+            is_adaptive=False,
         ),
     ]

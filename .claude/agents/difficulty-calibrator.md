@@ -256,7 +256,7 @@ HAVING attempts >= 30  -- 최소 30회 이상 풀이
 ### 교육과정 개념 가이드
 | 파일 | 내용 | 용도 |
 |------|------|------|
-| `data/middle_school_math_concepts.md` | 중학교 1~3학년 개념·공식·문제유형 | 중등 난이도 기준 |
+| `docs/guides/middle_school_math_concepts.md` | 중학교 1~3학년 개념·공식·문제유형 | 중등 난이도 기준 |
 
 ### 난이도 기준 참조
 | 파일 | 내용 | 용도 |

@@ -1,120 +1,53 @@
-"""초등 5학년 개념 문제 - 2022 개정 교육과정 기준 (3,6,7,9,11,12단원)."""
+"""초등학교 5학년 개념 문제 시드 데이터.
 
-from .._base import mc, concept, test
+커버 단원 (PDF 기반 35개 세분화 개념):
+  1학기 3단원 - 규칙과 대응 (3개)
+  1학기 6단원 - 다각형의 둘레와 넓이 (9개)
+  2학기 1단원 - 수의 범위와 어림하기 (7개)
+  2학기 3단원 - 합동과 대칭 (4개)
+  2학기 5단원 - 직육면체 (6개)
+  2학기 6단원 - 평균과 가능성 (6개)
+"""
+
+from .._base import concept, mc
 
 
-def get_concept_data() -> dict:
-    """초등 5학년 개념 문제/테스트 반환."""
-    concepts = [
-        # ── 3단원: 규칙과 대응 (2개) ──
-        concept(
-            id="e5-1-3-1",
-            name="두 양의 대응 관계 파악",
-            grade="elementary_5",
-            category="concept",
-            part="algebra",
-            description="두 양 사이의 변하는 관계(비례·차이 일정)를 표에서 관찰하여 독립변수와 종속변수를 식별합니다.",
-        ),
-        concept(
-            id="e5-1-3-2",
-            name="대응 관계의 식 표현과 해석",
-            grade="elementary_5",
-            category="concept",
-            part="algebra",
-            description="대응 관계를 기호(○, △)를 사용한 식으로 나타내고, 주어진 식에서 규칙을 역으로 추론하여 해석합니다.",
-        ),
-        # ── 6단원: 다각형의 둘레와 넓이 (2개) ──
-        concept(
-            id="e5-1-6-1",
-            name="평행사변형과 삼각형의 넓이",
-            grade="elementary_5",
-            category="concept",
-            part="geo",
-            description="직사각형→평행사변형(밑변×높이), 평행사변형→삼각형(밑변×높이÷2)으로 등적 변형하여 넓이 공식을 유도합니다.",
-        ),
-        concept(
-            id="e5-1-6-2",
-            name="사다리꼴·마름모의 넓이와 둘레",
-            grade="elementary_5",
-            category="concept",
-            part="geo",
-            description="사다리꼴((윗변+아랫변)×높이÷2), 마름모(대각선×대각선÷2) 넓이 공식을 유도하고, 둘레와 넓이의 독립성을 이해합니다.",
-        ),
-        # ── 7단원: 수의 범위와 어림하기 (2개) ──
-        concept(
-            id="e5-2-1-1",
-            name="수의 범위: 이상·이하·초과·미만",
-            grade="elementary_5",
-            category="concept",
-            part="calc",
-            description="이상(≥)/이하(≤)는 경계값 포함, 초과(>)/미만(<)은 경계값 불포함임을 구별하고 수직선에 나타냅니다.",
-        ),
-        concept(
-            id="e5-2-1-2",
-            name="어림: 올림·버림·반올림",
-            grade="elementary_5",
-            category="concept",
-            part="calc",
-            description="올림(부족 불가 상황), 버림(초과 불가 상황), 반올림(가장 가까운 값)의 상황별 활용을 이해하고 자릿수를 정확히 처리합니다.",
-        ),
-        # ── 9단원: 합동과 대칭 (2개) ──
-        concept(
-            id="e5-2-3-1",
-            name="합동과 대응 관계",
-            grade="elementary_5",
-            category="concept",
-            part="geo",
-            description="합동(모양과 크기가 같어 완전히 겹침)의 정의를 이해하고, 대응점·대응변·대응각을 찾습니다.",
-        ),
-        concept(
-            id="e5-2-3-2",
-            name="선대칭도형과 점대칭도형",
-            grade="elementary_5",
-            category="concept",
-            part="geo",
-            description="선대칭(대칭축으로 접으면 겹침)과 점대칭(중심으로 180° 회전하면 겹침)을 구별하고, 도형의 대칭 유형을 판별합니다.",
-        ),
-        # ── 11단원: 직육면체 (2개) ──
-        concept(
-            id="e5-2-5-1",
-            name="직육면체·정육면체의 구성 요소",
-            grade="elementary_5",
-            category="concept",
-            part="geo",
-            description="직육면체(직사각형 6면)와 정육면체(정사각형 6면)의 면·모서리·꼭짓점 수와 평행/수직 관계를 이해합니다.",
-        ),
-        concept(
-            id="e5-2-5-2",
-            name="전개도와 겨냥도",
-            grade="elementary_5",
-            category="concept",
-            part="geo",
-            description="직육면체의 전개도(다양한 전개 방법)를 그리고, 겨냥도에서 보이지 않는 모서리를 점선으로 나타냅니다.",
-        ),
-        # ── 12단원: 평균과 가능성 (2개) ──
-        concept(
-            id="e5-2-6-1",
-            name="평균 구하기와 활용",
-            grade="elementary_5",
-            category="concept",
-            part="data",
-            description="평균=(자료의 합)÷(자료의 개수)를 이해하고, 0 포함 자료와 극단값이 평균에 미치는 영향을 파악합니다.",
-        ),
-        concept(
-            id="e5-2-6-2",
-            name="가능성의 표현",
-            grade="elementary_5",
-            category="concept",
-            part="data",
-            description="가능성을 불가능(0)~확실(1)의 수치로 대응시키고, 경우의 수를 세어 가능성을 분수로 표현합니다.",
-        ),
-    ]
+def get_concepts() -> list[dict]:
+    """개념 35개 반환 (PDF 기반 세분화 - 개념 단원만)."""
+    from app.data.pdf_concept_map import E5_S1_CONCEPTS, E5_S2_CONCEPTS
 
-    questions = [
-        # 3단원: 규칙과 대응 (3문제, 난이도 2-4)
+    # 1학기 개념 단원: ch3(규칙과 대응), ch6(다각형의 둘레와 넓이)
+    concept_s1_chapters = {3, 6}
+    # 2학기 개념 단원: ch1(수의 범위와 어림하기), ch3(합동과 대칭), ch5(직육면체), ch6(평균과 가능성)
+    concept_s2_chapters = {1, 3, 5, 6}
+
+    result = []
+    for c in E5_S1_CONCEPTS:
+        if c["chapter_number"] in concept_s1_chapters:
+            result.append(concept(
+                id=c["id"], name=c["name"], grade=c["grade"],
+                category=c["category"], part=c["part"], description=c["description"],
+            ))
+    for c in E5_S2_CONCEPTS:
+        if c["chapter_number"] in concept_s2_chapters:
+            result.append(concept(
+                id=c["id"], name=c["name"], grade=c["grade"],
+                category=c["category"], part=c["part"], description=c["description"],
+            ))
+    return result
+
+
+def get_questions() -> list[dict]:
+    """개념 문제 반환 (기존 문제 concept_id 변경 + 신규 문제)."""
+    return [
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 3단원: 규칙과 대응 (3개 개념)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        # ── e5-1-3-01: 두 양 사이의 관계 ──
         mc(
             id="e5-1-3-1-cc-001",
-            concept_id="e5-1-3-1",
+            concept_id="e5-1-3-01",  # 변경: e5-1-3-1 → e5-1-3-01
             category="concept",
             part="algebra",
             difficulty=2,
@@ -126,7 +59,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="e5-1-3-1-cc-002",
-            concept_id="e5-1-3-1",
+            concept_id="e5-1-3-01",  # 변경: e5-1-3-1 → e5-1-3-01
             category="concept",
             part="algebra",
             difficulty=3,
@@ -136,9 +69,11 @@ def get_concept_data() -> dict:
             explanation="형의 나이 = 동생의 나이 + 3 = △ + 3입니다. 이는 덧셈 관계(y = x + a)로 나타낼 수 있습니다.",
             points=10,
         ),
+
+        # ── e5-1-3-02: 대응 관계를 식으로 나타내기 ──
         mc(
             id="e5-1-3-2-cc-001",
-            concept_id="e5-1-3-2",
+            concept_id="e5-1-3-02",  # 변경: e5-1-3-2 → e5-1-3-02
             category="concept",
             part="algebra",
             difficulty=4,
@@ -148,11 +83,121 @@ def get_concept_data() -> dict:
             explanation="규칙: (입력 × 3) + 1 = 출력. 2×3+1=7, 3×3+1=10, 4×3+1=13. 따라서 출력 = ○ × 3 + 1입니다.",
             points=10,
         ),
+        mc(
+            id="e5-1-3-2-cc-002",
+            concept_id="e5-1-3-02",  # 신규 추가
+            category="concept",
+            part="algebra",
+            difficulty=5,
+            content="□가 1씩 커질 때 △가 5씩 커지는 관계를 식으로 나타내면? (□=1일 때 △=8)",
+            options=["△ = □ + 7", "△ = □ × 5 + 3", "△ = □ + 5", "△ = □ × 8"],
+            correct="B",
+            explanation="□가 1씩 커질 때 △가 5씩 커지므로 △ = □ × 5 + a 형태입니다. □=1일 때 △=8이므로 8 = 1×5 + a → a=3. 따라서 △ = □ × 5 + 3입니다.",
+            points=10,
+        ),
 
-        # 6단원: 다각형의 둘레와 넓이 (3문제, 난이도 3-5)
+        # ── e5-1-3-03: 생활 속에서 대응 관계를 찾아 식으로 나타내기 ──
+        mc(
+            id="e5-1-3-3-cc-001",  # 신규 추가
+            concept_id="e5-1-3-03",
+            category="concept",
+            part="algebra",
+            difficulty=6,
+            content="한 봉지에 사탕 5개씩 들어있고, 낱개 사탕 3개가 따로 있습니다. 봉지가 ○개일 때 전체 사탕 수를 식으로 나타내면?",
+            options=["○ × 5", "○ × 5 + 3", "○ + 5 + 3", "○ × 3 + 5"],
+            correct="B",
+            explanation="봉지 ○개에 들어있는 사탕: ○ × 5개, 낱개 사탕: 3개. 전체 = ○ × 5 + 3개입니다. 실생활에서 두 양의 대응 관계를 찾는 문제입니다.",
+            points=10,
+        ),
+
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 1학기 6단원: 다각형의 둘레와 넓이 (9개 개념)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        # ── e5-1-6-01: 정다각형의 둘레 ──
+        mc(
+            id="e5-1-6-1-cc-003",  # 신규 추가
+            concept_id="e5-1-6-01",
+            category="concept",
+            part="geo",
+            difficulty=3,
+            content="정육각형의 한 변의 길이가 7cm입니다. 둘레는?",
+            options=["42cm", "49cm", "35cm", "56cm"],
+            correct="A",
+            explanation="정다각형의 둘레 = 한 변 × 변의 수. 정육각형은 6개 변이므로 7 × 6 = 42cm입니다.",
+            points=10,
+        ),
+
+        # ── e5-1-6-02: 사각형의 둘레 ──
+        mc(
+            id="e5-1-6-2-cc-003",  # 신규 추가
+            concept_id="e5-1-6-02",
+            category="concept",
+            part="geo",
+            difficulty=4,
+            content="가로 8cm, 세로 5cm인 직사각형의 둘레를 구하는 식은?",
+            options=["8 + 5", "(8 + 5) × 2", "8 × 5", "8 × 2 + 5"],
+            correct="B",
+            explanation="직사각형의 둘레 = (가로 + 세로) × 2. (8 + 5) × 2 = 13 × 2 = 26cm입니다.",
+            points=10,
+        ),
+
+        # ── e5-1-6-03: 넓이의 단위 1cm² ──
+        mc(
+            id="e5-1-6-3-cc-001",  # 신규 추가
+            concept_id="e5-1-6-03",
+            category="concept",
+            part="geo",
+            difficulty=2,
+            content="1cm²는 무엇을 의미합니까?",
+            options=[
+                "한 변이 1cm인 정사각형의 넓이",
+                "가로 1cm, 세로 2cm인 직사각형의 넓이",
+                "둘레가 1cm인 도형의 넓이",
+                "한 변이 1m인 정사각형의 넓이"
+            ],
+            correct="A",
+            explanation="1cm²(1제곱센티미터)는 한 변의 길이가 1cm인 정사각형의 넓이입니다. 넓이의 기본 단위입니다.",
+            points=10,
+        ),
+
+        # ── e5-1-6-04: 직사각형의 넓이 ──
+        mc(
+            id="e5-1-6-4-cc-001",  # 신규 추가
+            concept_id="e5-1-6-04",
+            category="concept",
+            part="geo",
+            difficulty=3,
+            content="직사각형의 넓이 공식 (가로 × 세로)는 왜 성립합니까?",
+            options=[
+                "가로 방향 단위넓이 개수 × 세로 방향 줄 수를 세면 전체 개수가 나오므로",
+                "직사각형은 정사각형과 같으므로",
+                "둘레와 넓이는 항상 같으므로",
+                "공식이므로 외워야 한다"
+            ],
+            correct="A",
+            explanation="직사각형을 1cm² 단위로 채우면, 가로 방향에 가로(cm)개, 세로 방향에 세로(줄)개가 배열됩니다. 전체 개수 = 가로 × 세로 = 넓이(cm²)입니다.",
+            points=10,
+        ),
+
+        # ── e5-1-6-05: 1cm²보다 더 큰 넓이의 단위 ──
+        mc(
+            id="e5-1-6-5-cc-001",  # 신규 추가
+            concept_id="e5-1-6-05",
+            category="concept",
+            part="geo",
+            difficulty=4,
+            content="1m²는 몇 cm²입니까?",
+            options=["100cm²", "1000cm²", "10000cm²", "1000000cm²"],
+            correct="C",
+            explanation="1m = 100cm이므로, 1m² = (100cm)² = 100cm × 100cm = 10000cm²입니다. 길이의 제곱임을 주의하세요!",
+            points=10,
+        ),
+
+        # ── e5-1-6-06: 평행사변형의 넓이 ──
         mc(
             id="e5-1-6-1-cc-001",
-            concept_id="e5-1-6-1",
+            concept_id="e5-1-6-06",  # 변경: e5-1-6-1 → e5-1-6-06
             category="concept",
             part="geo",
             difficulty=3,
@@ -162,9 +207,11 @@ def get_concept_data() -> dict:
             explanation="평행사변형을 잘라서 직사각형으로 등적 변형하면 넓이 = 밑변 × 높이입니다. 높이는 밑변에 수직인 선분의 길이입니다.",
             points=10,
         ),
+
+        # ── e5-1-6-07: 삼각형의 넓이 ──
         mc(
             id="e5-1-6-1-cc-002",
-            concept_id="e5-1-6-1",
+            concept_id="e5-1-6-07",  # 변경: e5-1-6-1 → e5-1-6-07
             category="concept",
             part="geo",
             difficulty=4,
@@ -179,9 +226,30 @@ def get_concept_data() -> dict:
             explanation="똑같은 삼각형 2개를 붙이면 평행사변형이 됩니다. 따라서 삼각형 넓이 = (평행사변형 넓이) ÷ 2 = (밑변 × 높이) ÷ 2입니다. 오답 C는 ÷2를 누락하는 흔한 오류입니다. ★★★",
             points=10,
         ),
+
+        # ── e5-1-6-08: 마름모의 넓이 ──
+        mc(
+            id="e5-1-6-2-cc-002",  # 신규 추가
+            concept_id="e5-1-6-08",
+            category="concept",
+            part="geo",
+            difficulty=5,
+            content="마름모의 넓이를 구하는 공식은?",
+            options=[
+                "밑변 × 높이",
+                "한 변 × 한 변",
+                "(한 대각선 × 다른 대각선) ÷ 2",
+                "(한 대각선 + 다른 대각선) ÷ 2"
+            ],
+            correct="C",
+            explanation="마름모의 넓이 = (한 대각선 × 다른 대각선) ÷ 2. 두 대각선이 수직으로 만나는 성질을 이용하여 삼각형 4개로 나누어 유도합니다.",
+            points=10,
+        ),
+
+        # ── e5-1-6-09: 사다리꼴의 넓이 ──
         mc(
             id="e5-1-6-2-cc-001",
-            concept_id="e5-1-6-2",
+            concept_id="e5-1-6-09",  # 변경: e5-1-6-2 → e5-1-6-09
             category="concept",
             part="geo",
             difficulty=5,
@@ -197,10 +265,28 @@ def get_concept_data() -> dict:
             points=10,
         ),
 
-        # 7단원: 수의 범위와 어림하기 (3문제, 난이도 3-5)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 1단원: 수의 범위와 어림하기 (7개 개념)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        # ── e5-2-1-01: 이상과 이하 ──
+        mc(
+            id="e5-2-1-1-cc-002",  # 신규 추가
+            concept_id="e5-2-1-01",
+            category="concept",
+            part="calc",
+            difficulty=2,
+            content="10 이하의 자연수는 10을 포함합니까?",
+            options=["포함한다", "포함하지 않는다", "경우에 따라 다르다", "판단할 수 없다"],
+            correct="A",
+            explanation="이하(≤)는 경계값을 포함합니다. 10 이하는 10도 포함하여 1,2,3,...,9,10을 의미합니다. 미만(<)과 구별하세요!",
+            points=10,
+        ),
+
+        # ── e5-2-1-02: 초과와 미만 ──
         mc(
             id="e5-2-1-1-cc-001",
-            concept_id="e5-2-1-1",
+            concept_id="e5-2-1-02",  # 변경: e5-2-1-1 → e5-2-1-02 (기존 문제는 이상/미만 혼합이므로 초과/미만 개념으로 이동)
             category="concept",
             part="calc",
             difficulty=3,
@@ -210,9 +296,53 @@ def get_concept_data() -> dict:
             explanation="5 이상(5 포함) 10 미만(10 불포함): 5, 6, 7, 8, 9로 총 5개입니다. 이상/이하는 경계값 포함(●), 초과/미만은 불포함(○)입니다.",
             points=10,
         ),
+
+        # ── e5-2-1-03: 수의 범위 활용하기 ──
+        mc(
+            id="e5-2-1-3-cc-001",  # 신규 추가
+            concept_id="e5-2-1-03",
+            category="concept",
+            part="calc",
+            difficulty=5,
+            content="놀이기구 탑승 키 제한: '120cm 이상'. 키가 119.8cm인 어린이는 탈 수 있습니까?",
+            options=["탈 수 있다", "탈 수 없다", "약간 크므로 탈 수 있다", "판단할 수 없다"],
+            correct="B",
+            explanation="120cm 이상이므로 120cm보다 작으면 탈 수 없습니다. 119.8cm < 120cm이므로 탑승 불가입니다. 이상/초과의 실생활 활용 문제입니다.",
+            points=10,
+        ),
+
+        # ── e5-2-1-04: 올림 ──
+        mc(
+            id="e5-2-1-4-cc-001",  # 신규 추가
+            concept_id="e5-2-1-04",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="456을 십의 자리에서 올림하면?",
+            options=["400", "450", "460", "500"],
+            correct="D",
+            explanation="십의 자리에서 올림하면 십의 자리 아래를 버리고 백의 자리를 올립니다. 456 → 500입니다. 반올림과 다릅니다!",
+            points=10,
+        ),
+
+        # ── e5-2-1-05: 버림 ──
+        mc(
+            id="e5-2-1-5-cc-001",  # 신규 추가
+            concept_id="e5-2-1-05",
+            category="concept",
+            part="calc",
+            difficulty=3,
+            content="789를 십의 자리에서 버림하면?",
+            options=["700", "780", "790", "800"],
+            correct="B",
+            explanation="십의 자리에서 버림하면 일의 자리를 버립니다. 789 → 780입니다.",
+            points=10,
+        ),
+
+        # ── e5-2-1-06: 반올림 ──
         mc(
             id="e5-2-1-2-cc-001",
-            concept_id="e5-2-1-2",
+            concept_id="e5-2-1-06",  # 변경: e5-2-1-2 → e5-2-1-06
             category="concept",
             part="calc",
             difficulty=4,
@@ -222,9 +352,11 @@ def get_concept_data() -> dict:
             explanation="십의 자리(5)가 5 이상이므로 올림합니다. 456 → 500입니다. '~에서 반올림'은 해당 자리를 보고 윗자리에 반영합니다. ★★★",
             points=10,
         ),
+
+        # ── e5-2-1-07: 올림, 버림, 반올림 활용하기 ──
         mc(
             id="e5-2-1-2-cc-002",
-            concept_id="e5-2-1-2",
+            concept_id="e5-2-1-07",  # 변경: e5-2-1-2 → e5-2-1-07
             category="concept",
             part="calc",
             difficulty=5,
@@ -235,10 +367,14 @@ def get_concept_data() -> dict:
             points=10,
         ),
 
-        # 9단원: 합동과 대칭 (3문제, 난이도 3-5)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 3단원: 합동과 대칭 (4개 개념)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        # ── e5-2-3-01: 도형의 합동 ──
         mc(
             id="e5-2-3-1-cc-001",
-            concept_id="e5-2-3-1",
+            concept_id="e5-2-3-01",  # 변경: e5-2-3-1 → e5-2-3-01
             category="concept",
             part="geo",
             difficulty=3,
@@ -253,9 +389,30 @@ def get_concept_data() -> dict:
             explanation="합동은 모양과 크기가 모두 같아 완전히 겹쳐지는 관계입니다. 대응변의 길이와 대응각의 크기가 각각 같습니다.",
             points=10,
         ),
+
+        # ── e5-2-3-02: 합동인 도형의 성질 ──
+        mc(
+            id="e5-2-3-2-cc-003",  # 신규 추가
+            concept_id="e5-2-3-02",
+            category="concept",
+            part="geo",
+            difficulty=4,
+            content="합동인 두 삼각형에서 대응변의 관계는?",
+            options=[
+                "대응변의 길이는 같다",
+                "대응변의 길이는 2배이다",
+                "대응변의 길이는 관계없다",
+                "대응변의 길이는 각각 다르다"
+            ],
+            correct="A",
+            explanation="합동인 도형에서 대응변의 길이는 같고, 대응각의 크기도 같습니다. 이것이 합동의 핵심 성질입니다.",
+            points=10,
+        ),
+
+        # ── e5-2-3-03: 선대칭도형과 그 성질 ──
         mc(
             id="e5-2-3-2-cc-001",
-            concept_id="e5-2-3-2",
+            concept_id="e5-2-3-03",  # 변경: e5-2-3-2 → e5-2-3-03
             category="concept",
             part="geo",
             difficulty=4,
@@ -270,9 +427,11 @@ def get_concept_data() -> dict:
             explanation="선대칭도형의 대칭축은 대응점을 이은 선분을 수직이등분합니다. 대칭축을 따라 접으면 완전히 겹쳐집니다. 오답 A는 점대칭의 성질입니다.",
             points=10,
         ),
+
+        # ── e5-2-3-04: 점대칭도형과 그 성질 ──
         mc(
             id="e5-2-3-2-cc-002",
-            concept_id="e5-2-3-2",
+            concept_id="e5-2-3-04",  # 변경: e5-2-3-2 → e5-2-3-04
             category="concept",
             part="geo",
             difficulty=5,
@@ -288,10 +447,14 @@ def get_concept_data() -> dict:
             points=10,
         ),
 
-        # 11단원: 직육면체 (3문제, 난이도 3-5)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 5단원: 직육면체 (6개 개념)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        # ── e5-2-5-01: 직육면체 ──
         mc(
             id="e5-2-5-1-cc-001",
-            concept_id="e5-2-5-1",
+            concept_id="e5-2-5-01",  # 변경: e5-2-5-1 → e5-2-5-01
             category="concept",
             part="geo",
             difficulty=3,
@@ -301,9 +464,30 @@ def get_concept_data() -> dict:
             explanation="직육면체는 6개의 면(앞뒤·좌우·위아래)으로 이루어져 있습니다. 모서리 12개, 꼭짓점 8개입니다.",
             points=10,
         ),
+
+        # ── e5-2-5-02: 정육면체 ──
+        mc(
+            id="e5-2-5-2-cc-003",  # 신규 추가
+            concept_id="e5-2-5-02",
+            category="concept",
+            part="geo",
+            difficulty=4,
+            content="정육면체는 직육면체의 특수한 경우입니다. 정육면체의 특징은?",
+            options=[
+                "6개의 면이 모두 정사각형이다",
+                "6개의 면이 모두 직사각형이다",
+                "4개의 면이 정사각형이다",
+                "대각선의 길이가 모두 다르다"
+            ],
+            correct="A",
+            explanation="정육면체는 6개의 면이 모두 합동인 정사각형입니다. 모든 모서리의 길이가 같습니다.",
+            points=10,
+        ),
+
+        # ── e5-2-5-03: 직육면체의 성질 ──
         mc(
             id="e5-2-5-1-cc-002",
-            concept_id="e5-2-5-1",
+            concept_id="e5-2-5-03",  # 변경: e5-2-5-1 → e5-2-5-03
             category="concept",
             part="geo",
             difficulty=4,
@@ -313,9 +497,39 @@ def get_concept_data() -> dict:
             explanation="직육면체에서 한 면과 평행한 면은 마주 보는 1개뿐입니다. 총 3쌍의 평행한 면이 있습니다.",
             points=10,
         ),
+
+        # ── e5-2-5-04: 직육면체의 겨냥도 ──
+        mc(
+            id="e5-2-5-4-cc-001",  # 신규 추가
+            concept_id="e5-2-5-04",
+            category="concept",
+            part="geo",
+            difficulty=5,
+            content="겨냥도에서 보이지 않는 모서리는 어떻게 나타냅니까?",
+            options=["실선으로 그린다", "점선으로 그린다", "그리지 않는다", "굵은 선으로 그린다"],
+            correct="B",
+            explanation="겨냥도에서 보이지 않는 모서리는 점선으로 나타냅니다. 보이는 모서리는 실선으로 그립니다.",
+            points=10,
+        ),
+
+        # ── e5-2-5-05: 정육면체의 전개도 ──
+        mc(
+            id="e5-2-5-5-cc-001",  # 신규 추가
+            concept_id="e5-2-5-05",
+            category="concept",
+            part="geo",
+            difficulty=6,
+            content="정육면체의 전개도는 몇 가지입니까?",
+            options=["1가지", "6가지", "11가지", "무한히 많다"],
+            correct="C",
+            explanation="정육면체의 전개도는 11가지입니다. 접었을 때 마주 보는 면을 파악하는 것이 중요합니다.",
+            points=10,
+        ),
+
+        # ── e5-2-5-06: 직육면체의 전개도 ──
         mc(
             id="e5-2-5-2-cc-001",
-            concept_id="e5-2-5-2",
+            concept_id="e5-2-5-06",  # 변경: e5-2-5-2 → e5-2-5-06
             category="concept",
             part="geo",
             difficulty=5,
@@ -331,10 +545,33 @@ def get_concept_data() -> dict:
             points=10,
         ),
 
-        # 12단원: 평균과 가능성 (3문제, 난이도 3-5)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 2학기 6단원: 평균과 가능성 (6개 개념)
+        # ━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+        # ── e5-2-6-01: 평균 ──
+        mc(
+            id="e5-2-6-1-cc-003",  # 신규 추가
+            concept_id="e5-2-6-01",
+            category="concept",
+            part="data",
+            difficulty=2,
+            content="평균의 의미로 올바른 것은?",
+            options=[
+                "자료 중 가장 큰 값",
+                "자료의 값을 고르게 한 값",
+                "자료 중 가장 작은 값",
+                "자료의 개수"
+            ],
+            correct="B",
+            explanation="평균은 자료의 값을 고르게 한 값입니다. 모든 자료를 대표하는 하나의 값으로 이해합니다.",
+            points=10,
+        ),
+
+        # ── e5-2-6-02: 평균 구하기 ──
         mc(
             id="e5-2-6-1-cc-001",
-            concept_id="e5-2-6-1",
+            concept_id="e5-2-6-02",  # 변경: e5-2-6-1 → e5-2-6-02
             category="concept",
             part="data",
             difficulty=3,
@@ -346,7 +583,7 @@ def get_concept_data() -> dict:
         ),
         mc(
             id="e5-2-6-1-cc-002",
-            concept_id="e5-2-6-1",
+            concept_id="e5-2-6-02",  # 변경: e5-2-6-1 → e5-2-6-02
             category="concept",
             part="data",
             difficulty=4,
@@ -356,9 +593,58 @@ def get_concept_data() -> dict:
             explanation="평균 = (80 + 90 + 0 + 85 + 95) ÷ 5 = 350 ÷ 5 = 70입니다. 0점도 자료에 포함하여 개수를 5개로 계산해야 합니다. 오답 유도: 0을 제외하고 4개로 나누기 ★★",
             points=10,
         ),
+
+        # ── e5-2-6-03: 평균 이용하기 ──
+        mc(
+            id="e5-2-6-3-cc-001",  # 신규 추가
+            concept_id="e5-2-6-03",
+            category="concept",
+            part="data",
+            difficulty=6,
+            content="5명의 키 평균이 150cm입니다. 5명의 키의 합은?",
+            options=["150cm", "300cm", "750cm", "알 수 없다"],
+            correct="C",
+            explanation="평균 = (합) ÷ (개수)이므로, 합 = 평균 × 개수 = 150 × 5 = 750cm입니다. 평균을 역으로 활용하는 문제입니다.",
+            points=10,
+        ),
+
+        # ── e5-2-6-04: 일이 일어날 가능성을 말로 표현하기 ──
+        mc(
+            id="e5-2-6-4-cc-001",  # 신규 추가
+            concept_id="e5-2-6-04",
+            category="concept",
+            part="data",
+            difficulty=3,
+            content="주사위를 던질 때 7이 나올 가능성을 말로 표현하면?",
+            options=["불가능하다", "~아닐 것 같다", "반반이다", "확실하다"],
+            correct="A",
+            explanation="주사위 눈은 1~6이므로 7은 나올 수 없습니다. 따라서 '불가능하다'입니다.",
+            points=10,
+        ),
+
+        # ── e5-2-6-05: 일이 일어날 가능성을 비교하기 ──
+        mc(
+            id="e5-2-6-5-cc-001",  # 신규 추가
+            concept_id="e5-2-6-05",
+            category="concept",
+            part="data",
+            difficulty=5,
+            content="주사위를 던질 때, '짝수가 나올 가능성'과 '3의 배수가 나올 가능성'을 비교하면?",
+            options=[
+                "짝수가 나올 가능성이 더 높다",
+                "3의 배수가 나올 가능성이 더 높다",
+                "둘의 가능성은 같다",
+                "비교할 수 없다"
+            ],
+            correct="A",
+            explanation="짝수(2,4,6) 3가지, 3의 배수(3,6) 2가지. 짝수가 나올 가능성이 더 높습니다. 경우의 수를 세어 비교합니다.",
+            points=10,
+        ),
+
+        # ── e5-2-6-06: 일이 일어날 가능성을 수로 표현하기 ──
         mc(
             id="e5-2-6-2-cc-001",
-            concept_id="e5-2-6-2",
+            concept_id="e5-2-6-06",  # 변경: e5-2-6-2 → e5-2-6-06
             category="concept",
             part="data",
             difficulty=5,
@@ -368,383 +654,92 @@ def get_concept_data() -> dict:
             explanation="주사위 눈: 1,2,3,4,5,6 총 6가지. 6의 약수: 1,2,3,6로 4가지. 가능성 = 4/6 = 2/3입니다. 2/3 > 1/2이므로 '일 것 같다' 수준입니다.",
             points=10,
         ),
+
         # ────────────────────────────────────────────────────────
-        # 연산 단원 개념 문제 (1,2,4,5,8,10단원)
+        # 추가 문제: 각 개념별 커버리지 확대 (신규 문제)
         # ────────────────────────────────────────────────────────
-        # 1단원: 자연수의 혼합 계산 (3문제)
+
+        # e5-1-6-01 추가 문제
         mc(
-            id="e5-1-1-1-cc-003",
-            concept_id="e5-1-1-1",
+            id="e5-1-6-1-cc-004",
+            concept_id="e5-1-6-01",
             category="concept",
-            part="calc",
-            difficulty=2,
-            content="덧셈/뺄셈보다 곱셈/나눗셈을 먼저 계산하는 이유는?",
-            options=[
-                "수학에서 정한 연산 우선순위 규칙이기 때문",
-                "곱셈이 더 어려우므로",
-                "덧셈이 덜 중요하므로",
-                "순서는 상관없다",
-            ],
-            correct="A",
-            explanation="수학에서는 괄호 → 곱셈/나눗셈 → 덧셈/뺄셈 순서로 계산하는 규칙이 있습니다. 이 규칙 덕분에 모든 사람이 같은 답을 얻을 수 있습니다.",
-            points=10,
-        ),
-        mc(
-            id="e5-1-1-2-cc-001",
-            concept_id="e5-1-1-2",
-            category="concept",
-            part="calc",
-            difficulty=3,
-            content="식에서 괄호( )의 역할은?",
-            options=[
-                "괄호 안의 부분을 먼저 계산하라는 표시",
-                "곱셈을 나타내는 표시",
-                "나눗셈을 나타내는 표시",
-                "답을 나타내는 표시",
-            ],
-            correct="A",
-            explanation="괄호는 연산 순서를 바꿀 때 사용합니다. 괄호 안의 계산을 가장 먼저 수행합니다. 예: (2 + 3) × 4 = 5 × 4 = 20",
-            points=10,
-        ),
-        mc(
-            id="e5-1-1-1-cc-004",
-            concept_id="e5-1-1-1",
-            category="concept",
-            part="calc",
-            difficulty=4,
-            content="10 + 20 ÷ 5의 답이 14인 이유는?",
-            options=[
-                "나눗셈을 덧셈보다 먼저 계산해야 하므로",
-                "왼쪽부터 순서대로 계산하므로",
-                "숫자가 큰 것부터 계산하므로",
-                "10을 먼저 빼야 하므로",
-            ],
-            correct="A",
-            explanation="연산 우선순위에 따라 나눗셈 먼저: 20 ÷ 5 = 4, 그다음 10 + 4 = 14입니다. 왼쪽부터 계산하면 30 ÷ 5 = 6이 되어 틀립니다.",
-            points=10,
-        ),
-        # 2단원: 약수와 배수 (3문제)
-        mc(
-            id="e5-1-2-1-cc-001",
-            concept_id="e5-1-2-1",
-            category="concept",
-            part="calc",
-            difficulty=2,
-            content="약수와 배수의 관계로 올바른 것은?",
-            options=[
-                "12가 3의 배수이면, 3은 12의 약수이다",
-                "12가 3의 배수이면, 12는 3의 약수이다",
-                "약수는 항상 원래 수보다 크다",
-                "배수는 항상 원래 수보다 작다",
-            ],
-            correct="A",
-            explanation="12 = 3 × 4이므로 12는 3의 배수이고, 3은 12의 약수입니다. 약수와 배수는 서로 반대 관계입니다.",
-            points=10,
-        ),
-        mc(
-            id="e5-1-2-1-cc-002",
-            concept_id="e5-1-2-1",
-            category="concept",
-            part="calc",
-            difficulty=3,
-            content="어떤 자연수의 약수 중 반드시 포함되는 두 수는?",
-            options=["1과 자기 자신", "2와 자기 자신", "1과 2", "0과 자기 자신"],
-            correct="A",
-            explanation="모든 자연수는 1과 자기 자신으로 나누어떨어지므로, 1과 자기 자신은 반드시 약수에 포함됩니다.",
-            points=10,
-        ),
-        mc(
-            id="e5-1-2-2-cc-001",
-            concept_id="e5-1-2-2",
-            category="concept",
-            part="calc",
+            part="geo",
             difficulty=5,
-            content="최대공약수를 사용하는 실생활 상황은?",
-            options=[
-                "12개의 사과와 18개의 귤을 가능한 많은 봉지에 똑같이 나누기",
-                "사과와 귤의 총 개수 구하기",
-                "사과의 가격 계산하기",
-                "사과를 한 줄로 세우기",
-            ],
-            correct="A",
-            explanation="12와 18의 최대공약수는 6이므로 최대 6봉지로 나눌 수 있습니다. 각 봉지에 사과 2개, 귤 3개씩 담습니다.",
+            content="정오각형의 둘레가 35cm입니다. 한 변의 길이는?",
+            options=["5cm", "7cm", "30cm", "40cm"],
+            correct="B",
+            explanation="정오각형의 둘레 = 한 변 × 5. 35 ÷ 5 = 7cm입니다. 둘레에서 한 변을 구하는 역산 문제입니다.",
             points=10,
         ),
-        # 4단원: 약분과 통분 (3문제)
+
+        # e5-1-6-02 추가 문제
         mc(
-            id="e5-1-4-1-cc-001",
-            concept_id="e5-1-4-1",
+            id="e5-1-6-2-cc-004",
+            concept_id="e5-1-6-02",
             category="concept",
-            part="calc",
-            difficulty=2,
-            content="약분이란 무엇인가?",
-            options=[
-                "분자와 분모를 공약수로 나누어 간단한 분수로 만드는 것",
-                "분자와 분모에 같은 수를 곱하는 것",
-                "분수를 소수로 바꾸는 것",
-                "분모를 같게 만드는 것",
-            ],
-            correct="A",
-            explanation="약분은 분자와 분모를 공약수로 나누어 더 간단한 분수로 만드는 것입니다. 예: 6/8 → 3/4 (2로 약분)",
+            part="geo",
+            difficulty=6,
+            content="직사각형의 둘레가 30cm이고, 가로가 세로보다 5cm 더 큽니다. 가로는?",
+            options=["5cm", "10cm", "12.5cm", "15cm"],
+            correct="B",
+            explanation="둘레 = (가로+세로)×2 = 30. 가로+세로=15. 가로=세로+5이므로, (세로+5)+세로=15 → 2×세로=10 → 세로=5cm, 가로=10cm입니다.",
             points=10,
         ),
+
+        # e5-2-1-01 추가 문제
         mc(
-            id="e5-1-4-2-cc-001",
-            concept_id="e5-1-4-2",
-            category="concept",
-            part="calc",
-            difficulty=3,
-            content="통분을 하는 이유는?",
-            options=[
-                "분모가 다른 분수의 크기를 비교하거나 덧뺄셈을 하기 위해",
-                "분수를 더 크게 만들기 위해",
-                "약분을 하기 위해",
-                "분자를 같게 만들기 위해",
-            ],
-            correct="A",
-            explanation="분모가 다른 분수끼리는 직접 크기 비교나 덧셈/뺄셈이 어렵습니다. 통분으로 분모를 같게 맞추면 분자끼리 비교하거나 계산할 수 있습니다.",
-            points=10,
-        ),
-        mc(
-            id="e5-1-4-1-cc-002",
-            concept_id="e5-1-4-1",
+            id="e5-2-1-1-cc-003",
+            concept_id="e5-2-1-01",
             category="concept",
             part="calc",
             difficulty=4,
-            content="기약분수란 무엇인가?",
-            options=[
-                "분자와 분모의 공약수가 1뿐인 분수",
-                "분모가 1인 분수",
-                "분자가 1인 분수",
-                "분자가 분모보다 작은 분수",
-            ],
-            correct="A",
-            explanation="기약분수는 더 이상 약분할 수 없는 분수입니다. 분자와 분모의 최대공약수가 1이면 기약분수입니다. 예: 3/4는 기약분수, 6/8은 아닙니다.",
+            content="x 이상 y 이하를 기호로 나타내면?",
+            options=["x < y", "x ≤ y", "x ≥ y", "x > y"],
+            correct="B",
+            explanation="이상은 ≥, 이하는 ≤입니다. x 이상 y 이하는 x ≤ 범위 ≤ y를 의미합니다. (엄밀히는 x ≤ 값 ≤ y)",
             points=10,
         ),
-        # 5단원: 분수의 덧셈과 뺄셈 (3문제)
+
+        # e5-2-3-01 추가 문제
         mc(
-            id="e5-1-5-1-cc-001",
-            concept_id="e5-1-5-1",
+            id="e5-2-3-1-cc-002",
+            concept_id="e5-2-3-01",
             category="concept",
-            part="calc",
-            difficulty=3,
-            content="분모가 다른 분수를 더할 때 먼저 해야 할 것은?",
-            options=[
-                "통분 (분모를 같게 만들기)",
-                "약분",
-                "분자끼리 더하기",
-                "분모끼리 더하기",
-            ],
-            correct="A",
-            explanation="분모가 다른 분수를 더하려면 먼저 통분하여 분모를 같게 만든 후, 분자끼리 더합니다.",
-            points=10,
-        ),
-        mc(
-            id="e5-1-5-1-cc-002",
-            concept_id="e5-1-5-1",
-            category="concept",
-            part="calc",
-            difficulty=4,
-            content="1/2 + 1/3을 2/5로 계산하면 안 되는 이유는?",
-            options=[
-                "분모가 다른 분수는 통분 후 분자끼리 더해야 하기 때문",
-                "2/5가 너무 작기 때문",
-                "분자가 항상 1이어야 하므로",
-                "이유 없이 그냥 규칙이다",
-            ],
-            correct="A",
-            explanation="분수의 덧셈에서 분자끼리, 분모끼리 따로 더하면 안 됩니다. 1/2 = 3/6, 1/3 = 2/6으로 통분 후 3/6 + 2/6 = 5/6이 올바른 답입니다.",
-            points=10,
-        ),
-        mc(
-            id="e5-1-5-2-cc-001",
-            concept_id="e5-1-5-2",
-            category="concept",
-            part="calc",
+            part="geo",
             difficulty=5,
-            content="대분수 뺄셈에서 '받아내림'이 필요한 경우는?",
-            options=[
-                "빼는 분수의 분수 부분이 더 클 때",
-                "빼는 분수의 자연수 부분이 더 클 때",
-                "두 분수의 분모가 다를 때",
-                "항상 필요하다",
-            ],
+            content="합동인 두 삼각형은 항상 닮음입니까?",
+            options=["항상 닮음이다", "닮음이 아니다", "경우에 따라 다르다", "합동과 닮음은 무관하다"],
             correct="A",
-            explanation="예: 3(1/4) - 1(3/4)에서 1/4 < 3/4이므로, 자연수 부분에서 1을 빌려 3(1/4) = 2(5/4)로 바꾼 후 계산합니다.",
+            explanation="합동은 모양과 크기가 모두 같은 것이고, 닮음은 모양이 같은 것입니다. 따라서 합동 ⊂ 닮음 관계로, 합동이면 항상 닮음입니다. (초등 수준에서는 직관적 이해)",
             points=10,
         ),
-        # 8단원: 분수의 곱셈 (3문제)
+
+        # e5-2-5-01 추가 문제
         mc(
-            id="e5-2-2-2-cc-001",
-            concept_id="e5-2-2-2",
+            id="e5-2-5-1-cc-003",
+            concept_id="e5-2-5-01",
             category="concept",
-            part="calc",
-            difficulty=3,
-            content="분수의 곱셈에서 통분이 필요한가?",
-            options=[
-                "필요 없다. 분자끼리, 분모끼리 곱한다",
-                "반드시 통분 후 곱한다",
-                "분모만 통분한다",
-                "분자만 통분한다",
-            ],
-            correct="A",
-            explanation="분수의 곱셈은 통분할 필요 없이 분자끼리 곱하고 분모끼리 곱합니다. 예: 2/3 × 3/5 = 6/15 = 2/5. 덧셈/뺄셈과 다릅니다!",
-            points=10,
-        ),
-        mc(
-            id="e5-2-2-2-cc-002",
-            concept_id="e5-2-2-2",
-            category="concept",
-            part="calc",
+            part="geo",
             difficulty=4,
-            content="대분수 곱셈을 할 때 가장 먼저 해야 할 것은?",
-            options=[
-                "대분수를 가분수로 바꾼다",
-                "자연수 부분끼리 곱한다",
-                "분수 부분끼리 곱한다",
-                "통분한다",
-            ],
-            correct="A",
-            explanation="대분수 곱셈은 반드시 가분수로 바꾼 후 계산합니다. 예: 1(1/2) × 2 = 3/2 × 2 = 3. 자연수와 분수를 따로 곱하면 틀립니다!",
+            content="직육면체의 모서리는 몇 개입니까?",
+            options=["6개", "8개", "12개", "24개"],
+            correct="C",
+            explanation="직육면체의 모서리는 12개입니다. (가로 4개, 세로 4개, 높이 4개). 면 6개, 꼭짓점 8개, 모서리 12개를 기억하세요!",
             points=10,
         ),
+
+        # e5-2-6-04 추가 문제
         mc(
-            id="e5-2-2-1-cc-001",
-            concept_id="e5-2-2-1",
+            id="e5-2-6-4-cc-002",
+            concept_id="e5-2-6-04",
             category="concept",
-            part="calc",
-            difficulty=5,
-            content="진분수(1보다 작은 분수)에 자연수를 곱하면 결과는?",
-            options=[
-                "원래 자연수보다 작아진다",
-                "원래 자연수보다 커진다",
-                "항상 1이 된다",
-                "항상 정수가 된다",
-            ],
-            correct="A",
-            explanation="진분수(0 < 분수 < 1)를 곱하는 것은 '일부분'을 구하는 것이므로 결과는 원래 수보다 작습니다. 예: 1/2 × 6 = 3 < 6",
-            points=10,
-        ),
-        # 10단원: 소수의 곱셈 (3문제)
-        mc(
-            id="e5-2-4-1-cc-001",
-            concept_id="e5-2-4-1",
-            category="concept",
-            part="calc",
-            difficulty=3,
-            content="소수의 곱셈에서 소수점 위치를 정하는 방법은?",
-            options=[
-                "두 수의 소수점 아래 자릿수를 합한 만큼 소수점을 찍는다",
-                "가장 큰 수의 소수점 위치를 따른다",
-                "항상 소수점 첫째 자리에 찍는다",
-                "소수점은 생략한다",
-            ],
-            correct="A",
-            explanation="두 소수의 소수점 아래 자릿수의 합만큼 결과에 소수점을 찍습니다. 예: 1.2(1자리) × 0.3(1자리) = 0.36(2자리)",
-            points=10,
-        ),
-        mc(
-            id="e5-2-4-2-cc-001",
-            concept_id="e5-2-4-2",
-            category="concept",
-            part="calc",
+            part="data",
             difficulty=4,
-            content="0.1 × 0.1의 결과가 0.01인 이유는?",
-            options=[
-                "소수점 아래가 각각 1자리이므로 합해서 2자리가 되기 때문",
-                "0.1이 작은 수이므로",
-                "1 × 1 = 1에서 0을 빼므로",
-                "특별한 이유 없이 규칙이다",
-            ],
-            correct="A",
-            explanation="0.1 × 0.1: 자연수로 바꾸면 1 × 1 = 1. 소수점 아래 자릿수가 1 + 1 = 2자리이므로 0.01입니다. 1/10 × 1/10 = 1/100 = 0.01로도 확인 가능합니다.",
-            points=10,
-        ),
-        mc(
-            id="e5-2-4-1-cc-002",
-            concept_id="e5-2-4-1",
-            category="concept",
-            part="calc",
-            difficulty=5,
-            content="소수 곱셈의 결과를 어림으로 확인하는 것이 중요한 이유는?",
-            options=[
-                "소수점 위치 오류를 빠르게 발견할 수 있기 때문",
-                "정확한 답을 구하기 위해",
-                "어림이 곱셈보다 정확하므로",
-                "계산기가 필요하므로",
-            ],
-            correct="A",
-            explanation="소수 곱셈에서 가장 흔한 실수는 소수점 위치를 잘못 찍는 것입니다. 어림으로 대략적인 답을 미리 예측하면 큰 오류를 빠르게 발견할 수 있습니다.",
+            content="내일 해가 동쪽에서 뜰 가능성을 말로 표현하면?",
+            options=["불가능하다", "~아닐 것 같다", "반반이다", "확실하다"],
+            correct="D",
+            explanation="해는 항상 동쪽에서 뜨므로 '확실하다'입니다. 가능성 1(100%)인 사건입니다.",
             points=10,
         ),
     ]
-
-    tests = [
-        test(
-            id="test-e5-concept-algebra-geo",
-            title="초5 개념 테스트 (대응·도형)",
-            description="규칙과 대응, 다각형 넓이, 합동과 대칭, 직육면체 (3,6,9,11단원)",
-            grade="elementary_5",
-            concept_ids=[
-                "e5-1-3-1", "e5-1-3-2",
-                "e5-1-6-1", "e5-1-6-2",
-                "e5-2-3-1", "e5-2-3-2",
-                "e5-2-5-1", "e5-2-5-2",
-            ],
-            question_ids=[
-                "e5-1-3-1-cc-001", "e5-1-3-1-cc-002", "e5-1-3-2-cc-001", 
-                "e5-1-6-1-cc-001", "e5-1-6-1-cc-002", "e5-1-6-2-cc-001", 
-                "e5-2-1-1-cc-001", "e5-2-1-2-cc-001", "e5-2-1-2-cc-002", 
-                "e5-2-3-1-cc-001", "e5-2-3-2-cc-001", "e5-2-3-2-cc-002", 
-                "e5-2-5-1-cc-001", "e5-2-5-1-cc-002", "e5-2-5-2-cc-001",
-            ],
-            time_limit_minutes=20,
-            use_question_pool=True,
-            questions_per_attempt=12,
-        ),
-        test(
-            id="test-e5-concept-data",
-            title="초5 개념 테스트 (수·자료)",
-            description="수의 범위와 어림하기, 평균과 가능성 (7,12단원)",
-            grade="elementary_5",
-            concept_ids=[
-                "e5-2-1-1", "e5-2-1-2",
-                "e5-2-6-1", "e5-2-6-2",
-            ],
-            question_ids=[
-                "e5-2-1-1-cc-001", "e5-2-1-2-cc-001", "e5-2-1-2-cc-002", 
-                "e5-2-6-1-cc-001", "e5-2-6-1-cc-002", "e5-2-6-2-cc-001",
-            ],
-            time_limit_minutes=15,
-            use_question_pool=True,
-            questions_per_attempt=6,
-        ),
-        test(
-            id="test-e5-ch1-concept",
-            title="초5 연산 개념 테스트",
-            description="혼합 계산, 약수와 배수, 약분과 통분, 분수 덧뺄셈, 분수 곱셈, 소수 곱셈의 개념 이해",
-            grade="elementary_5",
-            concept_ids=[
-                "e5-1-1-1", "e5-1-1-2",
-                "e5-1-2-1", "e5-1-2-2",
-                "e5-1-4-1", "e5-1-4-2",
-                "e5-1-5-1", "e5-1-5-2",
-                "e5-2-2-1", "e5-2-2-2",
-                "e5-2-4-1", "e5-2-4-2",
-            ],
-            question_ids=[
-                "e5-1-1-1-cc-003", "e5-1-1-2-cc-001", "e5-1-1-1-cc-004", 
-                "e5-1-2-1-cc-001", "e5-1-2-1-cc-002", "e5-1-2-2-cc-001", 
-                "e5-1-4-1-cc-001", "e5-1-4-2-cc-001", "e5-1-4-1-cc-002", 
-                "e5-1-5-1-cc-001", "e5-1-5-1-cc-002", "e5-1-5-2-cc-001", 
-                "e5-2-2-2-cc-001", "e5-2-2-2-cc-002", "e5-2-2-1-cc-001", 
-                "e5-2-4-1-cc-001", "e5-2-4-2-cc-001", "e5-2-4-1-cc-002",
-            ],
-            time_limit_minutes=20,
-            use_question_pool=True,
-            questions_per_attempt=12,
-        ),
-    ]
-
-    return {"concepts": concepts, "questions": questions, "tests": tests}

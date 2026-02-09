@@ -179,7 +179,7 @@ model: sonnet
 | 파일 | 내용 | 용도 |
 |------|------|------|
 | `docs/work-plans/elementary-math-curriculum-guide.md` | 초등 4~6학년 개념·공식·문제유형·오답유도 | 초등 문제 출제 기준 |
-| `data/middle_school_math_concepts.md` | 중학교 1~3학년 개념·공식·문제유형 | 중등 문제 출제 기준 |
+| `docs/guides/middle_school_math_concepts.md` | 중학교 1~3학년 개념·공식·문제유형 | 중등 문제 출제 기준 |
 
 ### 문제 설계 참조
 | 파일 | 내용 | 용도 |

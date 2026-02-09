@@ -1,8 +1,8 @@
 """교육과정 기반 개념 시드 데이터.
 
 초등 4~6학년: docs/work-plans/elementary-math-curriculum-guide.md 기준
-중학교 1~3학년: data/middle_school_math_concepts.md 기준
-고등학교 1학년(공통수학1): data/high1.txt + reports/math-concepts-full.md 기준
+중학교 1~3학년: docs/guides/middle_school_math_concepts.md 기준
+고등학교 1학년(공통수학1): docs/guides/공통수학1_개념문제_가이드.md + reports/math-concepts-full.md 기준
 
 각 개념은 고유 ID, 학년, 트랙(연산/개념), 파트(6대 영역), 설명, 선수관계를 포함합니다.
 """
