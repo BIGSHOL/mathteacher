@@ -19,7 +19,7 @@ from app.schemas import (
     QuestionWithAnswer,
     UserResponse,
 )
-from app.schemas.common import Grade, ProblemPart, QuestionCategory, QuestionType
+from app.schemas.common import Grade, ProblemPart, QuestionType
 from app.api.v1.auth import get_current_user, require_role
 
 router = APIRouter(prefix="/questions", tags=["questions"])
@@ -194,7 +194,7 @@ async def create_questions_batch(
 async def list_questions(
     concept_id: str | None = Query(None, description="개념 ID로 필터링"),
     grade: Grade | None = Query(None, description="학년으로 필터링"),
-    category: QuestionCategory | None = Query(None),
+    category: str | None = Query(None),
     part: ProblemPart | None = Query(None),
     difficulty: int | None = Query(None, ge=1, le=10),
     question_type: QuestionType | None = Query(None, description="문제 유형 필터"),
@@ -549,7 +549,7 @@ def _to_question_with_answer(
         concept_name=q.concept.name if q.concept else "",
         grade=q.concept.grade if q.concept and q.concept.grade else None,
         chapter_name=(concept_chapter_map or {}).get(q.concept_id),
-        category=q.category,
+        category=q.category.lower() if q.category else q.category,
         part=q.part,
         question_type=q.question_type,
         difficulty=q.difficulty,
