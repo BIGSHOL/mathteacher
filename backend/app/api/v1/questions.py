@@ -1,7 +1,9 @@
 """문제 생성/조회 API 엔드포인트."""
 
+import traceback
+
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import func as sa_func, select
+from sqlalchemy import func as sa_func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import contains_eager, selectinload
 
@@ -256,6 +258,83 @@ async def list_questions(
     )
 
 
+@router.get("/debug-list", response_model=None)
+async def debug_list_questions(
+    db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(require_role("teacher", "admin", "master")),
+):
+    """디버그: 문제 목록 조회 시 실제 에러 확인."""
+    try:
+        # Step 1: 기본 쿼리
+        stmt = select(Question).where(Question.is_active.is_(True))
+        stmt = stmt.options(selectinload(Question.concept))
+
+        # Step 2: count
+        count_stmt = select(sa_func.count()).select_from(stmt.subquery())
+        total = await db.scalar(count_stmt)
+
+        # Step 3: fetch
+        stmt = stmt.order_by(Question.created_at.desc()).offset(0).limit(5)
+        questions = (await db.scalars(stmt)).unique().all()
+
+        # Step 4: raw data check
+        raw_data = []
+        for q in questions:
+            raw_data.append({
+                "id": q.id,
+                "concept_id": q.concept_id,
+                "category": repr(q.category),
+                "part": repr(q.part),
+                "question_type": repr(q.question_type),
+                "difficulty": q.difficulty,
+                "difficulty_type": type(q.difficulty).__name__,
+                "concept_grade": repr(q.concept.grade) if q.concept else None,
+                "concept_grade_type": type(q.concept.grade).__name__ if q.concept and q.concept.grade else None,
+                "options_type": type(q.options).__name__ if q.options else None,
+                "options_sample": str(q.options[:1]) if q.options else None,
+            })
+
+        # Step 5: serialize
+        serialized = []
+        errors = []
+        q_concept_ids = {q.concept_id for q in questions}
+        q_grades = {q.concept.grade for q in questions if q.concept and q.concept.grade}
+        concept_chapter_map = await _build_concept_chapter_map(db, q_concept_ids, q_grades)
+
+        for q in questions:
+            try:
+                result = _to_question_with_answer(q, concept_chapter_map)
+                serialized.append(result.id)
+            except Exception as e:
+                errors.append({"id": q.id, "error": str(e), "type": type(e).__name__, "tb": traceback.format_exc()})
+
+        # Step 6: Check DB enum types
+        enum_check = {}
+        try:
+            pg_enums = (await db.execute(text(
+                "SELECT t.typname, e.enumlabel FROM pg_type t JOIN pg_enum e ON t.oid = e.enumtypid ORDER BY t.typname, e.enumsortorder"
+            ))).all()
+            for row in pg_enums:
+                name = row[0]
+                if name not in enum_check:
+                    enum_check[name] = []
+                enum_check[name].append(row[1])
+        except Exception as e:
+            enum_check = {"error": str(e)}
+
+        return {
+            "total": total,
+            "fetched": len(questions),
+            "raw_data": raw_data,
+            "serialized_ok": serialized,
+            "serialization_errors": errors,
+            "pg_enums": enum_check,
+            "q_grades": [repr(g) for g in q_grades],
+        }
+    except Exception as e:
+        return {"error": str(e), "type": type(e).__name__, "traceback": traceback.format_exc()}
+
+
 @router.get("/filter-options", response_model=ApiResponse[dict])
 async def get_filter_options(
     grade: Grade | None = Query(None),
@@ -445,6 +524,20 @@ async def _build_concept_chapter_map(
     return result
 
 
+def _normalize_options(options: list[dict] | None) -> list[dict] | None:
+    """options에 id 필드가 누락된 경우 자동 보정."""
+    if not options:
+        return options
+    result = []
+    for idx, opt in enumerate(options):
+        if not isinstance(opt, dict):
+            continue
+        if "id" not in opt:
+            opt = {"id": str(idx + 1), **opt}
+        result.append(opt)
+    return result
+
+
 def _to_question_with_answer(
     q: Question,
     concept_chapter_map: dict[str, str] | None = None,
@@ -461,7 +554,7 @@ def _to_question_with_answer(
         question_type=q.question_type,
         difficulty=q.difficulty,
         content=q.content,
-        options=q.options,
+        options=_normalize_options(q.options),
         correct_answer=q.correct_answer,
         explanation=q.explanation,
         points=q.points,
