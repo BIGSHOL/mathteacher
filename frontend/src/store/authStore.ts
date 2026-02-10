@@ -183,11 +183,8 @@ export const useAuthStore = create<AuthState>()(
         removeItem: (name) => sessionStorage.removeItem(name),
       },
       // accessToken은 메모리에만 저장 (만료된 토큰이 재사용되는 것 방지)
-      partialize: (state) => ({
-        user: state.user,
-        isAuthenticated: state.isAuthenticated,
-        // accessToken 제외 - 페이지 새로고침 시 refresh 엔드포인트로 갱신
-      }),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }) as any,
     }
   )
 )
