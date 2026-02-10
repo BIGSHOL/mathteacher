@@ -381,14 +381,10 @@ async def update_chapter_data(
     loop = asyncio.get_event_loop()
     await loop.run_in_executor(None, main_module.update_chapter_concept_ids)
 
-    # 마이그레이션도 함께 실행 (구 concept ID 문제 이전)
-    await loop.run_in_executor(None, main_module.migrate_concept_subdivision)
-    await loop.run_in_executor(None, main_module.migrate_concept_sequential_unlock)
-
     return ApiResponse(
         success=True,
-        data={"message": "전체 학년 챕터 업데이트 + 마이그레이션 완료"},
-        message="전체 학년 챕터 concept_ids 업데이트 및 마이그레이션 완료",
+        data={"message": "전체 학년 챕터 업데이트 완료"},
+        message="전체 학년 챕터 concept_ids 업데이트 완료",
     )
 
 

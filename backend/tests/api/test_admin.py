@@ -721,18 +721,16 @@ class TestUpdateChapters:
         access_token = login_response.json()["data"]["access_token"]
 
         with patch("app.main.update_chapter_concept_ids"):
-            with patch("app.main.migrate_concept_subdivision"):
-                with patch("app.main.migrate_concept_sequential_unlock"):
-                    response = await client.post(
-                        "/api/v1/admin/update-chapters",
-                        headers={"Authorization": f"Bearer {access_token}"},
-                    )
+            response = await client.post(
+                "/api/v1/admin/update-chapters",
+                headers={"Authorization": f"Bearer {access_token}"},
+            )
 
-                    assert response.status_code == 200
-                    data = response.json()
-                    assert data["success"] is True
-                    assert "챕터" in data["message"]
-                    assert "업데이트" in data["message"]
+            assert response.status_code == 200
+            data = response.json()
+            assert data["success"] is True
+            assert "챕터" in data["message"]
+            assert "업데이트" in data["message"]
 
     async def test_update_chapters_as_teacher_forbidden(self, client: AsyncClient) -> None:
         """강사는 챕터 업데이트 권한 없음."""
