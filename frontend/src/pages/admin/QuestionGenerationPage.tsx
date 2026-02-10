@@ -44,6 +44,17 @@ const GRADE_OPTIONS: { value: Grade; label: string }[] = [
   { value: 'high_1', label: '고1' },
 ]
 
+// 학기별 그룹 표시 대상 학년
+const HAS_SEMESTER_GROUPS = new Set([
+  'elementary_3', 'elementary_4', 'elementary_5', 'elementary_6',
+  'middle_1', 'middle_2', 'middle_3', 'high_1',
+])
+
+/** 단원 이름에서 선행 "N. " 접두사 제거 */
+function stripChapterNum(name: string): string {
+  return name.replace(/^\d+\.\s*/, '')
+}
+
 /** 레가시 템플릿 ID 매핑 (DB ID -> Template ID) */
 const LEGACY_ID_MAP: Record<string, string[]> = {
   'concept-e3-add-sub-01': ['E3-NUM-01'], // 덧셈
@@ -83,6 +94,8 @@ export function QuestionGenerationPage() {
   const [grade, setGrade] = useState<Grade | ''>('')
   const [chapters, setChapters] = useState<ChapterItem[]>([])
   const [concepts, setConcepts] = useState<ConceptItem[]>([])
+  const [allConcepts, setAllConcepts] = useState<ConceptItem[]>([])
+  const [chapterFilter, setChapterFilter] = useState('')
   const [conceptId, setConceptId] = useState('')
   const [questionType, setQuestionType] = useState('multiple_choice')
   const [conceptMethod, setConceptMethod] = useState('standard') // 신규 (Phase 5)
@@ -104,6 +117,7 @@ export function QuestionGenerationPage() {
   // 학년 변경 시 단원+개념 한 번에 로드
   useEffect(() => {
     setConceptId('')
+    setChapterFilter('')
     if (grade) {
       const controller = new AbortController()
       setConceptsLoading(true)
@@ -115,11 +129,13 @@ export function QuestionGenerationPage() {
         .then((res) => {
           setChapters(res.data.data.chapters)
           setConcepts(res.data.data.concepts)
+          setAllConcepts(res.data.data.concepts)
         })
         .catch(() => {
           if (!controller.signal.aborted) {
             setChapters([])
             setConcepts([])
+            setAllConcepts([])
           }
         })
         .finally(() => { if (!controller.signal.aborted) setConceptsLoading(false) })
@@ -127,13 +143,73 @@ export function QuestionGenerationPage() {
     } else {
       setChapters([])
       setConcepts([])
+      setAllConcepts([])
       setConceptsLoading(false)
     }
   }, [grade])
 
+  // 단원 변경 시 개념 필터링 (로컬)
+  useEffect(() => {
+    setConceptId('')
+    if (chapterFilter) {
+      const ch = chapters.find((c) => c.id === chapterFilter)
+      if (ch && ch.concept_ids.length > 0) {
+        const ids = new Set(ch.concept_ids)
+        setConcepts(allConcepts.filter((c) => ids.has(c.id)))
+      } else {
+        setConcepts([])
+      }
+    } else {
+      setConcepts(allConcepts)
+    }
+  }, [chapterFilter, chapters, allConcepts])
+
+  // 학기별 단원 그룹 (optgroup용)
+  const chapterGroups = useMemo(() => {
+    if (chapters.length === 0) return undefined
+    if (!grade) return undefined
+    if (!HAS_SEMESTER_GROUPS.has(grade)) return undefined
+
+    const s1 = chapters.filter((ch) => ch.semester === 1)
+    const s2 = chapters.filter((ch) => ch.semester === 2)
+
+    const groups: { label: string; options: { value: string; label: string }[] }[] = []
+    const isHigh = grade?.startsWith('high_')
+    if (s1.length > 0) {
+      groups.push({
+        label: isHigh ? '공통수학1' : '1학기',
+        options: s1.map((ch) => ({
+          value: ch.id,
+          label: `${ch.chapter_number}. ${stripChapterNum(ch.name)}`
+        }))
+      })
+    }
+    if (s2.length > 0) {
+      groups.push({
+        label: isHigh ? '공통수학2' : '2학기',
+        options: s2.map((ch) => ({
+          value: ch.id,
+          label: `${ch.chapter_number}. ${stripChapterNum(ch.name)}`
+        }))
+      })
+    }
+    return groups.length > 0 ? groups : undefined
+  }, [chapters, grade])
+
+  // flat용 단원 옵션 (그룹 미적용 시)
+  const chapterOptionsFlat = useMemo(() => {
+    if (chapterGroups) return undefined
+    return chapters.map((ch) => ({ value: ch.id, label: `${ch.chapter_number}. ${stripChapterNum(ch.name)}` }))
+  }, [chapterGroups, chapters])
+
   // 학기별 개념 그룹 (초~중3: 1학기/2학기, 고등: 전체)
   const semesterGroups = useMemo(() => {
     if (concepts.length === 0) return []
+
+    // 단원 선택 시: flat 리스트 (이름만 표시)
+    if (chapterFilter) {
+      return [{ label: '전체', items: concepts.map((c) => ({ chNum: 0, chName: '', semester: 0, concept: c })) }]
+    }
 
     const conceptMap = new Map(concepts.map((c) => [c.id, c]))
     const useSemester = grade && !grade.startsWith('high_')
@@ -180,7 +256,7 @@ export function QuestionGenerationPage() {
       return groups
     }
     return [{ label: '전체', items: entries }]
-  }, [chapters, concepts, grade])
+  }, [chapters, concepts, grade, chapterFilter])
 
   // 선택된 개념이 연산인지 확인
   const selectedConceptCategory = useMemo(
@@ -427,8 +503,8 @@ export function QuestionGenerationPage() {
               </div>
             </div>
 
-            {/* 학년 + 개념 */}
-            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+            {/* 학년 + 단원 + 개념 */}
+            <div className="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
                   학년
@@ -448,6 +524,32 @@ export function QuestionGenerationPage() {
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-gray-700">
+                  단원
+                </label>
+                <select
+                  value={chapterFilter}
+                  onChange={(e) => setChapterFilter(e.target.value)}
+                  className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-indigo-500"
+                  disabled={!grade || conceptsLoading}
+                >
+                  <option value="">
+                    {conceptsLoading ? '불러오는 중...' : grade ? '전체' : '학년을 먼저 선택'}
+                  </option>
+                  {chapterGroups
+                    ? chapterGroups.map((g) => (
+                        <optgroup key={g.label} label={g.label}>
+                          {g.options.map((o) => (
+                            <option key={o.value} value={o.value}>{o.label}</option>
+                          ))}
+                        </optgroup>
+                      ))
+                    : chapterOptionsFlat?.map((o) => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                      ))}
+                </select>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
                   개념
                 </label>
                 <select
@@ -461,14 +563,13 @@ export function QuestionGenerationPage() {
                   </option>
                   {semesterGroups.map((g) => (
                     <optgroup key={g.label} label={g.label}>
-                      {g.items.map((e) => {
-                        const displayNum = e.chNum <= 6 ? e.chNum : e.chNum < 999 ? e.chNum - 6 : 0
-                        return (
-                          <option key={e.concept.id} value={e.concept.id}>
-                            {displayNum > 0 ? `${displayNum}. ${e.concept.name}` : e.concept.name}
-                          </option>
-                        )
-                      })}
+                      {g.items.map((e) => (
+                        <option key={e.concept.id} value={e.concept.id}>
+                          {chapterFilter
+                            ? e.concept.name
+                            : e.chNum > 0 && e.chNum < 999 ? `${e.chNum}. ${e.concept.name}` : e.concept.name}
+                        </option>
+                      ))}
                     </optgroup>
                   ))}
                 </select>
