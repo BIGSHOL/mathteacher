@@ -1,5 +1,6 @@
 // 인증 보호 라우트 컴포넌트
 
+import { useEffect, useState } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '../../store/authStore'
 import type { UserRole } from '../../types'
@@ -10,8 +11,25 @@ interface ProtectedRouteProps {
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, isAuthenticated } = useAuthStore()
+  const { user, isAuthenticated, accessToken, refreshToken } = useAuthStore()
   const location = useLocation()
+  const [isRestoring, setIsRestoring] = useState(!accessToken && isAuthenticated)
+
+  // 세션 복원: isAuthenticated=true이지만 accessToken이 없는 경우 (페이지 새로고침)
+  useEffect(() => {
+    if (!accessToken && isAuthenticated) {
+      refreshToken().finally(() => setIsRestoring(false))
+    }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // 토큰 복원 중 로딩 표시
+  if (isRestoring) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary-500 border-t-transparent" />
+      </div>
+    )
+  }
 
   // 미인증 사용자는 로그인 페이지로
   if (!isAuthenticated || !user) {

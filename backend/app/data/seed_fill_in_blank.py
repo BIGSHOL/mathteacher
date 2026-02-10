@@ -1,6 +1,6 @@
 """빈칸 채우기 샘플 데이터."""
 
-from app.schemas.common import QuestionType, ProblemPart, Grade
+from app.schemas.common import QuestionType, ProblemPart
 
 # 빈칸 채우기 샘플 문제
 FILL_IN_BLANK_SAMPLES = [
@@ -10,7 +10,7 @@ FILL_IN_BLANK_SAMPLES = [
         "category": "concept",
         "part": ProblemPart.GEO,
         "difficulty": 3,
-        "grade": Grade.MIDDLE_1,
+        "grade": "middle_1",
         "blank_config": {
             "blank_positions": [
                 {"index": 0, "word": "세", "importance": 3},
@@ -36,7 +36,7 @@ FILL_IN_BLANK_SAMPLES = [
         "category": "concept",
         "part": ProblemPart.GEO,
         "difficulty": 4,
-        "grade": Grade.MIDDLE_1,
+        "grade": "middle_1",
         "blank_config": {
             "blank_positions": [
                 {"index": 0, "word": "평행사변형에서", "importance": 3},
@@ -63,7 +63,7 @@ FILL_IN_BLANK_SAMPLES = [
         "category": "concept",
         "part": ProblemPart.ALGEBRA,
         "difficulty": 3,
-        "grade": Grade.MIDDLE_1,
+        "grade": "middle_1",
         "blank_config": {
             "blank_positions": [
                 {"index": 0, "word": "일차방정식은", "importance": 3},
@@ -88,7 +88,7 @@ FILL_IN_BLANK_SAMPLES = [
         "category": "concept",
         "part": ProblemPart.ALGEBRA,
         "difficulty": 2,
-        "grade": Grade.MIDDLE_1,
+        "grade": "middle_1",
         "blank_config": {
             "blank_positions": [
                 {"index": 0, "word": "등식의", "importance": 3},
@@ -116,7 +116,7 @@ FILL_IN_BLANK_SAMPLES = [
         "category": "concept",
         "part": ProblemPart.FUNC,
         "difficulty": 4,
-        "grade": Grade.MIDDLE_1,
+        "grade": "middle_1",
         "blank_config": {
             "blank_positions": [
                 {"index": 0, "word": "정비례", "importance": 3},

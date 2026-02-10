@@ -17,6 +17,7 @@ from app.schemas import ApiResponse, QuestionResponse, StartTestResponse, TestWi
 from app.schemas.common import Grade
 from app.api.v1.auth import get_current_user
 from app.schemas import UserResponse
+from app.services.template_generator import TemplateGenerator
 
 router = APIRouter(prefix="/practice", tags=["practice"])
 
@@ -70,6 +71,23 @@ async def start_practice(
         )
     )
     all_questions = list((await db.scalars(q_stmt)).all())
+
+    # 2-1. 시드 문제가 부족하면 템플릿으로 보충
+    if len(all_questions) < request.count and request.category == "computation":
+        tpl_gen = TemplateGenerator()
+        existing_ids = {q.id for q in all_questions}
+        for cid in concept_ids:
+            if not tpl_gen.has_templates(cid):
+                continue
+            for _ in range(3):  # 개념당 최대 3개 생성
+                q_dict = tpl_gen.generate(cid, exclude_ids=existing_ids)
+                if q_dict and q_dict["id"] not in existing_ids:
+                    new_q = Question(**{k: v for k, v in q_dict.items() if k != "is_active"})
+                    db.add(new_q)
+                    existing_ids.add(q_dict["id"])
+        await db.flush()
+        # 재조회
+        all_questions = list((await db.scalars(q_stmt)).all())
 
     if not all_questions:
         raise HTTPException(
