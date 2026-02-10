@@ -263,7 +263,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-1-4-06-fb-001",
             concept_id="e6-1-4-06",
-            category="word",
+            category="fill_in_blank",
             part="algebra",
             difficulty=9,
             content="정가 10000원인 물건을 20% 할인하면 __원입니다.",
@@ -332,7 +332,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-1-5-06-fb-001",
             concept_id="e6-1-5-06",
-            category="word",
+            category="fill_in_blank",
             part="data",
             difficulty=8,
             content="원그래프에서 A 항목이 30%, B 항목이 50%일 때, 나머지 항목은 __%입니다.",
@@ -343,7 +343,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-1-5-07-fb-001",
             concept_id="e6-1-5-07",
-            category="word",
+            category="fill_in_blank",
             part="data",
             difficulty=9,
             content="띠그래프에서 길이가 12cm이고 A 항목이 4cm일 때, A의 백분율은 약 __%입니다. (소수 첫째 자리에서 반올림)",
@@ -459,7 +459,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-2-1-06-fb-001",
             concept_id="e6-2-1-06",
-            category="word",
+            category="fill_in_blank",
             part="calc",
             difficulty=9,
             content="끈 3/4 m를 1/8 m씩 자르면 __도막이 됩니다.",
@@ -528,7 +528,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-2-2-06-fb-001",
             concept_id="e6-2-2-06",
-            category="word",
+            category="fill_in_blank",
             part="calc",
             difficulty=9,
             content="2.7 m의 철사를 0.3 m씩 자르면 __도막이 됩니다.",
@@ -597,7 +597,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-2-3-06-fb-001",
             concept_id="e6-2-3-06",
-            category="word",
+            category="fill_in_blank",
             part="geo",
             difficulty=9,
             content="앞에서 본 모양이 가로 3칸, 세로 2칸이고 모든 칸이 채워져 있을 때, 쌓기나무의 최소 개수는 __개입니다.",
@@ -666,7 +666,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-2-4-06-fb-001",
             concept_id="e6-2-4-06",
-            category="word",
+            category="fill_in_blank",
             part="algebra",
             difficulty=10,
             content="형과 동생이 56000원을 3 : 4로 나누면 동생은 __원을 받습니다.",
@@ -735,7 +735,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-2-5-06-fb-001",
             concept_id="e6-2-5-06",
-            category="word",
+            category="fill_in_blank",
             part="geo",
             difficulty=9,
             content="반지름이 10cm인 원 안에 반지름이 5cm인 원이 있을 때, 두 원 사이의 넓이는 __cm²입니다. (π = 3으로 계산)",
@@ -782,7 +782,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e6-2-6-04-fb-001",
             concept_id="e6-2-6-04",
-            category="word",
+            category="fill_in_blank",
             part="geo",
             difficulty=9,
             content="직각삼각형을 직각을 낀 한 변을 축으로 회전시키면 __이 만들어집니다.",

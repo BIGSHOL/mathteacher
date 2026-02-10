@@ -929,12 +929,12 @@ async def test_select_questions_filters_by_difficulty(db_session):
     )
     db_session.add(chapter_progress)
 
-    # 숙련도 50% (평균 난이도 5, 범위 4~6)
+    # 숙련도 70% (약점 아님 ≥60%, 평균 난이도 7, 범위 6~8)
     mastery = ConceptMastery(
         student_id="student-daily-012",
         concept_id="concept-daily-012",
         is_unlocked=True,
-        mastery_percentage=50,
+        mastery_percentage=70,
     )
     db_session.add(mastery)
 
@@ -962,12 +962,12 @@ async def test_select_questions_filters_by_difficulty(db_session):
         "student-daily-012", "concept", "middle_1", count=5
     )
 
-    # Then: 난이도 4~6 범위의 문제만 선택됨
+    # Then: 난이도 6~8 범위의 문제만 선택됨 (70% → center 7, range 6~8)
     stmt = select(Question).where(Question.id.in_(selected_ids))
     selected_questions = list((await db_session.scalars(stmt)).all())
 
     for q in selected_questions:
-        assert 4 <= q.difficulty <= 6
+        assert 6 <= q.difficulty <= 8
 
 
 @pytest.mark.asyncio
@@ -1019,11 +1019,11 @@ async def test_select_questions_excludes_recently_used(db_session):
         student_id="student-daily-013",
         concept_id="concept-daily-013",
         is_unlocked=True,
-        mastery_percentage=50,
+        mastery_percentage=70,
     )
     db_session.add(mastery)
 
-    # 난이도 5 문제 10개 생성
+    # 난이도 7 문제 10개 생성 (mastery 70% → 범위 6~8)
     for i in range(1, 11):
         question = Question(
             id=f"q-exclude-{i}",
@@ -1031,7 +1031,7 @@ async def test_select_questions_excludes_recently_used(db_session):
             category=QuestionCategory.CONCEPT,
             part=ProblemPart.CALC,
             question_type=QuestionType.MULTIPLE_CHOICE,
-            difficulty=5,
+            difficulty=7,
             content=f"문제 {i}",
             options=[{"id": "1", "label": "A", "text": "답"}],
             correct_answer="A",

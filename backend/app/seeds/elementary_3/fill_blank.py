@@ -393,7 +393,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-1-5-06-fb-001",
             concept_id="e3-1-5-06",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=6,
             content="영화가 오후 2시 45분에 시작해서 1시간 50분 동안 상영됩니다. 끝나는 시각은 오후 ____ 시 ____ 분입니다.",
@@ -437,7 +437,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-1-6-03-fb-001",
             concept_id="e3-1-6-03",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=5,
             content="전체를 7등분하여 3조각을 선택하면 ____입니다. (분수로 쓰세요)",
@@ -776,7 +776,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-2-3-04-fb-001",
             concept_id="e3-2-3-04",
-            category="application",
+            category="fill_in_blank",
             part="geo",
             difficulty=5,
             content="반지름이 4cm인 원을 그리려면 컴퍼스의 침과 연필 사이를 ____ cm로 벌려야 합니다.",
@@ -806,7 +806,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-2-4-02-fb-001",
             concept_id="e3-2-4-02",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=5,
             content="사탕 20개의 3/5는 ____ 개입니다.",
@@ -820,7 +820,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-2-4-03-fb-001",
             concept_id="e3-2-4-03",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=5,
             content="끈 12m의 2/3는 ____ m입니다.",
@@ -903,7 +903,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-2-5-03-fb-001",
             concept_id="e3-2-5-03",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=4,
             content="생수병 한 병의 들이는 약 ____ mL입니다. (500/2000 중 선택)",
@@ -955,7 +955,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-2-5-07-fb-001",
             concept_id="e3-2-5-07",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=4,
             content="1원짜리 동전 한 개의 무게는 약 ____ g입니다. (1/10/100 중 선택)",
@@ -1024,7 +1024,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-2-6-03-fb-001",
             concept_id="e3-2-6-03",
-            category="application",
+            category="fill_in_blank",
             part="data",
             difficulty=6,
             content="그림그래프에서 12명을 나타내려고 합니다. 별 1개 = 3명이면 별을 ____ 개 그려야 합니다.",
@@ -1037,7 +1037,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e3-2-6-04-fb-001",
             concept_id="e3-2-6-04",
-            category="application",
+            category="fill_in_blank",
             part="data",
             difficulty=5,
             content="좋아하는 과일을 조사하여 표로 나타냈습니다. 사과 15명, 포도 12명, 바나나 8명일 때, "

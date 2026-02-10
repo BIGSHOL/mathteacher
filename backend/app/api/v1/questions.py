@@ -339,6 +339,7 @@ async def debug_list_questions(
 async def get_filter_options(
     grade: Grade | None = Query(None),
     db: AsyncSession = Depends(get_db),
+    _user: UserResponse = Depends(get_current_user),
 ):
     """필터용 단원+개념 목록을 한 번에 조회 (단일 라운드트립)."""
     # 단원 조회

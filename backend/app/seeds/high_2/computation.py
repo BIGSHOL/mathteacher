@@ -11,6 +11,8 @@ def get_computation_data() -> dict:
     }
 
 
+def _get_concepts():
+    """개념 목록 반환."""
     return [
         concept(
             id="h1-2-1-1",

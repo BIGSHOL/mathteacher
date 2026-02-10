@@ -91,9 +91,9 @@ class TestGetTestDetail:
         assert response.status_code == 200
         data = response.json()
         assert "questions" in data["data"]
-        # 정답이 포함되지 않아야 함
+        # 정답이 노출되지 않아야 함
         for question in data["data"]["questions"]:
-            assert "correct_answer" not in question
+            assert question.get("correct_answer") is None
 
     async def test_get_test_detail_not_found(self, client: AsyncClient) -> None:
         """존재하지 않는 테스트 조회."""

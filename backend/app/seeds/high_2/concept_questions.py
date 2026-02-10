@@ -11,6 +11,8 @@ def get_concept_data() -> dict:
     }
 
 
+def _get_concepts():
+    """개념 목록 반환."""
     return [
         # 2단원: 집합과 명제
         concept(

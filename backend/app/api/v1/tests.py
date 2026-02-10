@@ -949,7 +949,7 @@ async def complete_test(
     from sqlalchemy import func
     count_stmt = select(func.count(TestAttempt.id)).where(
         TestAttempt.student_id == current_user.id,
-        TestAttempt.is_completed == True  # noqa: E712
+        TestAttempt.completed_at.isnot(None),
     )
     completed_count = await db.scalar(count_stmt)
 

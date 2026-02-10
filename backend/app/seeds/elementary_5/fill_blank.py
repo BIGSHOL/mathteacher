@@ -309,7 +309,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-1-5-06-fb-001",
             concept_id="e5-1-5-06",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=7,
             content="밧줄 2와 1/4 m에서 1과 3/4 m를 사용했습니다. 남은 밧줄은 ____ m입니다.",
@@ -390,7 +390,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-1-6-07-fb-001",
             concept_id="e5-1-6-07",
-            category="application",
+            category="fill_in_blank",
             part="geo",
             difficulty=8,
             content="직사각형에서 삼각형을 잘라낸 도형의 넓이를 구할 때 사용하는 방법은 ____입니다.",
@@ -401,7 +401,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-1-6-08-fb-001",
             concept_id="e5-1-6-08",
-            category="application",
+            category="fill_in_blank",
             part="geo",
             difficulty=8,
             content="평행사변형 2개로 나눈 도형의 전체 넓이를 구할 때 사용하는 방법은 ____입니다.",
@@ -412,7 +412,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-1-6-09-fb-001",
             concept_id="e5-1-6-09",
-            category="application",
+            category="fill_in_blank",
             part="geo",
             difficulty=9,
             content="밑변 12cm, 높이 8cm인 평행사변형을 밑변이 6cm인 삼각형으로 바꾸면, 높이는 ____cm입니다.",
@@ -493,7 +493,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-1-07-fb-001",
             concept_id="e5-2-1-07",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=7,
             content="사과 23개를 한 상자에 5개씩 담으려면 최소 ____상자가 필요합니다.",
@@ -552,7 +552,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-2-05-fb-001",
             concept_id="e5-2-2-05",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=7,
             content="리본 1m의 무게가 2/5 kg입니다. 리본 3m의 무게는 ____ kg입니다.",
@@ -600,7 +600,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-3-04-fb-001",
             concept_id="e5-2-3-04",
-            category="application",
+            category="fill_in_blank",
             part="geo",
             difficulty=7,
             content="선대칭이면서 점대칭인 도형의 예는 ____입니다.",
@@ -670,7 +670,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-4-06-fb-001",
             concept_id="e5-2-4-06",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=7,
             content="한 개에 0.8kg인 수박 3개의 무게는 ____ kg입니다.",
@@ -681,7 +681,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-4-07-fb-001",
             concept_id="e5-2-4-07",
-            category="application",
+            category="fill_in_blank",
             part="calc",
             difficulty=8,
             content="가로 1.5m, 세로 2.4m인 직사각형의 넓이는 ____ m²입니다.",
@@ -751,7 +751,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-5-06-fb-001",
             concept_id="e5-2-5-06",
-            category="application",
+            category="fill_in_blank",
             part="geo",
             difficulty=8,
             content="가로 3cm, 세로 4cm, 높이 5cm인 직육면체의 모든 모서리의 길이의 합은 ____cm입니다.",
@@ -777,7 +777,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-6-02-fb-001",
             concept_id="e5-2-6-02",
-            category="application",
+            category="fill_in_blank",
             part="data",
             difficulty=6,
             content="3개의 수의 평균이 12일 때, 세 수의 합은 ____입니다.",
@@ -788,7 +788,7 @@ def get_questions() -> list[dict]:
         fb(
             id="e5-2-6-03-fb-001",
             concept_id="e5-2-6-03",
-            category="application",
+            category="fill_in_blank",
             part="data",
             difficulty=7,
             content="5개의 수 6, 8, 10, 12, ○의 평균이 10일 때, ○ = ____입니다.",
