@@ -84,7 +84,8 @@ api.interceptors.response.use(
         processQueue(refreshError as Error, null)
         // 로그인 페이지에서는 리다이렉트하지 않음 (무한 루프 방지)
         if (window.location.pathname !== '/login') {
-          localStorage.removeItem('auth-storage')
+          sessionStorage.removeItem('auth-storage')
+          localStorage.removeItem('auth-storage')  // 기존 잔여 데이터 정리
           await useAuthStore.getState().logout()
           window.location.href = '/login'
         }

@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     JWT_SECRET: str = os.getenv("JWT_SECRET", "dev-only-secret-key-change-in-production" if os.getenv("ENV", "development") == "development" else "")
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    REFRESH_TOKEN_EXPIRE_DAYS: int = 1
 
     # Environment
     ENV: str = "development"  # development, staging, production

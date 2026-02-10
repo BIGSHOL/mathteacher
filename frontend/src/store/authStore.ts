@@ -173,6 +173,15 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      // sessionStorage: 브라우저(탭) 종료 시 자동 로그아웃
+      storage: {
+        getItem: (name) => {
+          const val = sessionStorage.getItem(name)
+          return val ? JSON.parse(val) : null
+        },
+        setItem: (name, value) => sessionStorage.setItem(name, JSON.stringify(value)),
+        removeItem: (name) => sessionStorage.removeItem(name),
+      },
       // accessToken은 메모리에만 저장 (만료된 토큰이 재사용되는 것 방지)
       partialize: (state) => ({
         user: state.user,
