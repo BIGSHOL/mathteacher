@@ -8,7 +8,7 @@ from sqlalchemy import Boolean, DateTime, Enum, Integer, JSON, String, Text, fun
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.schemas.common import Grade, QuestionCategory
+from app.schemas.common import Grade
 
 if TYPE_CHECKING:
     from app.models.test_attempt import TestAttempt

@@ -8,7 +8,7 @@ from google import genai
 from google.genai import types
 
 from app.core.config import settings
-from app.schemas.common import ConceptMethod, QuestionType, QuestionCategory, ProblemPart
+from app.schemas.common import ConceptMethod, QuestionType, ProblemPart
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +114,7 @@ class ConceptGenerator:
                 q_obj = {
                     "id": qid,
                     "concept_id": concept_id,
-                    "category": QuestionCategory.CONCEPT,
+                    "category": "concept",
                     "part": ProblemPart.CALC, # 임시 (개념에 맞게 수정 필요)
                     "question_type": QuestionType.FILL_IN_BLANK if q.get("question_type") == "fill_in_blank" else QuestionType.MULTIPLE_CHOICE,
                     "difficulty": difficulty,
@@ -198,7 +198,7 @@ class ConceptGenerator:
                 q_obj = {
                     "id": qid,
                     "concept_id": concept_id,
-                    "category": QuestionCategory.CONCEPT,
+                    "category": "concept",
                     "part": ProblemPart.CALC, # 임시
                     "question_type": QuestionType.MULTIPLE_CHOICE if q.get("question_type") == "multiple_choice" else QuestionType.FILL_IN_BLANK,
                     "difficulty": int(q.get("difficulty", 5)),
@@ -283,7 +283,7 @@ class ConceptGenerator:
                 q_obj = {
                     "id": qid,
                     "concept_id": concept_id,
-                    "category": QuestionCategory.CONCEPT,
+                    "category": "concept",
                     "part": ProblemPart.CALC, # 임시
                     "question_type": QuestionType.MULTIPLE_CHOICE if q.get("question_type") == "multiple_choice" else QuestionType.FILL_IN_BLANK,
                     "difficulty": int(q.get("difficulty", 3)),

@@ -14,7 +14,7 @@ from app.models.test import Test
 from app.models.test_attempt import TestAttempt
 from app.models.concept import Concept
 from app.schemas import ApiResponse, QuestionResponse, StartTestResponse, TestWithQuestionsResponse
-from app.schemas.common import Grade, QuestionCategory
+from app.schemas.common import Grade
 from app.api.v1.auth import get_current_user
 from app.schemas import UserResponse
 
@@ -25,7 +25,7 @@ class PracticeStartRequest(BaseModel):
     """빠른 연습 시작 요청."""
 
     grade: Grade
-    category: QuestionCategory
+    category: str
     count: int = Field(default=10, ge=5, le=30)
     starting_difficulty: int = Field(default=5, ge=1, le=10)
 
@@ -84,7 +84,7 @@ async def start_practice(
         )
 
     # 3. 동적 테스트 생성
-    category_label = "연산" if request.category == QuestionCategory.COMPUTATION else "개념"
+    category_label = "연산" if request.category == "computation" else "개념"
     practice_test = Test(
         id=f"practice-{uuid4().hex[:12]}",
         title=f"{category_label} 빠른 연습 (Lv.{request.starting_difficulty})",

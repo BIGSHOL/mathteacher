@@ -697,19 +697,19 @@ function QuestionDetailModal({
   onClose: () => void
 }) {
   return (
-    <>
+    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 bg-black/50"
-        onClick={onClose}
+        className="absolute inset-0 bg-black/50"
       />
       <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        className="fixed left-1/2 top-1/2 z-50 w-[92%] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-white p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="relative z-10 w-[92%] max-w-2xl rounded-2xl bg-white p-6 shadow-2xl max-h-[85vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
       >
         {/* 헤더 */}
         <div className="mb-4 flex items-start justify-between">
@@ -759,7 +759,7 @@ function QuestionDetailModal({
 
         {/* 문제 내용 */}
         <div className="mb-4 rounded-lg bg-gray-50 p-4">
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-gray-900"><MathText text={q.content} /></p>
+          <div className="whitespace-pre-wrap text-sm leading-relaxed text-gray-900"><MathText text={q.content} /></div>
         </div>
 
         {/* 선택지 */}
@@ -810,6 +810,6 @@ function QuestionDetailModal({
           ID: {q.id} | concept_id: {q.concept_id}
         </div>
       </motion.div>
-    </>
+    </div>
   )
 }

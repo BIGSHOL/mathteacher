@@ -4,7 +4,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, field_validator
 
-from .common import ConceptMethod, Difficulty, Grade, ProblemPart, QuestionCategory, QuestionType
+from .common import ConceptMethod, Difficulty, Grade, ProblemPart, QuestionType
 
 
 # ===========================
@@ -17,7 +17,7 @@ class ConceptBase(BaseModel):
 
     name: str = Field(..., min_length=1, max_length=200)
     grade: Grade
-    category: QuestionCategory = QuestionCategory.CONCEPT
+    category: str = "concept"
     part: ProblemPart = ProblemPart.CALC
     description: str = ""
 
@@ -62,7 +62,7 @@ class QuestionOption(BaseModel):
 class QuestionBase(BaseModel):
     """문제 기본 스키마."""
 
-    category: QuestionCategory
+    category: str
     part: ProblemPart
     question_type: QuestionType
     difficulty: Difficulty

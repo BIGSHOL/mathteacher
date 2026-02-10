@@ -8,7 +8,7 @@ from sqlalchemy import DateTime, Enum as SAEnum, ForeignKey, Index, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
-from app.schemas.common import Grade, ProblemPart, QuestionCategory
+from app.schemas.common import Grade, ProblemPart
 
 
 # 개념 선수관계 연결 테이블 (계통수학)
@@ -37,9 +37,9 @@ class Concept(Base):
     )
     name: Mapped[str] = mapped_column(String(200), index=True)
     grade: Mapped[str] = mapped_column(String(20), index=True)
-    category: Mapped[QuestionCategory] = mapped_column(
-        SAEnum(QuestionCategory), index=True, default=QuestionCategory.CONCEPT,
-        comment="트랙: 연산(computation) / 개념(concept)"
+    category: Mapped[str] = mapped_column(
+        String(30), index=True, default="concept",
+        comment="트랙: computation / concept / application / fill_in_blank"
     )
     part: Mapped[ProblemPart] = mapped_column(
         SAEnum(ProblemPart), index=True, default=ProblemPart.CALC,

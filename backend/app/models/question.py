@@ -9,7 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.core.database import Base
-from app.schemas.common import ConceptMethod, ProblemPart, QuestionCategory, QuestionType
+from app.schemas.common import ConceptMethod, ProblemPart, QuestionType
 
 if TYPE_CHECKING:
     from app.models.concept import Concept
@@ -31,8 +31,8 @@ class Question(Base):
     concept_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("concepts.id"), index=True
     )
-    category: Mapped[QuestionCategory] = mapped_column(
-        Enum(QuestionCategory), index=True, comment="트랙: 연산(computation) / 개념(concept)"
+    category: Mapped[str] = mapped_column(
+        String(30), index=True, comment="트랙: computation / concept / application / fill_in_blank"
     )
     part: Mapped[ProblemPart] = mapped_column(
         Enum(ProblemPart), index=True, comment="파트: calc/algebra/func/geo/data/word"

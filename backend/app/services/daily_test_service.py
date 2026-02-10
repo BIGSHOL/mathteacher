@@ -18,7 +18,7 @@ from app.models.question import Question
 from app.models.test import Test
 from app.models.test_attempt import TestAttempt
 from app.models.user import User
-from app.schemas.common import QuestionCategory, QuestionType, ConceptMethod
+from app.schemas.common import QuestionType, ConceptMethod
 from app.services.ai_service import AIService
 from app.services.template_generator import TemplateGenerator
 from app.services.review_service import ReviewService
@@ -399,12 +399,12 @@ class DailyTestService:
             return query
         elif category == "concept":
             return query.where(
-                Question.category == QuestionCategory.CONCEPT,
+                Question.category == "concept",
                 Question.question_type != QuestionType.FILL_IN_BLANK,
             )
         elif category == "computation":
             return query.where(
-                Question.category == QuestionCategory.COMPUTATION,
+                Question.category == "computation",
                 Question.question_type != QuestionType.FILL_IN_BLANK,
             )
         return query
@@ -778,7 +778,7 @@ class DailyTestService:
                         concept_name=concept.name,
                         concept_id=concept.id,
                         grade=grade_str,
-                        category=category if category != "fill_in_blank" else concept.category.value,
+                        category=category if category != "fill_in_blank" else (concept.category.value if hasattr(concept.category, "value") else concept.category),
                         part=concept.part.value if hasattr(concept.part, "value") else str(concept.part),
                         question_type=q_type,
                         count=batch,

@@ -1,13 +1,13 @@
 """빈칸 채우기 샘플 데이터."""
 
-from app.schemas.common import QuestionType, QuestionCategory, ProblemPart, Grade
+from app.schemas.common import QuestionType, ProblemPart, Grade
 
 # 빈칸 채우기 샘플 문제
 FILL_IN_BLANK_SAMPLES = [
     {
         "content": "세 변의 길이가 같은 삼각형은 정삼각형이다.",
         "question_type": QuestionType.FILL_IN_BLANK,
-        "category": QuestionCategory.CONCEPT,
+        "category": "concept",
         "part": ProblemPart.GEO,
         "difficulty": 3,
         "grade": Grade.MIDDLE_1,
@@ -33,7 +33,7 @@ FILL_IN_BLANK_SAMPLES = [
     {
         "content": "평행사변형에서 마주 보는 두 변의 길이는 같다.",
         "question_type": QuestionType.FILL_IN_BLANK,
-        "category": QuestionCategory.CONCEPT,
+        "category": "concept",
         "part": ProblemPart.GEO,
         "difficulty": 4,
         "grade": Grade.MIDDLE_1,
@@ -60,7 +60,7 @@ FILL_IN_BLANK_SAMPLES = [
     {
         "content": "일차방정식은 미지수의 차수가 1인 방정식이다.",
         "question_type": QuestionType.FILL_IN_BLANK,
-        "category": QuestionCategory.CONCEPT,
+        "category": "concept",
         "part": ProblemPart.ALGEBRA,
         "difficulty": 3,
         "grade": Grade.MIDDLE_1,
@@ -85,7 +85,7 @@ FILL_IN_BLANK_SAMPLES = [
     {
         "content": "등식의 양변에 같은 수를 더하거나 빼도 등식은 성립한다.",
         "question_type": QuestionType.FILL_IN_BLANK,
-        "category": QuestionCategory.CONCEPT,
+        "category": "concept",
         "part": ProblemPart.ALGEBRA,
         "difficulty": 2,
         "grade": Grade.MIDDLE_1,
@@ -113,7 +113,7 @@ FILL_IN_BLANK_SAMPLES = [
     {
         "content": "정비례 관계에서 x의 값이 a배가 되면 y의 값도 a배가 된다.",
         "question_type": QuestionType.FILL_IN_BLANK,
-        "category": QuestionCategory.CONCEPT,
+        "category": "concept",
         "part": ProblemPart.FUNC,
         "difficulty": 4,
         "grade": Grade.MIDDLE_1,

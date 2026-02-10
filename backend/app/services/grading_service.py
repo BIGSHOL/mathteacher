@@ -206,7 +206,7 @@ class GradingService:
             combo_count=new_combo,
             points_earned=points_with_bonus,
             question_difficulty=question.difficulty,
-            question_category=question.category.value if question.category else None,
+            question_category=question.category.value if hasattr(question.category, "value") else question.category,
         )
 
         try:

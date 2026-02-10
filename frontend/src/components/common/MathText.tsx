@@ -43,8 +43,14 @@ function parseSuperscripts(text: string, keyOffset: number): (string | JSX.Eleme
       parts.push(text.slice(lastIndex, match.index))
     }
     const exponent = match[1] ?? match[2] ?? match[3]!
+    // 지수가 알파벳이면 이탤릭 세리프체 적용 (수학 변수)
+    const isVar = /^[a-zA-Z]+$/.test(exponent)
     parts.push(
-      <sup key={`sup-${keyOffset + match.index}`} className="text-[0.75em]">
+      <sup
+        key={`sup-${keyOffset + match.index}`}
+        className="text-[0.75em]"
+        style={isVar ? { fontFamily: '"Times New Roman", "Noto Serif", Georgia, serif', fontStyle: 'italic' } : undefined}
+      >
         {exponent}
       </sup>
     )
@@ -62,15 +68,16 @@ function parseSuperscripts(text: string, keyOffset: number): (string | JSX.Eleme
 function InlineFraction({ numerator, denominator }: { numerator: string; denominator: string }) {
   return (
     <span
-      className="inline-flex flex-col items-center mx-[1px] relative"
+      className="inline-flex flex-col items-center mx-[2px]"
       style={{
-        verticalAlign: '-0.4em',
+        verticalAlign: 'middle',
         lineHeight: 1,
+        transform: 'translateY(-0.1em)',
       }}
     >
-      <span className="text-[0.75em] leading-none px-[2px] text-center min-w-[1.1em]">{numerator}</span>
+      <span className="text-[0.85em] leading-none px-[2px] text-center min-w-[1.2em]">{numerator}</span>
       <span className="w-full border-t border-current" style={{ margin: '1px 0' }} />
-      <span className="text-[0.75em] leading-none px-[2px] text-center min-w-[1.1em]">{denominator}</span>
+      <span className="text-[0.85em] leading-none px-[2px] text-center min-w-[1.2em]">{denominator}</span>
     </span>
   )
 }
@@ -78,8 +85,8 @@ function InlineFraction({ numerator, denominator }: { numerator: string; denomin
 /** 대분수 표시 (자연수 + 분수) */
 function MixedNumber({ whole, numerator, denominator, keyId }: { whole: string; numerator: string; denominator: string; keyId: string }) {
   return (
-    <span key={keyId} className="inline-flex items-center">
-      <span>{whole}</span>
+    <span key={keyId} className="inline-flex items-center" style={{ verticalAlign: 'middle' }}>
+      <span className="mr-[1px]">{whole}</span>
       <InlineFraction numerator={numerator} denominator={denominator} />
     </span>
   )
@@ -145,9 +152,12 @@ function parseVars(text: string, keyOffset: number): (string | JSX.Element)[] {
       parts.push(text.slice(lastIndex, index))
     }
     parts.push(
-      <em key={`var-${keyOffset + index}`} className="font-math not-italic" style={{ fontStyle: 'italic' }}>
+      <span
+        key={`var-${keyOffset + index}`}
+        style={{ fontFamily: '"Times New Roman", "Noto Serif", Georgia, serif', fontStyle: 'italic' }}
+      >
         {varChar}
-      </em>
+      </span>
     )
     lastIndex = index + varChar.length
   }
